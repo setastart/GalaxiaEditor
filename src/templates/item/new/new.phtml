@@ -1,0 +1,36 @@
+<?php renderForm('', 'item-new', 'item item-new paper pad'); ?>
+
+    <div class="paper-header pad">
+        <h1><?=h($pgTitle)?></h1>
+
+<?php   if (isset($item['inputs']['status'])) { ?>
+<?php       echo renderStatus($item['inputs']['status']); ?>
+<?php   } ?>
+    </div>
+
+
+    <div class="item-row">
+<?php   $firstTime = true; ?>
+<?php   $prefixPrev = null; ?>
+<?php   foreach ($item['inputs'] as $input) { ?>
+<?php       if ($input['nameFromDb'] == 'status') continue; ?>
+<?php       if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
+    </div>
+    <div class="item-row">
+<?php       } ?>
+<?php       echo renderInput($app, $input); ?>
+<?php       $firstTime = false; ?>
+<?php       $prefixPrev = $input['prefix'] ?? ''; ?>
+<?php   } ?>
+    </div>
+
+
+    <div class="paper-footer pad">
+        <div class="paper-footer-actions">
+            <button class="btn btn-green active"><?=t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(t('Save and go back to %s'), t($geConf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-blue active" name="submitAndAddMore"><?=t('Save and add more')?></button>
+        </div>
+    </div>
+
+<?php renderFormEnd(); ?>

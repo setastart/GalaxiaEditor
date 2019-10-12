@@ -1,0 +1,200 @@
+
+
+/* desktop large (equal to or more than 1400px) */
+/* "paper" borders over maximum size */
+@media screen and (min-width: 1500px) {
+    .pad {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+
+@media screen and (max-width: 820px) {
+    body {
+        grid-template-columns: 1fr;
+        grid-template-rows: min-content min-content min-content minmax(20px, 1fr) min-content;
+        background-image: none;
+    }
+    .pad {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+    #website-link {
+        grid-column: 1/2;
+        grid-row: 1/2;
+        margin: 12px 0;
+        width: 100%;
+    }
+    #website-link span {
+        /*display: none;*/
+    }
+    #website-link > a {
+        padding: 0;
+    }
+    #website-link > a img {
+        margin-left: 12px;
+    }
+    #switches {
+        top: 6px;
+        right: 7px;
+        grid-row: 1/2;
+    }
+    #menu {
+        top: 0px;
+        position: static;
+        grid-column: 1/2;
+        grid-row: 2/3;
+        width: initial;
+        height: initial;
+        padding: 1px 12px 12px 12px;
+        overflow-y: initial;
+        direction: ltr;
+    }
+    #menu::after {
+        content: '';
+        height: initial;
+    }
+    .menu-item {
+        border-left: 1px solid #a78;
+        min-height: 46px;
+        width: initial;
+        box-shadow: none;
+    }
+    a.menu-item:first-child {
+        border-top-left-radius: 6px;
+        border-top-right-radius: 0px;
+    }
+    #openboxes {
+        grid-column: 1/2;
+        grid-row: 3/4;
+        padding-top: 0;
+    }
+    .openbox {
+        width: 100%;
+    }
+    .msgbox {
+        margin: 0 12px 12px;
+    }
+    #page {
+        grid-column: 1/2;
+        grid-row: 4/5;
+    }
+    body::before {
+        grid-row: 5/6;
+    }
+    #footer {
+        grid-column: 1/2;
+        grid-row: 5/6;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .paper {
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+    }
+    a.menu-item.active {
+        background-image: linear-gradient(-135deg, #98b, #98b 6px, #eb1 6px, #eb1 9px, transparent 9px);
+    }
+
+}
+
+
+@media screen and (max-width: 620px) {
+    body {
+        margin-left: 0;
+        padding: 0;
+        font-size: 13px;
+    }
+    h1 { font-size: 19px; }
+    h2 { font-size: 16px; }
+    h3 { font-size: 14px; }
+    .pad {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+    .paper {
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+    }
+    .paper-header,
+    .paper-footer {
+        grid-template-columns: 1fr;
+    }
+    .paper-header > *,
+    .paper-footer > * {
+        grid-column: 1/-1;
+    }
+    .paper-header h1 {
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+    .filters-list {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    .row {
+        padding: 6px 4px;
+    }
+    .row .thumb {
+        margin-top: 0px;
+        margin-left: 4px;
+    }
+    .input-title {
+        padding-top: 9px;
+        padding-bottom: 7px;
+    }
+    .input-wrap {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}
+
+
+@media print {
+    body {
+        background: #fff;
+        margin: 0.5cm;
+    }
+    #menu { display: none; }
+    .wrap {
+        padding: 0;
+    }
+    #website-link { display: none; }
+    #switches { display: none; }
+    .paper {
+        background: #fff;
+        border: none;
+        box-shadow: none;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .history-item {
+        border: 1px solid #bbb;
+    }
+    #msgboxes { display: none; }
+    .filters-list { display: none; }
+    .item-links { display: none; }
+    .btn, a.btn {
+        border: 1px solid #333;
+        border-right: none;
+        background: #fff;
+    }
+    .btn:last-child {
+        border-right: 1px solid #333;
+    }
+    .btn.active, a.btn.active {
+        border: 5px solid #333;
+        text-shadow: none;
+        background: #fff;
+        color: #000;
+        text-decoration: underline;
+    }
+    .trix-button-row { display: none !important; }
+    .paper-footer-actions { display: none; }
+    #footer {
+        display: none;
+    }
+}

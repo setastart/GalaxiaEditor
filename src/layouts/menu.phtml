@@ -1,0 +1,36 @@
+<?php
+
+$menu = [];
+foreach ($geConf as $rootSlug => $confPage) {
+    if (!isset($me)) continue;
+    if (!$confPage['gcMenuShow']) continue;
+
+    $menu[$rootSlug]['link'] = '/edit/' . h($rootSlug);
+    $menu[$rootSlug]['title'] = $confPage['gcMenuTitle'];
+    $menu[$rootSlug]['cssClass'] = '';
+
+    if ($confPage['gcPageType'] == 'gcpLinkToItem') {
+        $menu[$rootSlug]['link'] = '/edit/' . $confPage['geLinkToUser'] . '/' . $me->id;
+
+        if (isset($itemId) && $pgSlug == $confPage['geLinkToUser'] && $itemId == $me->id) {
+            $menu[$rootSlug]['cssClass'] .= ' active';
+        }
+    } else {
+        if ($rootSlug == $pgSlug) $menu[$rootSlug]['cssClass'] .= ' active';
+    }
+
+
+    if (!is_array($confPage['gcMenuShow'])) continue;
+    if (!is_array($confPage['gcMenuShow']['gcPerms'])) continue;
+
+    foreach ($confPage['gcMenuShow']['gcPerms'] as $perm) {
+        $menu[$rootSlug]['cssClass'] .= ' hide-perm-' . h($perm);
+    }
+}
+
+?>
+<div id="menu" class="non-selectable">
+<?php   foreach ($menu as $menuItem) { ?>
+    <a class="menu-item<?=h($menuItem['cssClass'])?>" href="<?=h($menuItem['link'])?>"><?=t($menuItem['title'])?></a>
+<?php   } ?>
+</div>

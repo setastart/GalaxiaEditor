@@ -1,0 +1,67 @@
+<?php
+global $editor;
+global $geConf;
+global $pgSlug;
+global $me;
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Error <?=h($errorCode)?></title>
+
+    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=h($editor->version)?>">
+
+    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/text.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/galaxiaEditor.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/filters.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/responsive.css?version=<?=h($editor->version)?>">
+
+    <script type="text/javascript" src="/edit/js/galaxiaEditor.js?version=<?=h($editor->version)?>"></script>
+</head>
+<body class="page-error">
+
+<a target="_blank" rel="noopener" id="website-link" href="/">
+    <img src="/favicon.ico" class="thumb-mini">
+    <span><?=h($_SERVER['SERVER_NAME'])?></span>
+</a>
+
+<?php include('menu.phtml'); ?>
+
+
+<div id="page">
+    <div class="paper pad">
+        <div class="paper-header pad">
+            <h1>Error <?=h($errorCode)?></h1>
+        </div>
+        <div class="pad">
+            <?=h($error)?>
+        </div>
+    </div>
+<?php include('messageBoxes.phtml'); ?>
+</div>
+
+
+<div id="footer" class="pad">
+    <div>
+<?php renderForm('/edit/logout', 'logout')?>
+        <button type="submit"><?=t('Logout')?></button>
+<?php renderFormEnd(); ?>
+    </div>
+<?php if (in_array('dev', $me->perms)) { ?>
+    <div><a href="/edit/dev">Developer</a></div>
+<?php } ?>
+    <div><button onclick="document.location = '/edit/dev/cacheDeleteEditor'">Delete Editor Caches</button></div>
+    <img class="favicon" src="/edit/favicon.ico">
+    <p class="version"><?=h($me->name)?>@galaxia v<?=h($editor->version);?></p>
+    <p class="copy">&copy; 2017-<?=date("Y")?> setastart.com</p>
+</div>
+
+
+</body>
+</html>
+<?php cleanMessages(); ?>

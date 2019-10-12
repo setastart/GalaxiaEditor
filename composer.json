@@ -1,0 +1,21 @@
+{
+    "name": "setastart/galaxia-editor",
+    "type": "project",
+    "description": "Galaxia Editor is a multilingual web content editor for Galaxia Websites.",
+    "keywords": ["galaxia", "editor", "cms"],
+    "homepage": "https://setastart.com/",
+
+    "require": {
+        "setastart/galaxia-core": "3.0.*",
+        "setastart/galaxia-logtostats": "0.1.*",
+        "setastart/galaxia-redis": "3.0.*",
+        "nikic/fast-route": "^1.3"
+    },
+
+    "require-dev": {
+        "setastart/galaxia-core": "dev-master",
+        "setastart/galaxia-logtostats": "dev-master",
+        "setastart/galaxia-redis": "dev-master",
+        "nikic/fast-route": "^1.3"
+    }
+}

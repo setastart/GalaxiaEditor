@@ -1,0 +1,196 @@
+<?php
+
+use Galaxia\Director;
+
+?>
+<!DOCTYPE html>
+<html lang="<?=h($app->lang)?>">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+
+    <title><?=h($hdTitle)?></title>
+
+    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=h($editor->version)?>">
+
+    <script type="text/javascript">
+// switches for hiding perms & langs
+window.addEventListener("DOMContentLoaded", function(event) {
+    var switches = document.querySelectorAll('#switches label');
+    for (i = 0; i < switches.length; i++) {
+        if (window.location.pathname.endsWith('/new')) break;
+        if (switches[i].classList.contains('btn-red')) continue;
+
+        if (switches[i].dataset.remember) {
+            if (switches[i].classList.contains('active')) {
+                if (sessionStorage.getItem(switches[i].children[0].value) == 'hide') {
+                    switches[i].classList.remove('active');
+                    switches[i].children[0].checked = false;
+                }
+            } else {
+                if (sessionStorage.getItem(switches[i].children[0].value) == 'show') {
+                    switches[i].classList.add('active');
+                    switches[i].children[0].checked = true;
+                }
+            }
+        }
+
+        if (!switches[i].classList.contains('active')) {
+            document.body.classList.add(switches[i].children[0].value);
+        }
+    }
+});
+    </script>
+
+    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/text.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/galaxiaEditor.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/filters.css?version=<?=h($editor->version)?>">
+<?php   if ($chatInclude) { ?>
+    <link rel="stylesheet" href="/edit/css/chat.css?version=<?=h($editor->version)?>">
+<?php   } ?>
+    <link rel="stylesheet" href="/edit/css/responsive.css?version=<?=h($editor->version)?>">
+<?php   if ($includeTrix) { ?>
+    <link rel="stylesheet" href="/edit/css/trix.css?version=<?=h($editor->version)?>">
+<?php   } ?>
+    <style>
+<?php   foreach ($app->langs as $lang) { ?>
+.hide-active-lang-<?=h($lang)?> .hide-lang-<?=h($lang)?> { display: none; }
+<?php   } ?>
+<?php   foreach ($me->perms as $perm) { ?>
+.hide-active-perm-<?=h($perm)?> .hide-perm-<?=h($perm)?> { display: none; }
+.hide-perm-<?=h($perm)?> { background-color: #fe9; }
+.paper-header-status.hide-perm-<?=h($perm)?> { padding: 5px 5px 3px; }
+<?php   } ?>
+    </style>
+
+    <script type="text/javascript" src="/edit/js/galaxiaEditor.js?version=<?=h($editor->version)?>"></script>
+<?php   if ($chatInclude) { ?>
+    <script type="text/javascript">
+var gchat = {
+    'enabled'       : false,
+    'myId'          : '<?=$me->id?>',
+    'clientId'      : '<?=uniqid(true)?>',
+    'csrf'          : '<?=$_SESSION['csrf']?>',
+    'listenXhr'     : false,
+    'listenTimeout' : false,
+    'listenStatus'  : false,
+    'roomNodes'     : {},
+    'rooms'         : {},
+    'leaving'       : false
+};
+    </script>
+    <script type="text/javascript" src="/edit/js/galaxiaChat.js?version=<?=h($editor->version)?>"></script>
+<?php   } ?>
+<?php   if ($includeTrix) { ?>
+    <script type="text/javascript" src="/edit/js/gtrix-1.2.0.min.js?version=<?=h($editor->version)?>" async defer></script>
+    <script type="text/javascript">
+document.addEventListener('trix-file-accept', function(event) {
+    event.preventDefault(); // disable trix image attachment pasting
+});
+    </script>
+<?php   } ?>
+</head>
+
+<body class="page-<?=h($pgSlug)?> hide-active-msgbox-info hide-active-msgbox-warning hide-active-msgbox-error hide-active-msgbox-devlog">
+
+<div id="website-link">
+    <a target="_blank" rel="noopener" href="/">
+        <img src="/favicon.ico" class="thumb-mini">
+        <span><?=h($_SERVER['SERVER_NAME'])?></span>
+    </a>
+</div>
+
+<div id="openboxes">
+<?php   foreach (['error', 'info', 'warning'] as $box) { ?>
+<?php       if ($msgs = msgBoxes($box)) { ?>
+    <div id="openbox-<?=h($box)?>" class="openbox">
+        <label for="switch-hide-msgbox-<?=h($box)?>" class="btn btn-pill btn-small btn-checkbox">
+            <?=t(ucfirst($box))?>
+            <input onchange="gjSwitch(this, event)" type="checkbox"  value="hide-active-msgbox-<?=h($box)?>" id="switch-hide-msgbox-<?=h($box)?>" title="<?=h($perm)?>">
+        </label>
+        <span><?=$msgs[0] . ((count($msgs) > 1) ? ' +' . (count($msgs) - 1) : '')?></span>
+    </div>
+<?php       } ?>
+<?php   } ?>
+<?php   if (Director::$debug) { ?>
+<?php       $box = 'devlog'; ?>
+<?php       if ($msgs = msgBoxes($box)) { ?>
+    <div id="openbox-<?=h($box)?>" class="openbox hide-perm-dev">
+        <label for="switch-hide-msgbox-<?=h($box)?>" class="btn btn-pill btn-small btn-checkbox">
+            <?=t(ucfirst($box))?>
+            <input onchange="gjSwitch(this, event)" type="checkbox"  value="hide-active-msgbox-<?=h($box)?>" id="switch-hide-msgbox-<?=h($box)?>" title="<?=h($perm)?>">
+        </label>
+        <span><?=$msgs[0] . ((count($msgs) > 1) ? ' +' . (count($msgs) - 1) : '')?></span>
+    </div>
+<?php       } ?>
+<?php   } ?>
+</div>
+
+<?php include('switches.phtml'); ?>
+
+<?php include('menu.phtml'); ?>
+
+<div id="page">
+<?php Director::timerStart('View: ' . $editor->view . '.phtml'); ?>
+<?php include($editor->dirView . $editor->view . '.phtml'); ?>
+<?php Director::timerStop('View: ' . $editor->view . '.phtml'); ?>
+<?php include('messageBoxes.phtml'); ?>
+</div>
+
+<div id="footer">
+    <div class="links">
+        <a href="/edit/logout"><?=t('Logout')?></a>
+<?php if (in_array('dev', $me->perms)) { ?>
+        <a href="/edit/dev" class="hide-perm-dev">Developer</a>
+<?php } ?>
+        <a href="/edit/dev/cacheDeleteEditor"><?=t('Delete Editor Caches')?></a>
+    </div>
+    <img class="favicon" src="/edit/favicon.ico">
+    <p class="version"><?=h($me->name)?>@galaxia v<?=h($editor->version);?></p>
+    <p class="copy">setastart.com &copy; 2017-<?=date("Y")?></p>
+</div>
+
+
+<?php require $editor->dirView . 'imageList/select.phtml'; ?>
+
+
+<?php if ($chatInclude && $pgSlug != 'chat') { ?>
+<div id="gchat">
+<?php       if ($chatIncludeCurrent) { ?>
+    <div class="gchat-room" data-room="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>">
+        <div class="title"><?=h($pgSlug)?>/<?=h($itemId)?></div>
+        <div class="users"></div>
+        <div class="messages-wrapper">
+            <div class="s0w s1w messages">
+            </div>
+        </div>
+        <span class="status-publish"></span>
+        <div class="send">
+            <textarea class="input-text input-textarea" name="msg" rows="1" oninput="textareaAutoGrow(this)" onkeydown="gjcEnterSend(this, event, '/edit/<?=h($pgSlug)?>/<?=h($itemId)?>')" wrap="soft"></textarea>
+            <button class="btn btn-green" onclick="gjcClickSend(this, '/edit/<?=h($pgSlug)?>/<?=h($itemId)?>')"><?=t('Send')?></button>
+        </div>
+    </div>
+<?php       } ?>
+    <div class="gchat-room" data-room="/edit/chat">
+        <div class="title"><?=$geConf['chat']['gcMenuTitle']?></div>
+        <div class="users"></div>
+        <div class="messages-wrapper">
+            <div class="s0w s1w messages">
+            </div>
+        </div>
+        <span class="status-publish"></span>
+        <div class="send">
+            <textarea class="input-text input-textarea" name="msg" rows="1" oninput="textareaAutoGrow(this)" onkeydown="gjcEnterSend(this, event, '/edit/chat')" wrap="soft"></textarea>
+            <button class="btn btn-green" onclick="gjcClickSend(this, '/edit/chat')"><?=t('Send')?></button>
+        </div>
+    </div>
+    <div id="status-listen">listen status</div>
+</div>
+<?php   } ?>
+
+</body>
+</html>
+<?php cleanMessages(); ?>

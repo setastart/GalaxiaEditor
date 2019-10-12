@@ -1,0 +1,27 @@
+    <div class="results hide"
+        data-pageCurrent="<?=$pagination->pageCurrent?>"
+        data-pageFirst="<?=$pagination->pageFirst?>"
+        data-pagePrev="<?=$pagination->pagePrev?>"
+        data-pageNext="<?=$pagination->pageNext?>"
+        data-pageLast="<?=$pagination->pageLast?>"
+        data-rowsFiltered="<?=$rowsFiltered?>"
+        data-rowsTotal="<?=$rowsTotal?>"
+    ></div>
+
+    <div class="list pad">
+        <div class="row-head">
+            <div class="col flexT"><?=t('Image')?></div>
+            <div class="col flex1"><?=t('Info')?></div>
+            <div class="col flex1"><?=t('Alt')?></div>
+            <div class="col flex1"><?=t('In Use')?></div>
+<?php   if (!empty($geConf[$pgSlug]['gcImageTypes'])) { ?>
+            <div class="col flexD"><?=t('Types')?></div>
+<?php   } ?>
+        </div>
+<?php   $i = $pagination->itemFirst; ?>
+<?php   foreach ($rows as $imgSlug => $html) { ?>
+<div class="row-number"><?=$i?></div>
+<?=$html?>
+<?php       $i++; ?>
+<?php   } ?>
+    </div>

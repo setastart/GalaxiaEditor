@@ -1,0 +1,217 @@
+.gchat-room {
+    color: #222;
+}
+.gchat-room .users span+span:before {
+    content: ', ';
+    color: #000;
+}
+.gchat-room .messages-wrapper {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    overflow-y: scroll;
+    height: 30vh;
+}
+.gchat-room .messages {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.gchat-room-date {
+    text-align: center;
+    font-family: georgia;
+    color: #666;
+    background: linear-gradient(0deg, #fff, #ccc, #fff) center center repeat-x;
+    background-size: 10px 1px;
+}
+.gchat-room-date span {
+    background-color: #fff;
+    padding: 0 10px;
+}
+
+.gchat-room-msg {
+    display: flex;
+    padding: 0 4px;
+    animation: newMessage 2s ease-out;
+}
+@keyframes newMessage {
+    0% {
+        background-color: #bdf;
+    }
+    100% {
+        background-color: #fff;
+    }
+}
+
+.gchat-room-msg.speak.me {
+    background-color: #f1f0f5;
+    animation: newMessageMe 2s ease-out;
+}
+@keyframes newMessageMe {
+    0% {
+        background-color: #bdf;
+    }
+    100% {
+        background-color: #f1f0f5;
+    }
+}
+
+.gchat-room-msg.enter,
+.gchat-room-msg.leave {
+    padding: 0 4px;
+}
+.gchat-room-msg.enter .user,
+.gchat-room-msg.leave .user {
+    /*display: none;*/
+}
+.gchat-room-msg.enter .msg,
+.gchat-room-msg.leave .msg {
+    text-align: right;
+}
+.gchat-room-msg:hover {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) 100%);
+}
+
+.gchat-room-msg .user {
+    text-align: right;
+    /*min-width: 50px;*/
+    margin-right: 6px;
+}
+.gchat-room-msg .msg {
+}
+.gchat-room-msg .time {
+    margin-top: 2px;
+    margin-left: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#gchat {
+    position: fixed;
+    pointer-events: none;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 30;
+    font-size: 13px;
+    line-height: 20px;
+    padding-left: 4px;
+}
+#gchat > div {
+    align-self: flex-end;
+    pointer-events: all;
+    background-color: #fff;
+    border: 1px solid #666;
+    border-bottom: none;
+    box-shadow: 8px -8px 6px rgba(0, 0, 0, 0.1);
+    margin-left: 4px;
+}
+
+#gchat .gchat-room {
+    max-width: 480px;
+    background: #fff;
+    flex: 1 30 40px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+#gchat .gchat-room.active {
+    flex: 30 1 200px;
+}
+#gchat #status-listen {
+    flex: 0 40px;
+}
+
+
+#gchat .gchat-room:not(.active) .users,
+#gchat .gchat-room:not(.active) .status-publish,
+#gchat .gchat-room:not(.active) .send {
+    display: none;
+}
+
+#gchat .gchat-room .title {
+    cursor: pointer;
+    height: 20px;
+    background-color: #98b;
+    color: #fff;
+    text-align: center;
+}
+#gchat .gchat-room .title:hover {
+    background-color: #eb1;
+    color: #000;
+}
+#gchat .gchat-room:not(.active) .title {
+    position: relative;
+    height: 60px;
+    margin-bottom: -40px;
+    background: linear-gradient(
+        180deg,
+        #98b 0px,
+        #98b 22px,
+        rgba(255 ,255 ,255 , 1.0) 22px,
+        rgba(255 ,255 ,255 , 0.0) 30px
+    );
+}
+#gchat .gchat-room:not(.active) .title:hover {
+    background: linear-gradient(
+        180deg,
+        #eb1 0px,
+        #eb1 22px,
+        rgba(255 ,255 ,255 , 1.0) 22px,
+        rgba(255 ,255 ,255 , 0.0) 30px
+    );
+}
+#gchat .users {
+    padding: 4px;
+}
+
+#gchat .gchat-room:not(.active) .messages-wrapper {
+    overflow-y: hidden;
+}
+#gchat .gchat-room .messages-wrapper {
+    transition: height 0.1s ease-out;
+    height: 40px;
+    border: none;
+}
+
+#gchat .gchat-room.active .messages-wrapper {
+    height: 40vh;
+    border: none;
+}
+#gchat .send {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    /*border-top: 1px solid #666;*/
+}
+#gchat .send > textarea {
+    border-radius: 0;
+    border-left: none;
+    border-bottom: none;
+}
+#gchat .send > button {
+    border-radius: 0;
+    border-right: none;
+    border-bottom: none;
+}
+
+
+
+
+
+
+
+
+
+

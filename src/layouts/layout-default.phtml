@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+
+    <title><?=h($hdTitle)?></title>
+
+    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=h($editor->version)?>">
+
+    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/text.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/galaxiaPublic.css?version=<?=h($editor->version)?>">
+
+    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=h($editor->version)?>">
+</head>
+<body>
+
+<div class="paper">
+    <img class="icon" src="/favicon.ico">
+    <div class="paper-header"><?=$_SERVER['SERVER_NAME']?></div>
+<?php
+    include($editor->dirView . $editor->view . '.phtml');
+?>
+</div>
+
+<div id="footer">
+    <img class="favicon" src="/edit/favicon.ico?version=<?=h($editor->version)?>">
+    galaxia &copy; 2017-<?=date("Y")?> setastart.com
+</div>
+
+<script type="text/javascript">
+window.addEventListener("DOMContentLoaded", function(event) {
+    var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+    var safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (iOS && safari) document.querySelector('meta[name=viewport]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
+});
+function disableEnterKey() {};
+function gjInputChange() {};
+</script>
+
+</body>
+</html>
+<?php cleanMessages(); ?>

@@ -1,0 +1,53 @@
+<?php renderForm('', 'item-delete', 'item item-delete paper pad'); ?>
+
+    <div class="paper-header pad">
+        <h1><?=h($pgTitle)?></h1>
+    </div>
+
+    <div class="item-delete-review">
+
+        <div class="item-row">
+<?php   $firstTime = true; ?>
+<?php   $prefixPrev = null; ?>
+<?php   foreach ($item['inputs'] as $input) { ?>
+<?php       if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
+        </div>
+        <div class="item-row">
+<?php       } ?>
+<?php       echo renderInputText($input); ?>
+<?php       $firstTime = false; ?>
+<?php       $prefixPrev = $input['prefix'] ?? null; ?>
+<?php   } ?>
+        </div>
+
+        <div class="item-row">
+<?php   foreach ($modules as $module) { ?>
+<?php       foreach ($module['inputs'] as $fieldName => $field) { ?>
+<?php           $prefixPrev = null; ?>
+<?php           foreach ($field as $input) { ?>
+<?php               if (!isset($input['value'])) continue; ?>
+<?php               if ($fieldName !== $prefixPrev) { ?>
+        </div>
+        <div class="item-row">
+<?php               } ?>
+<?php               echo renderInputText($input); ?>
+<?php               $prefixPrev = $fieldName; ?>
+<?php           } ?>
+<?php       } ?>
+<?php   } ?>
+        </div>
+
+    </div>
+
+    <div class="paper-footer pad">
+        <div class="item-info">
+            <h2><?=sprintf(t('Delete %s'), t($geConf[$pgSlug]['gcTitleSingle']))?>?</h2>
+            <p><?=t('This action is permanent.')?></p>
+        </div>
+        <div class="paper-footer-actions">
+            <a class="btn btn-blue active" href="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>"><?=t('Cancel')?></a>
+            <button class="btn btn-red active"><?=sprintf(t('Delete %s'), t($geConf[$pgSlug]['gcTitleSingle']))?></button>
+        </div>
+    </div>
+
+<?php renderFormEnd(); ?>

@@ -1,0 +1,85 @@
+<?php renderForm('', 'item-edit', 'item paper pad'); ?>
+
+    <div class="paper-header pad">
+        <h1><?=h($pgTitle)?></h1>
+
+<?php   if ($firstStatus) { ?>
+<?php       echo renderStatus($item['inputs'][$firstStatus]); ?>
+<?php   } ?>
+
+        <div class="paper-header-actions">
+            <button type="submit" class="btn btn-green active"><?=t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=t('Save and go back')?></button>
+        </div>
+
+        <div class="paper-header-links">
+            <a href="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>" class="btn-a"><?=t('Reload')?></a>
+<?php   if ($item['gcVisit']) { ?>
+            <?=t('Open in new tab')?>:
+<?php       foreach ($app->langs as $lang) { ?>
+<?php           if (isset($item['inputs']['slug_' . $lang])) { ?>
+            <a target="_blank" rel="noreferrer" href="<?=$app->addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=h($lang)?></a>
+<?php           } else if (isset($item['inputs'][$item['gcTable'] . 'Slug_' . $lang])) { ?>
+            <a target="_blank" rel="noreferrer" href="<?=$app->addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=h($lang)?></a>
+<?php           } ?>
+<?php       } ?>
+<?php   } ?>
+        </div>
+    </div>
+
+
+    <div class="item-row">
+<?php   $firstTime = true; ?>
+<?php   $prefixPrev = null; ?>
+<?php   foreach ($item['inputs'] as $inputKey => $input) { ?>
+<?php       if ($inputKey == $firstStatus) continue; ?>
+<?php       if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
+    </div>
+
+    <div class="item-row">
+<?php       } ?>
+<?php       echo renderInput($app, $input); ?>
+<?php       $firstTime = false; ?>
+<?php       $prefixPrev = $input['prefix'] ?? null; ?>
+<?php   } ?>
+    </div>
+
+
+<?php
+
+foreach ($modules as $moduleKey => $module) {
+    switch ($module['gcModuleType']) {
+        case 'fields':
+            include $editor->dirView . 'item/modules/fields.phtml';
+            break;
+        default:
+            errorPage(500, 'invalid phtml module');
+            break;
+    }
+}
+
+?>
+
+
+    <div class="paper-footer pad">
+        <div class="item-info">
+<?php   if ($item['gcInfo']) { ?>
+<?php       foreach ($item['gcInfo'] as $info) { ?>
+            <p><?=t($info['label'])?>: <?=h($info['value'])?></p>
+<?php       } ?>
+<?php   } ?>
+            <a target="_blank" href="/edit/history/<?=h($item['gcTable'])?>/<?=h($itemId)?>" class="btn-a"><?=t('Open History in a new tab')?></a>
+<?php   if (in_array('dev', $me->perms)) { ?>
+            <a href="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>/history" class="hide-perm-dev btn-a"><?=sprintf(t('Save %s in History'), t($geConf[$pgSlug]['gcTitleSingle']))?></a>
+<?php   } ?>
+<?php   if ($item['gcDelete']) { ?>
+            <a href="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>/delete" class="red btn-a"><?=sprintf(t('Delete %s'), t($geConf[$pgSlug]['gcTitleSingle']))?></a>
+<?php   } ?>
+        </div>
+        <div class="paper-footer-actions">
+            <button type="submit" class="btn btn-green active"><?=t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(t('Save and go back to %s'), t($geConf[$pgSlug]['gcTitlePlural']))?></button>
+        </div>
+    </div>
+
+<?php renderFormEnd(); ?>

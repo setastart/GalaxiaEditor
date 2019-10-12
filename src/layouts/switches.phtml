@@ -1,0 +1,23 @@
+<?php   if (!$showSwitchesLang && empty($me->perms)) return; ?>
+<div id="switches">
+<?php   if (!empty($me->perms)) { ?>
+    <div class="switch-perms">
+<?php   foreach ($me->perms as $perm) { ?>
+        <label for="switch-hide-perm-<?=h($perm)?>" data-remember="true" class="btn btn-pill btn-yellow btn-small btn-checkbox active">
+            <?=h($perm)?>
+            <input onchange="gjSwitch(this, event)" type="checkbox" value="hide-active-perm-<?=h($perm)?>" id="switch-hide-perm-<?=h($perm)?>" title="<?=h($perm)?>" checked>
+        </label>
+<?php   } ?>
+    </div>
+<?php   } ?>
+<?php   if ($showSwitchesLang) { ?>
+    <div class="switch-lang">
+<?php       foreach ($app->locales as $lang => $locale) { ?>
+        <label for="switch-hide-lang-<?=h($lang)?>" data-remember="true" class="btn btn-pill btn-small btn-checkbox active">
+            <?=h($lang)?>
+            <input onchange="gjSwitch(this, event)" type="checkbox" value="hide-active-lang-<?=h($lang)?>" id="switch-hide-lang-<?=h($lang)?>" title="<?=h($lang)?>" checked>
+        </label>
+<?php       } ?>
+    </div>
+<?php   } ?>
+</div>

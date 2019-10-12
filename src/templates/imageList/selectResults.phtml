@@ -1,0 +1,23 @@
+<div class="results hide"
+    data-pageCurrent="<?=$pagination->pageCurrent?>"
+    data-pageFirst="<?=$pagination->pageFirst?>"
+    data-pagePrev="<?=$pagination->pagePrev?>"
+    data-pageNext="<?=$pagination->pageNext?>"
+    data-pageLast="<?=$pagination->pageLast?>"
+    data-rowsFiltered="<?=$rowsFiltered?>"
+    data-rowsTotal="<?=$rowsTotal?>"
+></div>
+
+<?php
+$yearMonthPrev = '';
+foreach ($rows as $imgSlug => $html) {
+    $mtime = $items[$imgSlug]['mtime'];
+    $yearMonth = date('Ym', $mtime);
+    if ($yearMonth != $yearMonthPrev) {
+        echo '<h2>' . gFormatDate($mtime, 'MMMM y') . '</h2>' . PHP_EOL;
+        $yearMonthPrev = $yearMonth;
+    }
+    echo $html;
+}
+?>
+

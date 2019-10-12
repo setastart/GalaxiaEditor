@@ -1,0 +1,13 @@
+        <div class="item-info">
+            <div><?=t('Original')?>: <a target="_blank" href="/media/<?=h($pgSlug)?>/<?=$imgSlug?>/<?=h($imgSlug . $img['ext'])?>"><?=h($img['wOriginal'] . 'x' . $img['hOriginal'])?></a> <?=h($img['ext'])?></div>
+<?php   foreach ($img['resizes'] as $resize => $fileName) { ?>
+            <div><?=t('Resize')?>: <a target="_blank" href="/media/<?=h($pgSlug)?>/<?=$imgSlug?>/<?=h($fileName)?>"><?=h($resize)?></a></div>
+<?php   } ?>
+
+            <a class="<?=h('active', $action == 'replace')?> btn-a" href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>/replace"><?=t('Replace Image')?></a>
+            <a class="<?=h('active', $action == 'resize')?> btn-a" href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>/resize"><?=t('Resize Image')?></a>
+<?php   if (isset($item['gcDelete'])) { ?>
+            <a class="<?=h('active', $action == 'deleteResizes')?> btn-a" href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>/deleteResizes"><?=t('Delete Resizes')?></a>
+            <a class="red<?=h(' active', $action == 'delete')?> btn-a" href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>/delete"><?=sprintf(t('Delete %s'), t($geConf[$pgSlug]['gcTitleSingle']))?></a>
+<?php   } ?>
+        </div>

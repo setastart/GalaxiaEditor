@@ -1,0 +1,33 @@
+.s0w .s0f { display: none; }
+.s1w .s1f { display: none; }
+.s2w .s2f { display: none; }
+.s3w .s3f { display: none; }
+.s4w .s4f { display: none; }
+.s5w .s5f { display: none; }
+.s6w .s6f { display: none; }
+.s7w .s7f { display: none; }
+
+.f0w.f0-0active .f0-0 { display: none; }
+.f0w.f0-1active .f0-1 { display: none; }
+.f0w.f0-2active .f0-2 { display: none; }
+.f0w.f0-3active .f0-3 { display: none; }
+
+.f1w.f1-0active .f1-0 { display: none; }
+.f1w.f1-1active .f1-1 { display: none; }
+.f1w.f1-2active .f1-2 { display: none; }
+.f1w.f1-3active .f1-3 { display: none; }
+
+.f2w.f2-0active .f2-0 { display: none; }
+.f2w.f2-1active .f2-1 { display: none; }
+.f2w.f2-2active .f2-2 { display: none; }
+.f2w.f2-3active .f2-3 { display: none; }
+
+a.row.status-0 { background: linear-gradient(135deg, #d43 8px, rgba(255, 255, 255, 0.05) 9px); background-color: #fff; }
+a.row.status-1 { background: linear-gradient(135deg, #fc5 8px, rgba(255, 255, 255, 0.05) 9px); background-color: #fff; }
+a.row.status-2 { background: linear-gradient(135deg, #5af 8px, rgba(255, 255, 255, 0.05) 9px); background-color: #fff; }
+a.row.status-3 { background: linear-gradient(135deg, #6d4 8px, rgba(255, 255, 255, 0.05) 9px); background-color: #fff; }
+
+.action-0 { border-left: 4px solid #d43; }
+.action-1 { border-left: 4px solid #fc5; }
+.action-2 { border-left: 4px solid #5af; }
+.action-3 { border-left: 4px solid #6d4; }

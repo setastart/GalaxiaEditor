@@ -1,0 +1,15 @@
+<?php $userEmail = (isset($_SESSION['post']['userEmail'])) ? h($_SESSION['post']['userEmail']) : '' ?>
+
+<form action="/edit/login" method="POST" autocomplete="on">
+
+<?php   foreach ($inputs as $input) { ?>
+<?php       echo renderInput($app, $input); ?>
+<?php   } ?>
+
+
+    <div class="input-wrap pad">
+        <div></div>
+        <button class="btn btn-green active" type="submit">Login</button>
+    </div>
+
+</form>

@@ -1,0 +1,39 @@
+<?php use Galaxia\Director; ?>
+<div id="msgboxes">
+<?php   if (hasError('errorBox')) { ?>
+    <ul id="msgbox-error" class="msgbox pad">
+        <div class="msgbox-title"><?=t('Errors')?>:</div>
+<?php       foreach (errors('errorBox') as $log) { ?>
+<?php           if (is_array($log)) continue; ?>
+        <li><?=$log?></li>
+<?php       } ?>
+    </ul>
+<?php   } ?>
+<?php   if (hasWarning('warningBox')) { ?>
+    <ul id="msgbox-warning" class="msgbox pad">
+        <div class="msgbox-title"><?=t('Warnings')?>:</div>
+<?php       foreach (warnings('warningBox') as $log) { ?>
+<?php           if (is_array($log)) continue; ?>
+        <li><?=$log?></li>
+<?php       } ?>
+    </ul>
+<?php   } ?>
+<?php   if (hasInfo('infoBox')) { ?>
+    <ul id="msgbox-info" class="msgbox pad">
+        <div class="msgbox-title"><?=t('Information')?>:</div>
+<?php       foreach (infos('infoBox') as $log) { ?>
+<?php           if (is_array($log)) continue; ?>
+        <li><?=$log?></li>
+<?php       } ?>
+    </ul>
+<?php   } ?>
+<?php   if (hasDevlog('devlogBox') && Director::$debug) { ?>
+    <ul id="msgbox-devlog" class="msgbox pad">
+        <div class="msgbox-title"><?=t('Devlog')?>:</div>
+<?php       foreach (devlogs('devlogBox') as $log) { ?>
+<?php           if (is_array($log)) continue; ?>
+        <li><?=$log?></li>
+<?php       } ?>
+    </ul>
+<?php   } ?>
+</div>
