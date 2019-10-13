@@ -24,12 +24,12 @@ if (file_exists(dirname(dirname(__DIR__)) . '/_galaxiaComposer/vendor/autoload.p
 } else {
     http_response_code(500);
     $title = 'Error 500: Internal Server Error';
-    echo '<!doctype html><meta charset=utf-8><title>' . $title . '</title><body style="font-family: monospace;"><p style="font-size: 1.3em; margin-top: 4em; text-align: center;">' . $title . '</p><!-- error: autoloader not found-->' . PHP_EOL;
+    echo '<!doctype html><meta charset=utf-8><title>' . $title . '</title><body style="font-family: monospace;"><p style="font-size: 1.3em; margin-top: 4em; text-align: center;">' . $title . '</p><!-- error: autoloader not found -->' . PHP_EOL;
     exit();
 }
 
-require __DIR__ . '/functions/inputRender.php';
-require __DIR__ . '/functions/utils.php';
+require __DIR__ . '/function/inputRender.php';
+require __DIR__ . '/function/utils.php';
 
 
 
@@ -50,25 +50,27 @@ $app->setLang();
 
 // init editor
 
-$editor = new Editor(dirname(__DIR__));
+$editor = Director::initEditor(dirname(__DIR__));
 require $app->dir . 'config/editor.php';
-Director::$editor = $editor;
 
-Director::$mysqlConfig['locale'] = $app->locale['long'];
 Director::loadTranslations();
 
-$me = new User('_geUser');
-Director::$me = $me;
+
+
+
+// init me
+
+$me = Director::initMe();
 $me->logInFromCookieSessionId($app->cookieEditorKey);
 
-$db = Director::mysql();
+$db = Director::getMysqli();
 
 
 
 
-// galaxia authentication
+// authentication
 
-$auth = new Authentication('_geUser');
+$auth = new Authentication();
 
 
 
@@ -93,14 +95,14 @@ if ($me->loggedIn) {
 
     // galaxia chat
     if (isset($geConf['chat']) && $_SERVER['REQUEST_METHOD'] == 'POST' && in_array($_SERVER['REQUEST_URI'], ['/edit/chat/listen', '/edit/chat/publish']))
-        require $editor->dir . 'src/includes/gChat.php';
+        require $editor->dir . 'src/include/gChat.php';
 
 
     // CSRF
     if (!isset($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(32));
     if ($_SERVER['REQUEST_METHOD'] == 'POST')
         if (!isset($_POST['csrf']) || $_POST['csrf'] !== $_SESSION['csrf'])
-            errorPage(500, 'invalid csrf token.');
+            geErrorPage(500, 'invalid csrf token.');
 
 
     // set editor language
@@ -112,7 +114,7 @@ if ($me->loggedIn) {
 
     // parse editor configuration
     Director::timerStart('gecValidateArray');
-    require $editor->dir . 'src/includes/configParse.php';
+    require $editor->dir . 'src/include/configParse.php';
     Director::timerStop('gecValidateArray');
 
     Director::timerStart('gecLanguifyRemovePerms');
@@ -121,7 +123,7 @@ if ($me->loggedIn) {
 
     if (Director::$debug) {
         Director::timerStart('gecValidateDatabase');
-        require $editor->dir . 'src/includes/configParseDebug.php';
+        require $editor->dir . 'src/include/configParseDebug.php';
         Director::timerStop('gecValidateDatabase');
     }
 
@@ -243,10 +245,10 @@ $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVE
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        errorPage(404, __FILE__ . ':' . __LINE__);
+        Director::errorPageAndExit(404, __FILE__ . ':' . __LINE__);
         break;
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        errorPage(403, __FILE__ . ':' . __LINE__);
+        Director::errorPageAndExit(403, __FILE__ . ':' . __LINE__);
         break;
     case FastRoute\Dispatcher::FOUND:
         extract($routeInfo[2]); // make php $variables with names and values defined in the routing above.
@@ -300,10 +302,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && hasError()) {
 // Exit on missing layouts or template view
 
 if (!file_exists($editor->dirLayout . $editor->layout . '.phtml')) {
-    errorPage(500, 'missing layout: ' . h($editor->layout));
+    Director::errorPageAndExit(500, 'missing layout: ' . h($editor->layout));
 }
 if (!file_exists($editor->dirView . $editor->view . '.phtml')) {
-    errorPage(500, 'missing template view: ' . $editor->dir . 'src/templates/' . $editor->view);
+    Director::errorPageAndExit(500, 'missing template view: ' . $editor->dir . 'src/templates/' . $editor->view);
 }
 
 
@@ -313,7 +315,6 @@ if (!file_exists($editor->dirView . $editor->view . '.phtml')) {
 Director::timerStart('layout');
 include($editor->dirLayout . $editor->layout . '.phtml');
 Director::timerStop('layout');
-echo Director::timerPrint(true, true);
 
 
 
