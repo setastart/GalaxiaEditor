@@ -6,10 +6,10 @@
     "keywords": ["galaxia", "editor", "cms"],
     "homepage": "https://setastart.com/",
 
-    "require": {
-        "setastart/galaxia-core": "3.3.*",
-        "setastart/galaxia-logtostats": "0.1.*",
-        "setastart/galaxia-redis": "3.0.*",
+    "require-dev": {
+        "setastart/galaxia-core": "dev-master",
+        "setastart/galaxia-logtostats": "dev-master",
+        "setastart/galaxia-redis": "dev-master",
         "nikic/fast-route": "^1.3"
     }
 
