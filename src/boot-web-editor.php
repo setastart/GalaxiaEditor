@@ -52,7 +52,7 @@ $app->setLang();
 
 $editor = Director::initEditor(dirname(__DIR__));
 require $app->dir . 'config/editor.php';
-$editor->version = '3.4.1';
+$editor->version = '3.4.2';
 
 Director::loadTranslations();
 
