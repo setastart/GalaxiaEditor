@@ -86,14 +86,14 @@ foreach ($itemChanges as $key => $value)
 
 // finish
 
-$app->cacheDelete('editor', 'list', $pgSlug);
+$app->cacheDelete('editor');
 info(sprintf(t('Added: %s.'), t($geConf[$pgSlug]['gcTitleSingle'])));
 
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     $app->cacheDelete(['app', 'fastroute']);
     $app->generateSitemap($db);
-    if (file_exists($app->dir .'scripts/_runOnUpdate.php'))
-        include $app->dir .'scripts/_runOnUpdate.php';
+    if (file_exists($app->dir .'src/script/_editor-item-update-hard.php'))
+        include $app->dir .'src/script/_editor-item-update-hard.php';
 }
 
 if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);

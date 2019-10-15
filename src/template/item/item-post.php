@@ -119,19 +119,27 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
         }
     }
 
-    if (
-        isset($itemChanges[$item['gcTable'] . 'Status']) ||
-        count(array_intersect(array_keys($itemChanges), $slugs)) > 0
-    ) {
-        $app->generateSitemap($db);
-        if (file_exists($app->dir .'scripts/_runOnUpdate.php'))
-            include $app->dir .'scripts/_runOnUpdate.php';
-    }
 
     if ($itemChanges || $fieldsNew || $fieldsDel || $fieldsUpd) {
         $app->cacheDelete(['app', 'fastroute']);
-        $app->cacheDelete('editor', 'list', $pgSlug);
+        $app->cacheDelete('editor');
+
+        if (
+            isset($itemChanges[$item['gcTable'] . 'Status']) ||
+            count(array_intersect(array_keys($itemChanges), $slugs)) > 0
+        ) {
+            $app->generateSitemap($db);
+            if (file_exists($app->dir .'src/script/_editor-item-update-hard.php')) {
+                include $app->dir .'src/script/_editor-item-update-hard.php';
+            }
+        } else {
+            if (file_exists($app->dir .'src/script/_editor-item-update-soft.php')) {
+                include $app->dir .'src/script/_editor-item-update-soft.php';
+            }
+        }
+
     }
+
 }
 
 if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);
