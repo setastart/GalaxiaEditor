@@ -1,6 +1,5 @@
 <?php
 
-
 $pgTitle = $_SERVER['SERVER_NAME'];
 $hdTitle = $_SERVER['SERVER_NAME'];
 

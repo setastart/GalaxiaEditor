@@ -2,36 +2,38 @@
 
 use Galaxia\Director;
 
+$dbSchema = $app->cacheGet('editor', 0, 'schema', 'default', '', function() use ($db, $app) {
+    $array = [];
+    $query = '
+        SELECT TABLE_NAME, COLUMN_NAME, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_TYPE, COLUMN_KEY
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = ?
+    ';
+    $stmt = $db->prepare($query);
+    $stmt->bind_param('s', $app->mysqlDb);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($data = $result->fetch_assoc()) {
+        if (!isset($array[$data['TABLE_NAME']])) $array[$data['TABLE_NAME']] = [];
+        if (!isset($array[$data['TABLE_NAME']][$data['COLUMN_NAME']]))
+            $array[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [];
 
-$dbSchema = [];
-$query = '
-SELECT TABLE_NAME, COLUMN_NAME, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_TYPE, COLUMN_KEY
-FROM information_schema.COLUMNS
-WHERE TABLE_SCHEMA = ?
-';
-$stmt = $db->prepare($query);
-$stmt->bind_param('s', $app->mysqlDb);
-$stmt->execute();
-$result = $stmt->get_result();
-while ($data = $result->fetch_assoc()) {
-    if (!isset($dbSchema[$data['TABLE_NAME']])) $dbSchema[$data['TABLE_NAME']] = [];
-    if (!isset($dbSchema[$data['TABLE_NAME']][$data['COLUMN_NAME']]))
-        $dbSchema[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [];
-
-    $dbSchema[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [
-        'DATA_TYPE' => $data['DATA_TYPE'],
-        'CHARACTER_MAXIMUM_LENGTH' => $data['CHARACTER_MAXIMUM_LENGTH'],
-        'IS_NULLABLE' => $data['IS_NULLABLE'],
-        'COLUMN_TYPE' => $data['COLUMN_TYPE'],
-        'COLUMN_KEY' => $data['COLUMN_KEY']
-    ];
-}
-$stmt->close();
+        $array[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [
+            'DATA_TYPE' => $data['DATA_TYPE'],
+            'CHARACTER_MAXIMUM_LENGTH' => $data['CHARACTER_MAXIMUM_LENGTH'],
+            'IS_NULLABLE' => $data['IS_NULLABLE'],
+            'COLUMN_TYPE' => $data['COLUMN_TYPE'],
+            'COLUMN_KEY' => $data['COLUMN_KEY']
+        ];
+    }
+    $stmt->close();
+    return $array;
+}, Director::$debug);
 
 
 
 
-// check database schema for tables and columns
+// check database schema for required tables and columns
 
 gcTableExists($dbSchema, '', 'page');
 gcTableColumnExists($dbSchema, '', 'page', 'pageStatus');
@@ -266,7 +268,7 @@ function gcTableColumnExists($dbSchema, $errorString, $table, $col) {
     $errorString .= '/' . $table . '/' . $col;
     if (!isset($dbSchema[$table][$col])) {
         error($errorString . ': db column missing.');
-        geD($table, $col);
+        geD('Table: ' . $table, 'Col: ' . $col);
         geErrorPage(500, 'config schema error');
     }
 }

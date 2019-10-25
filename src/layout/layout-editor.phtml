@@ -123,7 +123,7 @@ document.addEventListener('trix-file-accept', function(event) {
             <?=t(ucfirst($box))?>
             <input onchange="gjSwitch(this, event)" type="checkbox"  value="hide-active-msgbox-<?=h($box)?>" id="switch-hide-msgbox-<?=h($box)?>" title="<?=h($perm)?>">
         </label>
-        <span><?=$msgs[0] . ((count($msgs) > 1) ? ' +' . (count($msgs) - 1) : '')?></span>
+        <span><?=desc($msgs[0], 30, ' ') . ((count($msgs) > 1) ? ' +' . (count($msgs) - 1) : '')?></span>
     </div>
 <?php       } ?>
 <?php   } ?>
@@ -148,9 +148,8 @@ document.addEventListener('trix-file-accept', function(event) {
 <?php } ?>
         <a href="/edit/dev/cacheDeleteEditor"><?=t('Delete Editor Caches')?></a>
     </div>
-    <img class="favicon" src="/edit/favicon.ico">
-    <p class="version"><?=h($me->name)?>@galaxia v<?=h($editor->version);?></p>
-    <p class="copy">setastart.com &copy; 2017-<?=date("Y")?></p>
+    <p class="version"><img class="icon" src="/edit/favicon.ico"><?=h($me->name)?>@galaxia v<?=h($editor->version);?></p>
+    <p class="copy"><img class="icon" src="/edit/gfx/icon-setastart-white-32.png"/><a href="https://setastart.com/" target="_blank">setastart.com</a> &copy; 2017-<?=date("Y")?></p>
 </div>
 
 

@@ -316,14 +316,14 @@ function geConfigParseFine($schema, $config, $errorString) {
 
             foreach ($config as $whereVal => $inputs) {
                 if (!is_array($config))
-                    geConfigParseError($errorString . '/' . $whereKey . '/' . $whereVal . ' should be an array.', $schema, $config);
+                    geConfigParseError($errorString . '/' . $whereVal . ' should be an array.', $schema, $config);
 
                 foreach ($inputs as $inputCol => $input) {
                     if (!isset($input['type']) ||
                         !is_string($input['type']) ||
                         !in_array($input['type'], ALLOWED_INPUT_TYPES)
                     ) {
-                        geConfigParseError($errorString . '/' . $whereKey . '/' . $whereVal . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
+                        geConfigParseError($errorString . '/' . $whereVal . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
                     }
                 }
             }

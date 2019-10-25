@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, App, Editor, User, Authentication};
+use Galaxia\{Director, Authentication};
 
 
 // redirect to url without trailing slashes
@@ -38,21 +38,29 @@ require __DIR__ . '/function/utils.php';
 
 $app = Director::init($_SERVER['DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '_starter.test')));
 
+if (Director::$debug) $app->cacheBypassAll = true;
+
+
+Director::timerStart('locales');
 foreach ($app->localesInactive as $lang => $locale) {
     if (isset($app->locales[$lang])) continue;
     $app->locales[$lang] = $locale;
     $app->langs = array_keys($app->locales);
 }
 $app->setLang();
+Director::timerStop('locales');
 
 
 
 
 // init editor
 
+Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
+$geConf = [];
 require $app->dir . 'config/editor.php';
 $editor->version = '3.4.2';
+Director::timerStop('editor');
 
 Director::loadTranslations();
 
@@ -107,26 +115,37 @@ if ($me->loggedIn) {
 
 
     // set editor language
-    $editor->lang = 'en';
     if (isset($me->options['Language']))
         if (isset($editor->locales[$me->options['Language']]))
-            $app->lang = $me->options['Language'];
+            $app->setLang($me->options['Language']);
 
 
     // parse editor configuration
+    Director::timerStart('editor configuration');
+
     Director::timerStart('gecValidateArray');
     require $editor->dir . 'src/include/configParse.php';
     Director::timerStop('gecValidateArray');
 
-    Director::timerStart('gecLanguifyRemovePerms');
+    Director::timerStart('arrayRemovePermsRecursive()');
+    arrayRemovePermsRecursive($geConf, $me->perms);
+    Director::timerStop('arrayRemovePermsRecursive()');
+
+    Director::timerStart('arrayReplaceHashtagWithParentName()');
+    arrayReplaceHashtagWithParentName($geConf);
+    Director::timerStop('arrayReplaceHashtagWithParentName()');
+
+    Director::timerStart('gecLanguify');
     arrayLanguifyRemovePerms($geConf, $app->langs, $me->perms);
-    Director::timerStop('gecLanguifyRemovePerms');
+    Director::timerStop('gecLanguify');
 
     if (Director::$debug) {
         Director::timerStart('gecValidateDatabase');
         require $editor->dir . 'src/include/configParseDebug.php';
         Director::timerStop('gecValidateDatabase');
     }
+
+    Director::timerStop('editor configuration');
 
 
     // routes
@@ -151,7 +170,7 @@ if ($me->loggedIn) {
         $r->get( '/edit/importer/{pgSlug:jsonld}', 'importer/jsonld');
 
         foreach ($geConf as $rootSlug => $confPage) {
-
+            if (!isset($confPage['gcPageType']) || !is_string($confPage['gcPageType'])) continue;
             switch ($confPage['gcPageType']) {
                 case 'gcpHistory':
                     $r->get( '/edit/{pgSlug:' . $rootSlug . '}', 'history/list');

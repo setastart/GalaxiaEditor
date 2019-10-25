@@ -25,13 +25,14 @@ global $me;
 </head>
 <body class="page-error">
 
-<a target="_blank" rel="noopener" id="website-link" href="/">
-    <img src="/favicon.ico" class="thumb-mini">
-    <span><?=h($_SERVER['SERVER_NAME'])?></span>
-</a>
+<div id="website-link">
+    <a target="_blank" rel="noopener" href="/">
+        <img src="/favicon.ico" class="thumb-mini">
+        <span><?=h($_SERVER['SERVER_NAME'])?></span>
+    </a>
+</div>
 
 <?php include('menu.phtml'); ?>
-
 
 <div id="page">
     <div class="paper pad">
@@ -45,22 +46,17 @@ global $me;
 <?php include('messageBoxes.phtml'); ?>
 </div>
 
-
-<div id="footer" class="pad">
-    <div>
-<?php renderForm('/edit/logout', 'logout')?>
-        <button type="submit"><?=t('Logout')?></button>
-<?php renderFormEnd(); ?>
-    </div>
+<div id="footer">
+    <div class="links">
+        <a href="/edit/logout"><?=t('Logout')?></a>
 <?php if (in_array('dev', $me->perms)) { ?>
-    <div><a href="/edit/dev">Developer</a></div>
+        <a href="/edit/dev" class="hide-perm-dev">Developer</a>
 <?php } ?>
-    <div><button onclick="document.location = '/edit/dev/cacheDeleteEditor'">Delete Editor Caches</button></div>
-    <img class="favicon" src="/edit/favicon.ico">
-    <p class="version"><?=h($me->name)?>@galaxia v<?=h($editor->version);?></p>
-    <p class="copy">&copy; 2017-<?=date("Y")?> setastart.com</p>
+        <a href="/edit/dev/cacheDeleteEditor"><?=t('Delete Editor Caches')?></a>
+    </div>
+    <p class="version"><img class="icon" src="/edit/favicon.ico"><?=h($me->name)?>@galaxia v<?=h($editor->version);?></p>
+    <p class="copy"><img class="icon" src="/edit/gfx/icon-setastart-white-32.png"/><a href="https://setastart.com/" target="_blank">setastart.com</a> &copy; 2017-<?=date("Y")?></p>
 </div>
-
 
 </body>
 </html>

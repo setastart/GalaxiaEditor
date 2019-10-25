@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, RedisCli};
+use Galaxia\{RedisCli};
 
 session_write_close();
 

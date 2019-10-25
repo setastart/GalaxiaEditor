@@ -106,7 +106,7 @@ foreach ($item['gcInputsWhere'] as $colKey => $col) {
         }
     }
 }
-// s($geConf[$pgSlug]['gcColNames']);
+
 
 $firstStatus = '';
 foreach ($item['gcInputs'] as $inputKey => $input) {

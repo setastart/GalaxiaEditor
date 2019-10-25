@@ -142,8 +142,8 @@ $oldErrorHandler = set_error_handler("myErrorHandler");
 function geD() {
     $dump = '';
     $backtrace = array_reverse(debug_backtrace());
-    array_shift($backtrace);
-    array_shift($backtrace);
+    // array_shift($backtrace);
+    // array_shift($backtrace);
 
     foreach ($backtrace as $trace) {
         $dump .= '<span class="select-on-click">' . $trace['file'] . ':' . $trace['line'] . '</span><br>';

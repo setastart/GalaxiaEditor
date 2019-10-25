@@ -61,7 +61,7 @@ $ht =  '<div class="input-wrap pad ' . h($css) . '">' . PHP_EOL;;
         case 'textarea':
         case 'trix':
 $ht .= '    <div class="input-label">' . t($input['label']) . '<span class="input-label-lang"> ' . $input['lang'] . '</span></div>' . PHP_EOL;
-$ht .= '    <div class="content">' . h(strip_tags($input['valueFromDb']), ALLOWED_TAGS) . '</div>' . PHP_EOL;
+$ht .= '    <div class="content">' . h(strip_tags($input['valueFromDb'], ALLOWED_TAGS)) . '</div>' . PHP_EOL;
             break;
 
         case 'timestamp':

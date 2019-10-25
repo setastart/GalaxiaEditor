@@ -4,6 +4,8 @@ html {
 body {
     padding: 10px;
     background: url(/edit/gfx/bg-stars-transparent.png), linear-gradient(180deg, #101059 0%, #2E40A6 100%);
+    background: url(/edit/gfx/bg-stars-transparent.png), linear-gradient(180deg, #09092d 0%, #112177 100%);
+    background: url(/edit/gfx/bg-stars-transparent.png), linear-gradient(180deg, #09092d 0%, #09092d 50%, #112177 100%);
     background-position: center center;
     background-size: initial, cover;
     display: grid;
@@ -19,6 +21,8 @@ body {
     max-width: 640px;
     margin: 15px;
     background-color: #f1f1f1;
+    background-image: linear-gradient(-135deg, #98b, #98b 12px, #eb1 12px, #eb1 18px, transparent 18px);
+
     border-top: 1px solid #fff;
     border-bottom: 1px solid #aaa;
     border-left: 1px solid #fbfbfb;
@@ -31,20 +35,27 @@ body {
     grid-gap: 10px;
 }
 
-.paper > .icon {
+.paper > .icon-big {
     margin: 10px;
     width: 64px;
 }
 
-.paper > .paper-header {
+a.paper-header {
+    color: #116;
+}
+.paper-header {
     justify-self: end;
     margin: 10px;
-    color: #694d86;
     font-size: 32px;
-    text-shadow: 2px 2px 0 #fa1;
+    text-shadow: -1px -1px 2px #fff, 2px 2px 0 #fa1;
     letter-spacing: 2px;
     word-break: break-all;
     line-height: 1.1;
+    text-decoration: none;
+    align-self: start;
+}
+a.paper-header:hover {
+    text-decoration: underline;
 }
 
 .paper > form {
@@ -64,25 +75,34 @@ body {
 
 #footer {
     grid-row: 3/4;
+    width: 100%;
     max-width: 640px;
-    color: #cdf;
-    text-shadow: 0 1px 2px #000;
+    display: flex;
+    justify-content: space-around;
+    justify-content: space-evenly;
+    filter: drop-shadow(1px 1px 0px #000);
+    /*text-shadow: 0 1px 2px #000;*/
     font-family: monospace;
 }
-
-
-#footer .wrap {
-    padding: 0;
+#footer p,
+#footer p a {
+    color: #cdf;
+    text-decoration: none;
+    margin-bottom: 18px;
+}
+#footer p a:hover {
+    text-decoration: underline;
 }
 
 
-.favicon {
+
+.icon {
     width: 18px;
     height: 18px;
+    margin-right: 8px;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
     border-radius: 3px;
-    border: 1px solid rgba(0, 0 ,0, 0.4);
-    vertical-align: middle;
+    vertical-align: -5px;
 }
 
 
@@ -110,5 +130,10 @@ body {
     }
     .paper > .paper-header {
         font-size: 24px;
+    }
+    #footer {
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
     }
 }

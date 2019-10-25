@@ -181,7 +181,7 @@ a.menu-item:focus {
     align-items: flex-end;
     margin-bottom: 5px;
 }
-#footer a {
+#footer > .links > a {
     margin: 6px 0;
     color: #02b;
     text-decoration: none;
@@ -192,30 +192,31 @@ a.menu-item:focus {
     box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.1);
     text-decoration: none;
 }
-#footer a:hover {
+#footer > .links > a:hover {
     background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.6) 100%);
 
     border: 1px solid #eef;
     text-decoration: underline;
 }
-#footer a.active {
+#footer > .links > a.active {
     background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.8) 100%);
     border: 1px solid #878;
 }
-#footer .favicon {
-    float: left;
-    clear: right;
-    width: 22px;
-    height: 22px;
-    margin-top: 14px;
+#footer .icon {
+    width: 18px;
+    height: 18px;
     margin-right: 6px;
-    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255 ,255, 0.9);
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
+    vertical-align: -5px;
 }
-#footer p {
-    color: #506;
+#footer p,
+#footer p a {
+    color: #304;
     font-family: monospace;
+    text-decoration: none;
+}
+#footer p a:hover {
+    text-decoration: underline;
 }
 #footer p.version {
     float: left;
@@ -248,6 +249,8 @@ a.paper {
     padding-bottom: 24px;
     margin-bottom: 20px;
     display: grid;
+    align-content: start;
+    min-height: 480px;
     color: #000;
 }
 .paper:target {
