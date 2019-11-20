@@ -172,7 +172,7 @@ if ($item['gcRedirect']) {
         'gcModuleTitle'         => '',
         'gcModuleShowUnused'    => ['gcPerms' => ['dev']],
         'gcModuleDeleteIfEmpty' => [$table . 'RedirectSlug'],
-        'gcModuleMultiple'      => ['Redirect' => ['reorder' => false, 'unique' => [$table . 'RedirectSlug']]],
+        'gcModuleMultiple'      => ['Redirect' => ['reorder' => false, 'unique' => [$table . 'RedirectSlug'], 'label' => 'Redirects']],
 
         'gcSelect' => [$table . 'Redirect' => [$table . 'RedirectId', 'fieldKey', $table . 'RedirectSlug', 'position']],
         'gcSelectLJoin'   => [],

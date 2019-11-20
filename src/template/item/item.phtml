@@ -48,8 +48,17 @@
 <?php
 
 foreach ($modules as $moduleKey => $module) {
+    // dp($module);
     switch ($module['gcModuleType']) {
         case 'fields':
+            if (empty($module['inputs'])) {
+                $foundMulti = false;
+                if (!empty($module['gcModuleMultiple'])) {
+                    $foundMulti = true;
+                    break;
+                }
+                if (!$foundMulti) continue 2;
+            }
             include $editor->dirView . 'item/modules/fields.phtml';
             break;
         default:

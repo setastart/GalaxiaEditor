@@ -155,6 +155,7 @@ a.menu-item:focus {
     background: rgba(218, 218, 218, 0.8);
     background: rgba(210, 228, 231, 0.8);
     background: #cfe9ef;
+    background: linear-gradient(90deg, rgba(207, 233, 239, 0.7) 0%, #cfe9ef 100%);
     padding: 6px;
     display: grid;
     grid-template-columns: auto auto;
@@ -534,6 +535,7 @@ a.row > .col:not(.flexT):first-child {
     min-width: 80px;
     max-width: 160px;
     align-content: start;
+    align-items: start;
 }
 .col.flexT img {
     display: block;
@@ -743,22 +745,38 @@ a.row > .col .empty {
 
 /* modules */
 
+.module {
+    border-top: 1px solid #cab;
+    margin-top: 20px;
+    padding-top: 20px;
+    /*padding-bottom: 15px;*/
+}
+.module > h2 {
+}
 .module-field {
     /*margin-bottom: 10px;*/
 }
-.module-field-multiple + .module-field-multiple {
-    border-bottom: 1px solid #cab;
+.module-field-multi {
 }
-.module-header {
+.module-field-multi-header + .module-field-multi {
+    border-bottom: 1px dashed #cab;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+.module-field-multi-header {
     display: flex;
-    align-items: center;
-    margin-top: 15px;
+    margin-top: 10px;
     margin-bottom: 10px;
-    padding-top: 24px;
-    border-top: 1px dashed #cab;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 3px;
+    background-color: #eee4e4;
 }
-.module-header .btn-group {
+.module-field-multi-header > .btn-group {
     margin-left: auto;
+}
+.module-field-multi-header > h2 {
+    align-self: center;
 }
 .module-field-group {
     border-radius: 3px;
@@ -768,12 +786,16 @@ a.row > .col .empty {
     background-color: #edd;
     background-color: #eee4e4;
 }
+.module-field-group:last-child {
+    margin-bottom: 0;
+}
 .module-field-group-new {
-    background-color: #dec;
-    /*border: 1px solid #cdb;*/
+    /*background-color: #dec;*/
+    background-image: linear-gradient(135deg, #cdb 0px, #cdb 128px, transparent 128px);
 }
 .module-field-group-delete {
-    background-color: #fbb;
+    /*background-color: #fbb;*/
+    background-image: linear-gradient(135deg, #fbb 0px, #fbb 128px, transparent 128px);
 }
 .module-field-group .input-wrap {
     padding-top: 10px;

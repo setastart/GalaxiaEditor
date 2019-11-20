@@ -136,7 +136,7 @@ if ($me->loggedIn) {
     Director::timerStop('arrayReplaceHashtagWithParentName()');
 
     Director::timerStart('gecLanguify');
-    arrayLanguifyRemovePerms($geConf, $app->langs, $me->perms);
+    arrayLanguifyRemovePerms($geConf, array_keys($app->locales), $me->perms);
     Director::timerStop('gecLanguify');
 
     if (Director::$debug) {

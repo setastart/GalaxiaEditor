@@ -43,7 +43,7 @@ $inputs = [
 ];
 
 
-foreach ($app->langs as $lang) {
+foreach ($app->locales as $lang => $locale) {
     $inputs['alt_' . $lang] = [
         'label'       => 'Alt',
         'name'        => 'alt_' . $lang,

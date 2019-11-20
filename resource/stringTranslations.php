@@ -465,10 +465,20 @@ return [
         'pt' => 'Títulos',
         'es' => 'Títulos',
     ],
+    'Head Title' => [
+        'en' => 'Head Title',
+        'pt' => 'Título Head',
+        'es' => 'Título Head',
+    ],
+    'Head Description' => [
+        'en' => 'Head Description',
+        'pt' => 'Descrição Head',
+        'es' => 'Descripción Head',
+    ],
     'SEO Title' => [
         'en' => 'SEO Title',
-        'pt' => 'Título SEO',
-        'es' => 'Título SEO',
+        'pt' => 'Descrição SEO',
+        'es' => 'Descripción SEO',
     ],
     'SEO Titles' => [
         'en' => 'SEO Titles',
@@ -484,6 +494,16 @@ return [
         'en' => 'SEO Descriptions',
         'pt' => 'Descricões SEO',
         'es' => 'Descripciónes SEO',
+    ],
+    'Meta Description' => [
+        'en' => 'Meta Description',
+        'pt' => 'Descricão Meta',
+        'es' => 'Descripción Meta',
+    ],
+    'Meta Descriptions' => [
+        'en' => 'Meta Descriptions',
+        'pt' => 'Descricões Meta',
+        'es' => 'Descripciónes Meta',
     ],
     'Title and Subtitle' => [
         'en' => 'Title and Subtitle',

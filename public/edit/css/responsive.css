@@ -4,8 +4,8 @@
 /* "paper" borders over maximum size */
 @media screen and (min-width: 1500px) {
     .pad {
-        padding-left: 15px;
-        padding-right: 15px;
+        /*padding-left: 15px;*/
+        /*padding-right: 15px;*/
     }
 }
 

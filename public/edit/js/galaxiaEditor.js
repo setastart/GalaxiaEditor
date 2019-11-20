@@ -34,6 +34,7 @@ var gjInputs = [];
 var gjResizeTimeout = null;
 var gjImageSelector = [];
 var gjImageSelectorActiveInput = null;
+var gjScrollPosition = 0;
 var filterData = ['pageCurrent', 'pageFirst', 'pagePrev', 'pageNext', 'pageLast', 'itemsPerPage', 'rowsFiltered', 'rowsTotal'];
 
 window.addEventListener('DOMContentLoaded', function(event) {
@@ -195,15 +196,16 @@ function trigger(el, evName, bubbles = false) {
 
 
 function gjImageSelectorOpen(el, imgType) {
+    gjImageSelector.scrollPrev = window.scrollY;
+
     gjImageSelectorActiveInput = el.previousElementSibling;
     gjImageSelector.classList.remove('hide');
 
-    gjImageSelector.scrollPrev = window.scrollY;
     var siblings = getSiblings(gjImageSelector);
     for (var i = 0; i < siblings.length; i++) {
         siblings[i].classList.add('hide');
     }
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
 
     var typeInput = document.getElementsByName('filterTexts[type]')[0]
     if (!typeInput.opened) {
@@ -222,7 +224,7 @@ function gjImageSelectorClose() {
     for (var i = 0; i < siblings.length; i++) {
         siblings[i].classList.remove('hide');
     }
-    // window.scrollTo(0, gjImageSelector.scrollPrev);
+    window.scrollTo(0, gjImageSelector.scrollPrev);
     gjImageSelectorActiveInput.focus();
 }
 

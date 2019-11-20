@@ -143,49 +143,69 @@ foreach ($geConf as $areaKey => $area) {
         }
 
 
-        foreach ($item['gcModules'] as $module) {
+        foreach ($item['gcModules'] as $moduleId => $module) {
+            $errorStringPrefix = $areaKey . '/gcItem/gcModules/' . $moduleId;
 
-            gcTableExists($dbSchema, $areaKey . '/gcItem/gcModules/gcTable', $module['gcTable']);
-            gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcModules/gcColKey', $module['gcTable'], $module['gcTable'] . 'Id');
-            gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcModules', $module['gcTable'], 'fieldKey');
-            gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcModules/position', $module['gcTable'], 'position');
+            gcTableExists($dbSchema, $errorStringPrefix . '/gcTable', $module['gcTable']);
+            gcTableColumnExists($dbSchema, $errorStringPrefix . '/gcColKey', $module['gcTable'], $module['gcTable'] . 'Id');
+            gcTableColumnExists($dbSchema, $errorStringPrefix, $module['gcTable'], 'fieldKey');
+            gcTableColumnExists($dbSchema, $errorStringPrefix . '/position', $module['gcTable'], 'position');
 
             foreach ($module['gcModuleDeleteIfEmpty'] as $col)
-                gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcModules/gcModuleDeleteIfEmpty', $module['gcTable'], $col);
+                gcTableColumnExists($dbSchema, $errorStringPrefix . '/gcModuleDeleteIfEmpty', $module['gcTable'], $col);
+
+            $foundMulti = false;
+            foreach ($module['gcModuleMultiple'] as $moduleMultiple) {
+                if ($moduleMultiple['reorder']) {
+                    $foundMulti = true;
+                    break;
+                }
+            }
+
+            if ($foundMulti) {
+                foreach ($module['gcSelect'] as $table => $cols) {
+                    gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'fieldKey');
+                    gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'position');
+                }
+                foreach ($module['gcUpdate'] as $table => $cols) {
+                    gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'position');
+                }
+            }
+
 
             $itemsToCheckTableCols = ['gcSelect', 'gcSelectLJoin', 'gcSelectExtra', 'gcUpdate'];
             foreach ($itemsToCheckTableCols as $toCheck)
                 foreach ($module[$toCheck] as $table => $cols) {
                     if ($table == 'gcPerms') continue;
-                    gcTableExists($dbSchema, $areaKey . '/gcItem/gcModules/' . $toCheck, $table);
+                    gcTableExists($dbSchema, $errorStringPrefix . '/' . $toCheck, $table);
                     foreach ($cols as $col)
-                        gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcModules/' . $toCheck, $table, $col);
+                        gcTableColumnExists($dbSchema, $errorStringPrefix . '/' . $toCheck, $table, $col);
                 }
 
             foreach ($module['gcSelectOrderBy'] as $table => $cols) {
-                gcTableExists($dbSchema, $areaKey . '/gcList/gcSelectOrderBy', $table);
+                gcTableExists($dbSchema, $errorStringPrefix . '/gcSelectOrderBy', $table);
                 foreach ($cols as $key => $col)
-                    gcTableColumnExists($dbSchema, $areaKey . '/gcList/gcSelectOrderBy', $table, $key);
+                    gcTableColumnExists($dbSchema, $errorStringPrefix . '/gcSelectOrderBy', $table, $key);
             }
 
             foreach ($module['gcInputs'] as $inputCol => $input)
-                gcTableColumnInput($dbSchema, $areaKey . '/gcItem/gcModules/gcInputs', $module['gcTable'], $inputCol, $input);
+                gcTableColumnInput($dbSchema, $errorStringPrefix . '/gcInputs', $module['gcTable'], $inputCol, $input);
 
             foreach ($module['gcInputsWhereCol'] as $whereCol => $inputs)
                 foreach ($inputs as $inputCol => $input)
-                    gcTableColumnInput($dbSchema, $areaKey . '/gcItem/gcModules/gcInputsWhereCol', $module['gcTable'], $inputCol, array_merge($module['gcInputs'][$inputCol] ?? [], $input));
+                    gcTableColumnInput($dbSchema, $errorStringPrefix . '/gcInputsWhereCol', $module['gcTable'], $inputCol, array_merge($module['gcInputs'][$inputCol] ?? [], $input));
 
             foreach ($module['gcInputsWhereParent'] as $parentCol => $parentVals) {
-                gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcModules/gcInputsWhereParent', $item['gcTable'], $parentCol);
+                gcTableColumnExists($dbSchema, $errorStringPrefix . '/gcInputsWhereParent', $item['gcTable'], $parentCol);
                 foreach ($parentVals as $fieldKeys)
                     foreach ($fieldKeys as $inputs)
                         foreach ($inputs as $inputCol => $input)
-                            gcTableColumnInput($dbSchema, $areaKey . '/gcItem/gcModules/gcInputsWhereParent', $module['gcTable'], $inputCol, array_merge($module['gcInputs'][$inputCol] ?? [], $input));
+                            gcTableColumnInput($dbSchema, $errorStringPrefix . '/gcInputsWhereParent', $module['gcTable'], $inputCol, array_merge($module['gcInputs'][$inputCol] ?? [], $input));
             }
 
             foreach ($module['gcModuleMultiple'] as $multi)
                 foreach ($multi['unique'] as $unique)
-                    gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcModules/gcModuleMultiple/unique', $table, $unique);
+                    gcTableColumnExists($dbSchema, $errorStringPrefix . '/gcModuleMultiple/unique', $table, $unique);
 
         }
 
@@ -268,6 +288,16 @@ function gcTableColumnExists($dbSchema, $errorString, $table, $col) {
     $errorString .= '/' . $table . '/' . $col;
     if (!isset($dbSchema[$table][$col])) {
         error($errorString . ': db column missing.');
+        geD('Table: ' . $table, 'Col: ' . $col);
+        geErrorPage(500, 'config schema error');
+    }
+}
+
+
+function gcQueryColumnExists($errorString, $table, $cols, $col) {
+    $errorString .= '/' . $table . '/' . $col;
+    if (!in_array($col, $cols)) {
+        error($errorString . ': query column missing.');
         geD('Table: ' . $table, 'Col: ' . $col);
         geErrorPage(500, 'config schema error');
     }

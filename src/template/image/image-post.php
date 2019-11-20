@@ -46,7 +46,7 @@ if (!$itemChanges) {
 // update alt and type
 
 $altsAndType = ['alt_', 'type'];
-arrayLanguifyRemovePerms($altsAndType, $app->langs);
+arrayLanguifyRemovePerms($altsAndType, array_keys($app->locales));
 foreach ($itemChanges as $name => $value) {
 
     if (!in_array($name, $altsAndType)) continue;

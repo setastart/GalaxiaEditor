@@ -9,13 +9,13 @@
                 $multi = true;
                 $reorder = $module['gcModuleMultiple'][$fieldKey]['reorder'];
                 $unique = $module['gcModuleMultiple'][$fieldKey]['unique'];
-                $moduleFieldCss .= ' module-field-multiple';
+                $moduleFieldCss .= ' module-field-multi';
             }
             if ($multi) { ?>
-    <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-header" class="module-header btn-row pad">
-        <h2><?=t($fieldKey)?></h2>
+    <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-header" class="module-field-multi-header pad">
+        <h2><?=t($module['gcModuleMultiple'][$fieldKey]['label'] ?? $fieldKey)?></h2>
         <div class="btn-group">
-            <button type="button" class="btn-new btn-new-plus active" id="add-module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-where="module-<?=$moduleKey?>-<?=$fieldKey?>" onclick="gjCloneModuleInputs(this);"><?=t('Add') . ' ' . t($fieldKey)?></button>
+            <button type="button" class="btn-new btn-new-plus active" id="add-module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-where="module-<?=$moduleKey?>-<?=$fieldKey?>" onclick="gjCloneModuleInputs(this);"><?=t('Add')?></button>
         </div>
         <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-new" class="module-field-group hide">
             <div class="item-row">
@@ -121,9 +121,9 @@
             </div>
 <?php           } ?>
         </div>
-<?php       } // foreach ($fields?>
+<?php       } ?>
     </div>
-<?php   } // foreach ($module['inputs']) ?>
+<?php   } ?>
 <?php   if (!empty($module['inputsUnused'])) { ?>
     <h2 class="pad"><?=t('Unused')?></h2>
 <?php   } ?>
@@ -134,10 +134,10 @@
                 $multi = true;
                 $reorder = $module['gcModuleMultiple'][$fieldKey]['reorder'];
                 $unique = $module['gcModuleMultiple'][$fieldKey]['unique'];
-                $moduleFieldCss .= ' module-field-multiple';
+                $moduleFieldCss .= ' module-field-multi';
             }
             if ($multi) { ?>
-    <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-header" class="module-header btn-row pad">
+    <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-header" class="module-field-multi-header pad">
         <h2><?=t($fieldKey)?></h2>
         <div class="btn-group">
             <button type="button" class="btn-new btn-new-plus active" id="add-module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-where="module-<?=$moduleKey?>-<?=$fieldKey?>" onclick="gjCloneModuleInputs(this);"></button>
@@ -235,8 +235,8 @@
             </div>
 <?php           } ?>
         </div>
-<?php       } // foreach ($fields?>
+<?php       } ?>
     </div>
-<?php   } // foreach ($module['inputs']) ?>
+<?php   } ?>
 </div>
 
