@@ -27,11 +27,11 @@ const PROTO_GC = [
             'gcFilterInts'  => 'gcpFilterInts',
         ],
         'gcItem' => [
-            'gcTable'         => 'string',
-            'gcColKey'        => 'string',
-            'gcVisit'         => 'int',
-            'gcUpdateOnlyOwn' => 'boolean',
-            'gcRedirect'      => 'boolean',
+            'gcTable'          => 'string',
+            'gcColKey'         => 'string',
+            'gcVisit'          => 'int',
+            '?gcUpdateOnlyOwn' => 'boolean',
+            'gcRedirect'       => 'boolean',
 
             'gcInsert'      => 'tableWithCols',
             'gcSelect'      => 'tableWithCols',
@@ -103,8 +103,8 @@ const PROTO_GC = [
     ],
 
     'gcpColumns' => [
-        'label'     => 'string',
-        'cssClass'  => 'string',
+        'label'        => 'string',
+        'cssClass'     => 'string',
         'gcColContent' => 'gcpRowData',
     ],
 
@@ -115,9 +115,9 @@ const PROTO_GC = [
     ],
 
     'gcpFilterTexts' => [
-        'label'       => 'string',
-        'filterWhat'  => 'tableWithCols',
-        'filterEmpty' => 'boolean',
+        'label'        => 'string',
+        'filterWhat'   => 'tableWithCols',
+        '?filterEmpty' => 'boolean',
     ],
 
     'gcpFilterInts' => [
@@ -148,6 +148,7 @@ const PROTO_GC = [
     'gcpModuleMultiple' => [
         'reorder' => 'boolean',
         'unique'  => 'stringArray',
+        '?label'  => 'string',
     ],
 ];
 
@@ -160,6 +161,11 @@ function geConfigParse($schemaKey, $schema, $config, $errorString) {
     $errorString .= $schemaKey . '/';
 
     foreach ($schema as $key => $val) {
+        if (substr($key, 0, 1) == '?') {
+            $key = substr($key, 1);
+            if (!isset($config[$key])) continue;
+        }
+
         if (!isset($config[$key])) {
             geConfigParseError($errorString . $key . ' missing.');
         }
@@ -179,7 +185,9 @@ function geConfigParse($schemaKey, $schema, $config, $errorString) {
     $extraKeys = array_diff_key($config, $schema);
     foreach ($extraKeys as $key => $val) {
         if ($key == 'gcPerms') continue;
-        devlog($errorString . ' - extra key: ' . $key);
+        if (substr($key, 0, 1) == '?') continue;
+        if (isset($schema['?' . $key])) continue;
+        devlog($errorString . ' - extra keyssss: ' . $key);
     }
 }
 

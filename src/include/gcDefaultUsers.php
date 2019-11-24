@@ -54,7 +54,6 @@ return [
             [
                 'label'       => 'Filter Names and Emails',
                 'filterWhat'  => ['_geUser' => ['name', 'email']],
-                'filterEmpty' => false,
             ],
             [
                 'label'       => 'Filter Permissions',

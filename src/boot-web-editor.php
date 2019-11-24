@@ -36,7 +36,7 @@ require __DIR__ . '/function/utils.php';
 
 // init app
 
-$app = Director::init($_SERVER['DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '_starter.test')));
+$app = Director::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '_starter.test')));
 
 if (Director::$debug) $app->cacheBypassAll = true;
 
