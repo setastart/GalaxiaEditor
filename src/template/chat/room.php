@@ -1,5 +1,5 @@
 <?php
 
 
-$hdTitle = $geConf[$pgSlug]['gcMenuTitle'];
-$pgTitle = $geConf[$pgSlug]['gcMenuTitle'];
+$hdTitle = t($geConf[$pgSlug]['gcMenuTitle']);
+$pgTitle = t($geConf[$pgSlug]['gcMenuTitle']);

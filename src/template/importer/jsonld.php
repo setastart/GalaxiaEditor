@@ -6,7 +6,7 @@ $url = $_GET['url'] ?? '';
 $url = preg_replace('/\?.*/', '', $url);
 
 if (filter_var($url, FILTER_VALIDATE_URL) !== false) {
-    $url = preg_replace('~^https?://([^\.]+)?\.?facebook\.(\w)+/~', 'https://pt-pt.facebook.com/', $url);
+    $url = preg_replace('~^https?://([^.]+)?\.?facebook\.(\w)+/~', 'https://pt-pt.facebook.com/', $url);
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);

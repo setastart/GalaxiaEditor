@@ -110,5 +110,5 @@ $rows = array_slice($rows, $offset, $length);
 
 // finish
 
-$hdTitle = $geConf[$pgSlug]['gcTitlePlural'];
-$pgTitle = $geConf[$pgSlug]['gcTitlePlural'];
+$hdTitle = t($geConf[$pgSlug]['gcTitlePlural']);
+$pgTitle = t($geConf[$pgSlug]['gcTitlePlural']);

@@ -333,7 +333,7 @@ if (!file_exists($editor->dirView . $editor->view . '.phtml')) {
 
 // Include (run) the current layout. the layout includes the template (dynamic part of webpage)
 Director::timerStart('layout');
-include($editor->dirLayout . $editor->layout . '.phtml');
+include $editor->dirLayout . $editor->layout . '.phtml';
 Director::timerStop('layout');
 
 

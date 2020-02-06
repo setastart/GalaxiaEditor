@@ -95,7 +95,6 @@ foreach ($item['gcSelectExtra'] as $table => $cols) {
 
 
 
-
 foreach ($item['gcInputsWhere'] as $colKey => $col) {
     if (!isset($item['data'][$colKey])) continue;
     foreach ($col as $colVal => $inputs) {

@@ -1,6 +1,8 @@
 <?php
 
 
+use Galaxia\App;
+
 function renderForm($action = '', $id = '', $classes = '') {
     if ($action) $action = ' action="' . h($action) . '"';
     if ($id) $id = ' id="' . h($id) . '"';
@@ -96,7 +98,7 @@ return $ht;
 // form input creators
 
 
-function renderInput($app, $input) {
+function renderInput(App $app, $input) {
     $input = array_merge(PROTO_INPUT, $input);
     if ($input['type'] == 'none') return;
 

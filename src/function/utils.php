@@ -7,10 +7,15 @@ use Galaxia\{Director};
 function prepareInput($input, $dirImage, $extras) {
     if ($input['type'] == 'select' && isset($input['geExtraOptions'])) {
         foreach ($input['geExtraOptions'] as $key => $val) {
-            foreach ($val as $colKey => $colVal) {
+            foreach ($val as $colKey => $colVals) {
                 if (!isset($extras[$key])) continue;
+                if (is_string($colVals)) $colVals = [$colVals];
                 foreach ($extras[$key] as $option) {
-                    $input['options'][$option[$colKey]] = ['label' => $option[$colVal]];
+                    $optionColVal = [];
+                    foreach ($colVals as $colVal) {
+                        $optionColVal[] = $option[$colVal];
+                    }
+                    $input['options'][$option[$colKey]] = ['label' => implode(' / ', $optionColVal)];
                 }
             }
         }
@@ -167,7 +172,7 @@ function geErrorPage($errorCode, $error = '') {
     global $editor;
     if (!in_array($errorCode, [403, 404, 500])) $errorCode = 500;
     http_response_code($errorCode);
-    include($editor->dirLayout . 'layout-error.phtml');
+    include $editor->dirLayout . 'layout-error.phtml';
     exit();
 }
 

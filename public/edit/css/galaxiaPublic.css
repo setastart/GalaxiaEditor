@@ -79,7 +79,6 @@ a.paper-header:hover {
     max-width: 640px;
     display: flex;
     justify-content: space-around;
-    justify-content: space-evenly;
     filter: drop-shadow(1px 1px 0px #000);
     /*text-shadow: 0 1px 2px #000;*/
     font-family: monospace;

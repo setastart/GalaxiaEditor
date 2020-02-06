@@ -24,12 +24,12 @@ window.addEventListener("DOMContentLoaded", function(event) {
 
         if (switches[i].dataset.remember) {
             if (switches[i].classList.contains('active')) {
-                if (sessionStorage.getItem(switches[i].children[0].value) == 'hide') {
+                if (sessionStorage.getItem(switches[i].children[0].value) === 'hide') {
                     switches[i].classList.remove('active');
                     switches[i].children[0].checked = false;
                 }
             } else {
-                if (sessionStorage.getItem(switches[i].children[0].value) == 'show') {
+                if (sessionStorage.getItem(switches[i].children[0].value) === 'show') {
                     switches[i].classList.add('active');
                     switches[i].children[0].checked = true;
                 }
@@ -85,7 +85,7 @@ var gchat = {
     <script type="text/javascript" src="/edit/js/galaxiaChat.js?version=<?=h($editor->version)?>"></script>
 <?php   } ?>
 <?php   if ($includeTrix) { ?>
-    <script type="text/javascript" src="/edit/js/gtrix-1.2.0.min.js?version=<?=h($editor->version)?>" async defer></script>
+    <script type="text/javascript" src="/edit/js/gtrix-1.2.2.min.js?version=<?=h($editor->version)?>" async defer></script>
     <script type="text/javascript">
 document.addEventListener('trix-file-accept', function(event) {
     event.preventDefault(); // disable trix image attachment pasting
@@ -129,15 +129,15 @@ document.addEventListener('trix-file-accept', function(event) {
 <?php   } ?>
 </div>
 
-<?php include('switches.phtml'); ?>
+<?php include 'switches.phtml'; ?>
 
-<?php include('menu.phtml'); ?>
+<?php include 'menu.phtml'; ?>
 
 <div id="page">
 <?php Director::timerStart('View: ' . $editor->view . '.phtml'); ?>
-<?php include($editor->dirView . $editor->view . '.phtml'); ?>
+<?php include $editor->dirView . $editor->view . '.phtml'; ?>
 <?php Director::timerStop('View: ' . $editor->view . '.phtml'); ?>
-<?php include('messageBoxes.phtml'); ?>
+<?php include 'messageBoxes.phtml'; ?>
 </div>
 
 <div id="footer">

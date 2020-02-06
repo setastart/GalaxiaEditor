@@ -61,10 +61,12 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
                     foreach ($columns as $column) {
                         if ($column == $firstColumn) continue;
 
-                        if (empty($data[$column]))
-                            $data[$column] = '<span class="small red">' . t('Empty') . '</span>';
+                        if (empty($data[$column])) {
+                            $inUse[$data[$firstColumn]][$table] = '<span class="small red">' . t('Empty') . '</span>';;
+                        } else {
+                            $inUse[$data[$firstColumn]][$table] = h($data[$column]);
+                        }
 
-                        $inUse[$data[$firstColumn]][$table] = $data[$column];
                     }
                 } else {
                     foreach ($columns as $column) {
@@ -72,10 +74,12 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
                             if (isset($inUse[$data[$firstColumn]][$table]))
                                 if (in_array($data[$column], $inUse[$data[$firstColumn]][$table])) continue;
 
-                        if (empty($data[$column]))
-                            $data[$column] = '<span class="small red">' . t('Empty') . '</span>';
+                        if (empty($data[$column])) {
+                            $inUse[$data[$firstColumn]][$table][] = '<span class="small red">' . t('Empty') . '</span>';
+                        } else {
+                            $inUse[$data[$firstColumn]][$table][] = h($data[$column]);
+                        }
 
-                        $inUse[$data[$firstColumn]][$table][] = $data[$column];
                     }
                 }
             }
@@ -92,7 +96,7 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
 
 switch ($_POST['imageListType'] ?? '') {
     case 'image-select':
-        $rows = $app->cacheGet('editor', 3, 'imageList', $pgSlug, 'rows-select', function() use ($app, $geConf, $pgSlug, $items, $inUse) {
+        $rows = $app->cacheGet('editor', 3, 'imageList', $pgSlug, 'rows-select', function() use ($app, $geConf, $pgSlug, $items) {
         $rows = [];
 
             foreach ($items as $imgSlug => $img) {
@@ -146,7 +150,7 @@ $html .= '    <div class="col flex1">' . PHP_EOL;
                 if (isset($inUse[$imgSlug])) {
                     foreach ($inUse[$imgSlug] as $itemKey => $item) {
                         foreach ($item as $itemVal) {
-$html .= '        <div>' . h($itemKey . '/') . '' . h($itemVal) . '</div>' . PHP_EOL;
+$html .= '        <div>' . h($itemKey . '/') . '' . $itemVal . '</div>' . PHP_EOL;
                         }
                     }
                 } else {
@@ -170,6 +174,7 @@ $html .= '</a>';
         break;
 }
 $rowsTotal = count($rows);
+geD($rows);
 
 
 
@@ -312,5 +317,5 @@ $rows = array_slice($rows, $offset, $length);
 
 // finish
 
-$hdTitle = $geConf[$pgSlug]['gcTitlePlural'];
-$pgTitle = $geConf[$pgSlug]['gcTitlePlural'];
+$hdTitle = t($geConf[$pgSlug]['gcTitlePlural']);
+$pgTitle = t($geConf[$pgSlug]['gcTitlePlural']);

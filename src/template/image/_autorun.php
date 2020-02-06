@@ -1,8 +1,8 @@
 <?php
 
 
-$pgTitle = $geConf[$pgSlug]['gcTitleSingle'] . ': ' . $imgSlug;
-$hdTitle = 'Editing ' . $pgTitle;
+$pgTitle = t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
+$hdTitle = t('Editing') . ' ' . $pgTitle;
 
 $item = $geConf[$pgSlug]['gcImage'];
 $action = $action ?? '';

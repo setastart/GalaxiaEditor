@@ -14,7 +14,7 @@ body {
     position: fixed;
     top: 0px;
     bottom: 0px;
-    left: 0px
+    left: 0px;
     height: 100vh;
 }
 #website-link {
@@ -422,7 +422,6 @@ a.paper {
     color: #00b;
 }
 #msgbox-devlog .select-on-click {
-    -webkit-touch-callout: all; /* iOS Safari */
     -webkit-user-select: all; /* Safari */
     -khtml-user-select: all; /* Konqueror HTML */
     -moz-user-select: all; /* Firefox */

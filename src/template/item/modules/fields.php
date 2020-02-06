@@ -24,7 +24,6 @@ foreach ($module['gcSelectExtra'] as $table => $cols) {
 
 
 
-
 // query fields
 
 $where = [$module['gcTable'] => [$item['gcTable'] . 'Id' => '=']];
