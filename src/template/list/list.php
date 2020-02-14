@@ -77,10 +77,10 @@ $rows = $app->cacheGet('editor', 3, 'list', $pgSlug, 'rows', function() use ($ap
     foreach ($items as $itemId => $item) {
         $statusClass = '';
         if (isset($item[$firstTable][$itemId][$firstTable . 'Status'])) $statusClass = ' status-' . (int)($item[$firstTable][$itemId][$firstTable . 'Status'] ?? 0);
-        $html = '<a class="row' . $statusClass . '" href="/edit/' . $pgSlug . '/' . $itemId . '">' . PHP_EOL;
+$ht = '<a class="row' . $statusClass . '" href="/edit/' . $pgSlug . '/' . $itemId . '">' . PHP_EOL;
 
         foreach ($columns as $columnId => $column) {
-            $html .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
+$ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
             foreach ($column['tablesAndCols'] as $dbTable => $dbColumns) {
                 $countFound = false;
                     $i = 0;
@@ -172,17 +172,17 @@ $rows = $app->cacheGet('editor', 3, 'list', $pgSlug, 'rows', function() use ($ap
                             $r .= t('Empty');
                         }
 
-                        $html .= '        <div class="' . $colRowItemClass . '">' . $r . '</div>' . PHP_EOL;
+$ht .= '        <div class="' . $colRowItemClass . '">' . $r . '</div>' . PHP_EOL;
                         $i++;
                     }
                 }
             }
 
-            $html .= '    </div>' . PHP_EOL;
+$ht .= '    </div>' . PHP_EOL;
 
         }
-        $html .= '</a>' . PHP_EOL;
-        $rows[$itemId] = $html;
+$ht .= '</a>' . PHP_EOL;
+        $rows[$itemId] = $ht;
     }
 
     return $rows;

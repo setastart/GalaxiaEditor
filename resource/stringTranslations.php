@@ -680,6 +680,11 @@ return [
         'pt' => 'Importar json-ld desde url',
         'es' => 'Importar json-ld desde url',
     ],
+    'importer-youtube' => [
+        'en' => 'Import from Youtube url',
+        'pt' => 'Importar desde url Youtube',
+        'es' => 'Importar desde url Youtube',
+    ],
     'action-3' => [
         'en' => 'Created',
         'pt' => 'Criado',

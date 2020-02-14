@@ -48,7 +48,7 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
         $query = querySelect($gcImageInUse['gcSelect']);
         $query .= querySelectLeftJoinUsing($gcImageInUse['gcSelectLJoin'] ?? []);
         $query .= querySelectOrderBy($gcImageInUse['gcSelectOrderBy'] ?? []);
-
+        geD($query);
         $stmt = $db->prepare($query);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -62,7 +62,7 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
                         if ($column == $firstColumn) continue;
 
                         if (empty($data[$column])) {
-                            $inUse[$data[$firstColumn]][$table] = '<span class="small red">' . t('Empty') . '</span>';;
+                            $inUse[$data[$firstColumn]][$table] = '<span class="small red">' . t('Empty') . '</span>';
                         } else {
                             $inUse[$data[$firstColumn]][$table] = h($data[$column]);
                         }
@@ -88,7 +88,7 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
     }
     return $inUse;
 });
-
+geD($inUse);
 
 
 
@@ -100,15 +100,15 @@ switch ($_POST['imageListType'] ?? '') {
         $rows = [];
 
             foreach ($items as $imgSlug => $img) {
-$html = '';
-$html .= '<button type="button" id="' . h($imgSlug) . '" class="imageSelectItem" onclick="gjImageSelectorActivate(this)">' . PHP_EOL;
-$html .= '    <div class="ratio">' . PHP_EOL;
-$html .= '        ' . gImageRenderReflowSpacer($img['w'], $img['h']) . PHP_EOL;
-$html .= '        ' . gImageRender($img, 'onerror="gjImageResizeRequest(this, event)"') . PHP_EOL;
-$html .= '    </div>' . PHP_EOL;
-$html .= '    <p>' . h($imgSlug) . '</p>' . PHP_EOL;
-$html .= '</button>' . PHP_EOL;
-                $rows[$imgSlug] = $html;
+$ht = '';
+$ht .= '<button type="button" id="' . h($imgSlug) . '" class="imageSelectItem" onclick="gjImageSelectorActivate(this)">' . PHP_EOL;
+$ht .= '    <div class="ratio">' . PHP_EOL;
+$ht .= '        ' . gImageRenderReflowSpacer($img['w'], $img['h']) . PHP_EOL;
+$ht .= '        ' . gImageRender($img, 'onerror="gjImageResizeRequest(this, event)"') . PHP_EOL;
+$ht .= '    </div>' . PHP_EOL;
+$ht .= '    <p>' . h($imgSlug) . '</p>' . PHP_EOL;
+$ht .= '</button>' . PHP_EOL;
+                $rows[$imgSlug] = $ht;
             }
             return $rows;
         });
@@ -121,53 +121,57 @@ $html .= '</button>' . PHP_EOL;
             $currentColor = 0;
 
             foreach ($items as $imgSlug => $img) {
-$html = '';
+$ht = '';
                 if (isset($img['extra']['type']))
                     if (!isset($imgTypes[$img['extra']['type']])) $imgTypes[$img['extra']['type']] = $currentColor++;
-$html .= '<a class="row row-image" href="/edit/images/' . $imgSlug . '">' . PHP_EOL;
-$html .= '    <div class="col flexT">' . PHP_EOL;
-$html .= '        <div class="col-thumb ratio">' . PHP_EOL;
-$html .= '            ' . gImageRenderReflowSpacer($img['w'], $img['h']) . PHP_EOL;
-$html .= '            ' . gImageRender($img, 'onerror="gjImageResizeRequest(this, event)"') . PHP_EOL;
-$html .= '        </div>' . PHP_EOL;
-$html .= '    </div>' . PHP_EOL;
-$html .= '    <div class="col flex1">' . PHP_EOL;
-$html .= '        <div><span class="input-label-lang">' . t('Slug') . ':</span> ' . h($imgSlug) . '</div>' . PHP_EOL;
-$html .= '        <div><span class="input-label-lang">' . t('Dimensions') . ':</span> <small class="grey">' . h($img['wOriginal'] . 'x' . $img['hOriginal']) . '</small></div>' . PHP_EOL;
-$html .= '        <div><span class="input-label-lang">' . t('Size') . ':</span> <small class="grey">' . h(number_format($img['fileSize'], 0, '', ',') . ' B') . '</small></div>' . PHP_EOL;
-$html .= '        <div><span class="input-label-lang">' . t('Created') . ':</span> <small class="grey">' . gFormatDate($img['mtime'], 'd MMM y - HH:mm') . '</small></div>' . PHP_EOL;
-$html .= '    </div>' . PHP_EOL;
-$html .= '    <div class="col flex1">' . PHP_EOL;
+$ht .= '<a class="row row-image" href="/edit/images/' . $imgSlug . '">' . PHP_EOL;
+$ht .= '    <div class="col flexT">' . PHP_EOL;
+$ht .= '        <div class="col-thumb ratio">' . PHP_EOL;
+$ht .= '            ' . gImageRenderReflowSpacer($img['w'], $img['h']) . PHP_EOL;
+$ht .= '            ' . gImageRender($img, 'onerror="gjImageResizeRequest(this, event)"') . PHP_EOL;
+$ht .= '        </div>' . PHP_EOL;
+$ht .= '    </div>' . PHP_EOL;
+$ht .= '    <div class="col flex1">' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . t('Slug') . ':</span> ' . h($imgSlug) . '</div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . t('Dimensions') . ':</span> <small class="grey">' . h($img['wOriginal'] . 'x' . $img['hOriginal']) . '</small></div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . t('Size') . ':</span> <small class="grey">' . h(number_format($img['fileSize'], 0, '', ',') . ' B') . '</small></div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . t('Created') . ':</span> <small class="grey">' . gFormatDate($img['mtime'], 'd MMM y - HH:mm') . '</small></div>' . PHP_EOL;
+$ht .= '    </div>' . PHP_EOL;
+$ht .= '    <div class="col flex1">' . PHP_EOL;
                 foreach ($img['alt'] as $lang => $alt) {
                     if (empty($alt)) {
-$html .= '        <div><span class="small red">' . t('Empty') . '</span></div>' . PHP_EOL;
+$ht .= '        <div><span class="small red">' . t('Empty') . '</span></div>' . PHP_EOL;
                     } else {
-$html .= '        <div><span class="input-label-lang">' . $lang . ':</span> ' . h($alt) . '</div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . $lang . ':</span> ' . h($alt) . '</div>' . PHP_EOL;
                     }
                 }
-$html .= '    </div>' . PHP_EOL;
-$html .= '    <div class="col flex1">' . PHP_EOL;
+$ht .= '    </div>' . PHP_EOL;
+$ht .= '    <div class="col flex1">' . PHP_EOL;
                 if (isset($inUse[$imgSlug])) {
                     foreach ($inUse[$imgSlug] as $itemKey => $item) {
-                        foreach ($item as $itemVal) {
-$html .= '        <div>' . h($itemKey . '/') . '' . $itemVal . '</div>' . PHP_EOL;
+                        if (is_array($item)) {
+                            foreach ($item as $itemVal) {
+$ht .= '        <div>' . h($itemKey . '/') . '' . $itemVal . '</div>' . PHP_EOL;
+                            }
+                        } else {
+$ht .= '        <div>' . h($itemKey . '/') . '' . $item . '</div>' . PHP_EOL;
                         }
                     }
                 } else {
-$html .= '        <div><span class="small red">' . t('Empty') . '</span></div>' . PHP_EOL;
+$ht .= '        <div><span class="small red">' . t('Empty') . '</span></div>' . PHP_EOL;
                 }
-$html .= '    </div>' . PHP_EOL;
+$ht .= '    </div>' . PHP_EOL;
                 if (!empty($geConf[$pgSlug]['gcImageTypes'])) {
-$html .= '    <div class="col flexD tags">' . PHP_EOL;
+$ht .= '    <div class="col flexD tags">' . PHP_EOL;
                     if (isset($img['extra']['type'])) {
-$html .= '        <div class="col-tags brewer-' . h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . h(t($img['extra']['type'])) . '</div>' . PHP_EOL;
+$ht .= '        <div class="col-tags brewer-' . h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . h(t($img['extra']['type'])) . '</div>' . PHP_EOL;
                     } else {
-$html .= '        <span class="small red">' . t('Empty') . '</span>' . PHP_EOL;
+$ht .= '        <span class="small red">' . t('Empty') . '</span>' . PHP_EOL;
                     }
-$html .= '    </div>' . PHP_EOL;
+$ht .= '    </div>' . PHP_EOL;
                 }
-$html .= '</a>';
-                $rows[$imgSlug] = $html;
+$ht .= '</a>';
+                $rows[$imgSlug] = $ht;
             }
             return $rows;
         });

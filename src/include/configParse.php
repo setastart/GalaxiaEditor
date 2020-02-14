@@ -29,7 +29,7 @@ const PROTO_GC = [
         'gcItem' => [
             'gcTable'          => 'string',
             'gcColKey'         => 'string',
-            'gcVisit'          => 'int',
+            'gcVisit'          => 'gcpVisit',
             '?gcUpdateOnlyOwn' => 'boolean',
             'gcRedirect'       => 'boolean',
 
@@ -434,6 +434,28 @@ function geConfigParseFine($schema, $config, $errorString) {
             foreach ($config as $key => $val)
                 geConfigParse('/' . $key, PROTO_GC['gcpImagesInUse'], $config[$key], $errorString);
 
+            break;
+
+
+        case 'gcpVisit':
+            switch (gettype($config)) {
+                case 'boolean':
+                case 'integer':
+                    break;
+
+                case 'array':
+                    foreach ($config as $key => $val) {
+                        if (!isset($config[$key]['id']))
+                            geConfigParseError($errorString . '/' . $val . ' should have an id.', $schema, $config);
+                        if (!isset($config[$key]['prefix']))
+                            geConfigParseError($errorString . '/' . $val . ' should have a prefix.', $schema, $config);
+                    }
+                    break;
+
+                default:
+                    geConfigParseError($errorString . ' should be false, int or array.', $schema, $config);
+                    break;
+            }
             break;
 
 

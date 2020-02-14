@@ -28,7 +28,7 @@ function renderStatus($input) {
     $css = 'paper-header-status input-wrap' . $input['cssClass'];
     $css .= empty($input['errors']) ? '' : ' input-wrap-errors';
 
-$ht =  '<div class="' . $css . '">' . PHP_EOL;;
+$ht =  '<div class="' . $css . '">' . PHP_EOL;
 $ht .= getRadioInput($input);
 $ht .= '    <div class="input-label"><span class="input-changed"></span></div>' . PHP_EOL;
 
@@ -37,9 +37,9 @@ $ht .= '    <ul class="input-errors">' . PHP_EOL;
         foreach ($input['errors'] as $error) {
 $ht .= '        <li class="input-error">' . h($error) . '</div>' . PHP_EOL;
         }
-$ht .= '    </ul>' . PHP_EOL;;
+$ht .= '    </ul>' . PHP_EOL;
     }
-$ht .= '</div>' . PHP_EOL;;
+$ht .= '</div>' . PHP_EOL;
 
     return $ht;
 }
@@ -57,7 +57,7 @@ function renderInputText($input) {
 
     $css = $input['lang'] ? 'input-wrap-lang hide-lang-' . $input['lang'] : '';
 
-$ht =  '<div class="input-wrap pad ' . h($css) . '">' . PHP_EOL;;
+$ht =  '<div class="input-wrap pad ' . h($css) . '">' . PHP_EOL;
 
     switch ($input['type']) {
         case 'textarea':
@@ -88,7 +88,7 @@ $ht .= '    <div class="content">' . h($input['valueFromDb']) . '</div>' . PHP_E
             break;
     }
 
-$ht .= '</div>' . PHP_EOL;;
+$ht .= '</div>' . PHP_EOL;
 
 return $ht;
 }
@@ -189,6 +189,10 @@ $ht .= '    <div class="input-label">' .
             $ht .= getImporterJsonldInput($input) . PHP_EOL;
             break;
 
+        case 'importerYoutube':
+            $ht .= getImporterYoutubeInput($input) . PHP_EOL;
+            break;
+
         default:
             $input['errors'][] = 'Invalid input type: ' . h($input['type']);
             break;
@@ -214,15 +218,15 @@ $ht .= '    <ul class="input-errors">' . PHP_EOL;
     foreach ($input['errors'] as $error) {
 $ht .= '        <li class="input-error">' . h($error) . '</li>' . PHP_EOL;
     }
-$ht .= '    </ul>' . PHP_EOL;;
+$ht .= '    </ul>' . PHP_EOL;
 
 $ht .= '    <ul class="input-infos">' . PHP_EOL;
     foreach ($input['infos'] as $info) {
 $ht .= '        <li class="input-info">' . h($info) . '</li>' . PHP_EOL;
     }
-$ht .= '    </ul>' . PHP_EOL;;
+$ht .= '    </ul>' . PHP_EOL;
 
-$ht .= '</div>' . PHP_EOL;;
+$ht .= '</div>' . PHP_EOL;
 
     return $ht;
 }
@@ -321,7 +325,7 @@ function getRadioInput($input) {
         $r .= '    <label class="' . h($css) . '">' . PHP_EOL;
         $r .= '        <input type="radio" name="' . $input['name'] . '" value="' . $optionValue . '"' . h($attr) . ' onchange="gjInputChange(this, event)" onkeydown="disableEnterKey(event)">' . PHP_EOL;
         $r .= '        ' . t($option['label']) . PHP_EOL;
-        $r .= '    </label>' . PHP_EOL;;
+        $r .= '    </label>' . PHP_EOL;
     }
     return $r;
 }
@@ -440,5 +444,15 @@ function getImporterJsonldInput($input) {
     $r  = '    <textarea class="input-text" rows="1" wrap="soft" onkeydown="disableEnterKey(event)" oninput="textareaAutoGrow(this);"></textarea>' . PHP_EOL;
     $r .= '    <button type="button" class="btn btn-blue btn-pill rr" onclick="gjImportJsonld(this, event)">' . t('Import') . '</button>' . PHP_EOL;
     $r .= '    <script type="text/javascript">var importRelationsJsonld = ' . json_encode($input['options']) . '</script>' . PHP_EOL;
+    return $r;
+}
+
+
+
+
+function getImporterYoutubeInput($input) {
+    $r  = '    <textarea class="input-text" rows="1" wrap="soft" onkeydown="disableEnterKey(event)" oninput="textareaAutoGrow(this);">https://www.youtube.com/watch?v=hIBlo3ZWdYk</textarea>' . PHP_EOL;
+    $r .= '    <button type="button" class="btn btn-blue btn-pill rr" onclick="gjImportYoutube(this, event)">' . t('Import') . '</button>' . PHP_EOL;
+    $r .= '    <script type="text/javascript">var importRelationsYoutube = ' . json_encode($input['options']) . '</script>' . PHP_EOL;
     return $r;
 }

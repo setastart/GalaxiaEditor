@@ -69,24 +69,24 @@ $rowsTotal = count($items);
 
 $rows = $app->cacheGet('editor', 3, 'list', $pgSlug, 'rows', function() use ($pgSlug, $items, $pageNames) {
     foreach ($items as $itemId => $item) {
-$html = '<a class="row ' . $item['action'] . '" href="/edit/' . h($pgSlug) . '/' . h($item['tabName']) . '/' . h($item['tabId']) . '#' . h($itemId) . '">' . PHP_EOL;
-$html .= '    <div class="col flex1">' . PHP_EOL;
-$html .= '        <small class="grey">table: </small>' . h($pageNames[$item['tabName']] ?? $item['tabName']) . '<br>' . PHP_EOL;
-$html .= '        <small class="grey">Id: </small>' . h($item['tabId']) . '<br>' . PHP_EOL;
-$html .= '        <small class="grey">User: </small>' . h($item['user']) . '<br>' . PHP_EOL;
-$html .= '        <small class="">' . h(gFormatDate($item['created'], 'd MMM y')) . '</small><br>' . PHP_EOL;
-$html .= '        <small class="">' . date('G:i', $item['created']) . '</small><br>' . PHP_EOL;
-$html .= '    </div>' . PHP_EOL;
-$html .= '    <div class="col flex2">' . PHP_EOL;
+$ht = '<a class="row ' . $item['action'] . '" href="/edit/' . h($pgSlug) . '/' . h($item['tabName']) . '/' . h($item['tabId']) . '#' . h($itemId) . '">' . PHP_EOL;
+$ht .= '    <div class="col flex1">' . PHP_EOL;
+$ht .= '        <small class="grey">table: </small>' . h($pageNames[$item['tabName']] ?? $item['tabName']) . '<br>' . PHP_EOL;
+$ht .= '        <small class="grey">Id: </small>' . h($item['tabId']) . '<br>' . PHP_EOL;
+$ht .= '        <small class="grey">User: </small>' . h($item['user']) . '<br>' . PHP_EOL;
+$ht .= '        <small class="">' . h(gFormatDate($item['created'], 'd MMM y')) . '</small><br>' . PHP_EOL;
+$ht .= '        <small class="">' . date('G:i', $item['created']) . '</small><br>' . PHP_EOL;
+$ht .= '    </div>' . PHP_EOL;
+$ht .= '    <div class="col flex2">' . PHP_EOL;
         foreach ($item['changes'] as $change) {
-$html .= '    <div class="col flex">' . PHP_EOL;
-$html .= '        <div class="col flex2"><span class="input-label-lang">' . h($change['lang']) . '</span>' . h($change['name']) . ' - ' . h($item['inputKey']) . '</div>' . PHP_EOL;
-$html .= '        <div class="col flex3"><span class="input-label-lang">' . h($change['lang']) . '</span>' . firstLine($change['content'] ?? '') . '</div>' . PHP_EOL;
-$html .= '    </div>' . PHP_EOL;
+$ht .= '    <div class="col flex">' . PHP_EOL;
+$ht .= '        <div class="col flex2"><span class="input-label-lang">' . h($change['lang']) . '</span>' . h($change['name']) . ' - ' . h($item['inputKey']) . '</div>' . PHP_EOL;
+$ht .= '        <div class="col flex3"><span class="input-label-lang">' . h($change['lang']) . '</span>' . firstLine($change['content'] ?? '') . '</div>' . PHP_EOL;
+$ht .= '    </div>' . PHP_EOL;
         }
-$html .= '    </div>' . PHP_EOL;
-$html .= '</a>' . PHP_EOL;
-        $rows[$itemId] = $html;
+$ht .= '    </div>' . PHP_EOL;
+$ht .= '</a>' . PHP_EOL;
+        $rows[$itemId] = $ht;
     }
     return $rows;
 });

@@ -167,7 +167,8 @@ if ($me->loggedIn) {
         $r->get( '/edit/dev/{pgSlug:imageListDeleteResizes}', 'dev/image-list-delete-resizes');
         $r->get( '/edit/dev/{pgSlug:imageListReorder}', 'dev/image-list-reorder');
 
-        $r->get( '/edit/importer/{pgSlug:jsonld}', 'importer/jsonld');
+        $r->get( '/edit/importer/{pgSlug:jsonld}',  'importer/jsonld');
+        $r->get( '/edit/importer/{pgSlug:youtube}', 'importer/youtube');
 
         foreach ($geConf as $rootSlug => $confPage) {
             if (!isset($confPage['gcPageType']) || !is_string($confPage['gcPageType'])) continue;
