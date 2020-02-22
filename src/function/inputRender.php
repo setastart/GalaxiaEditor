@@ -141,6 +141,10 @@ $ht .= '    <div class="input-label">' .
             $ht .= getSlugImageInput($input) . PHP_EOL;
             break;
 
+        case 'raw':
+            $ht .= getRawInput($input) . PHP_EOL;
+            break;
+
         case 'text':
             $ht .= getTextInput($input) . PHP_EOL;
             break;
@@ -156,7 +160,7 @@ $ht .= '    <div class="input-label">' .
             break;
 
         case 'textarea':
-            $ht .= getTextareaInput($input) . PHP_EOL;
+            $ht .= getBasicInput($input) . PHP_EOL;
             break;
 
         case 'datetime':
@@ -235,6 +239,21 @@ $ht .= '</div>' . PHP_EOL;
 
 
 // inputs
+
+function getRawInput($input) {
+    $r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . htmlspecialchars($input['value'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5) . '" onkeydown="disableEnterKey(event)" oninput="gjInputChange(this, event)"';
+
+    foreach ($input['options'] as $optionName => $optionValue) {
+        $r .= ' ' . $optionName . '="' . $optionValue . '"';
+    }
+
+    if ($input['disabled']) $r .= ' disabled';
+
+    return $r . '>';
+}
+
+
+
 
 function getBasicInput($input) {
     $r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . $input['value'] . '" onkeydown="disableEnterKey(event)" oninput="gjInputChange(this, event)"';
