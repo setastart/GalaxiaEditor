@@ -32,6 +32,11 @@ function prepareInput($input, $dirImage, $extras) {
                 $input['value'] = substr($today, 0, strspn($today ^ $after, "\0"));
                 break;
 
+            case 'day':
+                $todayDt = new \DateTime();
+                $input['value'] = $todayDt->format('Y-m-d');
+                break;
+
             default:
                 break;
         }
