@@ -27,16 +27,7 @@ foreach ($item['gcSelectExtra'] as $table => $cols) {
 
 
 foreach ($item['gcInputs'] as $inputName => $input) {
-    if ($input['type'] == 'select' && isset($input['geExtraOptions'])) {
-        foreach ($input['geExtraOptions'] as $key => $val) {
-            foreach ($val as $colKey => $colVal) {
-                if (!isset($extras[$key])) continue;
-                foreach ($extras[$key] as $option) {
-                    $input['options'][$option[$colKey]] = ['label' => $option[$colVal]];
-                }
-            }
-        }
-    }
+    $input = prepareInput($input, $app->dirImage, $extras);
 
     $item['inputs'][$inputName] = array_merge($input, [
         'label'       => $geConf[$pgSlug]['gcColNames'][$inputName] ?? $inputName,

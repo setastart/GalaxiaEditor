@@ -1065,6 +1065,11 @@ return [
         'pt' => 'Ícone da acessibilidade',
         'es' => 'Ícone de acessibilidade',
     ],
+    'Mode' => [
+        'en' => 'Mode',
+        'pt' => 'Modo',
+        'es' => 'Modo',
+    ],
 
 
 
@@ -1376,5 +1381,117 @@ return [
         'pt' => 'Dezembro',
         'es' => 'Diciembre',
     ],
+
+    'Duration' => [
+        'en' => 'Duration',
+        'pt' => 'Duração',
+        'es' => 'Duration',
+    ],
+
+    'Day of Week' => [
+        'en' => 'Day of Week',
+        'pt' => 'Dia da Semana',
+        'es' => 'Día de la Semana',
+    ],
+
+    'dow 0' => ['en' => 'Sun', 'pt' => 'Dom', 'es' => 'Dom'],
+    'dow 1' => ['en' => 'Mon', 'pt' => 'Seg', 'es' => 'Lun'],
+    'dow 2' => ['en' => 'Tue', 'pt' => 'Ter', 'es' => 'Mar'],
+    'dow 3' => ['en' => 'Wed', 'pt' => 'Qua', 'es' => 'Mie'],
+    'dow 4' => ['en' => 'Thu', 'pt' => 'Qui', 'es' => 'Jue'],
+    'dow 5' => ['en' => 'Fri', 'pt' => 'Sex', 'es' => 'Vie'],
+    'dow 6' => ['en' => 'Sat', 'pt' => 'Sáb', 'es' => 'Sab'],
+    'dow 7' => ['en' => 'Sun', 'pt' => 'Dom', 'es' => 'Dom'],
+
+    'Tomorrow' => [
+        'en' => 'Tomorrow',
+        'pt' => 'Amanhã',
+        'es' => 'Mañana',
+    ],
+    'Soon' => [
+        'en' => 'Soon',
+        'pt' => 'Proximamente',
+        'es' => 'Proximamente',
+    ],
+    'In progress' => [
+        'en' => 'In progress',
+        'pt' => 'A decorrer',
+        'es' => 'A decorrer',
+    ],
+
+    'Registration' => [
+        'en' => 'Registration',
+        'pt' => 'Inscrição',
+        'es' => 'Inscripción',
+    ],
+    'Registrations' => [
+        'en' => 'Registrations',
+        'pt' => 'Inscriçãos',
+        'es' => 'Inscripciones',
+    ],
+
+    'Online' => [
+        'en' => 'Online',
+        'pt' => 'Online',
+        'es' => 'Online',
+    ],
+    'Offline' => [
+        'en' => 'Offline',
+        'pt' => 'Offline',
+        'es' => 'Offline',
+    ],
+    'On/Offline' => [
+        'en' => 'On/Offline',
+        'pt' => 'On/Offline',
+        'es' => 'On/Offline',
+    ],
+    'Schedule' => [
+        'en' => 'Schedule',
+        'pt' => 'Agenda',
+        'es' => 'Agenda',
+    ],
+    'Schedules' => [
+        'en' => 'Schedules',
+        'pt' => 'Agendas',
+        'es' => 'Agendas',
+    ],
+    'Scheduled' => [
+        'en' => 'Scheduled',
+        'pt' => 'Agendado',
+        'es' => 'Agendado',
+    ],
+    'Booking' => [
+        'en' => 'Booking',
+        'pt' => 'Marcação',
+        'es' => 'Booking',
+    ],
+    'Bookings' => [
+        'en' => 'Bookings',
+        'pt' => 'Marcações',
+        'es' => 'Bookings',
+    ],
+    'Booked' => [
+        'en' => 'Booked',
+        'pt' => 'Marcado',
+        'es' => 'Booked',
+    ],
+    'Cancelled' => [
+        'en' => 'Cancelled',
+        'pt' => 'Cancelado',
+        'es' => 'Cancelado',
+    ],
+    'Suspended' => [
+        'en' => 'Suspended',
+        'pt' => 'Suspenso',
+        'es' => 'Suspenso',
+    ],
+    'Postponed' => [
+        'en' => 'Postponed',
+        'pt' => 'Adiado',
+        'es' => 'Adiado',
+    ],
+
+
+
 
 ];
