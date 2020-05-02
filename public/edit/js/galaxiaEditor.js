@@ -811,19 +811,14 @@ function gjImportYoutube(el, ev) {
         infosEl.innerHTML = '';
         return;
     }
-    var regex = RegExp(/^https?:\/\/([^.]+\.)?youtube\./)
-    if (!regex.test(url)) {
-        errorsEl.innerHTML = '<li>' + t('Invalid url') + '</li>';
-        infosEl.innerHTML = '';
-        return;
-    }
 
-    var youtubeId = url.match(/watch\?v=([\w]+)/);
+    var youtubeId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
     if (youtubeId[1]) {
         youtubeId = youtubeId[1];
         infosEl.innerHTML = '<li>' + youtubeId + '</li>';
     } else {
         errorsEl.innerHTML = '<li>' + t('Invalid Youtube Id from url') + '</li>';
+        console.log('asdf');
         infosEl.innerHTML = '';
     }
 

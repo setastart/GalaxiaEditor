@@ -470,7 +470,7 @@ function getImporterJsonldInput($input) {
 
 
 function getImporterYoutubeInput($input) {
-    $r  = '    <textarea class="input-text" rows="1" wrap="soft" onkeydown="disableEnterKey(event)" oninput="textareaAutoGrow(this);">https://www.youtube.com/watch?v=hIBlo3ZWdYk</textarea>' . PHP_EOL;
+    $r  = '    <textarea class="input-text" rows="1" wrap="soft" onkeydown="disableEnterKey(event)" oninput="textareaAutoGrow(this);">' . $input['value'] . '</textarea>' . PHP_EOL;
     $r .= '    <button type="button" class="btn btn-blue btn-pill rr" onclick="gjImportYoutube(this, event)">' . t('Import') . '</button>' . PHP_EOL;
     $r .= '    <script type="text/javascript">var importRelationsYoutube = ' . json_encode($input['options']) . '</script>' . PHP_EOL;
     return $r;
