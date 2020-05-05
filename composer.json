@@ -7,7 +7,7 @@
     "homepage": "https://setastart.com/",
 
     "require": {
-        "setastart/galaxia-core": "3.4.*",
+        "setastart/galaxia-core": "3.5.*",
         "setastart/galaxia-logtostats": "0.1.*",
         "setastart/galaxia-redis": "3.0.*",
         "nikic/fast-route": "^1.3",
