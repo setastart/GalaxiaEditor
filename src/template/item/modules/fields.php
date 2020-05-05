@@ -49,7 +49,18 @@ $stmt->close();
 
 
 // - prepare geInputs
-
+foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
+    foreach ($parent as $parentValue => $inputsDefault) {
+        if (!isset($item['data'][$parentName])) continue;
+        if ($item['data'][$parentName] != $parentValue) continue;
+        foreach ($inputsDefault as $fieldKey => $inputs) {
+            foreach ($inputs as $inputKey => $input) {
+                $module['inputs'][$fieldKey]['proto'][$inputKey] = [];
+                $module['inputs'][$fieldKey]['new-0'][$inputKey] = [];
+            }
+        }
+    }
+}
 foreach ($module['gcInputs'] as $inputKey => $input) {
     $module['gcInputs'][$inputKey] = prepareInput($input, $app->dirImage, $extras);
 }
