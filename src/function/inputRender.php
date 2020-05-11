@@ -160,7 +160,7 @@ $ht .= '    <div class="input-label">' .
             break;
 
         case 'textarea':
-            $ht .= getBasicInput($input) . PHP_EOL;
+            $ht .= getTextareaInput($input) . PHP_EOL;
             break;
 
         case 'datetime':
