@@ -129,37 +129,39 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
 
 // delete fields with empty values
 
-if (!empty($module['gcModuleDeleteIfEmpty'])) {
+foreach ($modules as $module) {
+    if (!empty($module['gcModuleDeleteIfEmpty'])) {
 
-    $cols = [$itemColId];
-    foreach ($module['gcModuleDeleteIfEmpty'] as $col)
-        $cols[] = $col;
+        $cols = [$itemColId];
+        foreach ($module['gcModuleDeleteIfEmpty'] as $col)
+            $cols[] = $col;
 
-    $expression = [$module['gcTable'] => $cols];
+        $expression = [$module['gcTable'] => $cols];
 
-    $query = queryDeleteOrNull($expression);
+        $query = queryDeleteOrNull($expression);
 
-    $params = [$itemId];
-    foreach ($module['gcModuleDeleteIfEmpty'] as $col)
-        $params[] = '';
+        $params = [$itemId];
+        foreach ($module['gcModuleDeleteIfEmpty'] as $col)
+            $params[] = '';
 
-    try {
-        $stmt = $db->prepare($query);
-        $types = str_repeat('s', count($params));
-        $stmt->bind_param($types, ...$params);
-        $stmt->execute();
-        $affectedRows = $stmt->affected_rows;
-        $stmt->close();
+        try {
+            $stmt = $db->prepare($query);
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+            $stmt->execute();
+            $affectedRows = $stmt->affected_rows;
+            $stmt->close();
 
-        if ($affectedRows > 0) {
-            info(sprintf(t('Empty fields deleted: %d'), $affectedRows));
+            if ($affectedRows > 0) {
+                info(sprintf(t('Empty fields deleted: %d'), $affectedRows));
+            }
+
+        } catch (Exception $e) {
+            error('fields-update - Unable to delete empty fields.');
+            geD($query);
+            error($e->getMessage());
+            return;
         }
 
-    } catch (Exception $e) {
-        error('fields-update - Unable to delete empty fields.');
-        geD($query);
-        error($e->getMessage());
-        return;
     }
-
 }

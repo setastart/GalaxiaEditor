@@ -1,10 +1,10 @@
-<?php renderForm('', 'item-new', 'item item-new paper pad'); ?>
+<?php   renderForm('', 'item-new', 'item item-new paper pad'); ?>
 
     <div class="paper-header pad">
         <h1><?=h($pgTitle)?></h1>
 
 <?php   if (isset($item['inputs']['status'])) { ?>
-<?php       echo renderStatus($item['inputs']['status']); ?>
+<?php       renderStatus($item['inputs']['status']); ?>
 <?php   } ?>
     </div>
 
@@ -33,4 +33,4 @@
         </div>
     </div>
 
-<?php renderFormEnd(); ?>
+<?php   renderFormEnd(); ?>

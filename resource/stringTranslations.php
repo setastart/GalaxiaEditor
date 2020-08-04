@@ -477,8 +477,8 @@ return [
     ],
     'SEO Title' => [
         'en' => 'SEO Title',
-        'pt' => 'Descrição SEO',
-        'es' => 'Descripción SEO',
+        'pt' => 'Título SEO',
+        'es' => 'Título SEO',
     ],
     'SEO Titles' => [
         'en' => 'SEO Titles',
@@ -685,6 +685,11 @@ return [
         'pt' => 'Importar desde url Youtube',
         'es' => 'Importar desde url Youtube',
     ],
+    'importer-vimeo' => [
+        'en' => 'Import from Vimeo url',
+        'pt' => 'Importar desde url Vimeo',
+        'es' => 'Importar desde url Vimeo',
+    ],
     'action-3' => [
         'en' => 'Created',
         'pt' => 'Criado',
@@ -799,6 +804,16 @@ return [
         'en' => 'Headers',
         'pt' => 'Cabeçalhos',
         'es' => 'Encabezamientos',
+    ],
+    'Footer' => [
+        'en' => 'Footer',
+        'pt' => 'Pé de página',
+        'es' => 'Pié de página',
+    ],
+    'Footers' => [
+        'en' => 'Footers',
+        'pt' => 'Pés de página',
+        'es' => 'Piés de página',
     ],
 
 

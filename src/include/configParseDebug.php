@@ -83,7 +83,7 @@ foreach ($geConf as $areaKey => $area) {
         }
 
         foreach ($area['gcList']['gcColumns'] as $column)
-            foreach ($column['gcColContent'] as $rowCol) {
+            foreach ($column['gcColContent'] ?? [] as $rowCol) {
                 gcTableExists($dbSchema, $areaKey . '/gcList/gcColumns', $rowCol['dbTab']);
 
                 foreach ($rowCol['dbCols'] as $dbCol)
@@ -168,7 +168,7 @@ foreach ($geConf as $areaKey => $area) {
                     gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'position');
                 }
                 foreach ($module['gcUpdate'] as $table => $cols) {
-                    gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'position');
+                    // gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'position');
                 }
             }
 

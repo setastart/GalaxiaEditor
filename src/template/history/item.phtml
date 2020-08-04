@@ -2,11 +2,11 @@
     <div class="item-title">
         <h1><?=h($pgTitle)?></h1>
     </div>
-<?php if (isset($rootSlugs[$tabName])) { ?>
+<?php   if (isset($rootSlugs[$tabName])) { ?>
     <div class="paper-header">
         <a href="/edit/<?=h($rootSlugs[$tabName])?>/<?=h($tabId)?>"><?=t('Edit Item')?></a>
     </div>
-<?php } ?>
+<?php   } ?>
 <?php   foreach ($items as $itemId => $item) { ?>
     <div id="<?=h($itemId)?>" class="history-item paper pad action-<?=h($item['action'])?>">
 <?php       foreach ($item['changes'] as $change) { ?>
@@ -18,6 +18,6 @@
             <p class="grey pad"><?=t('Id')?>: <?=h($itemId)?></p>
         </div>
     </div>
-<?php } ?>
+<?php   } ?>
 
 </div>

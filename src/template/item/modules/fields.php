@@ -55,6 +55,7 @@ foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
         if ($item['data'][$parentName] != $parentValue) continue;
         foreach ($inputsDefault as $fieldKey => $inputs) {
             foreach ($inputs as $inputKey => $input) {
+                if ($inputKey == 'fieldKey') continue;
                 $module['inputs'][$fieldKey]['proto'][$inputKey] = [];
                 $module['inputs'][$fieldKey]['new-0'][$inputKey] = [];
             }
@@ -158,8 +159,8 @@ foreach ($fieldsData as $fieldKey => $field) {
                 $newFieldsToDelete[$fieldKey] = true;
             } else {
                 // $module['inputsUnused'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['gcInputs'][$inputKey], $inputNew);
-                // $module['inputsUnused'][$fieldKey][$inputKey] = array_replace($input, $module['inputsUnused'][$fieldKey][$inputKey], $inputNew);
-                // $module['inputsUnused'][$fieldKey][$inputKey]['cssClass'] = $module['gcModuleShowUnused']['cssClass'] ?? '';
+                // $module['inputsUnused'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['inputsUnused'][$fieldKey][$inputKey], $inputNew);
+                // $module['inputsUnused'][$fieldKey][$fieldId][$inputKey]['cssClass'] = $module['gcModuleShowUnused']['cssClass'] ?? '';
             }
 
 

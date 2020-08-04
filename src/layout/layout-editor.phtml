@@ -96,20 +96,13 @@ document.addEventListener('trix-file-accept', function(event) {
 
 <body class="page-<?=h($pgSlug)?> hide-active-msgbox-info hide-active-msgbox-warning hide-active-msgbox-error hide-active-msgbox-devlog">
 
-<div id="website-link">
-    <a target="_blank" rel="noopener" href="/">
-        <img src="/favicon.ico" class="thumb-mini">
-        <span><?=h($_SERVER['SERVER_NAME'])?></span>
-    </a>
-</div>
-
 <div id="openboxes">
 <?php   foreach (['error', 'info', 'warning'] as $box) { ?>
 <?php       if ($msgs = msgBoxes($box)) { ?>
     <div id="openbox-<?=h($box)?>" class="openbox">
         <label for="switch-hide-msgbox-<?=h($box)?>" class="btn btn-pill btn-small btn-checkbox">
             <?=t(ucfirst($box))?>
-            <input onchange="gjSwitch(this, event)" type="checkbox"  value="hide-active-msgbox-<?=h($box)?>" id="switch-hide-msgbox-<?=h($box)?>" title="<?=h($perm)?>">
+            <input type="checkbox"  value="hide-active-msgbox-<?=h($box)?>" id="switch-hide-msgbox-<?=h($box)?>" title="<?=h($perm)?>">
         </label>
         <span><?=$msgs[0] . ((count($msgs) > 1) ? ' +' . (count($msgs) - 1) : '')?></span>
     </div>
@@ -121,7 +114,7 @@ document.addEventListener('trix-file-accept', function(event) {
     <div id="openbox-<?=h($box)?>" class="openbox hide-perm-dev">
         <label for="switch-hide-msgbox-<?=h($box)?>" class="btn btn-pill btn-small btn-checkbox">
             <?=t(ucfirst($box))?>
-            <input onchange="gjSwitch(this, event)" type="checkbox"  value="hide-active-msgbox-<?=h($box)?>" id="switch-hide-msgbox-<?=h($box)?>" title="<?=h($perm)?>">
+            <input type="checkbox"  value="hide-active-msgbox-<?=h($box)?>" id="switch-hide-msgbox-<?=h($box)?>" title="<?=h($perm)?>">
         </label>
         <span><?=desc($msgs[0], 30, ' ') . ((count($msgs) > 1) ? ' +' . (count($msgs) - 1) : '')?></span>
     </div>
@@ -129,23 +122,21 @@ document.addEventListener('trix-file-accept', function(event) {
 <?php   } ?>
 </div>
 
-<?php include 'switches.phtml'; ?>
-
-<?php include 'menu.phtml'; ?>
+<?php   include 'menu.phtml'; ?>
 
 <div id="page">
-<?php Director::timerStart('View: ' . $editor->view . '.phtml'); ?>
-<?php include $editor->dirView . $editor->view . '.phtml'; ?>
-<?php Director::timerStop('View: ' . $editor->view . '.phtml'); ?>
-<?php include 'messageBoxes.phtml'; ?>
+<?php   include 'messageBoxes.phtml'; ?>
+<?php   Director::timerStart('View: ' . $editor->view . '.phtml'); ?>
+<?php   include $editor->dirView . $editor->view . '.phtml'; ?>
+<?php   Director::timerStop('View: ' . $editor->view . '.phtml'); ?>
 </div>
 
 <div id="footer">
     <div class="links">
         <a href="/edit/logout"><?=t('Logout')?></a>
-<?php if (in_array('dev', $me->perms)) { ?>
+<?php   if (in_array('dev', $me->perms)) { ?>
         <a href="/edit/dev" class="hide-perm-dev">Developer</a>
-<?php } ?>
+<?php   } ?>
         <a href="/edit/dev/cacheDeleteEditor"><?=t('Delete Editor Caches')?></a>
     </div>
     <p class="version"><img class="icon" src="/edit/favicon.ico"><?=h($me->name)?>@galaxia v<?=h($editor->version);?></p>
@@ -153,10 +144,10 @@ document.addEventListener('trix-file-accept', function(event) {
 </div>
 
 
-<?php require $editor->dirView . 'imageList/select.phtml'; ?>
+<?php   require $editor->dirView . 'imageList/select.phtml'; ?>
 
 
-<?php if ($chatInclude && $pgSlug != 'chat') { ?>
+<?php   if ($chatInclude && $pgSlug != 'chat') { ?>
 <div id="gchat">
 <?php       if ($chatIncludeCurrent) { ?>
     <div class="gchat-room" data-room="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>">
@@ -168,8 +159,8 @@ document.addEventListener('trix-file-accept', function(event) {
         </div>
         <span class="status-publish"></span>
         <div class="send">
-            <textarea class="input-text input-textarea" name="msg" rows="1" oninput="textareaAutoGrow(this)" onkeydown="gjcEnterSend(this, event, '/edit/<?=h($pgSlug)?>/<?=h($itemId)?>')" wrap="soft"></textarea>
-            <button class="btn btn-green" onclick="gjcClickSend(this, '/edit/<?=h($pgSlug)?>/<?=h($itemId)?>')"><?=t('Send')?></button>
+            <textarea class="gchat-room-text input-text input-textarea" name="msg" rows="1" data-room="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>" wrap="soft"></textarea>
+            <button class="gchat-room-btn btn btn-green" data-room="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>"><?=t('Send')?></button>
         </div>
     </div>
 <?php       } ?>
@@ -182,8 +173,8 @@ document.addEventListener('trix-file-accept', function(event) {
         </div>
         <span class="status-publish"></span>
         <div class="send">
-            <textarea class="input-text input-textarea" name="msg" rows="1" oninput="textareaAutoGrow(this)" onkeydown="gjcEnterSend(this, event, '/edit/chat')" wrap="soft"></textarea>
-            <button class="btn btn-green" onclick="gjcClickSend(this, '/edit/chat')"><?=t('Send')?></button>
+            <textarea class="gchat-room-text input-text input-textarea" name="msg" rows="1" data-room="/edit/chat" wrap="soft"></textarea>
+            <button class="gchat-room-btn btn btn-green" data-room="/edit/chat"><?=t('Send')?></button>
         </div>
     </div>
     <div id="status-listen">listen status</div>
@@ -192,4 +183,4 @@ document.addEventListener('trix-file-accept', function(event) {
 
 </body>
 </html>
-<?php cleanMessages(); ?>
+<?php   cleanMessages(); ?>

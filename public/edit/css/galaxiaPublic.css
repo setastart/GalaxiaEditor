@@ -3,8 +3,6 @@ html {
 }
 body {
     padding: 10px;
-    background: url(/edit/gfx/bg-stars-transparent.png), linear-gradient(180deg, #101059 0%, #2E40A6 100%);
-    background: url(/edit/gfx/bg-stars-transparent.png), linear-gradient(180deg, #09092d 0%, #112177 100%);
     background: url(/edit/gfx/bg-stars-transparent.png), linear-gradient(180deg, #09092d 0%, #09092d 50%, #112177 100%);
     background-position: center center;
     background-size: initial, cover;

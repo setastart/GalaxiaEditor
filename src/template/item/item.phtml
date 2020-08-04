@@ -1,10 +1,10 @@
-<?php renderForm('', 'item-edit', 'item paper pad'); ?>
+<?php   renderForm('', 'item-edit', 'item paper pad'); ?>
 
     <div class="paper-header pad">
         <h1><?=h($pgTitle)?></h1>
 
 <?php   if ($firstStatus) { ?>
-<?php       echo renderStatus($item['inputs'][$firstStatus]); ?>
+<?php       renderStatus($item['inputs'][$firstStatus]); ?>
 <?php   } ?>
 
         <div class="paper-header-actions">
@@ -28,7 +28,12 @@
 <?php       } ?>
 <?php   } else if (is_array($item['gcVisit'])) { ?>
 <?php       foreach ($item['gcVisit'] as $link) { ?>
-            <a target="_blank" rel="noreferrer" href=" . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=h($lang)?></a>
+<?php           if (!isset($link['id'])) continue ?>
+<?php           if (!isset($link['prefix'])) continue ?>
+<?php           $id = $item['inputs'][$link['id']]['value'] ?? ''; ?>
+<?php           $prefix = $link['prefix'] ?? ''; ?>
+<?php           $name = $prefix . $item['inputs'][$link['id']]['value']; ?>
+            <a target="_blank" rel="noreferrer" href="<?=h($name)?>" class="btn-a"><?=h($name)?></a>
 <?php       } ?>
 <?php   } ?>
         </div>
@@ -98,4 +103,4 @@ foreach ($modules as $moduleKey => $module) {
         </div>
     </div>
 
-<?php renderFormEnd(); ?>
+<?php   renderFormEnd(); ?>

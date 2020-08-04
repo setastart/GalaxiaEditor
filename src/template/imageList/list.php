@@ -101,11 +101,10 @@ switch ($_POST['imageListType'] ?? '') {
 
             foreach ($items as $imgSlug => $img) {
 $ht = '';
-$ht .= '<button type="button" id="' . h($imgSlug) . '" class="imageSelectItem" onclick="gjImageSelectorActivate(this)">' . PHP_EOL;
-$ht .= '    <div class="ratio">' . PHP_EOL;
-$ht .= '        ' . gImageRenderReflowSpacer($img['w'], $img['h']) . PHP_EOL;
-$ht .= '        ' . gImageRender($img, 'onerror="gjImageResizeRequest(this, event)"') . PHP_EOL;
-$ht .= '    </div>' . PHP_EOL;
+$ht .= '<button type="button" id="' . h($imgSlug) . '" class="imageSelectItem" data-imgslug="' . h($imgSlug) . '">' . PHP_EOL;
+$ht .= '    <figure>' . PHP_EOL;
+$ht .= '        ' . gImageRender($img) . PHP_EOL;
+$ht .= '    </figure>' . PHP_EOL;
 $ht .= '    <p>' . h($imgSlug) . '</p>' . PHP_EOL;
 $ht .= '</button>' . PHP_EOL;
                 $rows[$imgSlug] = $ht;
@@ -126,9 +125,8 @@ $ht = '';
                     if (!isset($imgTypes[$img['extra']['type']])) $imgTypes[$img['extra']['type']] = $currentColor++;
 $ht .= '<a class="row row-image" href="/edit/images/' . $imgSlug . '">' . PHP_EOL;
 $ht .= '    <div class="col flexT">' . PHP_EOL;
-$ht .= '        <div class="col-thumb ratio">' . PHP_EOL;
-$ht .= '            ' . gImageRenderReflowSpacer($img['w'], $img['h']) . PHP_EOL;
-$ht .= '            ' . gImageRender($img, 'onerror="gjImageResizeRequest(this, event)"') . PHP_EOL;
+$ht .= '        <div class="col-thumb figure single">' . PHP_EOL;
+$ht .= '            ' . gImageRender($img) . PHP_EOL;
 $ht .= '        </div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;

@@ -1,3 +1,9 @@
+'use strict';
+
+/******************************/
+/******  galaxiaChat.js  ******/
+/******************************/
+
 
 // initialize gchat
 
@@ -14,9 +20,9 @@ window.addEventListener("DOMContentLoaded", function(event) {
         return;
     }
 
-    var geVars = ['myId', 'clientId', 'csrf'];
-    for (varName in geVars) {
-        if (gchat[geVars[varName]] == undefined) {
+    const geVars = ['myId', 'clientId', 'csrf'];
+    for (let varName in geVars) {
+        if (gchat[geVars[varName]] === undefined) {
             console.error('variable ' + geVars[varName] + ' missing');
             return;
         }
@@ -28,14 +34,14 @@ window.addEventListener("DOMContentLoaded", function(event) {
         'rooms': {}
     };
 
-    var roomsFound = false;
-    for (i = 0; i < gchat.roomNodes.length; i++) {
-        var room = gchat.roomNodes[i].dataset.room;
+    let roomsFound = false;
+    for (let i = 0; i < gchat.roomNodes.length; i++) {
+        const room = gchat.roomNodes[i].dataset.room;
         if (!room) {
             console.log('invalid room: ' + room + ' (skipping)');
             continue;
         }
-        if (gchat.rooms[room] != undefined) {
+        if (gchat.rooms[room] !== undefined) {
             console.log('duplicate room: ' + room + ' (skipping)');
             continue;
         }
@@ -118,7 +124,7 @@ function gjcListen() {
 
         var localDateFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-        for (room in json.rooms) {
+        for (let room in json.rooms) {
             for (msgId in json.rooms[room].messages) {
                 var entry = '';
                 var msg = json.rooms[room].messages[msgId];
@@ -206,7 +212,7 @@ function gjcListen() {
 
 function gjcEnterSend(e, event, room) {
     if (!gchat.enabled) return;
-    if (event.key != 'Enter' || event.shiftKey) return;
+    if (event.key !== 'Enter' || event.shiftKey) return;
     msgSend(room, 'speak', e.value, e, e.nextElementSibling);
     event.preventDefault();
     return false;
@@ -246,7 +252,7 @@ function msgSend(room, type, msg, eText, eBtn) {
     xhr.onload = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var json = JSON.parse(xhr.response);
-            if (json.status == 'ok') {
+            if (json.status === 'ok') {
                 eText.value = '';
                 eText.focus();
 
@@ -263,7 +269,6 @@ function msgSend(room, type, msg, eText, eBtn) {
             console.error(xhr);
             gchat.rooms[room].els.publishStatus.innerHTML = 'error ' + xhr.statusText;
             gchat.rooms[room].els.publishStatus.classList.value = 'status-publish red';
-            return;
         }
     };
 
@@ -335,7 +340,7 @@ function gjcLeaveRooms() {
 function gjcScrollToBottom(room) {
     // console.log('scrolol ' + room);
     if (!gchat.enabled) return;
-    if (gchat.rooms[room] == undefined) return;
+    if (gchat.rooms[room] === undefined) return;
     gchat.rooms[room].els.messagesWrapper.scrollTop = gchat.rooms[room].els.messagesWrapper.scrollHeight;
 }
 
@@ -343,11 +348,15 @@ function gjcScrollToBottom(room) {
 
 
 function difference(a1, a2) {
-    var result = [];
-    for (var i = 0; i < a1.length; i++) {
-        if (a2.indexOf(a1[i]) === -1) {
+    let result = [];
+    for (let i = 0; i < a1.length; i++) {
+        if (!a2.contains(a1[i])) {
             result.push(a1[i]);
         }
     }
     return result;
 }
+
+
+
+

@@ -1,4 +1,4 @@
-<?php renderForm('', 'image-delete', 'image image-delete paper pad'); ?>
+<?php   renderForm('', 'image-delete', 'image image-delete paper pad'); ?>
 
     <div class="paper-header pad">
         <h1><?=h($pgTitle)?></h1>
@@ -8,18 +8,17 @@
     </div>
 
     <div class="image-preview pad">
-        <div class="ratio">
-            <?=gImageRenderReflowSpacer($img['w'], $img['h']), PHP_EOL?>
+        <figure>
             <?=gImageRender($img), PHP_EOL?>
-        </div>
+        </figure>
     </div>
 
     <div class="paper-footer pad">
-<?php include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
+<?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions">
             <a class="btn btn-blue btn-mb active" href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>"><?=t('Cancel')?></a>
             <button class="btn btn-red btn-mb active"><?=sprintf(t('Delete %s'), t($geConf[$pgSlug]['gcTitleSingle']))?></button>
         </div>
     </div>
 
-<?php renderFormEnd(); ?>
+<?php   renderFormEnd(); ?>

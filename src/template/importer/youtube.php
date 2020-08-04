@@ -1,36 +1,33 @@
 <?php
 
 use Galaxia\Director;
-
-$app = Director::getApp();
+use Galaxia\Scrape\Scrape;
+use Galaxia\Scrape\Youtube;
 
 $editor->layout = 'none';
 
-$r = [
-    'error' => '',
-];
 
-$youtubeId = h($_GET['id']) ?? '';
-$videoInfo = scrapeYoutubeVideoInfo($_GET['id']);
+$r = Youtube::getPlaylistVideos('https://www.youtube.com/playlist?list=PLi5BhhFIMLyjhkd2Vj-VjHXtWUM2oQNIm');
+Scrape::printJsonAndExit($r);
 
-if ($videoInfo['error']) {
-    $r['error'] = $videoInfo['error'];
-    return $r;
-}
+$id = h($_GET['id']) ?? '';
+$r = Youtube::getVideoFromId($id);
 
-$r = $videoInfo;
+if ($r[Scrape::DATA][Youtube::IMG_SLUG] ?? '') {
+    $app     = Director::getApp();
+    $imgSlug = $r[Scrape::DATA][Youtube::IMG_SLUG];
 
-$r['imgSlug'] = 'youtube-' . $videoInfo['hash'];
-if (!gImageValid($app->dirImage, $r['imgSlug'])) {
-    $imgUrl         = 'https://img.youtube.com/vi/' . $youtubeId . '/hqdefault.jpg';
-    $uploadedImages = $app->imageUpload([$imgUrl => $r['imgSlug']], true, 0, 'youtube');
-    if (empty($uploadedImages)) {
-        $r['info'][$youtubeId] = 'Image not uploaded';
-        $r['imgSlug'] = '';
+    if (gImageValid($app->dirImage, $imgSlug)) {
+        $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_EXISTS;
+    } else {
+        $imgUrl = $r[Scrape::DATA][Youtube::IMG_URL];;
+        $uploadedImages = $app->imageUpload([$imgUrl => $imgSlug], true, 0, 'vimeo');
+        if (empty($uploadedImages)) {
+            $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_NOT_DOWNLOADED;
+        } else {
+            $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_DOWNLOADED;
+        }
     }
 }
 
-// $r = array_map_recursive(function($a) { return strip_tags($a, ALLOWED_TAGS); }, $r);
-
-header('Content-Type: application/json');
-exit(json_encode($r, JSON_PRETTY_PRINT));
+Scrape::printJsonAndExit($r);

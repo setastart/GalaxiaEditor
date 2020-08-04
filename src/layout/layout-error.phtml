@@ -25,16 +25,13 @@ global $me;
 </head>
 <body class="page-error">
 
-<div id="website-link">
-    <a target="_blank" rel="noopener" href="/">
-        <img src="/favicon.ico" class="thumb-mini">
-        <span><?=h($_SERVER['SERVER_NAME'])?></span>
-    </a>
+<div id="openboxes">
 </div>
 
-<?php include 'menu.phtml'; ?>
+<?php   include 'menu.phtml'; ?>
 
 <div id="page">
+    <?php   include 'messageBoxes.phtml'; ?>
     <div class="paper pad">
         <div class="paper-header pad">
             <h1>Error <?=h($errorCode)?></h1>
@@ -43,15 +40,14 @@ global $me;
             <?=h($error)?>
         </div>
     </div>
-<?php include 'messageBoxes.phtml'; ?>
 </div>
 
 <div id="footer">
     <div class="links">
         <a href="/edit/logout"><?=t('Logout')?></a>
-<?php if (in_array('dev', $me->perms)) { ?>
+<?php   if (in_array('dev', $me->perms)) { ?>
         <a href="/edit/dev" class="hide-perm-dev">Developer</a>
-<?php } ?>
+<?php   } ?>
         <a href="/edit/dev/cacheDeleteEditor"><?=t('Delete Editor Caches')?></a>
     </div>
     <p class="version"><img class="icon" src="/edit/favicon.ico"><?=h($me->name)?>@galaxia v<?=h($editor->version);?></p>
@@ -60,4 +56,4 @@ global $me;
 
 </body>
 </html>
-<?php cleanMessages(); ?>
+<?php   cleanMessages(); ?>

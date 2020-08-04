@@ -8,7 +8,7 @@ function renderForm($action = '', $id = '', $classes = '') {
     if ($id) $id = ' id="' . h($id) . '"';
     if ($classes) $classes = ' class="' . h($classes) . '"';
     $form = '<form' . $action . $id . $classes . ' method="post" enctype="multipart/form-data">' . PHP_EOL;
-    $form .= '<input type="hidden" name="csrf" value="' . h($_SESSION['csrf']) . '" />' . PHP_EOL;
+    $form .= '<input type="hidden" name="csrf" value="' . h($_SESSION['csrf']) . '">' . PHP_EOL;
     echo $form;
 }
 function renderFormEnd() {
@@ -55,7 +55,7 @@ function renderInputText($input) {
 
     $input = array_merge(PROTO_INPUT, $input);
 
-    $css = $input['lang'] ? 'input-wrap-lang hide-lang-' . $input['lang'] : '';
+    $css = $input['lang'] ? 'hide-lang-' . $input['lang'] : '';
 
 $ht =  '<div class="input-wrap pad ' . h($css) . '">' . PHP_EOL;
 
@@ -105,7 +105,7 @@ function renderInput(App $app, $input) {
     $input['infos'] = infos('form', $input['name']);
 
     $css = 'input-wrap input-wrap-' . $input['type'];
-    $css .= $input['lang'] ? ' input-wrap-lang hide-lang-' . $input['lang'] : '';
+    $css .= $input['lang'] ? ' hide-lang-' . $input['lang'] : '';
     $css .= ' pad';
 
     if (isset($input['gcPerms']))
@@ -197,6 +197,10 @@ $ht .= '    <div class="input-label">' .
             $ht .= getImporterYoutubeInput($input) . PHP_EOL;
             break;
 
+        case 'importerVimeo':
+            $ht .= getImporterVimeoInput($input) . PHP_EOL;
+            break;
+
         default:
             $input['errors'][] = 'Invalid input type: ' . h($input['type']);
             break;
@@ -206,25 +210,23 @@ $ht .= '    <div class="input-label">' .
     if ($input['type'] == 'slugImage') {
         $imgType = t($input['options']['imgType'] ?? '');
         if ($img = $app->imageGet($input['value'] ?? '', ['w' => 256, 'h' => 256, 'fit' => 'cover', 'version' => 'mtime'], false)) {
-$ht .= '    <button type="button"  class="slugImage ratio center" onclick="gjImageSelectorOpen(this, \'' . h($imgType) . '\')">' . PHP_EOL;
-$ht .= gImageRenderReflowSpacer($img['w'], $img['h']) . PHP_EOL;
-$ht .= gImageRender($img, 'onerror="gjImageResizeRequest(this, event)"') . PHP_EOL;
+$ht .= '    <button type="button" class="slugImage figure" data-imgtype="' . $imgType . '">' . PHP_EOL;
+$ht .= '        ' . gImageRender($img) . PHP_EOL;
 $ht .= '    </button>' . PHP_EOL;
         } else {
-$ht .= '    <button type="button" class="slugImage ratio center empty" onclick="gjImageSelectorOpen(this, \'' . h($imgType) . '\')">' . PHP_EOL;
-$ht .= gImageRenderReflowSpacer(100, 75) . PHP_EOL;
-$ht .= '    <img src="/edit/gfx/no-photo.png" onerror="gjImageResizeRequest(this, event)">' . PHP_EOL;
+$ht .= '    <button type="button" class="slugImage figure empty" data-imgtype="' . h($imgType) . '">' . PHP_EOL;
+$ht .= '        <img src="/edit/gfx/no-photo-add.png">' . PHP_EOL;
 $ht .= '    </button>' . PHP_EOL;
         }
     }
 
-$ht .= '    <ul class="input-errors">' . PHP_EOL;
+$ht .= '    <ul class="input-footer input-errors">' . PHP_EOL;
     foreach ($input['errors'] as $error) {
 $ht .= '        <li class="input-error">' . h($error) . '</li>' . PHP_EOL;
     }
 $ht .= '    </ul>' . PHP_EOL;
 
-$ht .= '    <ul class="input-infos">' . PHP_EOL;
+$ht .= '    <ul class="input-footer input-infos">' . PHP_EOL;
     foreach ($input['infos'] as $info) {
 $ht .= '        <li class="input-info">' . h($info) . '</li>' . PHP_EOL;
     }
@@ -241,7 +243,7 @@ $ht .= '</div>' . PHP_EOL;
 // inputs
 
 function getRawInput($input) {
-    $r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . htmlspecialchars($input['value'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5) . '" onkeydown="disableEnterKey(event)" oninput="gjInputChange(this, event)"';
+    $r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . htmlspecialchars($input['value'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5) . '"';
 
     foreach ($input['options'] as $optionName => $optionValue) {
         $r .= ' ' . $optionName . '="' . $optionValue . '"';
@@ -256,7 +258,7 @@ function getRawInput($input) {
 
 
 function getBasicInput($input) {
-    $r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . $input['value'] . '" onkeydown="disableEnterKey(event)" oninput="gjInputChange(this, event)"';
+    $r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . $input['value'] . '"';
 
     foreach ($input['options'] as $optionName => $optionValue) {
         $r .= ' ' . $optionName . '="' . $optionValue . '"';
@@ -271,7 +273,7 @@ function getBasicInput($input) {
 
 
 function getTextInput($input) {
-    $r = '    <textarea class="input-text" name="' . $input['name'] . '" rows="1" wrap="soft" onkeydown="disableEnterKey(event)" oninput="textareaAutoGrow(this); gjInputChange(this, event)"';
+    $r = '    <textarea class="input-text" name="' . $input['name'] . '" rows="1" wrap="soft"';
 
     foreach ($input['options'] as $optionName => $option) {
         $r .= ' ' . $optionName . '="' . $option . '"';
@@ -285,15 +287,32 @@ function getTextInput($input) {
 
 
 
-
 function getImageInput($input) {
-    $r =  '    <div>' . PHP_EOL;
-    $r .= '        <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />' . PHP_EOL;
-    $r .= '        <input pattern="[a-z0-9\-]*" class="input-file input-image btn active" type="file" accept="image/jpeg,image/png" name="' . $input['name'] . '" oninput="gjInputChange(this, event)"';
-    if ($input['disabled']) $r .= ' disabled';
-    if (isset($input['options']['multiple'])) $r .= ' multiple';
-    $r .= '>' . PHP_EOL;
+
+    $maxMemory      = sizeShorthandToInt(ini_get('memory_limit'));
+    $maxPostSize    = sizeShorthandToInt(ini_get('post_max_size'));
+    $maxTotal = min($maxMemory, $maxPostSize);
+
+    $maxUploadSize  = min($maxTotal, sizeShorthandToInt(ini_get('upload_max_filesize')));
+    $maxUploadFiles = ini_get('max_file_uploads');
+
+    $dataSizes = ' data-maxtotal="' . $maxTotal . '" data-maxsize="' . $maxUploadSize . '" data-maxcount="' . $maxUploadFiles . '"';
+
+    $multiple = ($input['options']['multiple'] ?? false) ? ' multiple' : '';
+    $disabled = ($maxUploadSize < 1 || $input['disabled']) ? ' disabled' : '';
+
+    $r  = '    <div>' . PHP_EOL;
+    $r .= '        <input type="hidden" name="MAX_FILE_SIZE" value="' . $maxUploadSize . '"' . $disabled . '>' . PHP_EOL;
+    $r .= '        <input name="' . $input['name'] . '" pattern="[a-z0-9\-]*" class="input-file input-image btn active" type="file" accept="image/jpeg,image/png"' . $dataSizes . $multiple . $disabled . '>' . PHP_EOL;
+    $r .= '        <div class="info">' . PHP_EOL;
+    $r .= '            <div>' . sprintf(unsafet('Total size: <span class="maxtotal">0 B</span> / %s'), gFilesize($maxTotal)) . '</div>' . PHP_EOL;
+    $r .= '            <div>' . sprintf(unsafet('Max file size: <span class="maxsize">0 B</span> / %s'), gFilesize($maxUploadSize)) . '</div>' . PHP_EOL;
+    $r .= '            <div>' . sprintf(unsafet('Number of files: <span class="maxcount">0</span> / %s'), $maxUploadFiles) . '</div>' . PHP_EOL;
+    $r .= '        </div>' . PHP_EOL;
+    $r .= '        <ul class="upload-files">' . PHP_EOL;
+    $r .= '        </ul>' . PHP_EOL;
     $r .= '    </div>' . PHP_EOL;
+
     return $r;
 }
 
@@ -301,7 +320,7 @@ function getImageInput($input) {
 
 
 function getSlugInput($input) {
-    $r = '    <textarea pattern="[a-z0-9\-]*" class="input-text input-slug" name="' . $input['name'] . '" rows="1" wrap="soft" onkeydown="disableEnterKey(event)" oninput="gjInputFormat(this, \'slug\'); textareaAutoGrow(this); gjInputChange(this, event)"';
+    $r = '    <textarea pattern="[a-z0-9\-]*" class="input-text input-slug" name="' . $input['name'] . '" rows="1" wrap="soft"';
 
     foreach ($input['options'] as $optionName => $optionValue)
         $r .= ' ' . $optionName . '="' . $optionValue . '"';
@@ -315,7 +334,7 @@ function getSlugInput($input) {
 
 
 function getSlugImageInput($input) {
-    $r = '    <textarea pattern="[a-z0-9\-]*" class="input-text input-slug" name="' . $input['name'] . '" rows="1" wrap="soft" onkeydown="disableEnterKey(event)" oninput="gjInputFormat(this, \'slug\'); textareaAutoGrow(this); gjInputChange(this, event)"';
+    $r = '    <textarea pattern="[a-z0-9\-]*" class="input-text input-slug" name="' . $input['name'] . '" rows="1" wrap="soft"';
 
     foreach ($input['options'] as $optionName => $optionValue)
         $r .= ' ' . $optionName . '="' . $optionValue . '"';
@@ -339,10 +358,13 @@ function getRadioInput($input) {
             $attr .= ' checked';
             $css .= ' active';
         }
-        if (isset($option['disabled'])) $attr .= ' disabled';
+        if (isset($option['disabled'])) {
+            $attr .= ' disabled';
+            $css  .= ' disabled';
+        }
 
         $r .= '    <label class="' . h($css) . '">' . PHP_EOL;
-        $r .= '        <input type="radio" name="' . $input['name'] . '" value="' . $optionValue . '"' . h($attr) . ' onchange="gjInputChange(this, event)" onkeydown="disableEnterKey(event)">' . PHP_EOL;
+        $r .= '        <input type="radio" name="' . $input['name'] . '" value="' . $optionValue . '"' . h($attr) . '>' . PHP_EOL;
         $r .= '        ' . t($option['label']) . PHP_EOL;
         $r .= '    </label>' . PHP_EOL;
     }
@@ -353,7 +375,7 @@ function getRadioInput($input) {
 
 
 function getSelectInput($input) {
-    $r = '    <select class="input-select" name="' . $input['name'] . '"' . ($input['disabled'] ? ' disabled' : '') . ' onchange="gjInputChange(this, event)" onblur="gjInputChange(this, event)">' . PHP_EOL;
+    $r = '    <select class="input-select" name="' . $input['name'] . '"' . ($input['disabled'] ? ' disabled' : '') . '>' . PHP_EOL;
 
     $selectedFound = false;
     foreach ($input['options'] as $optionValue => $option) {
@@ -372,7 +394,7 @@ function getSelectInput($input) {
         } else {
             $selected = '';
         }
-        $r .= '        <option value="' . h($optionValue) . '"' . $selected . '>' . t($option['label']) . '</option>' . PHP_EOL;
+        $r .= '        <option value="' . h($optionValue) . '"' . $selected . '>' . t($option['label'] ?? '') . '</option>' . PHP_EOL;
         $i++;
     }
 
@@ -385,7 +407,7 @@ function getSelectInput($input) {
 
 
 function getTextareaInput($input) {
-    $r = '    <textarea class="input-text input-textarea" name="' . $input['name'] . '" rows="1" wrap="soft" oninput="textareaAutoGrow(this); gjInputChange(this, event)"';
+    $r = '    <textarea class="input-text input-textarea" name="' . $input['name'] . '" rows="1" wrap="soft"';
 
     foreach ($input['options'] as $optionName => $option) {
         $r .= ' ' . $optionName . '="' . $option . '"';
@@ -400,7 +422,7 @@ function getTextareaInput($input) {
 
 
 function getTrixInput($input) {
-    $r = '    <input type="hidden" class="input-trix" name="' . $input['name'] . '" id="' . $input['name'] . '" value="' . h($input['value']) . '" oninput="gjInputChange(this, event)" onchange="gjInputChange(this, event)"';
+    $r = '    <input type="hidden" class="input-trix" name="' . $input['name'] . '" id="' . $input['name'] . '" value="' . h($input['value']) . '"';
 
     if ($input['disabled']) $r .= ' disabled';
 
@@ -414,7 +436,7 @@ function getTrixInput($input) {
 
 function getTimestampInput($input) {
     if (substr($input['value'], 16) == ':00') $input['value'] = substr($input['value'], 0, 16);
-    $r = '    <input class="input-text input-timestamp" type="text" name="' . $input['name'] . '" value="' . h($input['value']) . '" onkeydown="disableEnterKey(event)" oninput="gjInputChange(this, event)"';
+    $r = '    <input class="input-text input-timestamp" type="text" name="' . $input['name'] . '" value="' . h($input['value']) . '"';
 
     foreach ($input['options'] as $optionName => $option) {
         $r .= ' ' . $optionName . '="' . $option . '"';
@@ -429,7 +451,7 @@ function getTimestampInput($input) {
 
 
 function getDateInput($input) {
-    $r = '    <input class="input-text input-date" type="text" name="' . $input['name'] . '" value="' . h($input['value']) . '" onkeydown="disableEnterKey(event); gjInputMod(this,event);" oninput="gjInputFormat(this, \'date\'); gjInputChange(this, event)"';
+    $r = '    <input class="input-text input-date" type="text" name="' . $input['name'] . '" value="' . h($input['value']) . '"';
 
     foreach ($input['options'] as $optionName => $option) {
         $r .= ' ' . $optionName . '="' . $option . '"';
@@ -445,7 +467,7 @@ function getDateInput($input) {
 
 function getTimeInput($input) {
     if (substr($input['value'], 5) == ':00') $input['value'] = substr($input['value'], 0, 5);
-    $r = '    <input class="input-text input-time" type="text" name="' . $input['name'] . '" value="' . h($input['value']) . '" onkeydown="disableEnterKey(event); gjInputMod(this,event);" oninput="gjInputFormat(this, \'time\'); gjInputChange(this, event)"';
+    $r = '    <input class="input-text input-time" type="text" name="' . $input['name'] . '" value="' . h($input['value']) . '"';
 
     foreach ($input['options'] as $optionName => $option) {
         $r .= ' ' . $optionName . '="' . $option . '"';
@@ -460,8 +482,8 @@ function getTimeInput($input) {
 
 
 function getImporterJsonldInput($input) {
-    $r  = '    <textarea class="input-text" rows="1" wrap="soft" onkeydown="disableEnterKey(event)" oninput="textareaAutoGrow(this);"></textarea>' . PHP_EOL;
-    $r .= '    <button type="button" class="btn btn-blue btn-pill rr" onclick="gjImportJsonld(this, event)">' . t('Import') . '</button>' . PHP_EOL;
+    $r  = '    <textarea class="input-text" rows="1" wrap="soft"></textarea>' . PHP_EOL;
+    $r .= '    <button type="button" class="btn btn-blue btn-pill rr scrape-jsonld">' . t('Import') . '</button>' . PHP_EOL;
     $r .= '    <script type="text/javascript">var importRelationsJsonld = ' . json_encode($input['options']) . '</script>' . PHP_EOL;
     return $r;
 }
@@ -470,8 +492,18 @@ function getImporterJsonldInput($input) {
 
 
 function getImporterYoutubeInput($input) {
-    $r  = '    <textarea class="input-text" rows="1" wrap="soft" onkeydown="disableEnterKey(event)" oninput="textareaAutoGrow(this);">' . $input['value'] . '</textarea>' . PHP_EOL;
-    $r .= '    <button type="button" class="btn btn-blue btn-pill rr" onclick="gjImportYoutube(this, event)">' . t('Import') . '</button>' . PHP_EOL;
+    $r  = '    <textarea class="input-text" rows="1" wrap="soft">' . $input['value'] . '</textarea>' . PHP_EOL;
+    $r .= '    <button type="button" class="btn btn-blue btn-pill rr scrape-youtube">' . t('Import') . '</button>' . PHP_EOL;
     $r .= '    <script type="text/javascript">var importRelationsYoutube = ' . json_encode($input['options']) . '</script>' . PHP_EOL;
+    return $r;
+}
+
+
+
+
+function getImporterVimeoInput($input) {
+    $r  = '    <textarea class="input-text" rows="1" wrap="soft">' . $input['value'] . '</textarea>' . PHP_EOL;
+    $r .= '    <button type="button" class="btn btn-blue btn-pill rr scrape-vimeo">' . t('Import') . '</button>' . PHP_EOL;
+    $r .= '    <script type="text/javascript">var importRelationsVimeo = ' . json_encode($input['options']) . '</script>' . PHP_EOL;
     return $r;
 }

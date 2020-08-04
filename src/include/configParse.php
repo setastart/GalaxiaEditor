@@ -16,6 +16,7 @@ const PROTO_GC = [
         'gcMenuShow'    => 'boolean',
 
         'gcColNames' => 'stringArray',
+
         'gcList' => [
             'gcSelect'        => 'tableWithCols',
             'gcSelectLJoin'   => 'tableWithCols',
@@ -26,6 +27,7 @@ const PROTO_GC = [
             'gcFilterTexts' => 'gcpFilterTexts',
             'gcFilterInts'  => 'gcpFilterInts',
         ],
+
         'gcItem' => [
             'gcTable'          => 'string',
             'gcColKey'         => 'string',
@@ -58,22 +60,22 @@ const PROTO_GC = [
     ],
 
     'gcpChat' => [
-        'gcPageType'    => 'string',
-        'gcMenuTitle'   => 'string',
-        'gcMenuShow'    => 'boolean',
+        'gcPageType'  => 'string',
+        'gcMenuTitle' => 'string',
+        'gcMenuShow'  => 'boolean',
     ],
 
     'gcpImages' => [
-        'gcPageType'     => 'string',
-        'gcMenuTitle'    => 'string',
-        'gcTitleSingle'  => 'string',
-        'gcTitlePlural'  => 'string',
-        'gcMenuShow'     => 'boolean',
-        'gcImageTypes'   => 'stringArray',
-        'gcImagesInUse'  => 'gcpImagesInUse',
+        'gcPageType'    => 'string',
+        'gcMenuTitle'   => 'string',
+        'gcTitleSingle' => 'string',
+        'gcTitlePlural' => 'string',
+        'gcMenuShow'    => 'boolean',
+        'gcImageTypes'  => 'stringArray',
+        'gcImagesInUse' => 'gcpImagesInUse',
 
         'gcImageList' => [
-            'gcLinks'         => 'gcpLinks',
+            'gcLinks' => 'gcpLinks',
         ],
 
         'gcImage' => [
@@ -146,13 +148,12 @@ const PROTO_GC = [
     ],
 
     'gcpModuleMultiple' => [
-        'reorder' => 'boolean',
-        'unique'  => 'stringArray',
-        '?label'  => 'string',
+        'reorder'  => 'boolean',
+        'unique'   => 'stringArray',
+        '?label'   => 'string',
+        '?gallery' => 'boolean',
     ],
 ];
-
-
 
 
 
@@ -187,7 +188,7 @@ function geConfigParse($schemaKey, $schema, $config, $errorString) {
         if ($key == 'gcPerms') continue;
         if (substr($key, 0, 1) == '?') continue;
         if (isset($schema['?' . $key])) continue;
-        devlog($errorString . ' - extra keyssss: ' . $key);
+        devlog($errorString . ' - extra keys: ' . $key);
     }
 }
 

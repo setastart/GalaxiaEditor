@@ -20,25 +20,11 @@
         padding-left: 6px;
         padding-right: 6px;
     }
-    #website-link {
-        grid-column: 1/2;
-        grid-row: 1/2;
+    a#website-link {
         margin: 12px 0;
-        width: 100%;
-    }
-    #website-link span {
-        /*display: none;*/
-    }
-    #website-link > a {
-        padding: 0;
-    }
-    #website-link > a img {
-        margin-left: 12px;
     }
     #switches {
-        top: 6px;
-        right: 7px;
-        grid-row: 1/2;
+        margin: 12px 0;
     }
     #menu {
         top: 0px;
@@ -47,7 +33,6 @@
         grid-row: 2/3;
         width: initial;
         height: initial;
-        padding: 1px 12px 12px 12px;
         overflow-y: initial;
         direction: ltr;
     }
@@ -56,10 +41,7 @@
         height: initial;
     }
     .menu-item {
-        border-left: 1px solid #a78;
         min-height: 46px;
-        width: initial;
-        box-shadow: none;
     }
     a.menu-item:first-child {
         border-top-left-radius: 6px;

@@ -15,7 +15,7 @@ if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/' && substr($
 
 
 
-// autoloader and includes
+// composer
 
 if (file_exists(dirname(dirname(__DIR__)) . '/_galaxiaComposer/vendor/autoload.php')) {
     require dirname(dirname(__DIR__)) . '/_galaxiaComposer/vendor/autoload.php';
@@ -28,7 +28,13 @@ if (file_exists(dirname(dirname(__DIR__)) . '/_galaxiaComposer/vendor/autoload.p
     exit();
 }
 
+
+
+
+// requires
+
 require __DIR__ . '/function/inputRender.php';
+require __DIR__ . '/function/paginationRender.php';
 require __DIR__ . '/function/utils.php';
 
 
@@ -45,7 +51,7 @@ Director::timerStart('locales');
 foreach ($app->localesInactive as $lang => $locale) {
     if (isset($app->locales[$lang])) continue;
     $app->locales[$lang] = $locale;
-    $app->langs = array_keys($app->locales);
+    $app->langs          = array_keys($app->locales);
 }
 $app->setLang();
 Director::timerStop('locales');
@@ -90,14 +96,17 @@ if ($me->loggedIn) {
 
     // set nginx cache bypass cookie
     if ($app->cookieNginxCacheBypassKey) {
+
         setcookie(
             $app->cookieNginxCacheBypassKey,
             '1',
-            time() + 86400, // 1 day
-            '/',
-            '.' . $_SERVER['SERVER_NAME'],
-            isset($_SERVER['HTTPS']),
-            true
+            [
+                'expires'  => time() + 86400, // 1 day
+                'path'     => '/; SameSite=Strict',
+                'domain'   => '.' . $_SERVER['SERVER_NAME'],
+                'secure'   => isset($_SERVER['HTTPS']),
+                'httponly' => true,
+            ]
         );
     }
 
@@ -135,6 +144,28 @@ if ($me->loggedIn) {
     arrayReplaceHashtagWithParentName($geConf);
     Director::timerStop('arrayReplaceHashtagWithParentName()');
 
+    Director::timerStart('gecAddDevInputs');
+
+    // foreach ($geConf as $rootSlug => $confPage) {
+    //     foreach ($confPage['gcItem']['gcModules'] ?? [] as $moduleKey => $module) {
+    //         $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputs']['fieldKey'] = ['type' => 'text', 'label' => 'Key', 'gcPerms' => ['dev']];
+    //
+    //         foreach ($module['gcInputsWhereCol' ] as $fieldKey => $inputs) {
+    //             $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey]['fieldKey'] = ['type' => 'text'];
+    //         }
+    //         foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
+    //
+    //             foreach ($parent as $parentValue => $inputsDefault) {
+    //                 foreach ($inputsDefault as $fieldKey => $inputs) {
+    //                     $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentName][$parentValue][$fieldKey]['fieldKey'] = ['type' => 'text'];
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    Director::timerStop('gecAddDevInputs');
+
     Director::timerStart('gecLanguify');
     arrayLanguifyRemovePerms($geConf, array_keys($app->locales), $me->perms);
     Director::timerStop('gecLanguify');
@@ -151,47 +182,48 @@ if ($me->loggedIn) {
     // routes
     Director::timerStart('routing');
     $editor->layout = 'layout-editor';
-    $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($geConf, $me) {
+    $dispatcher     = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) use ($geConf, $me) {
 
-        $r->get( '/edit/{pgSlug:login}', 'redirect-home');
+        $r->get('/edit/{pgSlug:login}', 'redirect-home');
         $r->post('/edit/{pgSlug:login}', 'redirect-home');
-        $r->get( '/edit/{pgSlug:logout}', 'login/logout');
+        $r->get('/edit/{pgSlug:logout}', 'login/logout');
 
         if (in_array('dev', $me->perms)) {
-            $r->get( '/edit/{pgSlug:dev}', 'dev/dev');
-            $r->get( '/edit/dev/{pgSlug:sitemap}', 'dev/sitemap');
-            $r->get( '/edit/dev/{pgSlug:cacheDeleteApp}', 'dev/cache-delete-app');
-            $r->get( '/edit/dev/{pgSlug:cacheDeleteAll}', 'dev/cache-delete-all');
+            $r->get('/edit/{pgSlug:dev}', 'dev/dev');
+            $r->get('/edit/dev/{pgSlug:sitemap}', 'dev/sitemap');
+            $r->get('/edit/dev/{pgSlug:cacheDeleteApp}', 'dev/cache-delete-app');
+            $r->get('/edit/dev/{pgSlug:cacheDeleteAll}', 'dev/cache-delete-all');
         }
-        $r->get( '/edit/dev/{pgSlug:cacheDeleteEditor}', 'dev/cache-delete-editor');
-        $r->get( '/edit/dev/{pgSlug:imageListDeleteResizes}', 'dev/image-list-delete-resizes');
-        $r->get( '/edit/dev/{pgSlug:imageListReorder}', 'dev/image-list-reorder');
+        $r->get('/edit/dev/{pgSlug:cacheDeleteEditor}', 'dev/cache-delete-editor');
+        $r->get('/edit/dev/{pgSlug:imageListDeleteResizes}', 'dev/image-list-delete-resizes');
+        $r->get('/edit/dev/{pgSlug:imageListReorder}', 'dev/image-list-reorder');
 
-        $r->get( '/edit/importer/{pgSlug:jsonld}',  'importer/jsonld');
-        $r->get( '/edit/importer/{pgSlug:youtube}', 'importer/youtube');
+        $r->get('/edit/importer/{pgSlug:jsonld}', 'importer/jsonld');
+        $r->get('/edit/importer/{pgSlug:youtube}', 'importer/youtube');
+        $r->get('/edit/importer/{pgSlug:vimeo}', 'importer/vimeo');
 
         foreach ($geConf as $rootSlug => $confPage) {
             if (!isset($confPage['gcPageType']) || !is_string($confPage['gcPageType'])) continue;
             switch ($confPage['gcPageType']) {
                 case 'gcpHistory':
-                    $r->get( '/edit/{pgSlug:' . $rootSlug . '}', 'history/list');
+                    $r->get('/edit/{pgSlug:' . $rootSlug . '}', 'history/list');
                     $r->post('/edit/{pgSlug:' . $rootSlug . '}', 'history/list');
-                    $r->get( '/edit/{pgSlug:' . $rootSlug . '}/{tabName}/{tabId}', 'history/item');
+                    $r->get('/edit/{pgSlug:' . $rootSlug . '}/{tabName}/{tabId}', 'history/item');
                     break;
 
                 case 'gcpListItem':
                     if ($confPage['gcList']) {
-                        $r->get( '/edit/{pgSlug:' . $rootSlug . '}', 'list/list');
+                        $r->get('/edit/{pgSlug:' . $rootSlug . '}', 'list/list');
                         $r->post('/edit/{pgSlug:' . $rootSlug . '}', 'list/list');
                     }
 
                     if ($confPage['gcItem']) {
                         if ($confPage['gcItem']['gcInsert']) {
-                            $r->get( '/edit/{pgSlug:' . $rootSlug . '}/{itemId:new}', 'item/new/new');
+                            $r->get('/edit/{pgSlug:' . $rootSlug . '}/{itemId:new}', 'item/new/new');
                             $r->post('/edit/{pgSlug:' . $rootSlug . '}/{itemId:new}', 'item/new/new-post');
                         }
                         if ($confPage['gcItem']['gcSelect']) {
-                            $r->get( '/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}', 'item/item');
+                            $r->get('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}', 'item/item');
                         }
                         if ($confPage['gcItem']['gcUpdate']) {
                             $r->post('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}', 'item/item-post');
@@ -200,7 +232,7 @@ if ($me->loggedIn) {
                             }
                         }
                         if ($confPage['gcItem']['gcDelete']) {
-                            $r->get( '/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}/delete', 'item/delete/delete');
+                            $r->get('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}/delete', 'item/delete/delete');
                             $r->post('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}/delete', 'item/delete/delete-post');
                         }
                     }
@@ -208,36 +240,36 @@ if ($me->loggedIn) {
 
                 case 'gcpImages':
                     if ($confPage['gcImageList']) {
-                        $r->get( '/edit/{pgSlug:images}', 'imageList/list');
+                        $r->get('/edit/{pgSlug:images}', 'imageList/list');
                         $r->post('/edit/{pgSlug:images}', 'imageList/list');
-                        $r->get( '/edit/{pgSlug:images}/{imgSlug}/resize/{imgW}/{imgH}', 'image/resize/resize-request');
+                        $r->get('/edit/{pgSlug:images}/{imgSlug}/resize/{imgW}/{imgH}', 'image/resize/resize-request');
                     }
 
                     if ($confPage['gcImage']) {
                         if ($confPage['gcImage']['gcInsert']) {
-                            $r->get( '/edit/{pgSlug:images}/{imgSlug:new}', 'image/new/new');
+                            $r->get('/edit/{pgSlug:images}/{imgSlug:new}', 'image/new/new');
                             $r->post('/edit/{pgSlug:images}/{imgSlug:new}', 'image/new/new-post');
                         }
                         if ($confPage['gcImage']['gcSelect']) {
-                            $r->get( '/edit/{pgSlug:images}/{imgSlug}', 'image/image');
+                            $r->get('/edit/{pgSlug:images}/{imgSlug}', 'image/image');
                         }
                         if ($confPage['gcImage']['gcUpdate']) {
-                            $r->post('/edit/{pgSlug:images}/{imgSlug}',                        'image/image-post');
-                            $r->get( '/edit/{pgSlug:images}/{imgSlug}/{action:deleteResizes}', 'image/image-delete-resizes-post');
-                            $r->get( '/edit/{pgSlug:images}/{imgSlug}/{action:replace}',       'image/replace/replace');
-                            $r->post('/edit/{pgSlug:images}/{imgSlug}/{action:replace}',       'image/replace/replace-post');
-                            $r->get( '/edit/{pgSlug:images}/{imgSlug}/{action:resize}',        'image/resize/resize');
-                            $r->post('/edit/{pgSlug:images}/{imgSlug}/{action:resize}',        'image/resize/resize-post');
+                            $r->post('/edit/{pgSlug:images}/{imgSlug}', 'image/image-post');
+                            $r->get('/edit/{pgSlug:images}/{imgSlug}/{action:deleteResizes}', 'image/image-delete-resizes-post');
+                            $r->get('/edit/{pgSlug:images}/{imgSlug}/{action:replace}', 'image/replace/replace');
+                            $r->post('/edit/{pgSlug:images}/{imgSlug}/{action:replace}', 'image/replace/replace-post');
+                            $r->get('/edit/{pgSlug:images}/{imgSlug}/{action:resize}', 'image/resize/resize');
+                            $r->post('/edit/{pgSlug:images}/{imgSlug}/{action:resize}', 'image/resize/resize-post');
                         }
                         if ($confPage['gcImage']['gcDelete']) {
-                            $r->get( '/edit/{pgSlug:images}/{imgSlug}/{action:delete}', 'image/delete/delete');
+                            $r->get('/edit/{pgSlug:images}/{imgSlug}/{action:delete}', 'image/delete/delete');
                             $r->post('/edit/{pgSlug:images}/{imgSlug}/{action:delete}', 'image/delete/delete-post');
                         }
                     }
                     break;
 
                 case 'gcpChat':
-                    $r->get( '/edit/{pgSlug:' . $rootSlug . '}',      'chat/room');
+                    $r->get('/edit/{pgSlug:' . $rootSlug . '}', 'chat/room');
                     break;
 
                 default:
@@ -252,11 +284,11 @@ if ($me->loggedIn) {
 } else {
 
     $editor->layout = 'layout-default';
-    $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+    $dispatcher     = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
 
-        $r->get( '/edit/{pgSlug:login}',  'login/login');
-        $r->post('/edit/{pgSlug:login}',  'login/login-post');
-        $r->get( '/edit/{pgSlug:logout}', 'login/logout');
+        $r->get('/edit/{pgSlug:login}', 'login/login');
+        $r->post('/edit/{pgSlug:login}', 'login/login-post');
+        $r->get('/edit/{pgSlug:logout}', 'login/logout');
 
     });
 
@@ -291,9 +323,9 @@ if ($routeInfo[1] == 'redirect-home') redirect('edit/pages', 303);
 // - logic can modify which layout and template are going to be used
 
 Director::timerStart('logic');
-$logicExploded = explode('/', $editor->logic);
+$logicExploded  = explode('/', $editor->logic);
 $logicPathCount = count($logicExploded);
-$logicPath = '';
+$logicPath      = '';
 if (file_exists($editor->dirLogic . '_autorun.php')) {
     include $editor->dirLogic . '_autorun.php';
 }

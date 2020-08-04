@@ -103,7 +103,10 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
             }
 
             try {
-                $query = queryInsert([$redirectTable => [$redirectTableSlug]], [$redirectTableId => $itemId, $redirectTableSlug => $oldSlug, 'fieldKey' => $redirectFieldKey]);
+                $query = queryInsert(
+                    [$redirectTable => [$redirectTableSlug]],
+                    [$redirectTableId => $itemId, $redirectTableSlug => $oldSlug, 'fieldKey' => $redirectFieldKey]
+                );
                 $stmt = $db->prepare($query);
                 $stmt->bind_param('dss', $itemId, $oldSlug, $redirectFieldKey);
                 $success = $stmt->execute();

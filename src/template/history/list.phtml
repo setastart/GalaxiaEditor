@@ -1,37 +1,11 @@
-<?=renderForm('', 'history-list', 'paper pad');?>
+<?php   renderForm('', 'history-list', 'paper pad');?>
 
     <div class="paper-header">
         <h1 class="pad"><span class="nrFiltered"><?=h($rowsTotal)?></span> &#8725; <?=h($rowsTotal)?> <?=t($pgTitle);?></h1>
     </div>
 
 
-<?php   if ($pagination->active) { ?>
-    <div class="pagination btn-row pad">
-        <label class="input-label" for="itemsPerPage"><?=t('Per page')?></label>
-        <div class="btn-group space-rgt">
-            <input oninput="filter(this, event)" class="itemsPerPage" id="itemsPerPage" type="number" min="1" name="itemsPerPage" value="<?=$pagination->itemsPerPage?>">
-        </div>
-        <label class="input-label" for="pageCurrent">
-            <?=t('Page')?>
-        </label>
-        <div class="btn-group">
-            <input oninput="filter(this, event)" class="pageCurrent" id="pageCurrent" type="number" min="1" name="page" value="<?=$pagination->pageCurrent?>">
-        </div>
-        <div class="space-rgt"> &nbsp;&#8725;&nbsp; <span class="pageLast"><?=$pagination->pageLast?></span></div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="<?=$pagination->pageFirst?>" class="pageFirst btn-new pagination-first active" <?=($pagination->pageFirst) ?: 'disabled'?>></button>
-        </div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="<?=$pagination->pagePrev?>" class="pagePrev btn-new pagination-prev active" <?=($pagination->pagePrev) ?: 'disabled'?>></button>
-        </div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="<?=$pagination->pageNext?>" class="pageNext btn-new pagination-next active" <?=($pagination->pageNext) ?: 'disabled'?>></button>
-        </div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="<?=$pagination->pageLast?>" class="pageLast btn-new pagination-last active" <?=($pagination->pageCurrent < $pagination->pageLast) ?: 'disabled'?>></button>
-        </div>
-    </div>
-<?php   } ?>
+<?php   renderPaginationHeader($pagination) ?>
 
 
     <div class="load">
@@ -39,25 +13,8 @@
     </div>
 
 
-<?php   if ($pagination->active) { ?>
-    <div class="pagination btn-row pad">
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="<?=$pagination->pageFirst?>" class="pageFirst btn-new pagination-first active" <?=($pagination->pageFirst) ?: 'disabled'?>></button>
-        </div>
-        <div class="btn-group space-rgt">
-            <button onclick="filter(this, event)" name="page" value="<?=$pagination->pagePrev?>" class="pagePrev btn-new pagination-prev active" <?=($pagination->pagePrev) ?: 'disabled'?>></button>
-        </div>
+<?php   renderPaginationFooter($pagination) ?>
 
-        <div class="space-rgt"><?=t('Page')?> <span class="pageCurrent"><?=$pagination->pageCurrent?></span> &nbsp;&#8725;&nbsp; <span class="pageLast"><?=$pagination->pageLast?></span></div>
 
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="<?=$pagination->pageNext?>" class="pageNext btn-new pagination-next active" <?=($pagination->pageNext) ?: 'disabled'?>></button>
-        </div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="<?=$pagination->pageLast?>" class="pageLast btn-new pagination-last active" <?=($pagination->pageCurrent < $pagination->pageLast) ?: 'disabled'?>></button>
-        </div>
-    </div>
-<?php   } ?>
-
-<?php renderFormEnd(); ?>
+<?php   renderFormEnd(); ?>
 

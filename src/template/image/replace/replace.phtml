@@ -1,4 +1,4 @@
-<?php renderForm('', 'image-replace', 'image image-new paper pad'); ?>
+<?php   renderForm('', 'image-replace', 'image image-new paper pad'); ?>
 
     <div class="paper-header pad">
         <h1><?=h($pgTitle)?></h1>
@@ -23,17 +23,16 @@
     </div>
 
     <div class="image-preview pad">
-        <div class="ratio">
-            <?=gImageRenderReflowSpacer($img['w'], $img['h']), PHP_EOL?>
+        <figure>
             <?=gImageRender($img), PHP_EOL?>
-        </div>
+        </figure>
     </div>
 
     <div class="paper-footer pad">
-<?php include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
+<?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions pad">
             <button class="btn btn-green active"><?=t('Replace')?></button>
         </div>
     </div>
 
-<?php renderFormEnd(); ?>
+<?php   renderFormEnd(); ?>

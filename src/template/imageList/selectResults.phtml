@@ -1,12 +1,4 @@
-<div class="results hide"
-    data-pageCurrent="<?=$pagination->pageCurrent?>"
-    data-pageFirst="<?=$pagination->pageFirst?>"
-    data-pagePrev="<?=$pagination->pagePrev?>"
-    data-pageNext="<?=$pagination->pageNext?>"
-    data-pageLast="<?=$pagination->pageLast?>"
-    data-rowsFiltered="<?=$rowsFiltered?>"
-    data-rowsTotal="<?=$rowsTotal?>"
-></div>
+<?php   renderPaginationHiddenHTMLResults($pagination, $rowsFiltered, $rowsTotal) ?>
 
 <?php
 $yearMonthPrev = '';

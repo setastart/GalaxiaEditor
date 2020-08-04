@@ -56,7 +56,7 @@ $items = $app->cacheGet('editor', 2, 'list', $pgSlug, 'items', function() use ($
 // get table columns to render per column
 
 foreach ($list['gcColumns'] as $columnKey => $column)
-    foreach ($column['gcColContent'] as $colContent)
+    foreach ($column['gcColContent'] ?? [] as $colContent)
         foreach ($colContent['dbCols'] as $dbCol)
             $list['gcColumns'][$columnKey]['tablesAndCols'][$colContent['dbTab']][] = [
                 'col' => $dbCol,
@@ -80,6 +80,7 @@ $rows = $app->cacheGet('editor', 3, 'list', $pgSlug, 'rows', function() use ($ap
 $ht = '<a class="row' . $statusClass . '" href="/edit/' . $pgSlug . '/' . $itemId . '">' . PHP_EOL;
 
         foreach ($columns as $columnId => $column) {
+            if (!$column) continue;
 $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
             foreach ($column['tablesAndCols'] as $dbTable => $dbColumns) {
                 $countFound = false;
@@ -112,12 +113,12 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
                                 } else {
                                     $img = $app->imageGet($value, ['w' => 256, 'h' => 256, 'fit' => 'cover', 'version' => 'mtime'], false);
                                     if ($img) {
-                                        $r .= gImageRenderReflowSpacer($img['w'], $img['h']) . PHP_EOL;
-                                        $r .= gImageRender($img, 'onerror="gjImageResizeRequest(this, event)"') . PHP_EOL;
+                                        $r .= gImageRender($img) . PHP_EOL;
                                     } else {
-                                        $r .= '<div style="background-image:url(/edit/gfx/no-photo.png);"><div style="padding-bottom: 33.333%;"></div></div>' . PHP_EOL;
+                                        $r .= '<div class="nophoto" style="background-image:url(/edit/gfx/no-photo.png);"></div>' . PHP_EOL;
                                     }
                                 }
+                                $colRowItemClass .= ' figure';
 
                                 break;
 

@@ -5,25 +5,32 @@
 <?php   foreach ($module['inputs'] as $fieldKey => $fields) {
             $moduleFieldCss = 'module-field';
             $multi = $reorder = $unique = false;
+            $gallery = false;
             if (isset($module['gcModuleMultiple'][$fieldKey])) {
                 $multi = true;
                 $reorder = $module['gcModuleMultiple'][$fieldKey]['reorder'];
                 $unique = $module['gcModuleMultiple'][$fieldKey]['unique'];
+                $gallery = $module['gcModuleMultiple'][$fieldKey]['gallery'] ?? false;
                 $moduleFieldCss .= ' module-field-multi';
+                if ($gallery) $moduleFieldCss .= ' module-field-gallery';
             }
-            if ($multi) { ?>
-    <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-header" class="module-field-multi-header pad">
+
+            $modKeyField = 'module-' . $moduleKey . '-' . $fieldKey;
+            $modKeyFieldArr = 'modules[' . $moduleKey . '][' . $fieldKey . ']';
+
+            if ($multi) {
+?>
+    <div id="<?=$modKeyField?>-header" class="module-field-multi-header pad">
         <h2><?=t($module['gcModuleMultiple'][$fieldKey]['label'] ?? $fieldKey)?></h2>
         <div class="btn-group">
-            <button type="button" class="btn-new btn-new-plus active" id="add-module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-where="module-<?=$moduleKey?>-<?=$fieldKey?>" onclick="gjCloneModuleInputs(this);"><?=t('Add')?></button>
+            <button type="button" class="ev-module-add btn-new btn-new-plus-text active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="0"><?=t('Add')?></button>
         </div>
-        <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-new" class="module-field-group hide">
+        <div id="<?=$modKeyField?>-new" class="module-field-group hide">
             <div class="item-row">
 <?php           $firstTime = true; ?>
 <?php           $prefixPrev = null; ?>
 <?php           foreach ($fields['new-0'] as $inputKey => $input) { ?>
-<?php               if ($inputKey == 'delete') continue; ?>
-<?php               if ($inputKey == 'position') continue; ?>
+<?php               if ($inputKey == 'delete' || $inputKey == 'position') continue; ?>
 <?php               if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
             </div>
             <div class="item-row">
@@ -35,32 +42,36 @@
             </div>
             <div class="module-field-group-footer btn-row pad">
                 <div class="btn-group">
-                    <button disabled type="button" class="module-field-btn-delete btn-new btn-new-x active rc" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjDeleteModuleInputs(this);"><?=t("Remove")?></button>
-                    <input disabled class="hide" type="checkbox" name="modules[<?=$moduleKey?>][<?=$fieldKey?>][new-0][delete]">
+                    <button title="<?=t("Remove")?>" disabled type="button" class="ev-module-rem module-field-btn-delete btn-new btn-new-x active rc" data-target="<?=$modKeyField?>-new"></button>
+                    <input disabled class="hide" type="checkbox" name="<?=$modKeyFieldArr?>[new-0][delete]">
                 </div>
 <?php           if ($reorder) { ?>
                 <div class="btn-group">
-                    <button disabled type="button" class="btn-new reorder-first active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjModuleMove(this, 1)"></button>
+                    <button title="<?=t("First")?>" disabled type="button" class="ev-module-first btn-new reorder-first active" data-target="<?=$modKeyField?>-new"></button>
+                    <button title="<?=t("Previous")?>" disabled type="button" class="ev-module-up btn-new reorder-prev active" data-target="<?=$modKeyField?>-new"></button>
                 </div>
                 <div class="btn-group">
-                    <button disabled type="button" class="btn-new reorder-prev active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjModuleMoveUp(this)"></button>
+                    <input disabled class="module-position" type="text" min="1" name="<?=$modKeyFieldArr?>[new-0][position]" value="1">
+                    <button disabled type="button" class="ev-module-go btn-new active" data-target="<?=$modKeyField?>-new">go!</button>
                 </div>
                 <div class="btn-group">
-                    <input disabled class="module-position" type="number" min="1" name="modules[<?=$moduleKey?>][<?=$fieldKey?>][new-0][position]" value="1">
-                    <button disabled type="button" class="btn-new active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjModuleMove(this)">go!</button>
-                </div>
-                <div class="btn-group">
-                    <button disabled type="button" class="btn-new reorder-next active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjModuleMoveDown(this)"></button>
-                </div>
-                <div class="btn-group">
-                    <button disabled type="button" class="btn-new reorder-last active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjModuleMove(this, 999999)"></button>
+                    <button title="<?=t("Next")?>" disabled type="button" class="ev-module-down btn-new reorder-next active" data-target="<?=$modKeyField?>-new"></button>
+                    <button title="<?=t("Last")?>" disabled type="button" class="ev-module-last btn-new reorder-last active" data-target="<?=$modKeyField?>-new"></button>
                 </div>
 <?php           } ?>
             </div>
+<?php               if ($gallery) { ?>
+            <div class="btn-group">
+                <button title="<?=t('Add')?>" type="button" class="ev-module-add module-field-gallery-add before btn-new btn-new-plus active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="0"></button>
+            </div>
+            <div class="btn-group">
+                <button title="<?=t('Add')?>" type="button" class="ev-module-add module-field-gallery-add after btn-new btn-new-plus active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="0"></button>
+            </div>
+<?php               } ?>
         </div>
     </div>
 <?php       } ?>
-    <div id="module-<?=$moduleKey?>-<?=$fieldKey?>" class="<?=($moduleFieldCss)?>">
+    <div id="<?=$modKeyField?>" class="<?=($moduleFieldCss)?>">
 <?php       foreach ($fields as $fieldVal => $field) {
                 if ($fieldVal == 'proto') continue;
                 $moduleGroupCss = '';
@@ -76,134 +87,17 @@
                         $moduleGroupCss .= ' module-field-group-delete';
                     }
                 }
-?>
-        <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" class="<?=($moduleGroupCss)?>"<?=($deleteChecked) ? ' data-disabled="true"' : ''?>>
-            <div class="item-row">
-<?php           $firstTime = true; ?>
-<?php           $prefixPrev = null; ?>
-<?php           foreach ($field as $inputKey => $input) { ?>
-<?php               if ($inputKey == 'delete') continue; ?>
-<?php               if ($inputKey == 'position') continue; ?>
-<?php               if ($deleteChecked) $input['disabled'] = true; ?>
-<?php               if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
-            </div>
-            <div class="item-row">
-<?php               } ?>
-<?php               echo renderInput($app, $input); ?>
-<?php               $firstTime = false; ?>
-<?php               $prefixPrev = $input['prefix'] ?? null; ?>
-<?php           } ?>
-            </div>
-<?php           if ($multi) { ?>
-            <div class="module-field-group-footer btn-row pad">
-                <div class="btn-group">
-                    <button type="button" class="module-field-btn-delete btn-new btn-new-x active rc" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjDeleteModuleInputs(this);"><?=t("Remove")?></button>
-                    <input class="hide" type="checkbox" name="modules[<?=$moduleKey?>][<?=$fieldKey?>][<?=$fieldVal?>][delete]"<?=($deleteChecked) ? ' checked' : ''?>>
-                </div>
-<?php               if ($reorder) { ?>
-                <div class="btn-group">
-                    <button type="button" class="btn-new reorder-first active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjModuleMove(this, 1)"<?=($deleteChecked) ? ' disabled' : ''?>></button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn-new reorder-prev active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjModuleMoveUp(this)"<?=($deleteChecked) ? ' disabled' : ''?>></button>
-                </div>
-                <div class="btn-group">
-                    <input class="module-position" type="number" min="1" name="modules[<?=$moduleKey?>][<?=$fieldKey?>][<?=$fieldVal?>][position]" value="<?=$field['position']?>"<?=($deleteChecked) ? ' disabled' : ''?>>
-                    <button type="button" class="btn-new active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjModuleMove(this)"<?=($deleteChecked) ? ' disabled' : ''?>>go!</button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn-new reorder-next active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjModuleMoveDown(this)"<?=($deleteChecked) ? ' disabled' : ''?>></button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn-new reorder-last active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjModuleMove(this, 999999)"<?=($deleteChecked) ? ' disabled' : ''?>></button>
-                </div>
-<?php               } ?>
-            </div>
-<?php           } ?>
-        </div>
-<?php       } ?>
-    </div>
-<?php   } ?>
-<?php   if (!empty($module['inputsUnused'])) { ?>
-    <h2 class="pad"><?=t('Unused')?></h2>
-<?php   } ?>
-<?php   foreach ($module['inputsUnused'] as $fieldKey => $fields) {
-            $moduleFieldCss = 'module-field';
-            $multi = $reorder = $unique = false;
-            if (isset($module['gcModuleMultiple'][$fieldKey])) {
-                $multi = true;
-                $reorder = $module['gcModuleMultiple'][$fieldKey]['reorder'];
-                $unique = $module['gcModuleMultiple'][$fieldKey]['unique'];
-                $moduleFieldCss .= ' module-field-multi';
-            }
-            if ($multi) { ?>
-    <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-header" class="module-field-multi-header pad">
-        <h2><?=t($fieldKey)?></h2>
-        <div class="btn-group">
-            <button type="button" class="btn-new btn-new-plus active" id="add-module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" data-where="module-<?=$moduleKey?>-<?=$fieldKey?>" onclick="gjCloneModuleInputs(this);"></button>
-        </div>
-        <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-new" class="module-field-group hide">
-            <div class="item-row">
-<?php           $firstTime = true; ?>
-<?php           $prefixPrev = null; ?>
-<?php           foreach ($fields['new-0'] as $inputKey => $input) { ?>
-<?php               if ($inputKey == 'delete') continue; ?>
-<?php               if ($inputKey == 'position') continue; ?>
-<?php               if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
-            </div>
-            <div class="item-row">
-<?php               } ?>
-<?php               echo renderInput($app, $input); ?>
-<?php               $firstTime = false; ?>
-<?php               $prefixPrev = $input['prefix'] ?? null; ?>
-<?php           } ?>
-            </div>
-            <div class="module-field-group-footer btn-row pad">
-                <div class="btn-group">
-                    <button disabled type="button" class="module-field-btn-delete btn-new btn-new-x active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjDeleteModuleInputs(this);"><?=t("Remove")?></button>
-                    <input disabled class="hide" type="checkbox" name="modules[<?=$moduleKey?>][<?=$fieldKey?>][new-0][delete]">
-                </div>
-<?php           if ($reorder) { ?>
-                <div class="btn-group">
-                    <button disabled type="button" class="btn-new active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjModuleMoveUp(this)"></button>
-                </div>
-                <div class="btn-group">
-                    <input disabled class="module-position" type="number" min="1" name="modules[<?=$moduleKey?>][<?=$fieldKey?>][new-0][position]" value="1">
-                    <button disabled type="button" class="btn-new active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjModuleMove(this)">go!</button>
-                </div>
-                <div class="btn-group">
-                    <button disabled type="button" class="btn-new active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-new" onclick="gjModuleMoveDown(this)">&#x2b07;&#xfe0e;</button>
-                </div>
-<?php           } ?>
-            </div>
-        </div>
-    </div>
-<?php       } ?>
-    <div id="module-<?=$moduleKey?>-<?=$fieldKey?>" class="<?=($moduleFieldCss)?>">
-<?php       foreach ($fields as $fieldVal => $field) {
-                if ($fieldVal == 'proto') continue;
-                $moduleGroupCss = '';
-                $deleteChecked = false;
-                if ($multi) {
-                    $moduleGroupCss .= 'module-field-group';
-                    if ($fieldVal == 'new-0') continue;
-                    if (substr($fieldVal, 0, 4) == 'new-') {
-                        $moduleGroupCss .= ' module-field-group-new';
-                    }
-                    if (isset($field['delete']) && $field['delete'] == 'on') {
-                        $deleteChecked = true;
-                        $moduleGroupCss .= ' module-field-group-delete';
-                    }
-                }
-?>
-        <div id="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" class="<?=($moduleGroupCss)?>"<?=($deleteChecked) ? ' data-disabled="true"' : ''?>>
-            <div class="item-row">
-<?php           $firstTime = true; ?>
-<?php           $prefixPrev = null; ?>
-<?php           foreach ($field as $inputKey => $input) { ?>
-<?php               if ($inputKey == 'delete') continue; ?>
-<?php               if ($inputKey == 'position') continue; ?>
 
+                $modKeyFieldVal = 'module-' . $moduleKey . '-' . $fieldKey . '-' . $fieldVal;
+                $modKeyFieldValArr = 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $fieldVal . ']';
+
+?>
+        <div id="<?=$modKeyFieldVal?>" class="<?=($moduleGroupCss)?>"<?=($deleteChecked) ? ' data-disabled="true"' : ''?>>
+            <div class="item-row">
+<?php           $firstTime = true; ?>
+<?php           $prefixPrev = null; ?>
+<?php           foreach ($field as $inputKey => $input) { ?>
+<?php               if ($inputKey == 'delete' || $inputKey == 'position') continue; ?>
 <?php               if ($deleteChecked) $input['disabled'] = true; ?>
 <?php               if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
             </div>
@@ -217,26 +111,35 @@
 <?php           if ($multi) { ?>
             <div class="module-field-group-footer btn-row pad">
                 <div class="btn-group">
-                    <button type="button" class="module-field-btn-delete btn-new btn-new-x active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjDeleteModuleInputs(this);"><?=t("Remove")?></button>
-                    <input class="hide" type="checkbox" name="modules[<?=$moduleKey?>][<?=$fieldKey?>][<?=$fieldVal?>][delete]"<?=($deleteChecked) ? ' checked' : ''?>>
+                    <button title="<?=t("Remove")?>" type="button" class="ev-module-rem module-field-btn-delete btn-new btn-new-x active rc" data-target="<?=$modKeyFieldVal?>"></button>
+                    <input class="hide" type="checkbox" name="<?=$modKeyFieldValArr?>[delete]"<?=($deleteChecked) ? ' checked' : ''?>>
                 </div>
 <?php               if ($reorder) { ?>
                 <div class="btn-group">
-                    <button type="button" class="btn-new active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjModuleMoveUp(this)"<?=($deleteChecked) ? ' disabled' : ''?>></button>
+                    <button title="<?=t("First")?>" type="button" class="ev-module-first btn-new reorder-first active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
+                    <button title="<?=t("Previous")?>" type="button" class="ev-module-up btn-new reorder-prev active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
                 </div>
                 <div class="btn-group">
-                    <input class="module-position" type="number" min="1" name="modules[<?=$moduleKey?>][<?=$fieldKey?>][<?=$fieldVal?>][position]" value="<?=$field['position']?>"<?=($deleteChecked) ? ' disabled' : ''?>>
-                    <button type="button" class="btn-new active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjModuleMove(this)"<?=($deleteChecked) ? ' disabled' : ''?>>go!</button>
+                    <input class="module-position" type="text" min="1" name="<?=$modKeyFieldValArr?>[position]" value="<?=$field['position']?>"<?=($deleteChecked) ? ' disabled' : ''?>>
+                    <button type="button" class="ev-module-go btn-new active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>>go!</button>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn-new active" data-target="module-<?=$moduleKey?>-<?=$fieldKey?>-<?=$fieldVal?>" onclick="gjModuleMoveDown(this)"<?=($deleteChecked) ? ' disabled' : ''?>>&#x2b07;&#xfe0e;</button>
+                    <button title="<?=t("Next")?>" type="button" class="ev-module-down btn-new reorder-next active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
+                    <button title="<?=t("Last")?>" type="button" class="ev-module-last btn-new reorder-last active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
                 </div>
 <?php               } ?>
             </div>
+<?php               if ($gallery) { ?>
+            <div class="btn-group">
+                <button title="<?=t('Add')?>" type="button" class="ev-module-add module-field-gallery-add before btn-new btn-new-plus active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="<?=$field['position']?>"></button>
+            </div>
+            <div class="btn-group">
+                <button title="<?=t('Add')?>" type="button" class="ev-module-add module-field-gallery-add after btn-new btn-new-plus active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="<?=$field['position'] + 1?>"></button>
+            </div>
+<?php               } ?>
 <?php           } ?>
         </div>
 <?php       } ?>
     </div>
 <?php   } ?>
 </div>
-

@@ -6,8 +6,8 @@
 
     <div class="dev-actions pad">
 <?php   if ($app->cookieDebugKey && $app->cookieDebugVal)  { ?>
-        <div><button class="btn btn-pad btn-blue active" onclick="document.cookie = '<?=h($app->cookieDebugKey)?>=<?=h($app->cookieDebugVal)?>; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/'"><?=t("Set debug cookie")?></button></div>
-        <div><button class="btn btn-pad btn-blue active" onclick="document.cookie = '<?=h($app->cookieDebugKey)?>=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'"><?=t("remove debug cookie")?></button></div>
+        <div><button class="btn btn-pad btn-blue active ev-cookie-set" data-key="<?=h($app->cookieDebugKey)?>" data-val="<?=h($app->cookieDebugVal)?>"><?=t("Set debug cookie")?></button></div>
+        <div><button class="btn btn-pad btn-blue active ev-cookie-del" data-key="<?=h($app->cookieDebugKey)?>"><?=t("remove debug cookie")?></button></div>
 <?php   } ?>
         <a href="/edit/dev/sitemap">Regenerate Sitemap</a>
         <a href="/edit/dev/imageListDeleteResizes">Delete Image Resizes</a>

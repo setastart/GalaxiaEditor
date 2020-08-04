@@ -19,7 +19,7 @@
 
 .gchat-room-date {
     text-align: center;
-    font-family: georgia;
+    font-family: Georgia, serif;
     color: #666;
     background: linear-gradient(0deg, #fff, #ccc, #fff) center center repeat-x;
     background-size: 10px 1px;

@@ -11,11 +11,24 @@ function prepareInput($input, $dirImage, $extras) {
                 if (!isset($extras[$key])) continue;
                 if (is_string($colVals)) $colVals = [$colVals];
                 foreach ($extras[$key] as $option) {
+                    $add = true;
+                    if (isset($input['geExtraOptionHas'][$key])) {
+                        foreach ($input['geExtraOptionHas'][$key] as $constraintKey => $constraintVals) {
+                            if (is_string($constraintVals)) $constraintVals = [$constraintVals];
+                            foreach ($constraintVals as $constraintVal) {
+                                if ($option[$constraintKey] != $constraintVal) {
+                                    $add = false;
+                                }
+                            }
+                        }
+                    }
+
                     $optionColVal = [];
                     foreach ($colVals as $colVal) {
                         $optionColVal[] = $option[$colVal];
                     }
-                    $input['options'][$option[$colKey]] = ['label' => implode(' / ', $optionColVal)];
+
+                    if ($add) $input['options'][$option[$colKey]] = ['label' => implode(' / ', $optionColVal)];
                 }
             }
         }
@@ -27,13 +40,13 @@ function prepareInput($input, $dirImage, $extras) {
                 $todayDt = new \DateTime();
                 $afterDt = new \DateTime();
                 $afterDt->modify('+1 week');
-                $today = $todayDt->format('Y-m-d');
-                $after = $afterDt->format('Y-m-d');
+                $today          = $todayDt->format('Y-m-d');
+                $after          = $afterDt->format('Y-m-d');
                 $input['value'] = substr($today, 0, strspn($today ^ $after, "\0"));
                 break;
 
             case 'day':
-                $todayDt = new \DateTime();
+                $todayDt        = new \DateTime();
                 $input['value'] = $todayDt->format('Y-m-d');
                 break;
 
@@ -65,19 +78,19 @@ function insertHistory($uniqueId, $tabName, $tabId, $inputKey, $fieldKey, $actio
 
     $changes = [
         '_geUserId' => $userId,
-        'uniqueId' => $uniqueId,
-        'action' => $action,
-        'tabName' => $tabName,
-        'tabId' => $tabId,
-        'fieldKey' => $fieldKey,
-        'inputKey' => $inputKey,
-        'content' => $content,
+        'uniqueId'  => $uniqueId,
+        'action'    => $action,
+        'tabName'   => $tabName,
+        'tabId'     => $tabId,
+        'fieldKey'  => $fieldKey,
+        'inputKey'  => $inputKey,
+        'content'   => $content,
     ];
-    $values = array_values($changes);
-    $query = queryInsert(['_geHistory' => ['_geUserId', 'uniqueId', 'action', 'tabName', 'tabId', 'fieldKey', 'inputKey', 'content']], $changes);
+    $values  = array_values($changes);
+    $query   = queryInsert(['_geHistory' => ['_geUserId', 'uniqueId', 'action', 'tabName', 'tabId', 'fieldKey', 'inputKey', 'content']], $changes);
     try {
-        $db = Director::getMysqli();
-        $stmt = $db->prepare($query);
+        $db    = Director::getMysqli();
+        $stmt  = $db->prepare($query);
         $types = str_repeat('s', count($values));
         $stmt->bind_param($types, ...$values);
         $success = $stmt->execute();
@@ -85,11 +98,12 @@ function insertHistory($uniqueId, $tabName, $tabId, $inputKey, $fieldKey, $actio
     } catch (Exception $e) {
         echo 'Unable to insert history: ' . $tabName . PHP_EOL;
         echo $e->getMessage() . PHP_EOL;
+
         return false;
     }
+
     return true;
 }
-
 
 
 
@@ -144,13 +158,14 @@ function myErrorHandler($errNo, $errStr, $errFile, $errLine) {
 
     return true; // Skip internal PHP error handler
 }
+
 $oldErrorHandler = set_error_handler("myErrorHandler");
 
 
 
 
 function geD() {
-    $dump = '';
+    $dump      = '';
     $backtrace = array_reverse(debug_backtrace());
     // array_shift($backtrace);
     // array_shift($backtrace);
@@ -158,14 +173,14 @@ function geD() {
     foreach ($backtrace as $trace) {
         $dump .= '<span class="select-on-click">' . $trace['file'] . ':' . $trace['line'] . '</span><br>';
     }
-    foreach(func_get_args() as $arg) {
+    foreach (func_get_args() as $arg) {
         ob_start();
         var_dump($arg);
         $dumpTemp = ob_get_clean();
         $dumpTemp = preg_replace('/=>\n\s+/m', ' => ', $dumpTemp);
         $dumpTemp = highlight_string('<?php ' . $dumpTemp, true);
         $dumpTemp = str_replace('&lt;?php&nbsp;', '', $dumpTemp);
-        $dump .= $dumpTemp . PHP_EOL;
+        $dump     .= $dumpTemp . PHP_EOL;
     }
     devlog($dump);
 }
@@ -183,6 +198,35 @@ function geErrorPage($errorCode, $error = '') {
 
 
 
+// from https://api.drupal.org/api/drupal/namespace/Drupal%21Component%21Utility/8.8.x
+function getUploadMaxSize(): int {
+    static $maxSize = -1;
+    if ($maxSize < 0) {
+
+        $maxSize = sizeShorthandToInt(ini_get('post_max_size'));
+
+        $uploadMax = sizeShorthandToInt(ini_get('upload_max_filesize'));
+        if ($uploadMax > 0 && $uploadMax < $maxSize) {
+            $maxSize = $uploadMax;
+        }
+    }
+
+    return $maxSize;
+}
+
+// converts for example 1M => 1048576 or 1k => 1024
+function sizeShorthandToInt(string $size): int {
+    $unit = preg_replace('/[^bkmgtpezy]/i', '', $size);
+
+    $size = preg_replace('/[^0-9\\.]/', '', $size);
+    if ($unit) {
+        return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+    } else {
+        return round($size);
+    }
+}
+
+
 
 // galaxiaChat
 
@@ -190,4 +234,6 @@ function exitArrayToJson($r) {
     header('Content-Type: application/json');
     exit(json_encode($r, JSON_PRETTY_PRINT));
 }
+
+
 

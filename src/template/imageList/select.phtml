@@ -1,4 +1,8 @@
 <?php
+
+use Galaxia\Pagination;
+
+
 if (!isset($filterTexts)) {
     $filterTexts = [
         'slug' => [
@@ -19,11 +23,11 @@ if (!isset($filterTexts)) {
         ],
     ];
 } ?>
-<?=renderForm('/edit/images', 'image-select', 'hide');?>
+<?php   renderForm('/edit/images', 'image-select', 'hide');?>
 
     <div class="image-select-header pad">
         <h1><?=t('Select Image')?> <span class="rowsFiltered">0</span> &#8725; <span class="rowsTotal">0</span></h1>
-        <button type="button" class="btn-new btn-new-x rc" onclick="gjImageSelectorClose(this)"><?=t("Close")?></button>
+        <button type="button" class="btn-new btn-new-x-text rc image-select-header-close"><?=t("Close")?></button>
     </div>
 
 
@@ -34,12 +38,12 @@ if (!isset($filterTexts)) {
         <div class="input-wrap pad">
             <div class="input-label"><?=t($filter['label'])?></div>
 <?php           if (empty($filter['filterEmpty'])) { ?>
-            <input oninput="filter(this, event)" name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=h($_POST['filterTexts'][$filterId] ?? '')?>">
+            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=h($_POST['filterTexts'][$filterId] ?? '')?>">
 <?php           } else { ?>
-            <input oninput="filter(this, event)" name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=h($_POST['filterTexts'][$filterId] ?? '')?>">
+            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=h($_POST['filterTexts'][$filterId] ?? '')?>">
             <label for="<?=h($filterId)?>-empty" class="btn btn-pill btn-checkbox rr">
                 <?=t('Empty')?>
-                <input onchange="filterEmpty(this, event)" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=h($filterId)?>-empty" title="<?=t('Empty')?>">
+                <input class="filterChangeEmpty" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=h($filterId)?>-empty" title="<?=t('Empty')?>">
             </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
@@ -51,53 +55,16 @@ if (!isset($filterTexts)) {
     </div>
 
 
-    <div class="pagination btn-row pad">
-        <label class="input-label" for="itemsPerPage"><?=t('Per page')?></label>
-        <div class="btn-group space-rgt">
-            <input oninput="filter(this, event)" class="itemsPerPage" id="itemsPerPage" type="number" min="1" name="itemsPerPage" value="100">
-        </div>
-        <label class="input-label" for="pageCurrent">
-            <?=t('Page')?>
-        </label>
-        <div class="btn-group">
-            <input oninput="filter(this, event)" class="pageCurrent" id="pageCurrent" type="number" min="1" name="page" value="">
-        </div>
-        <div class="space-rgt"> &nbsp;&#8725;&nbsp; <span class="pageLast"></span></div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="" class="pageFirst btn-new pagination-first active" disabled></button>
-        </div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="" class="pagePrev btn-new pagination-prev active" disabled></button>
-        </div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="" class="pageNext btn-new pagination-next active" disabled></button>
-        </div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="" class="pageLast btn-new pagination-last active" disabled></button>
-        </div>
-    </div>
+<?php   $pagination = new Pagination(1, 100); ?>
+<?php   $pagination->setItemsTotal(200); ?>
+<?php   renderPaginationHeader($pagination) ?>
 
 
     <div id="imageSelector" class="load">
     </div>
 
 
-    <div class="pagination btn-row pad">
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="" class="pageFirst btn-new pagination-first active" disabled></button>
-        </div>
-        <div class="btn-group space-rgt">
-            <button onclick="filter(this, event)" name="page" value="" class="pagePrev btn-new pagination-prev active" disabled></button>
-        </div>
+<?php   renderPaginationFooter($pagination) ?>
 
-        <div class="space-rgt"><?=t('Page')?>&nbsp;<span class="pageCurrent"></span> &nbsp;&#8725;&nbsp; <span class="pageLast"></span></div>
-
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="" class="pageNext btn-new pagination-next active" disabled></button>
-        </div>
-        <div class="btn-group">
-            <button onclick="filter(this, event)" name="page" value="" class="pageLast btn-new pagination-last active" disabled></button>
-        </div>
-    </div>
-
-<?php renderFormEnd(); ?>
+<?php   renderFormEnd(); ?>
+;
