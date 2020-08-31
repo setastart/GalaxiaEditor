@@ -161,6 +161,13 @@
     color: #169;
 }
 
+.load.loading1 {
+    background-color: rgba(187, 153, 170, 0.2);
+}
+.load.loading2 {
+    background-color: rgba(187, 153, 170, 0.4);
+    transition: background-color 0.5s ease-out;
+}
 
 
 

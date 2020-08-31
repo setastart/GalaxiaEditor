@@ -412,6 +412,7 @@ a.paper {
     word-break: break-word;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    padding-bottom: 10px;
 }
 .filters-list {
     display: grid;
@@ -839,6 +840,8 @@ a.row > .col .empty {
     grid-template-rows: 20px 1fr;
     background: #edd;
     color: #000;
+    display: flex;
+    flex-direction: column;
 }
 #image-select > * {
     padding-left: 20px;
@@ -875,6 +878,7 @@ a.row > .col .empty {
     justify-content: center;
     padding-bottom: 10px;
     font-size: 0.8em;
+    flex: 1;
 }
 #imageSelector h1 {
     grid-column: 1/-1;
@@ -886,7 +890,7 @@ a.row > .col .empty {
 }
 
 .imageSelectItem {
-    background-color: #dcc;
+    background-color: rgba(70, 55, 55, 0.1);
     border: 2px solid transparent;
     padding: 5px;
     cursor: pointer;

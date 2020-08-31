@@ -140,7 +140,7 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
                                 $tagFound = true;
                                 if (!isset($tags[$value])) $tags[$value] = $currentColor++;
                                 $colRowItemClass .= ' brewer-' . h(1 + ($tags[$value] % 9));
-                                $r .= $value;
+                                $r .= t($value);
                                 break;
 
                             case 'slug':

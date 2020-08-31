@@ -19,6 +19,7 @@ function gjLoad() {
     document.addEventListener('mousedown', handleEventMousedown, true);
     window.addEventListener('keydown', handleEventKeydown, true);
     window.addEventListener('error', handleEventError, true);
+    window.addEventListener('beforeunload', handleEventBeforeunload, true);
 
 
     gjImage.init();
@@ -99,7 +100,8 @@ function handleEventInput(ev) {
         ev.target.matches('.pageCurrent') ||
         ev.target.matches('.input-search')
     ) {
-        filter(ev.target, ev);
+        gjFilter.filter(ev.target);
+        ev.preventDefault();
     }
 }
 
@@ -135,11 +137,12 @@ function handleEventChange(ev) {
     }
 
     if (ev.target.matches('.filterChange')) {
-        filter(ev.target, ev);
+        gjFilter.filter(ev.target);
+        ev.preventDefault();
     }
 
     if (ev.target.matches('.filterChangeEmpty')) {
-        filterEmpty(ev.target, ev);
+        gjFilter.filterEmpty(ev.target, ev);
     }
 
 }
@@ -247,7 +250,8 @@ function handleEventClick(ev) {
         ev.target.matches('.pageNext') ||
         ev.target.matches('.pageLast')
     ) {
-        filter(ev.target, ev);
+        gjFilter.filter(ev.target, true);
+        ev.preventDefault();
     }
 }
 
@@ -295,6 +299,11 @@ function handleEventKeydown(ev) {
     if (ev.target.matches('.gchat-room-text')) {
         gjcEnterSend(ev.target, ev, ev.target.dataset.room);
     }
+}
+
+
+function handleEventBeforeunload(ev) {
+    gjImage.close();
 }
 
 

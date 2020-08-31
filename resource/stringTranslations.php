@@ -1205,6 +1205,16 @@ return [
         'pt' => 'Filtrar Títulos',
         'es' => 'Filtrar Títulos',
     ],
+    'Filter Titles and Subtitles' => [
+        'en' => 'Filter Titles and Subtitles',
+        'pt' => 'Filtrar Títulos e Subtítulos',
+        'es' => 'Filtrar Títulos y Subtítulos',
+    ],
+    'Filter Subtitles' => [
+        'en' => 'Filter Subtitles',
+        'pt' => 'Filtrar Subtítulos',
+        'es' => 'Filtrar Subtítulos',
+    ],
     'Filter Types' => [
         'en' => 'Filter Types',
         'pt' => 'Filtrar Tipos',
