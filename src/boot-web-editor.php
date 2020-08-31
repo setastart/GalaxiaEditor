@@ -100,13 +100,13 @@ if ($me->loggedIn) {
         setcookie(
             $app->cookieNginxCacheBypassKey,
             '1',
-            [
-                'expires'  => time() + 86400, // 1 day
-                'path'     => '/; SameSite=Strict',
-                'domain'   => '.' . $_SERVER['SERVER_NAME'],
-                'secure'   => isset($_SERVER['HTTPS']),
-                'httponly' => true,
-            ]
+            /*[*/
+            /*    'expires'  => */ time() + 86400, // 1 day
+            /*    'path'     => */ '/; SameSite=Strict',
+            /*    'domain'   => */ '.' . $_SERVER['SERVER_NAME'],
+            /*    'secure'   => */ isset($_SERVER['HTTPS']),
+            /*    'httponly' => */ true
+        /*]*/
         );
     }
 
@@ -118,9 +118,10 @@ if ($me->loggedIn) {
 
     // CSRF
     if (!isset($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(32));
-    if ($_SERVER['REQUEST_METHOD'] == 'POST')
-        if (!isset($_POST['csrf']) || $_POST['csrf'] !== $_SESSION['csrf'])
-            geErrorPage(500, 'invalid csrf token.');
+    if (!Director::$debug)
+        if ($_SERVER['REQUEST_METHOD'] == 'POST')
+            if (!isset($_POST['csrf']) || $_POST['csrf'] !== $_SESSION['csrf'])
+                geErrorPage(500, 'invalid csrf token.');
 
 
     // set editor language
@@ -139,10 +140,6 @@ if ($me->loggedIn) {
     Director::timerStart('arrayRemovePermsRecursive()');
     arrayRemovePermsRecursive($geConf, $me->perms);
     Director::timerStop('arrayRemovePermsRecursive()');
-
-    Director::timerStart('arrayReplaceHashtagWithParentName()');
-    arrayReplaceHashtagWithParentName($geConf);
-    Director::timerStop('arrayReplaceHashtagWithParentName()');
 
     Director::timerStart('gecAddDevInputs');
 

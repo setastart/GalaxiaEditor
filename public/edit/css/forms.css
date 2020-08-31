@@ -30,7 +30,9 @@
 .input-wrap.show-initial-undo .input-initial-undo {
     display: initial;
 }
-
+.show-changed .module-position {
+    background-color: #cdb;
+}
 .input-wrap.paper-header-status .input-label {
     flex-basis: 100%;
     height: 2px;
@@ -155,7 +157,9 @@
     color: #180;
 }
 
-
+.input-len {
+    color: #169;
+}
 
 
 
@@ -555,6 +559,10 @@ button.fake:hover { color: #00a; }
 .btn-row > .input-label {
     padding-right: 2px;
 }
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+}
 .btn-group :disabled {
     opacity: 0.5;
 }
@@ -604,6 +612,9 @@ button.fake:hover { color: #00a; }
     background-color: #fff;
 }
 
+.btn-new-text {
+    padding: 0 6px;
+}
 .btn-new-x {
     background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/general-close-red.png);
 }

@@ -1,3 +1,26 @@
+var gjInput = {
+
+    trixCharWordCount: function(trixEl) {
+        let lenEl = trixEl.parentNode.querySelector('.input-len');
+        if (lenEl) {
+            let text = trixEl.editor.getDocument().toString().trim();
+
+            if (text.length === 0) {
+                lenEl.innerHTML = 0;
+            } else {
+                let words       = text.split(/\s+/).length;
+                lenEl.innerHTML = text.length + ' / ' + words;
+            }
+        }
+    },
+
+
+
+}
+
+
+
+
 // "what?" version ... http://jsperf.com/diacritics/12
 var textDecoded = document.createElement('textarea');
 
@@ -136,7 +159,7 @@ function gjInputFormat(el, type) {
 }
 
 
-function gjInputChange(el, ev) {
+function gjInputChange(el) {
     var i;
 
     switch (el.tagName) {
@@ -189,7 +212,13 @@ function gjInputChange(el, ev) {
                     el.parentNode.classList.add('active');
 
                     break;
+
                 default:
+                    if (el.maxLength) {
+                        let len = el.previousElementSibling?.querySelector('.input-len');
+                        if (len) len.innerHTML = el.value.length;
+                    }
+
                     if (!el.gInputLoaded) {
                         // console.log('loading ' + el.tagName + ' ' + el.type + ' gInput');
                         el.gInput           = el.parentNode;

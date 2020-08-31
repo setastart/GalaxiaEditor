@@ -17,14 +17,28 @@
 
             $modKeyField = 'module-' . $moduleKey . '-' . $fieldKey;
             $modKeyFieldArr = 'modules[' . $moduleKey . '][' . $fieldKey . ']';
-
+?>
+<?php
             if ($multi) {
 ?>
-    <div id="<?=$modKeyField?>-header" class="module-field-multi-header pad">
-        <h2><?=t($module['gcModuleMultiple'][$fieldKey]['label'] ?? $fieldKey)?></h2>
+    <div id="<?=$modKeyField?>-header" class="module-field-multi-header pad" data-target="<?=$modKeyField?>">
+        <h2><?=t($module['gcModuleMultiple'][$fieldKey]['label'] ?? $fieldKey)?>: <span class="module-field-count"><?=count($fields) - 2?></span></h2>
+<?php               if ($gallery) { ?>
+        <div class="btn-group">
+            <button type="button" class="ev-gallery-delete-none btn-new btn-new-text active" id="empty-<?=$modKeyField?>"><?=t('Delete None')?></button>
+            <button type="button" class="ev-gallery-delete-all btn-new btn-new-text active" id="empty-<?=$modKeyField?>"><?=t('Delete All')?></button>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="ev-gallery-reorder btn-new btn-new-text active" id="reorder-<?=$modKeyField?>"><?=t('Reorder Images')?></button>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="ev-gallery-add btn-new btn-new-plus-text active" id="add-<?=$modKeyField?>-new"><?=t('Add')?></button>
+        </div>
+<?php               } else { ?>
         <div class="btn-group">
             <button type="button" class="ev-module-add btn-new btn-new-plus-text active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="0"><?=t('Add')?></button>
         </div>
+<?php               } ?>
         <div id="<?=$modKeyField?>-new" class="module-field-group hide">
             <div class="item-row">
 <?php           $firstTime = true; ?>
@@ -51,7 +65,7 @@
                     <button title="<?=t("Previous")?>" disabled type="button" class="ev-module-up btn-new reorder-prev active" data-target="<?=$modKeyField?>-new"></button>
                 </div>
                 <div class="btn-group">
-                    <input disabled class="module-position" type="text" min="1" name="<?=$modKeyFieldArr?>[new-0][position]" value="1">
+                    <input disabled class="module-position input-text" type="text" min="1" name="<?=$modKeyFieldArr?>[new-0][position]" value="1">
                     <button disabled type="button" class="ev-module-go btn-new active" data-target="<?=$modKeyField?>-new">go!</button>
                 </div>
                 <div class="btn-group">
@@ -62,10 +76,10 @@
             </div>
 <?php               if ($gallery) { ?>
             <div class="btn-group">
-                <button title="<?=t('Add')?>" type="button" class="ev-module-add module-field-gallery-add before btn-new btn-new-plus active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="0"></button>
+                <button title="<?=t('Add')?>" type="button" class="ev-gallery-add before btn-new btn-new-plus active"></button>
             </div>
             <div class="btn-group">
-                <button title="<?=t('Add')?>" type="button" class="ev-module-add module-field-gallery-add after btn-new btn-new-plus active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="0"></button>
+                <button title="<?=t('Add')?>" type="button" class="ev-gallery-add after btn-new btn-new-plus active"></button>
             </div>
 <?php               } ?>
         </div>
@@ -120,7 +134,7 @@
                     <button title="<?=t("Previous")?>" type="button" class="ev-module-up btn-new reorder-prev active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
                 </div>
                 <div class="btn-group">
-                    <input class="module-position" type="text" min="1" name="<?=$modKeyFieldValArr?>[position]" value="<?=$field['position']?>"<?=($deleteChecked) ? ' disabled' : ''?>>
+                    <input class="module-position input-text" type="text" min="1" name="<?=$modKeyFieldValArr?>[position]" value="<?=$field['position']?>"<?=($deleteChecked) ? ' disabled' : ''?>>
                     <button type="button" class="ev-module-go btn-new active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>>go!</button>
                 </div>
                 <div class="btn-group">
@@ -131,10 +145,10 @@
             </div>
 <?php               if ($gallery) { ?>
             <div class="btn-group">
-                <button title="<?=t('Add')?>" type="button" class="ev-module-add module-field-gallery-add before btn-new btn-new-plus active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="<?=$field['position']?>"></button>
+                <button title="<?=t('Add')?>" type="button" class="ev-gallery-add before btn-new btn-new-plus active"></button>
             </div>
             <div class="btn-group">
-                <button title="<?=t('Add')?>" type="button" class="ev-module-add module-field-gallery-add after btn-new btn-new-plus active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="<?=$field['position'] + 1?>"></button>
+                <button title="<?=t('Add')?>" type="button" class="ev-gallery-add after btn-new btn-new-plus active"></button>
             </div>
 <?php               } ?>
 <?php           } ?>

@@ -18,8 +18,8 @@ if ($r[Scrape::DATA][Vimeo::IMG_SLUG] ?? '') {
     if (gImageValid($app->dirImage, $imgSlug)) {
         $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_EXISTS;
     } else {
-        $imgUrl = $r[Scrape::DATA][Vimeo::IMG_URL];;
-        $uploadedImages = $app->imageUpload([$imgUrl => $imgSlug], true, 0, 'vimeo');
+        $imgUrl = $r[Scrape::DATA][Vimeo::IMG_URL];
+        $uploadedImages = $app->imageUpload([$imgUrl => $imgSlug], true, 1920, 'vimeo');
         if (empty($uploadedImages)) {
             $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_NOT_DOWNLOADED;
         } else {

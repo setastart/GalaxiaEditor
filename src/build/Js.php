@@ -17,7 +17,7 @@ class Js {
             __DIR__ . '/js/main.js',
             __DIR__ . '/js/filter.js',
             __DIR__ . '/js/image.js',
-            __DIR__ . '/js/module.js',
+            __DIR__ . '/js/field.js',
             __DIR__ . '/js/input.js',
             __DIR__ . '/js/scrape.js',
             __DIR__ . '/js/text.js',

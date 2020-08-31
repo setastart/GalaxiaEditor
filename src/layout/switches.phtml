@@ -1,4 +1,4 @@
-<?php   if (!$showSwitchesLang && empty($me->perms)) return; ?>
+<?php   if (!($showSwitchesLang ?? false) && empty($me->perms)) return; ?>
 <div id="switches">
 <?php   if (!empty($me->perms)) { ?>
     <div class="switch-perms">
@@ -10,7 +10,7 @@
 <?php   } ?>
     </div>
 <?php   } ?>
-<?php   if ($showSwitchesLang) { ?>
+<?php   if ($showSwitchesLang ?? false) { ?>
     <div class="switch-lang">
 <?php   foreach ($app->locales as $lang => $locale) { ?>
         <label for="switch-hide-lang-<?=h($lang)?>" data-remember="true" class="btn btn-pill btn-small btn-checkbox active">

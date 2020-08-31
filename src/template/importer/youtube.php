@@ -21,7 +21,7 @@ if ($r[Scrape::DATA][Youtube::IMG_SLUG] ?? '') {
         $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_EXISTS;
     } else {
         $imgUrl = $r[Scrape::DATA][Youtube::IMG_URL];;
-        $uploadedImages = $app->imageUpload([$imgUrl => $imgSlug], true, 0, 'vimeo');
+        $uploadedImages = $app->imageUpload([$imgUrl => $imgSlug], true, 1920, 'vimeo');
         if (empty($uploadedImages)) {
             $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_NOT_DOWNLOADED;
         } else {

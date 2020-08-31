@@ -59,9 +59,9 @@ function gjImportJsonld(el, ev) {
                     }
                     // console.log(foundInJsonld);
                     if (foundInJsonld.length) {
-                        var inputEl = document.getElementById(resultName);
+                        var inputEl = document.getElementById(resultName.substr(0, -4));
                         if (!inputEl) continue;
-                        var addedFields = gjCloneModuleInputs(inputEl);
+                        var addedFields = gjField.cloneNew(resultName.substr(0, -4), 0);
 
                         for (var i = 0; i < foundInJsonld.length; i++) {
                             var inputName = foundInJsonld[i];
@@ -80,7 +80,7 @@ function gjImportJsonld(el, ev) {
                 if (json['@type'] != jsonldSearchRegex[1]) continue;
                 var content = jsonPathToValue(json, jsonldSearchRegex[2]);
                 if (!content) continue;
-                var inputEl = document.getElementsByName(resultName)[0];
+                var inputEl = document.getElementsByName(resultName.substr(0, -4))[0];
                 if (!inputEl) continue;
                 if (inputEl.value) continue;
                 changes.push({el: inputEl, content: content});
@@ -230,9 +230,9 @@ function gjImportYoutube(el, ev) {
                     }
                     // console.log(foundInJsonld);
                     if (foundInJsonld.length) {
-                        var inputEl = document.getElementById(resultName);
+                        var inputEl = document.getElementById(resultName.substr(0, -4));
                         if (!inputEl) continue;
-                        var addedFields = gjCloneModuleInputs(inputEl);
+                        var addedFields = gjField.cloneNew(resultName.substr(0, -4), 0);
 
                         for (var i = 0; i < foundInJsonld.length; i++) {
                             var inputName = foundInJsonld[i];
@@ -251,7 +251,7 @@ function gjImportYoutube(el, ev) {
                 if (json['@type'] != jsonldSearchRegex[1]) continue;
                 var content = jsonPathToValue(json, jsonldSearchRegex[2]);
                 if (!content) continue;
-                var inputEl = document.getElementsByName(resultName)[0];
+                var inputEl = document.getElementsByName(resultName.substr(0, -4))[0];
                 if (!inputEl) continue;
                 if (inputEl.value) continue;
                 changes.push({el: inputEl, content: content});
@@ -404,9 +404,9 @@ function gjImportVimeo(el, ev) {
                     }
                     // console.log(foundInJsonld);
                     if (foundInJsonld.length) {
-                        var inputEl = document.getElementById(resultName);
+                        var inputEl = document.getElementById(resultName.substr(0, -4));
                         if (!inputEl) continue;
-                        var addedFields = gjCloneModuleInputs(inputEl);
+                        var addedFields = gjField.cloneNew(resultName.substr(0, -4), 0);
 
                         for (var i = 0; i < foundInJsonld.length; i++) {
                             var inputName = foundInJsonld[i];
@@ -425,7 +425,7 @@ function gjImportVimeo(el, ev) {
                 if (json['@type'] != jsonldSearchRegex[1]) continue;
                 var content = jsonPathToValue(json, jsonldSearchRegex[2]);
                 if (!content) continue;
-                var inputEl = document.getElementsByName(resultName)[0];
+                var inputEl = document.getElementsByName(resultName.substr(0, -4))[0];
                 if (!inputEl) continue;
                 if (inputEl.value) continue;
                 changes.push({el: inputEl, content: content});

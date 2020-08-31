@@ -90,6 +90,11 @@ return [
         'pt' => 'Substituir imagens existentes que tenham o mesmo slug',
         'es' => 'Substituir imágenes existentes que tengan el mismo slug',
     ],
+    'imgSlug' => [
+        'en' => 'Image',
+        'pt' => 'Imagem',
+        'es' => 'Imagen',
+    ],
     'Image Slug' => [
         'en' => 'Image Slug',
         'pt' => 'Slug da Imagem',
@@ -104,6 +109,16 @@ return [
         'en' => 'Reorder Images',
         'pt' => 'Reordenar Imagens',
         'es' => 'Reordenar Imágenes',
+    ],
+    'Delete All' => [
+        'en' => 'Delete All',
+        'pt' => 'Apagar Todas',
+        'es' => 'Borrar Todas',
+    ],
+    'Delete None' => [
+        'en' => 'Delete None',
+        'pt' => 'Não Apagar Nenhuma',
+        'es' => 'No Borrar Ninguna',
     ],
 
 
@@ -465,6 +480,11 @@ return [
         'pt' => 'Títulos',
         'es' => 'Títulos',
     ],
+    'Menu Title' => [
+        'en' => 'Menu Title',
+        'pt' => 'Título de Menu',
+        'es' => 'Título de Menú',
+    ],
     'Head Title' => [
         'en' => 'Head Title',
         'pt' => 'Título Head',
@@ -753,7 +773,7 @@ return [
     'Reload' => [
         'en' => 'Reload',
         'pt' => 'Recarregar',
-        'es' => 'Recargar',
+        'es' => 'Volver a cargar',
     ],
     'Visit' => [
         'en' => 'Visit',
@@ -798,12 +818,12 @@ return [
     'Header' => [
         'en' => 'Header',
         'pt' => 'Cabeçalho',
-        'es' => 'Encabezamiento',
+        'es' => 'Encabezado',
     ],
     'Headers' => [
         'en' => 'Headers',
         'pt' => 'Cabeçalhos',
-        'es' => 'Encabezamientos',
+        'es' => 'Encabezados',
     ],
     'Footer' => [
         'en' => 'Footer',
@@ -1068,7 +1088,7 @@ return [
     'Main menu' => [
         'en' => 'Main menu',
         'pt' => 'Menu principal',
-        'es' => 'Menu principal',
+        'es' => 'Menú principal',
     ],
     'This page in other languages' => [
         'en' => 'This page in other languages',
@@ -1084,6 +1104,11 @@ return [
         'en' => 'Mode',
         'pt' => 'Modo',
         'es' => 'Modo',
+    ],
+    'Screenshot' => [
+        'en' => 'Screenshot',
+        'pt' => 'Captura de ecrã',
+        'es' => 'Captura de pantalla',
     ],
 
 
@@ -1208,7 +1233,7 @@ return [
     'Empty' => [
         'en' => 'Empty',
         'pt' => 'Vazio',
-        'es' => 'Vacio',
+        'es' => 'Vacío',
     ],
 
 

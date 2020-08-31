@@ -26,16 +26,16 @@ foreach ($item['gcSelectExtra'] as $table => $cols) {
 
 
 
-foreach ($item['gcInputs'] as $inputName => $input) {
-    $input = prepareInput($input, $app->dirImage, $extras);
+foreach ($item['gcInputs'] as $inputKey => $input) {
+    $input = prepareInput($input, $extras);
 
-    $item['inputs'][$inputName] = array_merge($input, [
-        'label'       => $geConf[$pgSlug]['gcColNames'][$inputName] ?? $inputName,
-        'name'        => 'item[' . $inputName . ']',
-        'nameFromDb'  => $inputName,
+    $item['inputs'][$inputKey] = array_merge($input, [
+        'label'       => $input['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
+        'name'        => 'item[' . $inputKey . ']',
+        'nameFromDb'  => $inputKey,
     ]);
-    if ($input['type'] == 'timestamp') $item['inputs'][$inputName]['value'] = date('Y-m-d 00:00');
-    if ($input['type'] == 'datetime')  $item['inputs'][$inputName]['value'] = date('Y-m-d 00:00');
+    if ($input['type'] == 'timestamp') $item['inputs'][$inputKey]['value'] = date('Y-m-d 00:00');
+    if ($input['type'] == 'datetime')  $item['inputs'][$inputKey]['value'] = date('Y-m-d 00:00');
 
     if (isset($input['lang'])) $showSwitchesLang = true;
 }

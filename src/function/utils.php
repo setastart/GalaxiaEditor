@@ -4,7 +4,8 @@ use Galaxia\{Director};
 
 
 
-function prepareInput($input, $dirImage, $extras) {
+function prepareInput($input, $extras) {
+
     if ($input['type'] == 'select' && isset($input['geExtraOptions'])) {
         foreach ($input['geExtraOptions'] as $key => $val) {
             foreach ($val as $colKey => $colVals) {
@@ -23,9 +24,17 @@ function prepareInput($input, $dirImage, $extras) {
                         }
                     }
 
+                    $found        = [];
                     $optionColVal = [];
                     foreach ($colVals as $colVal) {
-                        $optionColVal[] = $option[$colVal];
+                        if (substr($colVal, -3, 1) == '_') {
+                            $canonical = substr($colVal, 0, -2);
+                            if (empty($option[$colVal])) continue;
+                            if (in_array($canonical, $found)) continue;
+                            $found[] = substr($colVal, 0, -2);
+                        }
+
+                        $optionColVal[] = t($option[$colVal]);
                     }
 
                     if ($add) $input['options'][$option[$colKey]] = ['label' => implode(' / ', $optionColVal)];
@@ -54,8 +63,6 @@ function prepareInput($input, $dirImage, $extras) {
                 break;
         }
     }
-
-    if (empty($input['label'])) $input['label'] = '';
 
     return $input;
 }

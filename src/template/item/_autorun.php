@@ -111,28 +111,24 @@ $firstStatus = '';
 foreach ($item['gcInputs'] as $inputKey => $input) {
     if (empty($input)) continue;
     if ($input['type'] == 'status' && !isset($input['options'][$item['data'][$inputKey]])) continue;
+
+    $input = prepareInput($input, $extras);
+
     if ($input['type'] == 'password' || substr($inputKey, 0, 8) == 'password') $passwordColsFound = true;
     if (isset($input['lang']) && count($app->langs) > 1) $showSwitchesLang = true;
 
     $inputNew = [
-        'label'       => $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
+        'label'       => $input['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
         'name'        => 'item[' . $inputKey . ']',
         'nameFromDb'  => $inputKey,
     ];
 
     if (!$firstStatus && $input['type'] == 'status') $firstStatus = $inputKey;
 
-    if ($input['type'] == 'select' && isset($input['geExtraOptions']))
-        foreach ($input['geExtraOptions'] as $key => $val)
-            foreach ($val as $colKey => $colVal)
-                foreach ($extras[$key] ?? [] as $option)
-                    $input['options'][$option[$colKey]] = ['label' => $option[$colVal]];
-
     if (array_key_exists($inputKey, $item['data'])) {
         $value = $item['data'][$inputKey];
         if ($input['type'] == 'timestamp') $value = date('Y-m-d H:i:s', $item['data'][$inputKey]);
         if (substr($inputKey, 0, 8) == 'password') $value = '';
-        // if (isset($input['nullable']) && $input['nullable'] && $value == '') $value = null;
         $inputNew['value']       = $value;
         $inputNew['valueFromDb'] = $value;
     }
@@ -152,6 +148,16 @@ foreach ($item['gcInfo'] as $inputKey => $input) {
     $item['gcInfo'][$inputKey]['value'] = $value;
 }
 
+
+$titleTemp = 'Item';
+
+if (is_array($item['gcColKey'])) {
+    foreach ($item['gcColKey'] as $i => $val) {
+        if (empty($item['data'][$val] ?? '')) continue;
+        $item['gcColKey'] = $item['gcColKey'][$i];
+        break;
+    }
+}
 
 $titleTemp = $item['data'][$item['gcColKey']];
 if (substr($item['gcColKey'], 0, 9) == 'timestamp') $titleTemp = gFormatDate($titleTemp, 'd MMM y - HH:mm');

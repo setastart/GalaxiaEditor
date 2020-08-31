@@ -16,7 +16,18 @@
         "ext-intl": "*",
         "ext-curl": "*",
         "ext-ctype": "*",
-        "ext-imagick": "*"
+        "ext-vips": "*",
+        "ext-mbstring": "*",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-fileinfo": "*",
+        "ext-dom": "*"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Galaxia\\Editor\\Config": "src/shared/Gec.php"
+        },
     }
 
 }

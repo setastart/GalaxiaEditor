@@ -1,9 +1,6 @@
-let gjTextareas                 = [];
-let gjResizeTimeout             = null;
-let gjImageSelector             = [];
-let gjImageSelectorActiveInput  = null;
-let gjImageSelectorActiveImages = [];
-let filterData                  = ['pageCurrent', 'pageFirst', 'pagePrev', 'pageNext', 'pageLast', 'itemsPerPage', 'rowsFiltered', 'rowsTotal'];
+let gjTextareas                    = [];
+let gjResizeTimeout                = null;
+let filterData                     = ['pageCurrent', 'pageFirst', 'pagePrev', 'pageNext', 'pageLast', 'itemsPerPage', 'rowsFiltered', 'rowsTotal'];
 
 
 window.addEventListener('DOMContentLoaded', function () {
@@ -24,7 +21,7 @@ function gjLoad() {
     window.addEventListener('error', handleEventError, true);
 
 
-    gjImageSelector = document.getElementById('image-select');
+    gjImage.init();
     gjTextareas     = document.getElementsByTagName('textarea');
 
     gjResizeTextareas();
@@ -51,12 +48,20 @@ function gjLoad() {
 
 
     document.addEventListener('trix-change', function (ev) {
-        let editor = ev.target;
-        if (!editor.gInputLoaded) {
-            editor.gInput       = editor.parentNode;
-            editor.gInputLoaded = true;
+        let editorEl = ev.target;
+        if (!editorEl.gInputLoaded) {
+            editorEl.gInput       = editorEl.parentNode;
+            editorEl.gInputLoaded = true;
         }
-        initialUndoClasses(editor);
+
+        gjInput.trixCharWordCount(editorEl);
+
+        initialUndoClasses(editorEl);
+    });
+
+    document.addEventListener('trix-initialize', function (ev) {
+        let editorEl = ev.target;
+        gjInput.trixCharWordCount(editorEl);
     });
 
 
@@ -65,7 +70,6 @@ function gjLoad() {
         if (gjResizeTimeout != null) clearTimeout(gjResizeTimeout);
         gjResizeTimeout = setTimeout(gjResizeTextareas, 100);
     }
-
 }
 
 
@@ -76,7 +80,7 @@ function handleEventInput(ev) {
         ev.target.matches('.input-file') ||
         ev.target.matches('.input-trix')
     ) {
-        gjInputChange(ev.target, ev);
+        gjInputChange(ev.target);
         textareaAutoGrow(ev.target);
     }
 
@@ -116,7 +120,7 @@ function handleEventChange(ev) {
         ev.target.matches('.input-select') ||
         ev.target.matches('.input-trix')
     ) {
-        gjInputChange(ev.target, ev);
+        gjInputChange(ev.target);
     }
 
     if (
@@ -143,66 +147,97 @@ function handleEventChange(ev) {
 
 function handleEventBlur(ev) {
     if (ev.target.matches && ev.target.matches('.input-select')) {
-        gjInputChange(ev.target, ev);
+        gjInputChange(ev.target);
     }
 }
 
 
 function handleEventClick(ev) {
     if (ev.target.matches('.slugImage')) {
-        gjImageSelectorOpen(ev.target, ev.target.dataset.imgtype);
+        gjImage.openSingle(ev.target, ev.target.dataset.imgtype ?? '');
     }
     if (ev.target.matches('.image-select-header-close')) {
-        gjImageSelectorClose(ev.target)
+        gjImage.close(ev.target);
     }
-    if (ev.target.matches('.scrape-jsonld')) {
-        gjImportJsonld(ev.target, ev)
+    if (ev.target.matches('.image-select-header-select')) {
+        gjImage.selectGallery();
     }
-    if (ev.target.matches('.scrape-youtube')) {
-        gjImportYoutube(ev.target, ev)
+    if (ev.target.matches('.image-select-header-select-all')) {
+        gjImage.selectAll();
     }
-    if (ev.target.matches('.scrape-vimeo')) {
-        gjImportVimeo(ev.target, ev)
-    }
-    if (ev.target.matches('.gchat-room-btn')) {
-        gjcClickSend(ev.target, ev.target.dataset.room)
+    if (ev.target.matches('.image-select-header-select-none')) {
+        gjImage.selectNone();
     }
     if (ev.target.matches('.imageSelectItem')) {
-        gjImageSelectorActivate(ev.target)
+        gjImage.selectSingle(ev.target);
     }
 
+
+    if (ev.target.matches('.scrape-jsonld')) {
+        gjImportJsonld(ev.target, ev);
+    }
+    if (ev.target.matches('.scrape-youtube')) {
+        gjImportYoutube(ev.target, ev);
+    }
+    if (ev.target.matches('.scrape-vimeo')) {
+        gjImportVimeo(ev.target, ev);
+    }
+
+
+    if (ev.target.matches('.gchat-room-btn')) {
+        gjcClickSend(ev.target, ev.target.dataset.room);
+    }
     if (ev.target.matches('.ev-cookie-set')) {
-        document.cookie = ev.target.data.key + '=' + ev.target.data.val + '; SameSite=Strict; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
+        document.cookie = ev.target.dataset.key + '=' + ev.target.dataset.val + '; SameSite=Strict; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
     }
     if (ev.target.matches('.ev-cookie-del')) {
-        document.cookie = ev.target.data.key + '=; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+        document.cookie = ev.target.dataset.key + '=; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+    }
+
+
+    if (ev.target.matches('.ev-gallery-delete-none')) {
+        gjField.deleteAll(ev.target.closest('.module-field-multi-header').dataset.target, 'enable');
+    }
+    if (ev.target.matches('.ev-gallery-delete-all')) {
+        gjField.deleteAll(ev.target.closest('.module-field-multi-header').dataset.target, 'disable');
+    }
+    if (ev.target.matches('.ev-gallery-reorder')) {
+        gjField.sortNatural(ev.target.closest('.module-field-multi-header').dataset.target);
+    }
+    if (ev.target.matches('.ev-gallery-add')) {
+        let pos = ev.target.closest('.module-field-group')?.querySelector('.module-position').value ?? 0;
+        if (ev.target.matches('.after')) pos++;
+
+        let fieldId = ev.target.closest('.module-field')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
+        if (!fieldId) return;
+        gjImage.openGallery(fieldId, document.getElementById(fieldId).dataset.imgtype ?? '', pos)
     }
 
 
     if (ev.target.matches('.ev-module-add')) {
-        let cloned = gjCloneModuleInputs(ev.target);
-        if (cloned) {
-            let slugImage = cloned.querySelector('.slugImage');
-            if (slugImage) gjImageSelectorOpen(slugImage, ev.target.dataset.imgtype ?? '');
-        }
+        let pos = ev.target.closest('.module-field-group')?.querySelector('.module-position') ?? 0;
+        let fieldId = ev.target.closest('.module-field-group')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
+
+        gjField.cloneNew(fieldId, 0);
+        gjField.countPos(document.getElementById(ev.target.dataset.where));
     }
     if (ev.target.matches('.ev-module-rem')) {
-        gjDeleteModuleInputs(ev.target);
+        gjField.delete(ev.target);
     }
     if (ev.target.matches('.ev-module-first')) {
-        gjModuleMove(ev.target, 1);
+        gjField.moveTo(ev.target, 1);
     }
     if (ev.target.matches('.ev-module-last')) {
-        gjModuleMove(ev.target, 999999);
+        gjField.moveTo(ev.target, 999999);
     }
     if (ev.target.matches('.ev-module-up')) {
-        gjModuleMoveUp(ev.target);
+        gjField.moveUp(ev.target);
     }
     if (ev.target.matches('.ev-module-down')) {
-        gjModuleMoveDown(ev.target);
+        gjField.moveDown(ev.target);
     }
     if (ev.target.matches('.ev-module-go')) {
-        gjModuleMove(ev.target);
+        gjField.moveTo(ev.target);
     }
 
 
@@ -238,7 +273,7 @@ function handleEventKeydown(ev) {
     }
     if (['Esc', 'Escape'].contains(ev.key)) {
         document.body.classList.remove('show-focus-outlines');
-        gjImageSelectorClose();
+        gjImage.close();
     }
 
     if (ev.key === 'Enter') {
@@ -247,7 +282,7 @@ function handleEventKeydown(ev) {
             return false;
         }
         if (ev.target.matches('.module-position')) {
-            gjModuleMove(ev.target.nextElementSibling);
+            gjField.moveTo(ev.target.nextElementSibling);
             ev.preventDefault();
             return false;
         }
@@ -269,6 +304,6 @@ function handleEventError(ev) {
         ev.target.matches('.imageSelectItem img') ||
         ev.target.matches('.col-thumb img')
     )) {
-        gjImageResizeRequest(ev.target, ev)
+        gjImage.resizeRequest(ev.target);
     }
 }

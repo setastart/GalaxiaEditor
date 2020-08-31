@@ -4,7 +4,7 @@
         <h1><?=h($pgTitle)?></h1>
 
 <?php   if ($firstStatus) { ?>
-<?php       renderStatus($item['inputs'][$firstStatus]); ?>
+<?php       echo renderStatus($item['inputs'][$firstStatus]); ?>
 <?php   } ?>
 
         <div class="paper-header-actions">
@@ -60,7 +60,7 @@
 <?php
 
 foreach ($modules as $moduleKey => $module) {
-    // dp($module);
+    if (!$module['inputs'] ?? []) continue;
     switch ($module['gcModuleType']) {
         case 'fields':
             if (empty($module['inputs'])) {

@@ -1,7 +1,7 @@
 <?php
 
 
-$module['inputs'] = [];
+$module['inputs']       = [];
 $module['inputsUnused'] = [];
 
 
@@ -11,12 +11,12 @@ $extras = [];
 foreach ($module['gcSelectExtra'] as $table => $cols) {
     $query = querySelect([$table => $cols]);
     $query .= querySelectOrderBy([$table => [$cols[1] => 'ASC']]);
-    $stmt = $db->prepare($query);
+    $stmt  = $db->prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
 
     while ($extraData = $result->fetch_assoc()) {
-        $extraData = array_map('strval', $extraData);
+        $extraData        = array_map('strval', $extraData);
         $extras[$table][] = $extraData;
     }
     $stmt->close();
@@ -41,6 +41,7 @@ $result = $stmt->get_result();
 $fieldsData = [];
 while ($data = $result->fetch_assoc()) {
     $data = array_map('strval', $data);
+
     $fieldsData[$data['fieldKey']][$data[$module['gcTable'] . 'Id']] = $data;
 }
 $stmt->close();
@@ -48,7 +49,7 @@ $stmt->close();
 
 
 
-// - prepare geInputs
+// - prepare gcInputs
 foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
     foreach ($parent as $parentValue => $inputsDefault) {
         if (!isset($item['data'][$parentName])) continue;
@@ -63,26 +64,25 @@ foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
     }
 }
 foreach ($module['gcInputs'] as $inputKey => $input) {
-    $module['gcInputs'][$inputKey] = prepareInput($input, $app->dirImage, $extras);
+    $module['gcInputs'][$inputKey] = prepareInput($input, $extras);
 }
 
 
 
 
-// - prepare geInputsWhereCol merging from geInputs
+// - prepare gcInputsWhereCol merging from gcInputs
 // - add proto and new-0 to $module['inputs'][$fieldKey']
 
 foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
-    foreach ($inputs as $inputKey => $input) {
-        $input = array_replace_recursive($module['gcInputs'][$inputKey], $input);
-        $input = prepareInput($input, $app->dirImage, $extras);
-        if (empty($input['label'])) $input['label'] = $fieldKey;
+    foreach ($inputs as $inputKey => $inputOriginal) {
+        $input = array_replace_recursive($module['gcInputs'][$inputKey], $inputOriginal);
+        $input = prepareInput($input, $extras);
+
+        $input['label']      = $inputOriginal['label'] ?? $module['gcInputs'][$inputKey]['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey;
         $input['nameFromDb'] = $inputKey;
+        $input['name']       = 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputKey . ']';
 
-        $input['name'] = 'modules[' . $moduleKey . '][' . $fieldKey . '][proto][' . $inputKey . ']';
         $module['inputs'][$fieldKey]['proto'][$inputKey] = $input;
-
-        $input['name'] = 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputKey . ']';
         $module['inputs'][$fieldKey]['new-0'][$inputKey] = $input;
     }
     if (isset($module['gcModuleMultiple'][$fieldKey])) {
@@ -98,27 +98,29 @@ foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
 
 
 
-// - prepare geInputsWhereParent merging from geInputs
+// - prepare gcInputsWhereParent merging from gcInputs
 // - add proto and new-0 to $module['inputs'][$fieldKey']
 
 foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
     foreach ($parent as $parentValue => $inputsDefault) {
-
         if (!isset($item['data'][$parentName])) continue;
         if ($item['data'][$parentName] != $parentValue) continue;
 
         foreach ($inputsDefault as $fieldKey => $inputs) {
-            foreach ($inputs as $inputKey => $input) {
-                $input = array_replace_recursive($module['gcInputs'][$inputKey], $input);
-                $input = prepareInput($input, $app->dirImage, $extras);
-                if (empty($input['label'])) $input['label'] = $fieldKey;
+            foreach ($inputs as $inputKey => $inputOriginal) {
+                // if ($inputOriginal['type'] == 'none') {
+                //     unset($module['inputs'][$fieldKey]);
+                //     continue 2;
+                // }
+                $input = array_replace_recursive($module['gcInputsWhereCol'][$fieldKey][$inputKey] ?? $module['gcInputs'][$inputKey], $inputOriginal);
+                $input = prepareInput($input, $extras);
+
+                $input['label']      = $inputOriginal['label'] ?? $module['gcInputsWhereCol'][$fieldKey][$inputKey]['label'] ?? $module['gcInputs'][$inputKey]['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $fieldKey ?? $inputKey;
                 $input['nameFromDb'] = $inputKey;
-                $input['value'] = '';
+                $input['value']      = '';
+                $input['name']       = 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputKey . ']';
 
-                $input['name'] = 'modules[' . $moduleKey . '][' . $fieldKey . '][proto][' . $inputKey . ']';
                 $module['inputs'][$fieldKey]['proto'][$inputKey] = $input;
-
-                $input['name'] = 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputKey . ']';
                 $module['inputs'][$fieldKey]['new-0'][$inputKey] = $input;
             }
             if (isset($module['gcModuleMultiple'][$fieldKey])) {
@@ -129,6 +131,17 @@ foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
                     $module['inputs'][$fieldKey]['new-0']['position'] = 1;
                 }
             }
+        }
+    }
+}
+
+
+
+// remove inputs that are disabled by setting type to none
+foreach ($module['inputs'] as $fieldKey => $fields) {
+    foreach ($fields as $fieldVal => $field) {
+        foreach ($field as $inputKey => $input) {
+            if ($input['type'] == 'none') unset($module['inputs'][$fieldKey]);
         }
     }
 }
@@ -156,7 +169,7 @@ foreach ($fieldsData as $fieldKey => $field) {
 
             if (isset($module['inputs'][$fieldKey]['proto'][$inputKey])) {
                 $module['inputs'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['inputs'][$fieldKey]['proto'][$inputKey], $inputNew);
-                $newFieldsToDelete[$fieldKey] = true;
+                $newFieldsToDelete[$fieldKey]                     = true;
             } else {
                 // $module['inputsUnused'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['gcInputs'][$inputKey], $inputNew);
                 // $module['inputsUnused'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['inputsUnused'][$fieldKey][$inputKey], $inputNew);

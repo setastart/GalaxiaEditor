@@ -21,20 +21,16 @@ if (!String.prototype.padStart) {
 }
 
 
-
-
 if (!Element.prototype.matches) {
     Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
 }
 
 
-
-
 if (!Element.prototype.closest) {
-    Element.prototype.closest = function (s) {
-        var el = this;
+    Element.prototype.closest = function (selectors) {
+        let el = this;
         do {
-            if (el.matches(s)) return el;
+            if (el.matches(selectors)) return el;
             el = el.parentElement || el.parentNode;
         } while (el !== null && el.nodeType === 1);
         return null;
@@ -42,31 +38,25 @@ if (!Element.prototype.closest) {
 }
 
 
-
-Array.prototype.contains = function(element){
-    return this.indexOf(element) > -1;
+Array.prototype.contains = function(el) {
+    return this.indexOf(el) > -1;
 };
 
 
-
 function trigger(el, evName, bubbles = false) {
-    var ev = new Event(evName);
+    let ev = new Event(evName);
     if (bubbles) ev = new Event(evName, {bubbles: true});
     el.dispatchEvent(ev);
 }
 
 
-
-
-function getChildren(n, skipMe){
-    var r = [];
-    for ( ; n; n = n.nextSibling )
-       if ( n.nodeType == 1 && n != skipMe)
-          r.push( n );
+function getChildren(n, skipMe) {
+    let r = [];
+    for (; n; n = n.nextSibling)
+        if (n.nodeType === Node.ELEMENT_NODE && n !== skipMe)
+            r.push(n);
     return r;
 }
-
-
 
 
 function getSiblings(n) {
@@ -84,12 +74,9 @@ function getSiblings(n) {
 /******  main.js  ******/
 /***********************/
 
-let gjTextareas                 = [];
-let gjResizeTimeout             = null;
-let gjImageSelector             = [];
-let gjImageSelectorActiveInput  = null;
-let gjImageSelectorActiveImages = [];
-let filterData                  = ['pageCurrent', 'pageFirst', 'pagePrev', 'pageNext', 'pageLast', 'itemsPerPage', 'rowsFiltered', 'rowsTotal'];
+let gjTextareas                    = [];
+let gjResizeTimeout                = null;
+let filterData                     = ['pageCurrent', 'pageFirst', 'pagePrev', 'pageNext', 'pageLast', 'itemsPerPage', 'rowsFiltered', 'rowsTotal'];
 
 
 window.addEventListener('DOMContentLoaded', function () {
@@ -106,13 +93,11 @@ function gjLoad() {
     document.addEventListener('blur', handleEventBlur, true);
     document.addEventListener('click', handleEventClick, true);
     document.addEventListener('mousedown', handleEventMousedown, true);
-    document.addEventListener('drop', handleEventDrop, false);
-    document.addEventListener('dragover', handleEventDragover, false);
     window.addEventListener('keydown', handleEventKeydown, true);
     window.addEventListener('error', handleEventError, true);
 
 
-    gjImageSelector = document.getElementById('image-select');
+    gjImage.init();
     gjTextareas     = document.getElementsByTagName('textarea');
 
     gjResizeTextareas();
@@ -139,12 +124,20 @@ function gjLoad() {
 
 
     document.addEventListener('trix-change', function (ev) {
-        let editor = ev.target;
-        if (!editor.gInputLoaded) {
-            editor.gInput       = editor.parentNode;
-            editor.gInputLoaded = true;
+        let editorEl = ev.target;
+        if (!editorEl.gInputLoaded) {
+            editorEl.gInput       = editorEl.parentNode;
+            editorEl.gInputLoaded = true;
         }
-        initialUndoClasses(editor);
+
+        gjInput.trixCharWordCount(editorEl);
+
+        initialUndoClasses(editorEl);
+    });
+
+    document.addEventListener('trix-initialize', function (ev) {
+        let editorEl = ev.target;
+        gjInput.trixCharWordCount(editorEl);
     });
 
 
@@ -153,37 +146,8 @@ function gjLoad() {
         if (gjResizeTimeout != null) clearTimeout(gjResizeTimeout);
         gjResizeTimeout = setTimeout(gjResizeTextareas, 100);
     }
-
 }
 
-function handleEventDragover(ev) {
-    console.log(ev);
-}
-
-function handleEventDrop(ev) {
-    console.log('File(s) dropped');
-    console.log(ev);
-    // Prevent default behavior (Prevent file from being opened)
-    ev.preventDefault();
-    ev.stopPropagation()
-
-    if (ev.dataTransfer.items) {
-        // Use DataTransferItemList interface to access the file(s)
-        for (var i = 0; i < ev.dataTransfer.items.length; i++) {
-            // If dropped items aren't files, reject them
-            if (ev.dataTransfer.items[i].kind === 'file') {
-                var file = ev.dataTransfer.items[i].getAsFile();
-                console.log('... file[' + i + '].name = ' + file.name);
-            }
-        }
-    } else {
-        // Use DataTransfer interface to access the file(s)
-        for (var i = 0; i < ev.dataTransfer.files.length; i++) {
-            console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
-        }
-    }
-    return false;
-}
 
 function handleEventInput(ev) {
 
@@ -192,7 +156,7 @@ function handleEventInput(ev) {
         ev.target.matches('.input-file') ||
         ev.target.matches('.input-trix')
     ) {
-        gjInputChange(ev.target, ev);
+        gjInputChange(ev.target);
         textareaAutoGrow(ev.target);
     }
 
@@ -232,7 +196,7 @@ function handleEventChange(ev) {
         ev.target.matches('.input-select') ||
         ev.target.matches('.input-trix')
     ) {
-        gjInputChange(ev.target, ev);
+        gjInputChange(ev.target);
     }
 
     if (
@@ -259,66 +223,97 @@ function handleEventChange(ev) {
 
 function handleEventBlur(ev) {
     if (ev.target.matches && ev.target.matches('.input-select')) {
-        gjInputChange(ev.target, ev);
+        gjInputChange(ev.target);
     }
 }
 
 
 function handleEventClick(ev) {
     if (ev.target.matches('.slugImage')) {
-        gjImageSelectorOpen(ev.target, ev.target.dataset.imgtype);
+        gjImage.openSingle(ev.target, ev.target.dataset.imgtype ?? '');
     }
     if (ev.target.matches('.image-select-header-close')) {
-        gjImageSelectorClose(ev.target)
+        gjImage.close(ev.target);
     }
-    if (ev.target.matches('.scrape-jsonld')) {
-        gjImportJsonld(ev.target, ev)
+    if (ev.target.matches('.image-select-header-select')) {
+        gjImage.selectGallery();
     }
-    if (ev.target.matches('.scrape-youtube')) {
-        gjImportYoutube(ev.target, ev)
+    if (ev.target.matches('.image-select-header-select-all')) {
+        gjImage.selectAll();
     }
-    if (ev.target.matches('.scrape-vimeo')) {
-        gjImportVimeo(ev.target, ev)
-    }
-    if (ev.target.matches('.gchat-room-btn')) {
-        gjcClickSend(ev.target, ev.target.dataset.room)
+    if (ev.target.matches('.image-select-header-select-none')) {
+        gjImage.selectNone();
     }
     if (ev.target.matches('.imageSelectItem')) {
-        gjImageSelectorActivate(ev.target)
+        gjImage.selectSingle(ev.target);
     }
 
+
+    if (ev.target.matches('.scrape-jsonld')) {
+        gjImportJsonld(ev.target, ev);
+    }
+    if (ev.target.matches('.scrape-youtube')) {
+        gjImportYoutube(ev.target, ev);
+    }
+    if (ev.target.matches('.scrape-vimeo')) {
+        gjImportVimeo(ev.target, ev);
+    }
+
+
+    if (ev.target.matches('.gchat-room-btn')) {
+        gjcClickSend(ev.target, ev.target.dataset.room);
+    }
     if (ev.target.matches('.ev-cookie-set')) {
-        document.cookie = ev.target.data.key + '=' + ev.target.data.val + '; SameSite=Strict; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
+        document.cookie = ev.target.dataset.key + '=' + ev.target.dataset.val + '; SameSite=Strict; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
     }
     if (ev.target.matches('.ev-cookie-del')) {
-        document.cookie = ev.target.data.key + '=; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+        document.cookie = ev.target.dataset.key + '=; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+    }
+
+
+    if (ev.target.matches('.ev-gallery-delete-none')) {
+        gjField.deleteAll(ev.target.closest('.module-field-multi-header').dataset.target, 'enable');
+    }
+    if (ev.target.matches('.ev-gallery-delete-all')) {
+        gjField.deleteAll(ev.target.closest('.module-field-multi-header').dataset.target, 'disable');
+    }
+    if (ev.target.matches('.ev-gallery-reorder')) {
+        gjField.sortNatural(ev.target.closest('.module-field-multi-header').dataset.target);
+    }
+    if (ev.target.matches('.ev-gallery-add')) {
+        let pos = ev.target.closest('.module-field-group')?.querySelector('.module-position').value ?? 0;
+        if (ev.target.matches('.after')) pos++;
+
+        let fieldId = ev.target.closest('.module-field')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
+        if (!fieldId) return;
+        gjImage.openGallery(fieldId, document.getElementById(fieldId).dataset.imgtype ?? '', pos)
     }
 
 
     if (ev.target.matches('.ev-module-add')) {
-        let cloned = gjCloneModuleInputs(ev.target);
-        if (cloned) {
-            let slugImage = cloned.querySelector('.slugImage');
-            if (slugImage) gjImageSelectorOpen(slugImage, ev.target.dataset.imgtype ?? '');
-        }
+        let pos = ev.target.closest('.module-field-group')?.querySelector('.module-position') ?? 0;
+        let fieldId = ev.target.closest('.module-field-group')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
+
+        gjField.cloneNew(fieldId, 0);
+        gjField.countPos(document.getElementById(ev.target.dataset.where));
     }
     if (ev.target.matches('.ev-module-rem')) {
-        gjDeleteModuleInputs(ev.target);
+        gjField.delete(ev.target);
     }
     if (ev.target.matches('.ev-module-first')) {
-        gjModuleMove(ev.target, 1);
+        gjField.moveTo(ev.target, 1);
     }
     if (ev.target.matches('.ev-module-last')) {
-        gjModuleMove(ev.target, 999999);
+        gjField.moveTo(ev.target, 999999);
     }
     if (ev.target.matches('.ev-module-up')) {
-        gjModuleMoveUp(ev.target);
+        gjField.moveUp(ev.target);
     }
     if (ev.target.matches('.ev-module-down')) {
-        gjModuleMoveDown(ev.target);
+        gjField.moveDown(ev.target);
     }
     if (ev.target.matches('.ev-module-go')) {
-        gjModuleMove(ev.target);
+        gjField.moveTo(ev.target);
     }
 
 
@@ -354,7 +349,7 @@ function handleEventKeydown(ev) {
     }
     if (['Esc', 'Escape'].contains(ev.key)) {
         document.body.classList.remove('show-focus-outlines');
-        gjImageSelectorClose();
+        gjImage.close();
     }
 
     if (ev.key === 'Enter') {
@@ -363,7 +358,7 @@ function handleEventKeydown(ev) {
             return false;
         }
         if (ev.target.matches('.module-position')) {
-            gjModuleMove(ev.target.nextElementSibling);
+            gjField.moveTo(ev.target.nextElementSibling);
             ev.preventDefault();
             return false;
         }
@@ -385,7 +380,7 @@ function handleEventError(ev) {
         ev.target.matches('.imageSelectItem img') ||
         ev.target.matches('.col-thumb img')
     )) {
-        gjImageResizeRequest(ev.target, ev)
+        gjImage.resizeRequest(ev.target);
     }
 }
 
@@ -401,24 +396,13 @@ function filter(el, ev, highlight) {
     var xhr = new XMLHttpRequest();
     var fd = new FormData(el.form);
     if (el.tagName == 'BUTTON') fd.set(el.name, el.value);
-    // for (var pair of fd.entries()) {
-    //     console.log(pair[0]+ ', ' + pair[1]);
-    // }
 
     xhr.form = el.form;
     xhr.onload = function(event) {
         var loadEl = this.form.querySelector('.load');
         loadEl.innerHTML = event.target.responseText;
 
-        if (gjImageSelectorActiveImages) {
-            let images = loadEl.querySelectorAll('.imageSelectItem');
-            for (let i = 0; i < images.length; i++) {
-                if (gjImageSelectorActiveImages.contains(images[i].dataset.imgslug)) {
-                    images[i].classList.add('active');
-                    console.log(images[i].dataset.imgslug);
-                }
-            }
-        }
+        gjImage.paintSelectedActivated();
 
         var results = loadEl.querySelector('.results').dataset;
 
@@ -495,281 +479,460 @@ function filterEmpty(el, ev) {
 /******  image.js  ******/
 /************************/
 
+let gjImage = {
 
-function gjImageSelectorOpen(el, imgType) {
-    gjImageSelector.scrollPrev = window.scrollY;
+    init: function() {
+        this.firstTime = true;
+        this.el        = document.getElementById('image-select');
 
-    gjImageSelectorActiveInput = el.previousElementSibling;
-    gjImageSelector.classList.remove('hide');
+        this.activeInput    = null;
+        this.activeFieldId  = null;
+        this.activePos      = 0;
+        this.activeImages   = [];
+        this.selectedImages = {};
+        this.isGallery      = false;
 
-    gjImageSelectorActiveImages = [];
-    let moduleField = el.closest('.module-field');
-    if (moduleField) {
-        gjImageSelectorActiveImages = Array.from(moduleField.querySelectorAll('.input-wrap-slugImage .input-slug')).map(el => el.value);
-    } else {
-        gjImageSelectorActiveImages = [gjImageSelectorActiveInput.value];
-    }
+        this.scrollClosed = 0;
+        this.scrollOpen   = 0;
+    },
 
-    var siblings = getSiblings(gjImageSelector);
-    for (var i = 0; i < siblings.length; i++) {
-        siblings[i].classList.add('hide');
-    }
-    // window.scrollTo(0, 0);
+    openSingle: function(inputEl, imgType) {
+        this.activeInput  = inputEl.previousElementSibling;
+        this.activeImages = [inputEl.value];
+        this.isGallery    = false;
 
-    var typeInput = document.getElementsByName('filterTexts[type]')[0]
-    if (!typeInput.opened) {
-        typeInput.value = imgType;
-        typeInput.opened = true;
-    }
-    trigger(typeInput, 'input');
-    gjImageSelector.querySelector('.input-search').focus();
-}
+        this.el.querySelectorAll('.btn-group-gallery').forEach(function(el) {
+            el.classList.add('hide')
+        });
+        this.open(imgType);
+    },
 
-function gjImageSelectorClose() {
-    if (gjImageSelector.classList.contains('hide')) return
-    gjImageSelector.classList.add('hide');
+    openGallery: function(fieldId, imgType, pos) {
+        this.activeFieldId = fieldId;
+        this.activePos     = pos;
+        this.activeImages  = Array.from(document.getElementById(fieldId).querySelectorAll('.input-wrap-slugImage .input-slug:not([disabled])')).map(el => el.value);
+        this.isGallery     = true;
 
-    var siblings = getSiblings(gjImageSelector);
-    for (var i = 0; i < siblings.length; i++) {
-        siblings[i].classList.remove('hide');
-    }
-    window.scrollTo(0, gjImageSelector.scrollPrev);
-    gjImageSelectorActiveInput.focus();
-}
+        this.el.querySelectorAll('.btn-group-gallery').forEach(function(el) {
+            el.classList.remove('hide')
+        });
+        this.open(imgType);
+    },
 
-function gjImageSelectorActivate(el) {
-    var selectedImg = el.children[0].children[0];
-    var selectorImg = gjImageSelectorActiveInput.nextElementSibling.children[0];
+    open: function(imgType) {
+        this.scrollClosed = window.scrollY;
 
-    gjImageSelectorClose();
-    gjImageSelectorActiveInput.value = el.id;
-    selectorImg.src = selectedImg.src;
-    selectorImg.parentNode.classList.remove('empty');
-    selectorImg.setAttribute('width', selectedImg.getAttribute('width'));
-    selectorImg.setAttribute('height', selectedImg.getAttribute('height'));
-    textareaAutoGrow(gjImageSelectorActiveInput)
-}
+        this.el.classList.remove('hide');
 
+        this.selectedImages = {};
 
-function gjImageResizeRequest(el, ev) {
-    el.parentNode.classList.add('waiting');
-    var re = /.*\/([0-9a-z-]+)_(\d+_\d+)\./;
-    var match = re.exec(el.src);
-    if (!match) return;
-    var imgSlug = match[1];
-    var size = match[2].split('_');
+        let siblings = getSiblings(this.el);
+        for (let i = 0; i < siblings.length; i++) {
+            siblings[i].classList.add('hide');
+        }
 
-    var xhr = new XMLHttpRequest();
-    xhr.imgEl = el;
-    xhr.onload = function() {
-        if (this.status != 200 && this.responseText != 'ok') return;
-        this.imgEl.parentNode.classList.remove('waiting');
-        this.imgEl.parentNode.classList.add('loading');
-        this.imgEl.src += '?' + +new Date;
-        // this.imgEl.onload = null;
-        this.imgEl.onerror = null;
-    };
-    xhr.onprogress = function(event) {
-        if (!event.lengthComputable) return; // size unknown
-        var percentComplete = event.loaded / event.total * 100;
-        console.log(percentComplete);
-    };
-    xhr.onerror = function() {
-        console.error('Resize request error.');
-    };
-    xhr.open('GET', '/edit/images/' + imgSlug + '/resize/' + size[0] + '/' + size[1]);
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xhr.send();
-    el.onload = function() {
-        this.onload = null;
-        this.onerror = null;
-        this.parentNode.classList.remove('waiting', 'loading')
-    };
-}
+        let typeInput = document.getElementsByName('filterTexts[type]')[0]
+        if (this.firstTime) {
+            this.firstTime  = false;
+            typeInput.value = imgType;
+            trigger(typeInput, 'input');
+            typeInput.focus();
+        } else {
+            this.paintSelectedActivated();
+            window.scrollTo(0, this.scrollOpen);
+        }
+    },
 
+    close: function() {
+        if (this.el.classList.contains('hide')) return
+        this.scrollOpen = window.scrollY;
 
+        this.el.classList.add('hide');
 
+        let siblings = getSiblings(this.el);
+        for (let i = 0; i < siblings.length; i++) {
+            siblings[i].classList.remove('hide');
+        }
 
-/*************************/
-/******  module.js  ******/
-/*************************/
+        window.scrollTo(0, this.scrollClosed);
 
-function gjModuleMoveUp(el) {
-    var target = document.getElementById(el.dataset.target);
-    var groups = target.parentNode;
-    if (target.previousElementSibling)
-        groups.insertBefore(target, target.previousElementSibling);
-    gjModuleCountPositions(groups);
-    target.querySelector('.module-position').focus();
-}
+        if (this.activeInput) this.activeInput.focus();
+    },
 
-function gjModuleMoveDown(el) {
-    var target = document.getElementById(el.dataset.target);
-    var groups = target.parentNode;
-    if (target.nextElementSibling)
-        groups.insertBefore(target.nextElementSibling, target);
-    gjModuleCountPositions(groups);
-    target.querySelector('.module-position').focus();
-}
-
-function gjModuleMove(el, pos = null) {
-    var target = document.getElementById(el.dataset.target);
-    var positionEl = target.querySelector('.module-position');
-
-    if (pos) {
-        positionEl.value = pos;
-        console.log('pos', positionEl.value);
-    } else {
-        pos = positionEl.value;
-    }
-    console.log(target);
-    var parent = target.parentNode;
-    var groups = parent.children;
-
-    if (pos >= groups.length) {
-        parent.appendChild(target);
-    } else {
-        var j = 1;
-        for (var i = 0; i < groups.length; i++) {
-            if (groups[i].dataset === undefined || groups[i].dataset.disabled) continue;
-            if (groups[i] === target) continue;
-
-            if (j == pos) {
-                parent.insertBefore(target, groups[i]);
+    selectSingle: function(btnEl) {
+        if (this.isGallery) {
+            if (this.selectedImages.hasOwnProperty(btnEl.id)) {
+                delete this.selectedImages[btnEl.id];
+                btnEl.classList.remove('selected');
+            } else {
+                this.selectedImages[btnEl.id] = this.dataFromButton(btnEl);
+                btnEl.classList.add('selected');
             }
-            j++;
+        } else {
+            btnEl.classList.add('active');
+
+            let img = this.dataFromButton(btnEl);
+
+            this.close();
+
+            this.setInputAndImage(this.activeInput, img);
         }
-    }
-    target.querySelector('.module-position').focus();
+    },
 
-    gjModuleCountPositions(target.parentNode);
-}
+    selectGallery: function() {
+        this.close();
 
-function gjCloneModuleInputs(el) {
-    const groupId = gjUnique();
-    let newGroup  = document.getElementById(el.dataset.target).cloneNode(true);
-    let where = document.getElementById(el.dataset.where);
-    const oldGroup = newGroup.id;
+        let ordered = {};
+        Object.keys(this.selectedImages).sort(function(a, b) {
+            return b.localeCompare(a, undefined, {numeric: true});
+        }).forEach(function(key) {
+            ordered[key] = gjImage.selectedImages[key];
+        });
 
-    newGroup.classList.remove('hide');
-    newGroup.classList.add('module-field-group-new');
-    newGroup.id = newGroup.id + '-' + groupId;
-    newGroup.groupId = groupId;
+        for (let imgSlug in ordered) {
+            let cloned     = gjField.cloneNew(this.activeFieldId, this.activePos);
+            let imageInput = cloned.querySelector('.input-wrap-slugImage .input-slug');
 
-    let inputs = newGroup.getElementsByTagName('input');
-    let selects = newGroup.getElementsByTagName('select');
-    let textareas = newGroup.getElementsByTagName('textarea');
-    let buttons = newGroup.getElementsByTagName('button');
-    let i;
-    for (i = inputs.length - 1; i >= 0; i--) {
-        inputs[i].name = inputs[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
-        inputs[i].disabled = false;
-        if (inputs[i].dataset.target !== undefined)
-            inputs[i].dataset.target = newGroup.id;
-    }
-    for (i = selects.length - 1; i >= 0; i--) {
-        selects[i].name = selects[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
-        selects[i].disabled = false;
-        if (selects[i].dataset.target !== undefined)
-            selects[i].dataset.target = newGroup.id;
-    }
-    for (i = textareas.length - 1; i >= 0; i--) {
-        textareas[i].name = textareas[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
-        textareas[i].disabled = false;
-        if (textareas[i].dataset.target !== undefined)
-            textareas[i].dataset.target = newGroup.id;
-    }
-    for (i = buttons.length - 1; i >= 0; i--) {
-        if (buttons[i].classList.contains('ev-module-add')) {
-            continue;
+            this.setInputAndImage(imageInput, ordered[imgSlug]);
         }
-        buttons[i].name = buttons[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
-        buttons[i].disabled = false;
-        if (buttons[i].dataset.target !== undefined)
-            buttons[i].dataset.target = newGroup.id;
-    }
 
-    where.prepend(newGroup);
-    gjModuleMove(newGroup.querySelector('.ev-module-go'), el.dataset.pos);
-    return newGroup;
-}
+        gjField.countPos(document.getElementById(this.activeFieldId));
+    },
+
+    selectAll: function() {
+        let images = this.el.querySelectorAll('.imageSelectItem:not(.active)');
+        for (let i = 0; i < images.length; i++) {
+            this.selectedImages[images[i].id] = this.dataFromButton(images[i]);
+            images[i].classList.add('selected');
+        }
+    },
+
+    selectNone: function() {
+        let images = this.el.querySelectorAll('.imageSelectItem.selected');
+        for (let i = 0; i < images.length; i++) {
+            images[i].classList.remove('selected');
+            delete this.selectedImages[images[i].id];
+        }
+    },
 
 
-function gjDeleteModuleInputs(el) {
-    var check = el.nextElementSibling;
-    var row = document.getElementById(el.dataset.target);
-    var group = document.getElementById(el.dataset.target).parentNode;
-    var inputs = row.getElementsByTagName('input');
-    var buttons = row.getElementsByTagName('button');
-    var selects = row.getElementsByTagName('select');
-    var radios  = row.getElementsByTagName('radio');
-    var textareas = row.getElementsByTagName('textarea');
-    var i;
+    dataFromButton: function(btnEl) {
+        let img = btnEl.children[0].children[0];
+        return {
+            'slug': btnEl.id,
+            'src': img.src,
+            'w': img.getAttribute('width'),
+            'h': img.getAttribute('height'),
+        }
+    },
 
-    if (row.classList.contains('module-field-group-new')) {
-        group.removeChild(row);
-        gjModuleCountPositions(group);
-        return;
-    }
+    setInputAndImage: function(inputEl, img) {
+        inputEl.value   = img.slug;
+        let selectorImg = inputEl.nextElementSibling.children[0];
+        selectorImg.parentNode.classList.remove('empty');
+        selectorImg.src = img.src;
+        selectorImg.setAttribute('width', img.w);
+        selectorImg.setAttribute('height', img.h);
+        textareaAutoGrow(inputEl)
+    },
 
-    if (row.dataset.disabled) {
-        row.removeAttribute('data-disabled');
-        row.classList.remove('module-field-group-delete');
-        for (i = inputs.length - 1; i >= 0; i--)
+    resizeRequest: function(el) {
+        el.parentNode.classList.add('waiting');
+        let re    = /.*\/([0-9a-z-]+)_(\d+_\d+)\./;
+        let match = re.exec(el.src);
+        if (!match) return;
+        let imgSlug = match[1];
+        let size    = match[2].split('_');
+
+        let xhr   = new XMLHttpRequest();
+        xhr.imgEl = el;
+
+        xhr.onload = function() {
+            if (this.status !== 200 && this.responseText !== 'ok') return;
+            this.imgEl.parentNode.classList.remove('waiting');
+            this.imgEl.parentNode.classList.add('loading');
+            this.imgEl.src += '?' + +new Date;
+            // this.imgEl.onload = null;
+            this.imgEl.onerror = null;
+        };
+
+        xhr.onprogress = function(event) {
+            if (!event.lengthComputable) return; // size unknown
+            let percentComplete = event.loaded / event.total * 100;
+            console.log(percentComplete);
+        };
+
+        xhr.onerror = function() {
+            console.error('Resize request error.');
+        };
+
+        xhr.open('GET', '/edit/images/' + imgSlug + '/resize/' + size[0] + '/' + size[1]);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.send();
+
+        el.onload = function() {
+            this.onload  = null;
+            this.onerror = null;
+            this.parentNode.classList.remove('waiting', 'loading')
+        };
+    },
+
+    paintSelectedActivated: function() {
+        if (!this.activeImages) return;
+
+        let active = this.el.querySelectorAll('.active');
+        for (let i = 0; i < active.length; i++) {
+            active[i].classList.remove('active');
+        }
+        let selected = this.el.querySelectorAll('.selected');
+        for (let i = 0; i < selected.length; i++) {
+            selected[i].classList.remove('selected');
+        }
+        let images = this.el.querySelectorAll('.imageSelectItem');
+
+        for (let i = 0; i < images.length; i++) {
+            if (this.activeImages.contains(images[i].id)) {
+                images[i].classList.add('active');
+            }
+            if (this.selectedImages.hasOwnProperty(images[i].id)) {
+                images[i].classList.add('selected');
+            }
+        }
+    },
+
+};
+
+
+
+
+
+
+/************************/
+/******  field.js  ******/
+/************************/
+
+let gjField = {
+
+    moveUp: function(el) {
+        let target = document.getElementById(el.dataset.target);
+        let groups = target.parentNode;
+        if (target.previousElementSibling)
+            groups.insertBefore(target, target.previousElementSibling);
+        gjField.countPos(groups);
+        target.querySelector('.module-position').focus();
+    },
+
+
+    moveDown: function(el) {
+        let target = document.getElementById(el.dataset.target);
+        let groups = target.parentNode;
+        if (target.nextElementSibling)
+            groups.insertBefore(target.nextElementSibling, target);
+        gjField.countPos(groups);
+        target.querySelector('.module-position').focus();
+    },
+
+    moveTo: function(el, pos = null) {
+        let target     = document.getElementById(el.dataset.target);
+        let positionEl = target.querySelector('.module-position');
+
+        if (pos) {
+            positionEl.value = pos;
+        } else {
+            pos = positionEl.value;
+        }
+        let parent = target.parentNode;
+        let groups = parent.children;
+
+        if (pos >= groups.length) {
+            parent.appendChild(target);
+        } else {
+            let j = 1;
+            for (let i = 0; i < groups.length; i++) {
+                if (groups[i].dataset === undefined || groups[i].dataset.disabled) continue;
+                if (groups[i] === target) continue;
+
+                if (j == pos) {
+                    parent.insertBefore(target, groups[i]);
+                }
+                j++;
+            }
+        }
+        target.querySelector('.module-position').focus();
+
+        gjField.countPos(target.parentNode);
+    },
+
+    sortNatural: function(fieldId) {
+        let list = document.getElementById(fieldId);
+
+        let items    = list.childNodes;
+        let itemsArr = [];
+        for (let i in items) {
+            if (items[i].nodeType !== Node.ELEMENT_NODE) continue;
+            items[i].dataset.slugsort = items[i].querySelector('.input-wrap-slugImage .input-slug').value;
+            itemsArr.push(items[i]);
+        }
+
+        itemsArr.sort(function(a, b) {
+            return a.dataset.slugsort.localeCompare(b.dataset.slugsort, undefined, {numeric: true});
+        });
+
+        for (let i = 0; i < itemsArr.length; ++i) {
+            list.appendChild(itemsArr[i]);
+        }
+
+        gjField.countPos(list);
+    },
+
+    cloneNew: function(fieldId, pos) {
+        const groupId = gjUnique();
+        let newGroup   = document.getElementById(fieldId + '-new').cloneNode(true);
+        let where      = document.getElementById(fieldId);
+
+        newGroup.classList.remove('hide');
+        newGroup.classList.add('module-field-group-new');
+        newGroup.id      = newGroup.id + '-' + groupId;
+        newGroup.groupId = groupId;
+
+        let inputs    = newGroup.getElementsByTagName('input');
+        let selects   = newGroup.getElementsByTagName('select');
+        let textareas = newGroup.getElementsByTagName('textarea');
+        let buttons   = newGroup.getElementsByTagName('button');
+        let i;
+        for (i = inputs.length - 1; i >= 0; i--) {
+            inputs[i].name     = inputs[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
             inputs[i].disabled = false;
-        for (i = selects.length - 1; i >= 0; i--)
+            if (inputs[i].dataset.target !== undefined) inputs[i].dataset.target = newGroup.id;
+        }
+        for (i = selects.length - 1; i >= 0; i--) {
+            selects[i].name     = selects[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
             selects[i].disabled = false;
-        for (i = radios.length - 1; i >= 0; i--)
-            radios[i].disabled = false;
-        for (i = buttons.length - 1; i >= 0; i--)
-            buttons[i].disabled = false;
-        for (i = textareas.length - 1; i >= 0; i--)
+            if (selects[i].dataset.target !== undefined) selects[i].dataset.target = newGroup.id;
+        }
+        for (i = textareas.length - 1; i >= 0; i--) {
+            textareas[i].name     = textareas[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
             textareas[i].disabled = false;
-        check.checked = false;
-    } else {
-        row.dataset.disabled = true;
-        row.classList.add('module-field-group-delete');
-        for (i = inputs.length - 1; i >= 0; i--)
-            inputs[i].disabled = true;
-        for (i = selects.length - 1; i >= 0; i--)
-            selects[i].disabled = true;
-        for (i = radios.length - 1; i >= 0; i--)
-            radios[i].disabled = true;
-        for (i = buttons.length - 1; i >= 0; i--)
-            buttons[i].disabled = true;
-        for (i = textareas.length - 1; i >= 0; i--)
-            textareas[i].disabled = true;
-        check.checked = true;
-    }
-    el.disabled = false;
-    check.disabled = false;
-    gjModuleCountPositions(group);
+            if (textareas[i].dataset.target !== undefined) textareas[i].dataset.target = newGroup.id;
+        }
+        for (i = buttons.length - 1; i >= 0; i--) {
+            if (buttons[i].classList.contains('ev-module-add')) continue;
+            buttons[i].name     = buttons[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
+            buttons[i].disabled = false;
+            if (buttons[i].dataset.target !== undefined) buttons[i].dataset.target = newGroup.id;
+        }
+
+        where.prepend(newGroup);
+        let go = newGroup.querySelector('.ev-module-go');
+        if (pos) gjField.moveTo(go, pos);
+
+        return newGroup;
+    },
+
+    deleteAll: function(fieldId, action) {
+        let field = document.getElementById(fieldId);
+
+        let closeButtons = field.querySelectorAll('.ev-module-rem');
+        for (let i = 0; i < closeButtons.length; i++) {
+            gjField.delete(closeButtons[i], action);
+        }
+    },
+
+    delete: function(el, action) {
+        let check     = el.nextElementSibling;
+        let row       = document.getElementById(el.dataset.target);
+        let group     = document.getElementById(el.dataset.target).parentNode;
+        let inputs    = row.getElementsByTagName('input');
+        let buttons   = row.getElementsByTagName('button');
+        let selects   = row.getElementsByTagName('select');
+        let radios    = row.getElementsByTagName('radio');
+        let textareas = row.getElementsByTagName('textarea');
+        let i;
+
+        if (!['toggle', 'enable', 'disable'].contains(action)) action = 'toggle';
+
+        let result = action;
+        if (action === 'toggle') {
+            if (row.dataset.disabled) {
+                result = 'enable';
+            } else {
+                result = 'disable';
+            }
+        }
+
+        if (action !== 'enable') {
+            if (row.classList.contains('module-field-group-new')) {
+                group.removeChild(row);
+                gjField.countPos(group);
+                return;
+            }
+        }
+
+        if (result === 'enable') {
+            row.removeAttribute('data-disabled');
+            row.classList.remove('module-field-group-delete');
+            for (i = inputs.length - 1; i >= 0; i--)
+                inputs[i].disabled = false;
+            for (i = selects.length - 1; i >= 0; i--)
+                selects[i].disabled = false;
+            for (i = radios.length - 1; i >= 0; i--)
+                radios[i].disabled = false;
+            for (i = buttons.length - 1; i >= 0; i--)
+                buttons[i].disabled = false;
+            for (i = textareas.length - 1; i >= 0; i--)
+                textareas[i].disabled = false;
+            check.checked = false;
+        } else {
+            row.dataset.disabled = true;
+            row.classList.add('module-field-group-delete');
+            for (i = inputs.length - 1; i >= 0; i--)
+                inputs[i].disabled = true;
+            for (i = selects.length - 1; i >= 0; i--)
+                selects[i].disabled = true;
+            for (i = radios.length - 1; i >= 0; i--)
+                radios[i].disabled = true;
+            for (i = buttons.length - 1; i >= 0; i--)
+                buttons[i].disabled = true;
+            for (i = textareas.length - 1; i >= 0; i--)
+                textareas[i].disabled = true;
+            check.checked = true;
+        }
+        el.disabled    = false;
+        check.disabled = false;
+        gjField.countPos(group);
+    },
+
+    countPos: function(el) {
+        let groups = el.childNodes;
+        let j      = 0;
+        for (let i = 0; i < groups.length; i++) {
+            if (groups[i].dataset === undefined || groups[i].dataset.disabled) continue;
+            j++;
+
+            let pos = groups[i].querySelector('.module-position');
+            if (pos) {
+                pos.value = j;
+                gjInputChange(pos);
+            }
+
+            let posBefore = groups[i].querySelector('.ev-gallery-add.before');
+            if (posBefore) {
+                posBefore.dataset.pos = j;
+                // posBefore.innerHTML = posBefore.dataset.pos;
+            }
+
+            let posAfter = groups[i].querySelector('.ev-gallery-add.after');
+            if (posAfter) {
+                posAfter.dataset.pos = (j + 1);
+                // posAfter.innerHTML = posAfter.dataset.pos;
+            }
+        }
+        el.previousElementSibling.querySelector('.module-field-count').innerHTML = j;
+    },
+
 }
 
 
-function gjModuleCountPositions(el) {
-    let groups = el.childNodes;
-    let j = 0;
-    for (let i = 0; i < groups.length; i++) {
-        if (groups[i].dataset === undefined || groups[i].dataset.disabled) continue;
-        j++;
-
-        let pos = groups[i].querySelector('.module-position');
-        if (pos) pos.value = j;
-
-        let posBefore = groups[i].querySelector('.module-field-gallery-add.before');
-        if (posBefore) {
-            posBefore.dataset.pos = j;
-            // posBefore.innerHTML = posBefore.dataset.pos;
-        }
-
-        let posAfter = groups[i].querySelector('.module-field-gallery-add.after');
-        if (posAfter) {
-            posAfter.dataset.pos = (j + 1);
-            // posAfter.innerHTML = posAfter.dataset.pos;
-        }
-    }
-}
 
 
 
@@ -777,6 +940,29 @@ function gjModuleCountPositions(el) {
 /************************/
 /******  input.js  ******/
 /************************/
+
+var gjInput = {
+
+    trixCharWordCount: function(trixEl) {
+        let lenEl = trixEl.parentNode.querySelector('.input-len');
+        if (lenEl) {
+            let text = trixEl.editor.getDocument().toString().trim();
+
+            if (text.length === 0) {
+                lenEl.innerHTML = 0;
+            } else {
+                let words       = text.split(/\s+/).length;
+                lenEl.innerHTML = text.length + ' / ' + words;
+            }
+        }
+    },
+
+
+
+}
+
+
+
 
 // "what?" version ... http://jsperf.com/diacritics/12
 var textDecoded = document.createElement('textarea');
@@ -916,7 +1102,7 @@ function gjInputFormat(el, type) {
 }
 
 
-function gjInputChange(el, ev) {
+function gjInputChange(el) {
     var i;
 
     switch (el.tagName) {
@@ -969,7 +1155,13 @@ function gjInputChange(el, ev) {
                     el.parentNode.classList.add('active');
 
                     break;
+
                 default:
+                    if (el.maxLength) {
+                        let len = el.previousElementSibling?.querySelector('.input-len');
+                        if (len) len.innerHTML = el.value.length;
+                    }
+
                     if (!el.gInputLoaded) {
                         // console.log('loading ' + el.tagName + ' ' + el.type + ' gInput');
                         el.gInput           = el.parentNode;
@@ -1234,9 +1426,9 @@ function gjImportJsonld(el, ev) {
                     }
                     // console.log(foundInJsonld);
                     if (foundInJsonld.length) {
-                        var inputEl = document.getElementById(resultName);
+                        var inputEl = document.getElementById(resultName.substr(0, -4));
                         if (!inputEl) continue;
-                        var addedFields = gjCloneModuleInputs(inputEl);
+                        var addedFields = gjField.cloneNew(resultName.substr(0, -4), 0);
 
                         for (var i = 0; i < foundInJsonld.length; i++) {
                             var inputName = foundInJsonld[i];
@@ -1255,7 +1447,7 @@ function gjImportJsonld(el, ev) {
                 if (json['@type'] != jsonldSearchRegex[1]) continue;
                 var content = jsonPathToValue(json, jsonldSearchRegex[2]);
                 if (!content) continue;
-                var inputEl = document.getElementsByName(resultName)[0];
+                var inputEl = document.getElementsByName(resultName.substr(0, -4))[0];
                 if (!inputEl) continue;
                 if (inputEl.value) continue;
                 changes.push({el: inputEl, content: content});
@@ -1405,9 +1597,9 @@ function gjImportYoutube(el, ev) {
                     }
                     // console.log(foundInJsonld);
                     if (foundInJsonld.length) {
-                        var inputEl = document.getElementById(resultName);
+                        var inputEl = document.getElementById(resultName.substr(0, -4));
                         if (!inputEl) continue;
-                        var addedFields = gjCloneModuleInputs(inputEl);
+                        var addedFields = gjField.cloneNew(resultName.substr(0, -4), 0);
 
                         for (var i = 0; i < foundInJsonld.length; i++) {
                             var inputName = foundInJsonld[i];
@@ -1426,7 +1618,7 @@ function gjImportYoutube(el, ev) {
                 if (json['@type'] != jsonldSearchRegex[1]) continue;
                 var content = jsonPathToValue(json, jsonldSearchRegex[2]);
                 if (!content) continue;
-                var inputEl = document.getElementsByName(resultName)[0];
+                var inputEl = document.getElementsByName(resultName.substr(0, -4))[0];
                 if (!inputEl) continue;
                 if (inputEl.value) continue;
                 changes.push({el: inputEl, content: content});
@@ -1579,9 +1771,9 @@ function gjImportVimeo(el, ev) {
                     }
                     // console.log(foundInJsonld);
                     if (foundInJsonld.length) {
-                        var inputEl = document.getElementById(resultName);
+                        var inputEl = document.getElementById(resultName.substr(0, -4));
                         if (!inputEl) continue;
-                        var addedFields = gjCloneModuleInputs(inputEl);
+                        var addedFields = gjField.cloneNew(resultName.substr(0, -4), 0);
 
                         for (var i = 0; i < foundInJsonld.length; i++) {
                             var inputName = foundInJsonld[i];
@@ -1600,7 +1792,7 @@ function gjImportVimeo(el, ev) {
                 if (json['@type'] != jsonldSearchRegex[1]) continue;
                 var content = jsonPathToValue(json, jsonldSearchRegex[2]);
                 if (!content) continue;
-                var inputEl = document.getElementsByName(resultName)[0];
+                var inputEl = document.getElementsByName(resultName.substr(0, -4))[0];
                 if (!inputEl) continue;
                 if (inputEl.value) continue;
                 changes.push({el: inputEl, content: content});

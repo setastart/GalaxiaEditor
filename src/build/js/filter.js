@@ -9,15 +9,7 @@ function filter(el, ev, highlight) {
         var loadEl = this.form.querySelector('.load');
         loadEl.innerHTML = event.target.responseText;
 
-        if (gjImageSelectorActiveImages) {
-            let images = loadEl.querySelectorAll('.imageSelectItem');
-            for (let i = 0; i < images.length; i++) {
-                if (gjImageSelectorActiveImages.contains(images[i].dataset.imgslug)) {
-                    images[i].classList.add('active');
-                    console.log(images[i].dataset.imgslug);
-                }
-            }
-        }
+        gjImage.paintSelectedActivated();
 
         var results = loadEl.querySelector('.results').dataset;
 

@@ -110,7 +110,14 @@ foreach ($geConf as $areaKey => $area) {
         $item = $area['gcItem'];
         gcTableExists($dbSchema, $areaKey . '/gcItem/gcTable', $item['gcTable']);
         gcTableColumnExists($dbSchema, $areaKey . '/gcItem', $item['gcTable'], $item['gcTable'] . 'Id');
-        gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcColKey', $item['gcTable'], $item['gcColKey']);
+
+        if (is_array($item['gcColKey'])) {
+            foreach ($item['gcColKey'] as $langTitle) {
+                gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcColKey', $item['gcTable'], $langTitle);
+            }
+        } else {
+            gcTableColumnExists($dbSchema, $areaKey . '/gcItem/gcColKey', $item['gcTable'], $item['gcColKey']);
+        }
 
         if ($item['gcRedirect']) {
             gcTableExists($dbSchema, $areaKey . '/gcItem/gcRedirect', $item['gcTable'] . 'Redirect');

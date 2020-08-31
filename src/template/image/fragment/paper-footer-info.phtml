@@ -1,7 +1,7 @@
         <div class="item-info">
-            <div><?=t('Original')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=h($imgSlug . $img['ext'])?>"><?=h($img['wOriginal'] . 'x' . $img['hOriginal'])?></a> <?=h($img['ext'])?></div>
+            <div><?=t('Original')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=h($imgSlug . $img['ext'])?>"><?=h($img['wOriginal'] . 'x' . $img['hOriginal'])?></a><?=h($img['ext'])?>  (<?=gFilesize(filesize($app->dirImage . $imgSlug . '/' . $imgSlug . $img['ext']))?>)</div>
 <?php   foreach ($img['resizes'] as $resize => $fileName) { ?>
-            <div><?=t('Resize')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=h($fileName)?>"><?=h($resize)?></a></div>
+            <div><?=t('Resize')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=h($fileName)?>"><?=h($resize)?></a> (<?=gFilesize(filesize($app->dirImage . $imgSlug . '/' . $fileName))?>)</div>
 <?php   } ?>
 
             <a class="<?=h('active', $action == 'replace')?> btn-a" href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>/replace"><?=t('Replace Image')?></a>

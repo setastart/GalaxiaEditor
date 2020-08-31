@@ -15,20 +15,16 @@ if (!String.prototype.padStart) {
 }
 
 
-
-
 if (!Element.prototype.matches) {
     Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
 }
 
 
-
-
 if (!Element.prototype.closest) {
-    Element.prototype.closest = function (s) {
-        var el = this;
+    Element.prototype.closest = function (selectors) {
+        let el = this;
         do {
-            if (el.matches(s)) return el;
+            if (el.matches(selectors)) return el;
             el = el.parentElement || el.parentNode;
         } while (el !== null && el.nodeType === 1);
         return null;
@@ -36,31 +32,25 @@ if (!Element.prototype.closest) {
 }
 
 
-
-Array.prototype.contains = function(element){
-    return this.indexOf(element) > -1;
+Array.prototype.contains = function(el) {
+    return this.indexOf(el) > -1;
 };
 
 
-
 function trigger(el, evName, bubbles = false) {
-    var ev = new Event(evName);
+    let ev = new Event(evName);
     if (bubbles) ev = new Event(evName, {bubbles: true});
     el.dispatchEvent(ev);
 }
 
 
-
-
-function getChildren(n, skipMe){
-    var r = [];
-    for ( ; n; n = n.nextSibling )
-       if ( n.nodeType == 1 && n != skipMe)
-          r.push( n );
+function getChildren(n, skipMe) {
+    let r = [];
+    for (; n; n = n.nextSibling)
+        if (n.nodeType === Node.ELEMENT_NODE && n !== skipMe)
+            r.push(n);
     return r;
 }
-
-
 
 
 function getSiblings(n) {

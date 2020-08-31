@@ -26,6 +26,7 @@ $items = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'items', function() u
     }
 
     uasort($items, function($a, $b) {
+        if ($a['mtime'] == $b['mtime']) return strnatcmp($a['name'], $b['name']);
         return $b['mtime'] <=> $a['mtime'];
     });
 
@@ -48,7 +49,7 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
         $query = querySelect($gcImageInUse['gcSelect']);
         $query .= querySelectLeftJoinUsing($gcImageInUse['gcSelectLJoin'] ?? []);
         $query .= querySelectOrderBy($gcImageInUse['gcSelectOrderBy'] ?? []);
-        geD($query);
+
         $stmt = $db->prepare($query);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -58,29 +59,47 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
 
             foreach($gcImageInUse['gcSelect'] as $table => $columns) {
                 if ($table == $firstTable) {
+
+                    $found = [];
                     foreach ($columns as $column) {
                         if ($column == $firstColumn) continue;
+
+                        if (substr($column, -3, 1) == '_') {
+                            $canonical = substr($column, 0, -2);
+                            if (empty($data[$column])) continue;
+                            if (in_array($canonical, $found)) continue;
+                            $found[] = substr($column, 0, -2);
+                        }
 
                         if (empty($data[$column])) {
                             $inUse[$data[$firstColumn]][$table] = '<span class="small red">' . t('Empty') . '</span>';
                         } else {
                             $inUse[$data[$firstColumn]][$table] = h($data[$column]);
                         }
-
                     }
+
                 } else {
+
+                    $found = [];
                     foreach ($columns as $column) {
                         if (isset($inUse[$data[$firstColumn]][$table]))
                             if (isset($inUse[$data[$firstColumn]][$table]))
                                 if (in_array($data[$column], $inUse[$data[$firstColumn]][$table])) continue;
+
+                        if (substr($column, -3, 1) == '_') {
+                            $canonical = substr($column, 0, -2);
+                            if (empty($data[$column])) continue;
+                            if (in_array($canonical, $found)) continue;
+                            $found[] = substr($column, 0, -2);
+                        }
 
                         if (empty($data[$column])) {
                             $inUse[$data[$firstColumn]][$table][] = '<span class="small red">' . t('Empty') . '</span>';
                         } else {
                             $inUse[$data[$firstColumn]][$table][] = h($data[$column]);
                         }
-
                     }
+
                 }
             }
         }
@@ -88,7 +107,7 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
     }
     return $inUse;
 });
-geD($inUse);
+
 
 
 
@@ -101,7 +120,7 @@ switch ($_POST['imageListType'] ?? '') {
 
             foreach ($items as $imgSlug => $img) {
 $ht = '';
-$ht .= '<button type="button" id="' . h($imgSlug) . '" class="imageSelectItem" data-imgslug="' . h($imgSlug) . '">' . PHP_EOL;
+$ht .= '<button type="button" id="' . h($imgSlug) . '" class="imageSelectItem">' . PHP_EOL;
 $ht .= '    <figure>' . PHP_EOL;
 $ht .= '        ' . gImageRender($img) . PHP_EOL;
 $ht .= '    </figure>' . PHP_EOL;
@@ -149,10 +168,10 @@ $ht .= '    <div class="col flex1">' . PHP_EOL;
                     foreach ($inUse[$imgSlug] as $itemKey => $item) {
                         if (is_array($item)) {
                             foreach ($item as $itemVal) {
-$ht .= '        <div>' . h($itemKey . '/') . '' . $itemVal . '</div>' . PHP_EOL;
+$ht .= '        <div>' . h($itemKey) . ' / ' . $itemVal . '</div>' . PHP_EOL;
                             }
                         } else {
-$ht .= '        <div>' . h($itemKey . '/') . '' . $item . '</div>' . PHP_EOL;
+$ht .= '        <div>' . h($itemKey) . ' / ' . $item . '</div>' . PHP_EOL;
                         }
                     }
                 } else {
@@ -176,7 +195,6 @@ $ht .= '</a>';
         break;
 }
 $rowsTotal = count($rows);
-geD($rows);
 
 
 
@@ -305,7 +323,7 @@ if ($textFiltersActive) {
 
 // pagination
 
-$pagination = new Pagination((int) ($_POST['page'] ?? 1), (int) ($_POST['itemsPerPage'] ?? 50));
+$pagination = new Pagination((int) ($_POST['page'] ?? 1), (int) ($_POST['itemsPerPage'] ?? 100));
 $rowsFiltered = count($rows);
 $pagination->setItemsTotal($rowsFiltered);
 $offset = $pagination->itemFirst - 1;

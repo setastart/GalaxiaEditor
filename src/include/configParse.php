@@ -170,16 +170,19 @@ function geConfigParse($schemaKey, $schema, $config, $errorString) {
         if (!isset($config[$key])) {
             geConfigParseError($errorString . $key . ' missing.');
         }
+
         if (is_string($val)) { // is terminal
             geConfigParseFine($val, $config[$key], $errorString . $key);
             continue;
         }
+
         if (empty($config[$key])) continue;
 
         if (is_array($val)) {
             geConfigParse($key, $schema[$key], $config[$key], $errorString);
             continue;
         }
+
         geConfigParseError($errorString . ' - should not reach this: ' . $key, $schema, $config);
     }
 
@@ -188,6 +191,7 @@ function geConfigParse($schemaKey, $schema, $config, $errorString) {
         if ($key == 'gcPerms') continue;
         if (substr($key, 0, 1) == '?') continue;
         if (isset($schema['?' . $key])) continue;
+
         devlog($errorString . ' - extra keys: ' . $key);
     }
 }
@@ -219,7 +223,7 @@ function geConfigParseFine($schema, $config, $errorString) {
 
         case 'stringArray':
             if (!is_array($config))
-                geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                geConfigParseError($errorString . ' should be an array of strings.', $schema, $config);
 
             foreach ($config as $key => $val)
                 if (!is_string($val))

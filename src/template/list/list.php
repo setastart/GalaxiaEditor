@@ -42,9 +42,11 @@ $items = $app->cacheGet('editor', 2, 'list', $pgSlug, 'items', function() use ($
 
     while ($data = $result->fetch_assoc()) {
         $data = array_map('strval', $data);
-        foreach($list['gcSelect'] as $table => $columns)
-            foreach ($columns as $column)
+        foreach($list['gcSelect'] as $table => $columns) {
+            foreach ($columns as $column) {
                 $items[$data[$firstColumn]][$table][$data[$table . 'Id']][$column] = $data[$column];
+            }
+        }
     }
     $stmt->close();
 
@@ -64,7 +66,13 @@ foreach ($list['gcColumns'] as $columnKey => $column)
             ];
 
 $columns = $list['gcColumns'];
+foreach ($columns as $columnId => $column) {
+    if (!$column) continue;
 
+    if (is_array($column['label'] ?? '')) {
+        $columns[$columnId]['label'] = substr($column['label'][0], 0, -2);
+    }
+}
 
 
 
