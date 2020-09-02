@@ -130,6 +130,7 @@ if ($me->loggedIn) {
             $app->setLang($me->options['Language']);
 
 
+
     // parse editor configuration
     Director::timerStart('editor configuration');
 
@@ -137,35 +138,87 @@ if ($me->loggedIn) {
     require $editor->dir . 'src/include/configParse.php';
     Director::timerStop('gecValidateArray');
 
+
+    // disable input modifiers(gcInputsWhere, gcInputsWhereCol, gcInputsWhereParent) without perms by setting their type to 'none'
+    foreach ($geConf as $rootSlug => $confPage) {
+        foreach ($confPage['gcItem']['gcInputsWhere'] ?? [] as $whereKey => $where) {
+            foreach ($where as $whereVal => $inputs) {
+                foreach ($inputs as $inputKey => $input) {
+                    if (!isset($input['gcPerms'])) continue;
+                    if (!array_intersect($input['gcPerms'] ?? [], $me->perms)) {
+                        $geConf[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
+                    }
+                }
+            }
+        }
+        foreach ($confPage['gcItem']['gcModules'] ?? [] as $moduleKey => $module) {
+            foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
+                foreach ($inputs as $inputKey => $input) {
+                    if (!isset($input['gcPerms'])) continue;
+                    if (!array_intersect($input['gcPerms'] ?? [], $me->perms)) {
+                        $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
+                    }
+                }
+            }
+            foreach ($module['gcInputsWhereParent'] as $parentKey => $parent) {
+                foreach ($parent as $parentVal => $fields) {
+                    foreach ($fields as $fieldKey => $inputs) {
+                        foreach ($inputs as $inputKey => $input) {
+                            if (!isset($input['gcPerms'])) continue;
+                            if (!array_intersect($input['gcPerms'] ?? [], $me->perms)) {
+                                $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     Director::timerStart('arrayRemovePermsRecursive()');
     arrayRemovePermsRecursive($geConf, $me->perms);
     Director::timerStop('arrayRemovePermsRecursive()');
 
-    Director::timerStart('gecAddDevInputs');
-
-    // foreach ($geConf as $rootSlug => $confPage) {
-    //     foreach ($confPage['gcItem']['gcModules'] ?? [] as $moduleKey => $module) {
-    //         $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputs']['fieldKey'] = ['type' => 'text', 'label' => 'Key', 'gcPerms' => ['dev']];
-    //
-    //         foreach ($module['gcInputsWhereCol' ] as $fieldKey => $inputs) {
-    //             $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey]['fieldKey'] = ['type' => 'text'];
-    //         }
-    //         foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
-    //
-    //             foreach ($parent as $parentValue => $inputsDefault) {
-    //                 foreach ($inputsDefault as $fieldKey => $inputs) {
-    //                     $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentName][$parentValue][$fieldKey]['fieldKey'] = ['type' => 'text'];
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-    Director::timerStop('gecAddDevInputs');
-
     Director::timerStart('gecLanguify');
     arrayLanguifyRemovePerms($geConf, array_keys($app->locales), $me->perms);
     Director::timerStop('gecLanguify');
+
+
+    // remove inputs without type
+    foreach ($geConf as $rootSlug => $confPage) {
+        foreach ($confPage['gcItem']['gcInputs'] ?? [] as $inputKey => $input) {
+            if (!isset($input['type'])) unset($geConf[$rootSlug]['gcItem']['gcInputs'][$inputKey]);
+        }
+        foreach ($confPage['gcItem']['gcInputsWhere'] ?? [] as $whereKey => $where) {
+            foreach ($where as $whereVal => $inputs) {
+                foreach ($inputs as $inputKey => $input) {
+                    if (!isset($input['type'])) $geConf[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
+                }
+            }
+        }
+
+        foreach ($confPage['gcItem']['gcModules'] ?? [] as $moduleKey => $module) {
+            foreach ($module['gcInputs'] as $inputKey => $input) {
+                if (!isset($input['type'])) $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputs'][$inputKey]['type'] = 'none';
+            }
+            foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
+                foreach ($inputs as $inputKey => $input) {
+                    if (!isset($input['type'])) $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
+                }
+            }
+            foreach ($module['gcInputsWhereParent'] as $parentKey => $parent) {
+                foreach ($parent as $parentVal => $fields) {
+                    foreach ($fields as $fieldKey => $inputs) {
+                        foreach ($inputs as $inputKey => $input) {
+                            if (!isset($input['type'])) $geConf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     if (Director::$debug) {
         Director::timerStart('gecValidateDatabase');
@@ -179,7 +232,7 @@ if ($me->loggedIn) {
     // routes
     Director::timerStart('routing');
     $editor->layout = 'layout-editor';
-    $dispatcher     = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) use ($geConf, $me) {
+    $dispatcher     = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($geConf, $me) {
 
         $r->get('/edit/{pgSlug:login}', 'redirect-home');
         $r->post('/edit/{pgSlug:login}', 'redirect-home');
@@ -281,7 +334,7 @@ if ($me->loggedIn) {
 } else {
 
     $editor->layout = 'layout-default';
-    $dispatcher     = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
+    $dispatcher     = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
         $r->get('/edit/{pgSlug:login}', 'login/login');
         $r->post('/edit/{pgSlug:login}', 'login/login-post');

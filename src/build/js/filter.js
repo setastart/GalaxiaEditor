@@ -32,7 +32,11 @@ let gjFilter = {
 
 
     load: function(el) {
-        el.form.querySelector('.load').classList.add('loading2');
+        window.requestAnimationFrame(function() {
+            window.requestAnimationFrame(function() {
+                el.form.querySelector('.load').classList.add('loading2');
+            });
+        });
 
         var xhr = new XMLHttpRequest();
         var fd  = new FormData(el.form);

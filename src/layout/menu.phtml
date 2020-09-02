@@ -1,19 +1,34 @@
 <?php
 
 $menu = [];
+
 foreach ($geConf as $rootSlug => $confPage) {
     if (!isset($me)) continue;
+
+    if ($confPage['gcPageType'] == 'gcpSeparator') {
+        $menu[$rootSlug]['cssClass'] .= 'menu-separator';
+        continue;
+    }
+
     if (!$confPage['gcMenuShow']) continue;
 
-    $menu[$rootSlug]['link'] = '/edit/' . h($rootSlug);
-    $menu[$rootSlug]['title'] = $confPage['gcMenuTitle'];
+    $menu[$rootSlug]['link']     = '/edit/' . h($rootSlug);
+    $menu[$rootSlug]['title']    = $confPage['gcMenuTitle'];
     $menu[$rootSlug]['cssClass'] = '';
 
     if ($confPage['gcPageType'] == 'gcpLinkToItem') {
-        $menu[$rootSlug]['link'] = '/edit/' . $confPage['geLinkToUser'] . '/' . $me->id;
+        if ($confPage['geLinkToUser'] ?? '') {
+            $menu[$rootSlug]['link'] = '/edit/' . $confPage['geLinkToUser'] . '/' . $me->id;
 
-        if (isset($itemId) && $pgSlug == $confPage['geLinkToUser'] && $itemId == $me->id) {
-            $menu[$rootSlug]['cssClass'] .= ' active';
+            if (isset($itemId) && $pgSlug == $confPage['geLinkToUser'] && $itemId == $me->id) {
+                $menu[$rootSlug]['cssClass'] .= ' active';
+            }
+        } else if ($confPage['geLinkToItem'] ?? '') {
+            $menu[$rootSlug]['link'] = '/edit/' . implode('/', $confPage['geLinkToItem']);
+
+            if (isset($itemId) && $pgSlug == $confPage['geLinkToItem'][0] && $itemId == $confPage['geLinkToItem'][1]) {
+                $menu[$rootSlug]['cssClass'] .= ' active';
+            }
         }
     } else {
         if ($rootSlug == $pgSlug) $menu[$rootSlug]['cssClass'] .= ' active';
@@ -28,6 +43,7 @@ foreach ($geConf as $rootSlug => $confPage) {
     }
 }
 
+
 // @formatter:off
 ?>
 <div id="menu" class="non-selectable">
@@ -37,7 +53,11 @@ foreach ($geConf as $rootSlug => $confPage) {
     </a>
 
 <?php   foreach ($menu as $menuItem) { ?>
+<?php       if (($menuItem['cssClass'] ?? '') == 'menu-separator') { ?>
+    <div class="<?=h($menuItem['cssClass'])?>"></div>
+<?php       } else {?>
     <a class="menu-item<?=h($menuItem['cssClass'])?>" href="<?=h($menuItem['link'])?>"><?=t($menuItem['title'])?></a>
+<?php       } ?>
 <?php   } ?>
 
 <?php   include 'switches.phtml'; ?>

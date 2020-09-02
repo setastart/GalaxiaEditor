@@ -141,7 +141,7 @@ foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
 foreach ($module['inputs'] as $fieldKey => $fields) {
     foreach ($fields as $fieldVal => $field) {
         foreach ($field as $inputKey => $input) {
-            if ($input['type'] == 'none') unset($module['inputs'][$fieldKey]);
+            if (($input['type'] ?? '') == 'none') unset($module['inputs'][$fieldKey]);
         }
     }
 }

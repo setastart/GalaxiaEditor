@@ -77,7 +77,10 @@ a#website-link > img {
     content: '';
     height: 30px;
 }
-
+.menu-separator {
+    grid-column: 1 / -1;
+    height: 10px;
+}
 .menu-item {
     display: flex;
     justify-content: center;
@@ -717,6 +720,11 @@ a.row > .col .empty {
     border-top: 1px dashed #cab;
     margin-top: 20px;
     padding-top: 20px;
+}
+.paper-header + .module {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
 }
 .module-field-multi-header + .module-field-multi {
     padding-bottom: 10px;

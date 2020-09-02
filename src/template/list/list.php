@@ -107,6 +107,7 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
                         if (!isset($data[$dbColumn])) continue;
                         $value = $data[$dbColumn];
 
+                        $isHomeSlug = ($pgSlug == 'pages' && $value == '' && substr($dbColumn, 0, 9) == 'pageSlug_');
 
                         if (count($app->langs) > 1 && substr($dbColumn, -3, 1) == '_' && in_array(substr($dbColumn, -2), $app->langs)) {
                             $r .= '<span class="input-label-lang">' . substr($dbColumn, -2) . '</span> ';
@@ -176,7 +177,7 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
                                 break;
                         }
 
-                        if (empty($value) && $columnData['type'] != 'thumb') {
+                        if (empty($value) && $columnData['type'] != 'thumb' && !$isHomeSlug) {
                             $colRowItemClass .= ' empty';
                             $r .= t('Empty');
                         }

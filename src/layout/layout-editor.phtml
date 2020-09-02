@@ -2,6 +2,11 @@
 
 use Galaxia\Director;
 
+$permColors = [
+    'dev' => '#fe9',
+    'admin' => '#dcf',
+];
+
 ?>
 <!DOCTYPE html>
 <html lang="<?=h($app->lang)?>">
@@ -61,7 +66,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 <?php   } ?>
 <?php   foreach ($me->perms as $perm) { ?>
 .hide-active-perm-<?=h($perm)?> .hide-perm-<?=h($perm)?> { display: none; }
-.hide-perm-<?=h($perm)?> { background-color: #fe9; }
+.hide-perm-<?=h($perm)?> { background-color: <?=$permColors[$perm] ?? '#ddd'?>; }
 .paper-header-status.hide-perm-<?=h($perm)?> { padding: 5px 5px 3px; }
 <?php   } ?>
     </style>

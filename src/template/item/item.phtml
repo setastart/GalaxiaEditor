@@ -40,21 +40,23 @@
     </div>
 
 
+<?php   if ($item['inputs'] ?? []) { ?>
     <div class="item-row">
-<?php   $firstTime = true; ?>
-<?php   $prefixPrev = null; ?>
-<?php   foreach ($item['inputs'] as $inputKey => $input) { ?>
-<?php       if ($inputKey == $firstStatus) continue; ?>
-<?php       if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
+<?php       $firstTime = true; ?>
+<?php       $prefixPrev = null; ?>
+<?php       foreach ($item['inputs'] as $inputKey => $input) { ?>
+<?php           if ($inputKey == $firstStatus) continue; ?>
+<?php           if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
     </div>
 
     <div class="item-row">
+<?php           } ?>
+<?php           echo renderInput($app, $input); ?>
+<?php           $firstTime = false; ?>
+<?php           $prefixPrev = $input['prefix'] ?? null; ?>
 <?php       } ?>
-<?php       echo renderInput($app, $input); ?>
-<?php       $firstTime = false; ?>
-<?php       $prefixPrev = $input['prefix'] ?? null; ?>
-<?php   } ?>
     </div>
+<?php   } ?>
 
 
 <?php

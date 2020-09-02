@@ -8,6 +8,10 @@
 
 const PROTO_GC = [
 
+    'gcpSeparator' => [
+        'gcPageType' => 'string'
+    ],
+
     'gcpListItem' => [
         'gcPageType'    => 'string',
         'gcMenuTitle'   => 'string',
@@ -93,10 +97,11 @@ const PROTO_GC = [
     ],
 
     'gcpLinkToItem' => [
-        'gcPageType'   => 'string',
-        'gcMenuTitle'  => 'string',
-        'gcMenuShow'   => 'boolean',
-        'geLinkToUser' => 'string',
+        'gcPageType'    => 'string',
+        'gcMenuTitle'   => 'string',
+        'gcMenuShow'    => 'boolean',
+        '?geLinkToUser' => 'string',
+        '?geLinkToItem' => 'stringArray',
     ],
 
     'gcpLinks' => [
@@ -485,7 +490,7 @@ foreach ($geConf as $key => $confPage) {
     if (!isset($confPage['gcPageType']))
         geConfigParseError($key . '/gcPageType missing.');
 
-    if (!in_array($confPage['gcPageType'], ['gcpListItem', 'gcpHistory', 'gcpChat', 'gcpImages', 'gcpLinkToItem']))
+    if (!in_array($confPage['gcPageType'], ['gcpListItem', 'gcpHistory', 'gcpChat', 'gcpImages', 'gcpLinkToItem', 'gcpSeparator']))
         geConfigParseError($key . '/gcPageType missing.');
 
     geConfigParse($key, PROTO_GC[$confPage['gcPageType']], $confPage, '');

@@ -120,6 +120,7 @@ function renderInput(App $app, $input) {
     $css .= empty($input['infos']) ? '' : ' input-wrap-infos';
 
     if (substr($input['label'], -3, 1) == '_') $input['label'] = substr($input['label'], 0, -2);
+    if ($input['translate']) $input['label'] = t($input['label']);
 
 
     $len = '';
@@ -128,16 +129,19 @@ function renderInput(App $app, $input) {
     $maxlen = $input['options']['maxlength'] ?? '';
     if ($minlen > 0) $minlen = '<span class="input-min">' . h($minlen) . '</span> < ';
     if ($maxlen > 0) $maxlen = ' < <span class="input-max">' . h($maxlen) . '</span> ';
-    if ($minlen || $maxlen || $input['type'] == 'trix') {
+    if ($input['type'] == 'trix') {
+        $len = '<span class="input-len" title="' . t('Number of letters ❖ Number of words') . '">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'])) . '</span> ';
+        $br = '<br>';
+    } else if ($minlen || $maxlen) {
         $len = '<span class="input-len">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'])) . '</span> ';
         $br = '<br>';
     }
 
-    $titleTitle = (Director::$dev) ? h($input['name']) : '';
+    $titleTitle = (Director::$dev) ? (h($input['prefix']) ?? h($input['name'])) : '';
 
 $ht =  '<div class="' . h($css) . '">' . PHP_EOL;
 $ht .= '    <div class="input-label">' .
-              '<span class="input-title" title="' . h($titleTitle) . '">' . t($input['label']) . ' <span class="input-label-lang">' . $input['lang'] . '</span></span><br> ' .
+              '<span class="input-title" title="' . h($titleTitle) . '">' . $input['label'] . ' <span class="input-label-lang">' . $input['lang'] . '</span></span><br> ' .
               $minlen .
               $len .
               $maxlen .

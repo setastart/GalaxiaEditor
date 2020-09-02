@@ -1245,6 +1245,11 @@ return [
         'pt' => 'Vazio',
         'es' => 'Vacío',
     ],
+    'Number of letters ❖ Number of words' => [
+        'en' => 'Number of letters ❖ Number of words',
+        'pt' => 'Número de letras ❖ Número de palavras',
+        'es' => 'Número de letras ❖ Número de palabras',
+    ],
 
 
 
