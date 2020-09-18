@@ -563,26 +563,25 @@ a.row .col-thumb.single {
 }
 
 a.row .col-thumb.more {
-    justify-self: center;
-    align-self: center;
-    width: 24px;
-    min-width: 24px;
-    height: 24px;
-    min-height: 24px;
-    text-align: center;
-    background-color: #fad;
-    border-radius: 20px;
-    display: block;
+    background-color: transparent;
 }
-a.row .col-thumb:not(.waiting):not(.loading):not(.more):hover {
+a.row .col-thumb:not(.waiting):not(.loading):hover {
     align-self: stretch;
     justify-self: stretch;
     z-index: 12;
 }
-a.row .col-thumb:not(.waiting):not(.loading):not(.more):hover > img {
+a.row .col-thumb:not(.waiting):not(.loading):hover > img {
     position: absolute;
     max-width: initial;
     height: auto;
+}
+a.row .col-thumb:not(.single):not(:hover) > img {
+    max-width: 50px;
+    max-height: 50px;
+}
+a.row .col-thumb.single:not(:hover) > img {
+    max-width: 100px;
+    max-height: 100px;
 }
 a.row .col-thumb > img {
     font-size: 12px;
@@ -807,6 +806,10 @@ a.row > .col .empty {
     top: 38px;
     right: -22px;
 }
+.module-field-gallery .module-field-group + .module-field-group .ev-gallery-add.before {
+    display: none;
+}
+
 .module-field-gallery .input-wrap-textarea,
 .module-field-gallery .input-wrap-slugImage {
     flex-direction: column;

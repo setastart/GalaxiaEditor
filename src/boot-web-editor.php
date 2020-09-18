@@ -42,9 +42,14 @@ require __DIR__ . '/function/utils.php';
 
 // init app
 
-$app = Director::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '_starter.test')));
+$app = Director::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '')));
 
-if (Director::$debug) $app->cacheBypassAll = true;
+// if (Director::$debug) {
+//     $app->cacheBypassAll = true;
+// }
+// if (Director::$dev) {
+//     register_shutdown_function(function() { Director::timerPrint(true, true); });
+// }
 
 
 Director::timerStart('locales');
@@ -137,6 +142,16 @@ if ($me->loggedIn) {
     Director::timerStart('gecValidateArray');
     require $editor->dir . 'src/include/configParse.php';
     Director::timerStop('gecValidateArray');
+
+
+    // get editor slugs from config
+    $editor->homeSlug = array_key_first($geConf) ?? $editor->homeSlug;
+    foreach ($geConf as $rootSlug => $confPage) {
+        if ($confPage['gcPageType'] == 'gcpImages') {
+            $editor->imageSlug = $rootSlug;
+            break;
+        }
+    }
 
 
     // disable input modifiers(gcInputsWhere, gcInputsWhereCol, gcInputsWhereParent) without perms by setting their type to 'none'
@@ -232,7 +247,7 @@ if ($me->loggedIn) {
     // routes
     Director::timerStart('routing');
     $editor->layout = 'layout-editor';
-    $dispatcher     = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($geConf, $me) {
+    $dispatcher     = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($geConf, $me, $editor) {
 
         $r->get('/edit/{pgSlug:login}', 'redirect-home');
         $r->post('/edit/{pgSlug:login}', 'redirect-home');
@@ -290,30 +305,30 @@ if ($me->loggedIn) {
 
                 case 'gcpImages':
                     if ($confPage['gcImageList']) {
-                        $r->get('/edit/{pgSlug:images}', 'imageList/list');
-                        $r->post('/edit/{pgSlug:images}', 'imageList/list');
-                        $r->get('/edit/{pgSlug:images}/{imgSlug}/resize/{imgW}/{imgH}', 'image/resize/resize-request');
+                        $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}', 'imageList/list');
+                        $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}', 'imageList/list');
+                        $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/resize/{imgW}/{imgH}', 'image/resize/resize-request');
                     }
 
                     if ($confPage['gcImage']) {
                         if ($confPage['gcImage']['gcInsert']) {
-                            $r->get('/edit/{pgSlug:images}/{imgSlug:new}', 'image/new/new');
-                            $r->post('/edit/{pgSlug:images}/{imgSlug:new}', 'image/new/new-post');
+                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug:new}', 'image/new/new');
+                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug:new}', 'image/new/new-post');
                         }
                         if ($confPage['gcImage']['gcSelect']) {
-                            $r->get('/edit/{pgSlug:images}/{imgSlug}', 'image/image');
+                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}', 'image/image');
                         }
                         if ($confPage['gcImage']['gcUpdate']) {
-                            $r->post('/edit/{pgSlug:images}/{imgSlug}', 'image/image-post');
-                            $r->get('/edit/{pgSlug:images}/{imgSlug}/{action:deleteResizes}', 'image/image-delete-resizes-post');
-                            $r->get('/edit/{pgSlug:images}/{imgSlug}/{action:replace}', 'image/replace/replace');
-                            $r->post('/edit/{pgSlug:images}/{imgSlug}/{action:replace}', 'image/replace/replace-post');
-                            $r->get('/edit/{pgSlug:images}/{imgSlug}/{action:resize}', 'image/resize/resize');
-                            $r->post('/edit/{pgSlug:images}/{imgSlug}/{action:resize}', 'image/resize/resize-post');
+                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}', 'image/image-post');
+                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:deleteResizes}', 'image/image-delete-resizes-post');
+                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace');
+                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace-post');
+                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:resize}', 'image/resize/resize');
+                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:resize}', 'image/resize/resize-post');
                         }
                         if ($confPage['gcImage']['gcDelete']) {
-                            $r->get('/edit/{pgSlug:images}/{imgSlug}/{action:delete}', 'image/delete/delete');
-                            $r->post('/edit/{pgSlug:images}/{imgSlug}/{action:delete}', 'image/delete/delete-post');
+                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:delete}', 'image/delete/delete');
+                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:delete}', 'image/delete/delete-post');
                         }
                     }
                     break;
@@ -364,7 +379,7 @@ switch ($routeInfo[0]) {
 
 // custom redirects
 
-if ($routeInfo[1] == 'redirect-home') redirect('edit/pages', 303);
+if ($routeInfo[1] == 'redirect-home') redirect('edit/' . $editor->homeSlug, 303);
 
 
 

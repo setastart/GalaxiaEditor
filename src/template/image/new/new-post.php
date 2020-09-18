@@ -43,7 +43,6 @@ if (hasError()) return;
 // upload images
 
 $uploaded = $app->imageUpload(array_combine($_FILES['images']['tmp_name'], $_FILES['images']['name']), $_POST['replace'], $_POST['resize']);
-// $uploaded = $app->imageUpload($_FILES['images'], $_POST['replace'], $_POST['resize']);
 foreach ($uploaded as $img) {
     if ($type) {
         $file = $app->dirImage . $img['slug'] . '/' . $img['slug'] . '_type.txt';

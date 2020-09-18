@@ -26,18 +26,21 @@ a:hover,
 .btn-a {
     padding: 3px 8px;
     background-color: rgba(255, 255, 255, 0.3);
-    border: 1px solid #cab;
+    border: 1px solid #dbc;
     border-radius: 3px;
     box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.4);
     text-decoration: none;
 }
-.btn-a:hover {
+.btn-a:hover,
+.btn-a:focus {
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid #cab;
+    text-decoration: underline;
 }
 .btn-a.active {
     background-color: #fea;
     border: 1px solid #878;
+    text-decoration: underline;
 }
 
 

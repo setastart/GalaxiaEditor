@@ -133,7 +133,7 @@ $ht .= '</button>' . PHP_EOL;
         break;
 
     default:
-        $rows = $app->cacheGet('editor', 3, 'imageList', $pgSlug, 'rows', function() use ($geConf, $pgSlug, $items, $inUse) {
+        $rows = $app->cacheGet('editor', 3, 'imageList', $pgSlug, 'rows', function() use ($editor, $geConf, $pgSlug, $items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -142,7 +142,7 @@ $ht .= '</button>' . PHP_EOL;
 $ht = '';
                 if (isset($img['extra']['type']))
                     if (!isset($imgTypes[$img['extra']['type']])) $imgTypes[$img['extra']['type']] = $currentColor++;
-$ht .= '<a class="row row-image" href="/edit/images/' . $imgSlug . '">' . PHP_EOL;
+$ht .= '<a class="row row-image" href="/edit/' . $editor->imageSlug .  '/' . $imgSlug . '">' . PHP_EOL;
 $ht .= '    <div class="col flexT">' . PHP_EOL;
 $ht .= '        <div class="col-thumb figure single">' . PHP_EOL;
 $ht .= '            ' . gImageRender($img) . PHP_EOL;

@@ -15,4 +15,4 @@ foreach ($images as $imgSlug => $mtimeDir) {
 $app->cacheDelete('editor');
 info(t('Reordered images by upload time'));
 
-redirect('edit/images');
+redirect('edit/' . $editor->imageSlug);

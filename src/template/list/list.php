@@ -70,7 +70,7 @@ foreach ($columns as $columnId => $column) {
     if (!$column) continue;
 
     if (is_array($column['label'] ?? '')) {
-        $columns[$columnId]['label'] = substr($column['label'][0], 0, -2);
+        $columns[$columnId]['label'] = substr($column['label'][0], 0, -3);
     }
 }
 
@@ -78,10 +78,11 @@ foreach ($columns as $columnId => $column) {
 
 // make html for all rows, using cache
 
-$rows = $app->cacheGet('editor', 3, 'list', $pgSlug, 'rows', function() use ($app, $pgSlug, $firstTable, $items, $columns) {
+$rows = $app->cacheGet('editor', 3, 'list', $pgSlug, 'rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns) {
     $rows = [];
     $tags = [];
     $currentColor = 0;
+    $thumbsToShow = 3;
     foreach ($items as $itemId => $item) {
         $statusClass = '';
         if (isset($item[$firstTable][$itemId][$firstTable . 'Status'])) $statusClass = ' status-' . (int)($item[$firstTable][$itemId][$firstTable . 'Status'] ?? 0);
@@ -100,14 +101,14 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
                     foreach ($dbColumns as $columnData) {
                         if ($tagFound) continue;
                         $colRowItemClass = 'col-' . $columnData['type'];
-                        if ($i == 5) $colRowItemClass .= ' more';
+                        if ($i == $thumbsToShow) $colRowItemClass .= ' more';
                         $r = '';
 
                         $dbColumn = $columnData['col'];
                         if (!isset($data[$dbColumn])) continue;
                         $value = $data[$dbColumn];
 
-                        $isHomeSlug = ($pgSlug == 'pages' && $value == '' && substr($dbColumn, 0, 9) == 'pageSlug_');
+                        $isHomeSlug = ($pgSlug == $editor->homeSlug && $value == '' && substr($dbColumn, 0, 9) == 'pageSlug_');
 
                         if (count($app->langs) > 1 && substr($dbColumn, -3, 1) == '_' && in_array(substr($dbColumn, -2), $app->langs)) {
                             $r .= '<span class="input-label-lang">' . substr($dbColumn, -2) . '</span> ';
@@ -116,9 +117,9 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
 
                         switch ($columnData['type']) {
                             case 'thumb':
-                                if ($i > 5) continue 2;
-                                if ($i == 5) {
-                                    $r .= '&#xff0b;&#xfe0e;' . PHP_EOL;
+                                if ($i > $thumbsToShow) continue 2;
+                                if ($i == $thumbsToShow) {
+                                    $r .= count($item[$dbTable]) . PHP_EOL;
                                 } else {
                                     $img = $app->imageGet($value, ['w' => 256, 'h' => 256, 'fit' => 'cover', 'version' => 'mtime'], false);
                                     if ($img) {

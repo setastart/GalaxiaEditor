@@ -119,7 +119,7 @@ function renderInput(App $app, $input) {
     $css .= empty($input['errors']) ? '' : ' input-wrap-errors';
     $css .= empty($input['infos']) ? '' : ' input-wrap-infos';
 
-    if (substr($input['label'], -3, 1) == '_') $input['label'] = substr($input['label'], 0, -2);
+    if (substr($input['label'], -3, 1) == '_') $input['label'] = substr($input['label'], 0, -3);
     if ($input['translate']) $input['label'] = t($input['label']);
 
 

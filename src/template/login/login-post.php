@@ -52,6 +52,6 @@ if ($userId) {
     }
     $_SESSION['id'] = $userId;
 
-    redirect('edit/pages', 303);
+    redirect('edit/' . $editor->homeSlug, 303);
 }
 redirect('edit', 303);

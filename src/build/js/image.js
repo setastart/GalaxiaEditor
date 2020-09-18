@@ -1,5 +1,7 @@
 let gjImage = {
 
+    editorImageSlug: 'image',
+
     init: function() {
         this.firstTime = true;
         this.el        = document.getElementById('image-select');
@@ -185,7 +187,7 @@ let gjImage = {
             console.error('Resize request error.');
         };
 
-        xhr.open('GET', '/edit/images/' + imgSlug + '/resize/' + size[0] + '/' + size[1]);
+        xhr.open('GET', '/edit/' + gjImage.editorImageSlug + '/' + imgSlug + '/resize/' + size[0] + '/' + size[1]);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.send();
 

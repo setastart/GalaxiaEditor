@@ -75,7 +75,6 @@ function gjLoad() {
 
 
 function handleEventInput(ev) {
-
     if (
         ev.target.matches('.input-text') ||
         ev.target.matches('.input-file') ||
@@ -142,7 +141,7 @@ function handleEventChange(ev) {
     }
 
     if (ev.target.matches('.filterChangeEmpty')) {
-        gjFilter.filterEmpty(ev.target, ev);
+        gjFilter.filterEmpty(ev.target);
     }
 
 }

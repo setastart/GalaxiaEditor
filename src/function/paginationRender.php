@@ -38,7 +38,7 @@ function renderPaginationHeader(Pagination $pagination): void {
 function renderPaginationFooter(Pagination $pagination): void {
     if (!$pagination->active) return;
 ?>
-    <div class="pagination btn-row pad">
+    <div class="pagination pagination-footer btn-row pad">
         <div class="btn-group">
             <button name="page" value="<?=$pagination->pageFirst?>" class="pageFirst btn-new pagination-first active" <?=($pagination->pageFirst) ?: 'disabled'?>></button>
         </div>

@@ -151,7 +151,6 @@ function gjLoad() {
 
 
 function handleEventInput(ev) {
-
     if (
         ev.target.matches('.input-text') ||
         ev.target.matches('.input-file') ||
@@ -218,7 +217,7 @@ function handleEventChange(ev) {
     }
 
     if (ev.target.matches('.filterChangeEmpty')) {
-        gjFilter.filterEmpty(ev.target, ev);
+        gjFilter.filterEmpty(ev.target);
     }
 
 }
@@ -421,12 +420,14 @@ let gjFilter = {
 
     filterEmpty: function(el) {
         if (el.parentNode.classList.contains('active')) {
-            el.name                                       = el.parentNode.previousElementSibling.name;
-            el.value                                      = '{{empty}}'
+            el.name  = el.parentNode.previousElementSibling.name;
+            el.value = '{{empty}}'
+
             el.parentNode.previousElementSibling.disabled = true;
         } else {
-            el.name                                       = undefined;
-            el.value                                      = undefined;
+            el.name  = undefined;
+            el.value = undefined;
+
             el.parentNode.previousElementSibling.disabled = false;
         }
         this.load(el);
@@ -439,6 +440,8 @@ let gjFilter = {
                 el.form.querySelector('.load').classList.add('loading2');
             });
         });
+
+        if (el.closest('.pagination-footer')) window.scrollTo(0, 0);
 
         var xhr = new XMLHttpRequest();
         var fd  = new FormData(el.form);
@@ -519,6 +522,8 @@ let gjFilter = {
 /************************/
 
 let gjImage = {
+
+    editorImageSlug: 'image',
 
     init: function() {
         this.firstTime = true;
@@ -705,7 +710,7 @@ let gjImage = {
             console.error('Resize request error.');
         };
 
-        xhr.open('GET', '/edit/images/' + imgSlug + '/resize/' + size[0] + '/' + size[1]);
+        xhr.open('GET', '/edit/' + gjImage.editorImageSlug + '/' + imgSlug + '/resize/' + size[0] + '/' + size[1]);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.send();
 

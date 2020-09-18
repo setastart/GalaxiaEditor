@@ -30,7 +30,7 @@ if ($itemId == 'new') return;
 if ($item['gcUpdateOnlyOwn'] ?? false) {
     if (!in_array('dev', $me->perms) && $me->id != $itemId) {
         error(t('Redirected. You don\'t have access to that page.'));
-        redirect('/edit/pages');
+        redirect('/edit/' . $editor->homeSlug);
     }
 }
 

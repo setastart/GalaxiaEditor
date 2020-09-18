@@ -72,6 +72,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     </style>
 
     <script type="text/javascript" src="/edit/js/galaxiaEditor.js?version=<?=h($editor->version)?>"></script>
+    <script type="text/javascript">gjImage.editorImageSlug = '<?=h($editor->imageSlug)?>';</script>
 <?php   if ($chatInclude) { ?>
     <script type="text/javascript">
 var gchat = {

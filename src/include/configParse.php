@@ -110,7 +110,7 @@ const PROTO_GC = [
     ],
 
     'gcpColumns' => [
-        'label'        => 'string',
+        '?label'        => 'string',
         'cssClass'     => 'string',
         'gcColContent' => 'gcpRowData',
     ],

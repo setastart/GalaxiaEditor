@@ -34,8 +34,9 @@ function prepareInput($input, $extras) {
                             $found[] = substr($colVal, 0, -2);
                         }
 
-                        $optionColVal[] = t($option[$colVal]);
+                        $optionColVal[] = unsafet($option[$colVal]);
                     }
+                    $optionColVal = array_filter($optionColVal);
 
                     if ($add) $input['options'][$option[$colKey]] = ['label' => implode(' / ', $optionColVal)];
                 }

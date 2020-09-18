@@ -19,12 +19,14 @@ let gjFilter = {
 
     filterEmpty: function(el) {
         if (el.parentNode.classList.contains('active')) {
-            el.name                                       = el.parentNode.previousElementSibling.name;
-            el.value                                      = '{{empty}}'
+            el.name  = el.parentNode.previousElementSibling.name;
+            el.value = '{{empty}}'
+
             el.parentNode.previousElementSibling.disabled = true;
         } else {
-            el.name                                       = undefined;
-            el.value                                      = undefined;
+            el.name  = undefined;
+            el.value = undefined;
+
             el.parentNode.previousElementSibling.disabled = false;
         }
         this.load(el);
@@ -37,6 +39,8 @@ let gjFilter = {
                 el.form.querySelector('.load').classList.add('loading2');
             });
         });
+
+        if (el.closest('.pagination-footer')) window.scrollTo(0, 0);
 
         var xhr = new XMLHttpRequest();
         var fd  = new FormData(el.form);

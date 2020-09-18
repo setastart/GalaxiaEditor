@@ -80,8 +80,8 @@ $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex2">' . PHP_EOL;
         foreach ($item['changes'] as $change) {
 $ht .= '    <div class="col flex">' . PHP_EOL;
-$ht .= '        <div class="col flex2"><span class="input-label-lang">' . h($change['lang']) . '</span>' . h($change['name']) . ' - ' . h($item['inputKey']) . '</div>' . PHP_EOL;
-$ht .= '        <div class="col flex3"><span class="input-label-lang">' . h($change['lang']) . '</span>' . firstLine($change['content'] ?? '') . '</div>' . PHP_EOL;
+$ht .= '        <div class="col flex2"><span class="input-label-lang">' . h($change['lang']) . '</span> ' . h($change['name']) . ' - ' . h($item['inputKey']) . '</div>' . PHP_EOL;
+$ht .= '        <div class="col flex3"><span class="input-label-lang">' . h($change['lang']) . '</span> ' . firstLine($change['content'] ?? '') . '</div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
         }
 $ht .= '    </div>' . PHP_EOL;
