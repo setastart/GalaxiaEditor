@@ -58,11 +58,6 @@ class App {
     /**
      * @deprecated
      */
-    public $requestUri = '';
-
-    /**
-     * @deprecated
-     */
     public $requestUriNormalized = '';
 
     public $routes = [];
@@ -113,8 +108,6 @@ class App {
     public $mysqlUser = '';
     public $mysqlPass = '';
 
-    public $imageCompressionQuality = 90;
-
 
     public function __construct(string $dir) {
         $this->dir       = rtrim($dir, '/') . '/';
@@ -132,7 +125,6 @@ class App {
             include $this->dir . 'config/app.private.php';
 
         if (isset($_SERVER['REQUEST_URI'])) {
-            $this->requestUri           = urldecode($_SERVER['REQUEST_URI'] ?? '');
             $this->requestUriNormalized = urldecode($_SERVER['REQUEST_URI'] ?? '');
             $this->requestUriNormalized = gTranslit($this->requestUriNormalized);
         }
