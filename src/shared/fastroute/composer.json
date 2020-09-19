@@ -1,0 +1,42 @@
+{
+  "name": "nikic/fast-route",
+  "description": "Fast request router for PHP",
+  "keywords": ["routing", "router"],
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Nikita Popov",
+      "email": "nikic@php.net"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "FastRoute\\": "src/"
+    },
+    "files": ["src/functions.php"]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "FastRoute\\Benchmark\\": "benchmark/",
+      "FastRoute\\Test\\": "test/"
+    }
+  },
+  "require": {
+    "php": ">=7.1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5 || ^8.5",
+    "phpbench/phpbench": "^0.16.9",
+    "doctrine/coding-standard": "^6.0 || ^7.0",
+    "phpstan/phpstan": "^0.12",
+    "phpstan/phpstan-phpunit": "^0.12",
+    "phpstan/phpstan-strict-rules": "^0.12",
+    "phpstan/phpstan-deprecation-rules": "^0.12",
+    "phpstan/extension-installer": "^1.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.0-dev"
+    }
+  }
+}

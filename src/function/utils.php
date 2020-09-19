@@ -179,7 +179,7 @@ function geD() {
     // array_shift($backtrace);
 
     foreach ($backtrace as $trace) {
-        $dump .= '<span class="select-on-click">' . $trace['file'] . ':' . $trace['line'] . '</span><br>';
+        $dump .= '<span class="select-on-click">' . ($trace['file'] ?? $trace['function'] ?? '??') . ':' . ($trace['line'] ?? $trace['args'][0] ??'??') . '</span><br>';
     }
     foreach (func_get_args() as $arg) {
         ob_start();
