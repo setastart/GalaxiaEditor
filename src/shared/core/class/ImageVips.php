@@ -90,7 +90,7 @@ class ImageVips {
         $in  = $dir . $slug . $ext;
         $out = $dir . $slug . '_' . $w . '_' . $h . $ext;
 
-        $vips = vips_call('thumbnail', null, $in, $w, ['height' => $h, 'crop' => 'attention'])['out'] ?? false;
+        $vips = vips_call('thumbnail', null, $in, $w, ['height' => $h, 'crop' => 'centre'])['out'] ?? false;
         if (!$vips) {
             throw new Exception('Could not vips thumbnail.');
         }
