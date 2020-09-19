@@ -23,12 +23,6 @@ function slope(int $x1, int $y1, int $x2, int $y2): float {
  * Get the y-intersect of two points
  * calc slope:       m = (y2 - y1) / (x2 - x1)
  * calc y-intersect: b = y1 - (m * x1)
- * @param int $y1
- * @param int $y2
- * @param int $x1
- * @param int $x2
- * @param int $round
- * @return float
  */
 function yIntersect(int $y1, int $y2, int $x1 = 320, int $x2 = 1000, int $round = 3): float {
     $m = ($y2 - $y1) / ($x2 - $x1);

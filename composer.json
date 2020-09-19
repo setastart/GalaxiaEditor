@@ -1,5 +1,4 @@
 {
-
     "name": "setastart/galaxia-editor",
     "type": "project",
     "description": "Galaxia Editor is a multilingual web content editor (CMS).",
@@ -40,5 +39,4 @@
             "src/shared/fastroute/src/functions.php"
         ]
     }
-
 }
