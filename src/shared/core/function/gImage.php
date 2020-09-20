@@ -191,17 +191,6 @@ function gImageDelete(string $dirImage, string $imgSlug) {
 
 
 
-/** @deprecated */
-function gImageRenderReflowSpacer($w, $h) {
-    if ($w < 1 || $h < 1) return '';
-    $padding = round(($h / $w) * 100, 4);
-
-    return '<div class="spacer" style="max-width:' . $w . 'px' . '; max-height:' . $h . 'px;"><div style="padding-bottom: ' . $padding . '%;"></div></div>';
-}
-
-
-
-
 function gImageRender($img, $extra = '') {
     if (!$img || !isset($img['src'])) return '';
     if ($img['version']) $img['src'] .= '?v=' . h($img['version']);
