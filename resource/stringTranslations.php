@@ -305,6 +305,21 @@ return [
 
     // editor
 
+    'Menu position' => [
+        'en' => 'Menu position',
+        'pt' => 'Posição do menu',
+        'es' => 'Posición del menú',
+    ],
+    'Left' => [
+        'en' => 'Left',
+        'pt' => 'Esquerda',
+        'es' => 'Izquierda',
+    ],
+    'Right' => [
+        'en' => 'Right',
+        'pt' => 'Direita',
+        'es' => 'Derecha',
+    ],
     'Editing' => [
         'en' => 'Editing',
         'pt' => 'A editar',

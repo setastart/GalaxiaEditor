@@ -16,82 +16,43 @@ namespace Galaxia;
 
 
 use Exception;
-use finfo;
 
 
 class App {
 
+    /**
+     * @deprecated
+     */
     public $version = '2020';
 
-    /**
-     * @deprecated
-     */
-    public $minStatus = 2;
-
-    public $dir = '';
-
-    /**
-     * @deprecated
-     */
-    public $dirLayout = '';
-
-    /**
-     * @deprecated
-     */
-    public $dirLogic = '';
-
-    /**
-     * @deprecated
-     */
-    public $dirModel = '';
-
-    /**
-     * @deprecated
-     */
-    public $dirView = '';
-
+    public $dir       = '';
     public $dirLog    = '';
     public $dirCache  = '';
     public $dirImage  = '';
     public $urlImages = '/media/image/';
-
-    /**
-     * @deprecated
-     */
-    public $requestUriNormalized = '';
 
     public $routes = [];
 
     /**
      * @deprecated
      */
-    public $routeVars = [];
+    public $pageId = 0;
 
     /**
      * @deprecated
      */
-    public $logic = '';
-
-    public $pageId     = 0;
     public $pageIsRoot = false;
 
-    public $pagesById      = null;
-    public $cacheBypassAll = false;
-
     /**
      * @deprecated
      */
-    public $view = '';
+    public $pagesById = null;
 
-    /**
-     * @deprecated
-     */
-    public $layout = 'layout-default';
-
-    public $locale          = ['url' => '/', 'long' => 'en_US', 'full' => 'English'];
-    public $locales         = [
+    public $locale  = ['url' => '/', 'long' => 'en_US', 'full' => 'English'];
+    public $locales = [
         'en' => ['url' => '/', 'long' => 'en_US', 'full' => 'English'],
     ];
+
     public $localesInactive = [];
 
     public $langs    = ['en'];
@@ -108,31 +69,26 @@ class App {
     public $mysqlUser = '';
     public $mysqlPass = '';
 
+    /**
+     * @deprecated
+     */
+    public $cacheBypass = false;
 
     public function __construct(string $dir) {
-        $this->dir       = rtrim($dir, '/') . '/';
-        $this->dirLayout = $this->dir . 'src/layout/';
-        $this->dirLogic  = $this->dir . 'src/template/';
-        $this->dirModel  = $this->dir . 'src/model/';
-        $this->dirView   = $this->dir . 'src/template/';
-        $this->dirCache  = $this->dir . 'var/cache/';
-        $this->dirLog    = $this->dir . 'var/log/';
-        $this->dirImage  = $this->dir . 'var/media/image/';
-
-        require $this->dir . 'config/app.php';
-
-        if (file_exists($this->dir . 'config/app.private.php'))
-            include $this->dir . 'config/app.private.php';
-
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $this->requestUriNormalized = urldecode($_SERVER['REQUEST_URI'] ?? '');
-            $this->requestUriNormalized = gTranslit($this->requestUriNormalized);
-        }
+        $this->dir      = rtrim($dir, '/') . '/';
+        $this->dirCache = $this->dir . 'var/cache/';
+        $this->dirLog   = $this->dir . 'var/log/';
+        $this->dirImage = $this->dir . 'var/media/image/';
     }
+
+
 
 
     // locale
 
+    /**
+     * @deprecated
+     */
     public function localeSetupFromUrl(): void {
         if (isset($_SERVER['REQUEST_URI'])) {
             foreach ($this->locales as $lang => $locale) {
@@ -175,43 +131,59 @@ class App {
     }
 
 
+
+
     // default page, slug, route loading
-    function loadPagesById(string $id = 'id', string $status = 'status', string $type = 'type', string $slug = 'slug', string $title = 'title', string $url = 'url') {
-        if ($this->pagesById == null) {
-            $this->pagesById = $this->cacheGet('app', 1, 'routing', 'pages', 'byId', function() use ($id, $status, $type, $slug, $title, $url) {
-                $app       = Director::getApp();
-                $db        = Director::getMysqli();
-                $pagesById = [];
-                $query     = querySelect(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
-                $query     .= 'WHERE pageStatus > 1' . PHP_EOL;
-                // ddp($query);
-                $stmt = $db->prepare($query);
-                $stmt->execute();
-                $result = $stmt->get_result();
 
-                while ($data = $result->fetch_assoc()) {
-                    if (!isset($app->routes[$data['pageType']])) continue;
+    /**
+     * @deprecated
+     */
+    function loadPagesById(
+        string $id = 'id', string $status = 'status', string $type = 'type',
+        string $slug = 'slug', string $title = 'title', string $url = 'url',
+        string $cacheKey = 'loadPagesById'
+    ) {
+        if ($this->pagesById != null) return;
+        $this->pagesById = $this->cacheGet('app', 1, $cacheKey, function() use ($id, $status, $type, $slug, $title, $url) {
+            $app       = Director::getApp();
+            $db        = Director::getMysqli();
+            $pagesById = [];
+            $query     = querySelect(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
+            $query     .= 'WHERE pageStatus > 1' . PHP_EOL;
+            // ddp($query);
+            $stmt = $db->prepare($query);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-                    $pagesById[$data['pageId']][$id]     = $data['pageId'];
-                    $pagesById[$data['pageId']][$status] = $data['pageStatus'];
-                    $pagesById[$data['pageId']][$type]   = $data['pageType'];
+            while ($data = $result->fetch_assoc()) {
+                if (!isset($app->routes[$data['pageType']])) continue;
 
-                    foreach ($app->langs as $lang) {
-                        $pagesById[$data['pageId']][$slug][$lang]  = $data['pageSlug_' . $lang];
-                        $pagesById[$data['pageId']][$title][$lang] = $data['pageTitle_' . $lang];
-                        $pagesById[$data['pageId']][$url][$lang]   = $app->addLangPrefix($data['pageSlug_' . $lang], $lang);
-                    }
+                $pagesById[$data['pageId']][$id]     = $data['pageId'];
+                $pagesById[$data['pageId']][$status] = $data['pageStatus'];
+                $pagesById[$data['pageId']][$type]   = $data['pageType'];
+
+                foreach ($app->langs as $lang) {
+                    $pagesById[$data['pageId']][$slug][$lang]  = $data['pageSlug_' . $lang];
+                    $pagesById[$data['pageId']][$title][$lang] = $data['pageTitle_' . $lang];
+                    $pagesById[$data['pageId']][$url][$lang]   = $app->addLangPrefix($data['pageSlug_' . $lang], $lang);
                 }
-                $stmt->close();
+            }
+            $stmt->close();
 
-                return $pagesById;
-            });
-        }
+            return $pagesById;
+        });
     }
 
 
-    function loadPagesByIdDraft(string $id = 'id', string $status = 'status', string $type = 'type', string $slug = 'slug', string $title = 'title', string $url = 'url') {
-        $pagesByIdDraft  = $this->cacheGet('app', 1, 'routing', 'draft', 'pagesByIdDraft', function() use ($id, $status, $type, $slug, $title, $url) {
+    /**
+     * @deprecated
+     */
+    function loadPagesByIdDraft(
+        string $id = 'id', string $status = 'status', string $type = 'type',
+        string $slug = 'slug', string $title = 'title', string $url = 'url',
+        string $cacheKey = 'loadPagesByIdDraft'
+    ) {
+        $pagesByIdDraft  = $this->cacheGet('app', 1, $cacheKey, function() use ($id, $status, $type, $slug, $title, $url) {
             $app = Director::getApp();
             $db  = Director::getMysqli();
 
@@ -244,41 +216,37 @@ class App {
     }
 
 
-    function defaultRoutes(int $pageMinStatus, $cachePostfix, $cacheBypass, $pageSlug = 'pgSlug') {
-        $routes        = [];
-        $routesVisited = [];
-        $timerName     = 'FastRoute: ' . $cachePostfix;
-        Director::timerStart($timerName);
+    function defaultRoutes(int $pageMinStatus, $pageSlug = 'pgSlug') {
+        $routes                  = [];
+        $routesVisited           = [];
+        $slugsAndRedirectsByType = [];
 
-        $slugsAndRedirectsByType = $this->cacheGet('app', 1, 'routing', 'slugsAndRedirectsByType', $cachePostfix, function() use ($pageMinStatus) {
-            $app = Director::getApp();
-            $db  = Director::getMysqli();
+        $db = Director::getMysqli();
 
-            $slugs     = [];
-            $redirects = [];
-            $query     = querySelect([
-                'page'         => ['pageId', 'pageStatus', 'pageSlug_', 'pageType'],
-                'pageRedirect' => ['pageRedirectId', 'pageRedirectSlug'],
-            ], $app->langs);
-            $query     .= querySelectLeftJoinUsing(['pageRedirect' => ['pageId']]);
-            $query     .= 'WHERE pageStatus >= ' . $pageMinStatus . PHP_EOL;
-            $stmt      = $db->prepare($query);
-            $stmt->execute();
-            $result = $stmt->get_result();
+        $query = querySelect([
+            'page'         => ['pageId', 'pageStatus', 'pageSlug_', 'pageType'],
+            'pageRedirect' => ['pageRedirectId', 'pageRedirectSlug'],
+        ], $this->langs);
 
-            while ($data = $result->fetch_assoc()) {
-                if (!isset($app->routes[$data['pageType']])) continue;
+        $query .= querySelectLeftJoinUsing(['pageRedirect' => ['pageId']]);
 
-                foreach ($app->langs as $lang)
-                    $slugs[$data['pageType']][$data['pageId']][$lang] = $data['pageSlug_' . $lang];
+        $query .= 'WHERE pageStatus >= ' . $pageMinStatus . PHP_EOL;
+        // dp($query);
 
-                if ($data['pageRedirectSlug'])
-                    $redirects[$data['pageType']][$data['pageId']][$data['pageRedirectId']] = $data['pageRedirectSlug'];
-            }
-            $stmt->close();
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-            return ['slugs' => $slugs, 'redirects' => $redirects];
-        }, $cacheBypass);
+        while ($data = $result->fetch_assoc()) {
+            if (!isset($this->routes[$data['pageType']])) continue;
+
+            foreach ($this->langs as $lang)
+                $slugsAndRedirectsByType['slugs'][$data['pageType']][$data['pageId']][$lang] = $data['pageSlug_' . $lang];
+
+            if ($data['pageRedirectSlug'])
+                $slugsAndRedirectsByType['redirects'][$data['pageType']][$data['pageId']][$data['pageRedirectId']] = $data['pageRedirectSlug'];
+        }
+        $stmt->close();
 
 
         // main lang
@@ -297,7 +265,8 @@ class App {
                                 'redirect' => false,
                             ];
                             if (!isset($routesVisited[$routeFinal][$routeMethod])) {
-                                $routes[]                                 = ['method' => $routeMethod, 'route' => $routeFinal, 'meta' => $routeMeta];
+                                $routes[] = ['method' => $routeMethod, 'route' => $routeFinal, 'meta' => $routeMeta];
+
                                 $routesVisited[$routeFinal][$routeMethod] = true;
                             }
                         }
@@ -324,7 +293,8 @@ class App {
                                     'redirect' => $redirectId,
                                 ];
                                 if (!isset($routesVisited[$routeFinal][$routeMethod])) {
-                                    $routes[]                                 = ['method' => $routeMethod, 'route' => $routeFinal, 'meta' => $routeMeta];
+                                    $routes[] = ['method' => $routeMethod, 'route' => $routeFinal, 'meta' => $routeMeta];
+
                                     $routesVisited[$routeFinal][$routeMethod] = true;
                                 }
                             }
@@ -353,7 +323,8 @@ class App {
                                     'redirect' => false,
                                 ];
                                 if (!isset($routesVisited[$routeFinal][$routeMethod])) {
-                                    $routes[]                                 = ['method' => $routeMethod, 'route' => $routeFinal, 'meta' => $routeMeta];
+                                    $routes[] = ['method' => $routeMethod, 'route' => $routeFinal, 'meta' => $routeMeta];
+
                                     $routesVisited[$routeFinal][$routeMethod] = true;
                                 }
                             }
@@ -362,8 +333,6 @@ class App {
                 }
             }
         }
-
-        Director::timerStop($timerName);
 
         return $routes;
     }
@@ -420,7 +389,7 @@ class App {
 
         $query .= querySelectWhereOr($arraySelectWhereOr, $statusGlue, $langs);
 
-
+        // ddp($query);
         $db   = Director::getMysqli();
         $stmt = $db->prepare($query);
         $stmt->bind_param(implode(array_map('key', $params)), ...array_map('reset', $params));
@@ -453,6 +422,8 @@ class App {
 
         return $id;
     }
+
+
 
 
     // sitemap
@@ -488,7 +459,7 @@ class App {
                         if ($method != 'GET') continue;
                         if (empty($route['sitemap'])) continue;
                         $sm = $route['sitemap'];
-                        arrayLanguifyRemovePerms($sm, $this->langs);
+                        arrayLanguify($sm, $this->langs);
                         if (!isset($sm['priority'])) continue;
 
                         if (isset($sm['gcSelect'])) {
@@ -587,6 +558,8 @@ class App {
             devlog('Sitemap not generated, no items found.');
         }
     }
+
+
 
 
     // images
@@ -719,17 +692,16 @@ class App {
     }
 
 
-
     public function imageUpload(array $files, $replace = false, int $toFit = 0, string $type = '') {
         $uploaded = [];
 
         arsort($files, SORT_NATURAL);
 
         foreach ($files as $fileNameTemp => $fileNameProposed) {
+
             $mtime = false;
-
             $fileNameProposed = gNormalize($fileNameProposed, ' ', '.');
-
+            $shouldReplace = false;
 
             // load image
             try {
@@ -748,6 +720,7 @@ class App {
             if (is_dir($this->dirImage . $fileSlug)) {
                 if ($replace) {
                     $mtime = filemtime($this->dirImage . $fileSlug . '/');
+                    $shouldReplace = true;
                 } else {
                     for ($j = 0; $j < 3; $j++) {
                         if (!is_dir($this->dirImage . $fileSlug)) break;
@@ -781,7 +754,7 @@ class App {
             }
 
 
-            if ($replace) {
+            if ($shouldReplace) {
                 foreach (ImageVips::FORMATS as $format) {
                     if ($format == $imageVips->ext) continue;
                     if (file_exists($fileDir . $fileSlug . $format)) unlink($fileDir . $fileSlug . $format);
@@ -824,16 +797,27 @@ class App {
     }
 
 
+
+
     // caching
 
-    function cacheGet(string $scope, int $level, string $type, string $section, string $key, $function, bool $bypass = false): array {
-        if ($this->cacheBypassAll) $bypass = true;
+    function cacheGet(
+        string $scope, int $level, string $key,
+        callable $f, bool $bypass = null, bool $write = null
+    ): array {
 
-        $dir = $this->dirCache . 'app/';
-        if ($scope == 'editor') $dir = $this->dirCache . 'editor/';
+        $subdir = 'app';
+        if ($scope == 'editor') $subdir = 'editor';
+
+        $cacheName = $scope . '-' . $level . '-' . $key;
+
+        $dir = $this->dirCache . trim($subdir, '/') . '/';
         if (!is_dir($dir)) mkdir($dir);
 
-        $cacheName = $scope . '-' . $level . '-' . $type . '-' . $section . '-' . $key;
+        if (is_null($bypass)) $bypass = ($this->cacheBypass == true);
+        if (is_null($write)) $write = !$bypass;
+        if (!$bypass) $write = true;
+
         $cacheFile = $dir . $cacheName . '.cache';
 
         if (!$bypass && file_exists($cacheFile)) {
@@ -851,31 +835,30 @@ class App {
             Director::timerStart($timerName);
 
             $lockFile = $this->dirCache . 'flock/' . $cacheName . '.lock';
-            if (is_dir($this->dirCache . 'flock/') && !$bypass && $fp = fopen($lockFile, 'w')) {
+            if (!$bypass && is_dir($this->dirCache . 'flock/') && $fp = fopen($lockFile, 'w')) {
                 flock($fp, LOCK_EX | LOCK_NB, $wouldblock);
                 if ($wouldblock) {
                     flock($fp, LOCK_SH);
                     if (file_exists($cacheFile)) $result = include $cacheFile;
                 } else {
-                    $result = $function();
-                    if (is_array($result)) {
+                    $result = $f();
+                    if (is_array($result) && $write) {
                         file_put_contents($cacheFile, '<?php return ' . var_export($result, true) . ';' . PHP_EOL);
-                    } else {
-                        error('Cache: unable to load');
-                        dp($result);
                     }
                     flock($fp, LOCK_UN);
                 }
                 fclose($fp);
             } else {
-                $result = $function();
+                $result = $f();
+                if (is_array($result) && $write) {
+                    file_put_contents($cacheFile, '<?php return ' . var_export($result, true) . ';' . PHP_EOL);
+                }
             }
 
         }
 
         if (!is_array($result)) {
             error('Cache: invalid result');
-            dp($result);
         }
 
         Director::timerStop($timerName);
@@ -884,7 +867,7 @@ class App {
     }
 
 
-    function cacheDelete($scopes, $type = '*', $section = '*', $key = '*') {
+    function cacheDelete($scopes, $key = '*') {
         $dirCacheStrlen = strlen($this->dirCache);
         if (!is_array($scopes)) $scopes = [$scopes];
         if (in_array('editor', $scopes) && !in_array('app', $scopes)) $scopes[] = 'app';
@@ -893,7 +876,7 @@ class App {
             $dir = 'app/';
             if ($scope == 'editor') $dir = 'editor/';
 
-            $cacheName = $scope . '-*-' . $type . '-' . $section . '-' . $key;
+            $cacheName = $scope . '-*-' . $key;
             $pattern   = $this->dirCache . $dir . $cacheName . '.cache';
             $glob      = glob($pattern, GLOB_NOSORT);
             foreach ($glob as $file) {

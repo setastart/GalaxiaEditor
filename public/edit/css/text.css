@@ -16,7 +16,6 @@ a,
 a:visited,
 .afake {
     color:#04b;
-    text-decoration-skip: ink;
     cursor: pointer;
 }
 a:hover,

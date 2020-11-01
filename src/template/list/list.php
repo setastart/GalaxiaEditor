@@ -2,12 +2,11 @@
 
 use Galaxia\{Director, Pagination};
 
-
 // ajax
 
 if (Director::$ajax) {
     $editor->layout = 'none';
-    $editor->view = 'list/results';
+    $editor->view   = 'list/results';
 }
 
 
@@ -15,43 +14,161 @@ if (Director::$ajax) {
 
 // setup list
 
-$list = $geConf[$pgSlug]['gcList'];
-$firstTable = key($list['gcSelect']);
+$list        = $geConf[$pgSlug]['gcList'];
+$firstTable  = key($list['gcSelect']);
 $firstColumn = $list['gcSelect'][$firstTable][0];
 
 
+$dbSchema = [];
+
+$query = '
+    SELECT TABLE_NAME, COLUMN_NAME, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_TYPE, COLUMN_KEY
+    FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = ?
+';
+
+$stmt = $db->prepare($query);
+$stmt->bind_param('s', $app->mysqlDb);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($data = $result->fetch_assoc()) {
+    if (!isset($dbSchema[$data['TABLE_NAME']])) $dbSchema[$data['TABLE_NAME']] = [];
+    if (!isset($dbSchema[$data['TABLE_NAME']][$data['COLUMN_NAME']]))
+        $dbSchema[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [];
+
+    $dbSchema[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [
+        'DATA_TYPE'                => $data['DATA_TYPE'],
+        'CHARACTER_MAXIMUM_LENGTH' => $data['CHARACTER_MAXIMUM_LENGTH'],
+        'IS_NULLABLE'              => $data['IS_NULLABLE'],
+        'COLUMN_TYPE'              => $data['COLUMN_TYPE'],
+        'COLUMN_KEY'               => $data['COLUMN_KEY'],
+    ];
+}
+$stmt->close();
 
 // get items from database using cache
 
-$items = $app->cacheGet('editor', 2, 'list', $pgSlug, 'items', function() use ($db, $list, $firstColumn) {
-    $items = [];
+$items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() use ($db, $list, $firstTable, $firstColumn, $dbSchema) {
+    // // add key columns to joined tables (used to group joins in columns)
+    // $selectQueryWithJoinKeys = $list['gcSelect'];
+    // foreach ($selectQueryWithJoinKeys as $table => $columns) {
+    //     $keyCol = $table . 'Id';
+    //     if (!in_array($keyCol, $columns)) array_unshift($selectQueryWithJoinKeys[$table], $keyCol);
+    // }
+    //
+    //
+    // $query = querySelect($selectQueryWithJoinKeys);
+    // $query .= querySelectLeftJoinUsing($list['gcSelectLJoin'] ?? []);
+    // $query .= querySelectOrderBy($list['gcSelectOrderBy'] ?? []);
+    //
+    // $f = function(mysqli_result $result, &$items) use ($list, $firstColumn) {
+    //     while ($data = $result->fetch_assoc()) {
+    //         $data = array_map('strval', $data);
+    //         foreach ($list['gcSelect'] as $table => $columns) {
+    //             foreach ($columns as $column) {
+    //                 $items[$data[$firstColumn]][$table][$data[$table . 'Id']][$column] = $data[$column];
+    //             }
+    //         }
+    //     }
+    // };
+    // $items = chunkSelectQuery($db, $query, $f);
+
+
+
+
     // add key columns to joined tables (used to group joins in columns)
-    $selectQueryWithJoinKeys = $list['gcSelect'];
-    foreach ($selectQueryWithJoinKeys as $table => $columns) {
+    $selectQuery = $list['gcSelect'];
+    $items       = [];
+    $i           = 0;
+    foreach ($selectQuery as $table => $columns) {
+        Director::timerStart('list ' . $table);
         $keyCol = $table . 'Id';
-        if (!in_array($keyCol, $columns)) array_unshift($selectQueryWithJoinKeys[$table], $keyCol);
-    }
+        if (!in_array($keyCol, $columns)) array_unshift($selectQuery[$table], $keyCol);
 
-    $query = querySelect($selectQueryWithJoinKeys);
-    $query .= querySelectLeftJoinUsing($list['gcSelectLJoin'] ?? []);
-    $query .= querySelectOrderBy($list['gcSelectOrderBy'] ?? []);
+        if ($i == 0) {
 
-    $stmt = $db->prepare($query);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    while ($data = $result->fetch_assoc()) {
-        $data = array_map('strval', $data);
-        foreach($list['gcSelect'] as $table => $columns) {
-            foreach ($columns as $column) {
-                $items[$data[$firstColumn]][$table][$data[$table . 'Id']][$column] = $data[$column];
+            $queryMain = [$table => $selectQuery[$table]];
+            $query     = querySelect($queryMain);
+            if (isset($list['gcSelectOrderBy'][$table])) {
+                $query .= querySelectOrderBy([$table => $list['gcSelectOrderBy'][$table]]);
             }
+
+            // geD($query);
+
+            $f = function(mysqli_result $result, &$items) use ($list, $firstColumn, $table, $queryMain) {
+                while ($data = $result->fetch_assoc()) {
+                    $data = array_map('strval', $data);
+                    foreach ($queryMain[$table] as $column) {
+                        $items[$data[$firstColumn]][$table][$data[$table . 'Id']][$column] = $data[$column];
+                    }
+                }
+            };
+
+            $items = chunkSelectQuery($db, $query, $f, $items);
+
+        } else {
+
+            $queryJoin = [$firstTable => [$firstColumn], $table => $selectQuery[$table]];
+            $query     = querySelect($queryJoin);
+            $joins     = [];
+            foreach ($list['gcSelectLJoin'][$table] ?? [] as $col) {
+                if (!isset($dbSchema[$firstTable][$col])) {
+                    foreach ($list['gcSelectLJoin'] as $joinTable => $joinCols) {
+                        if (isset($dbSchema[$joinTable][$col])) {
+                            $joins[$joinTable] = $list['gcSelectLJoin'][$joinTable] ?? [];
+                        }
+                    }
+                }
+                $joins[$table] = $list['gcSelectLJoin'][$table] ?? [];
+            }
+            $query .= querySelectLeftJoinUsing($joins);
+
+            foreach ($list['gcSelectOrderBy'] ?? [] as $orderTable => $orderCols) {
+                if (isset($joins[$orderTable])) {
+                    $query .= querySelectOrderBy([$orderTable => $orderCols]);
+                }
+            }
+
+            // geD($query);
+
+
+            $done       = 0;
+            $askForData = true;
+            do {
+                $chunk = $query . PHP_EOL . 'LIMIT ' . $done . ', ' . 5000 . PHP_EOL;
+
+                $stmt = $db->prepare($chunk);
+                $stmt->execute();
+                $result   = $stmt->get_result();
+                $rowCount = $stmt->affected_rows;
+
+                if ($rowCount) {
+                    $done += $rowCount;
+                    while ($data = $result->fetch_assoc()) {
+                        // $data = array_map('strval', $data);
+                        foreach ($queryJoin[$table] as $column) {
+                            $items[$data[$firstColumn]][$table][$data[$table . 'Id']][$column] = $data[$column];
+                        }
+                    }
+                } else {
+                    $askForData = false;
+                }
+
+                $result->free();
+                $stmt->close();
+
+            } while ($askForData);
+
         }
+
+        Director::timerStop('list ' . $table);
+        $i++;
     }
-    $stmt->close();
 
     return $items;
 });
+
+// ddp($items);
 
 
 
@@ -61,7 +178,7 @@ foreach ($list['gcColumns'] as $columnKey => $column)
     foreach ($column['gcColContent'] ?? [] as $colContent)
         foreach ($colContent['dbCols'] as $dbCol)
             $list['gcColumns'][$columnKey]['tablesAndCols'][$colContent['dbTab']][] = [
-                'col' => $dbCol,
+                'col'  => $dbCol,
                 'type' => $colContent['colType'],
             ];
 
@@ -76,24 +193,25 @@ foreach ($columns as $columnId => $column) {
 
 
 
+
 // make html for all rows, using cache
 
-$rows = $app->cacheGet('editor', 3, 'list', $pgSlug, 'rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns) {
-    $rows = [];
-    $tags = [];
+$rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns) {
+    $rows         = [];
+    $tags         = [];
     $currentColor = 0;
     $thumbsToShow = 3;
     foreach ($items as $itemId => $item) {
         $statusClass = '';
         if (isset($item[$firstTable][$itemId][$firstTable . 'Status'])) $statusClass = ' status-' . (int)($item[$firstTable][$itemId][$firstTable . 'Status'] ?? 0);
-$ht = '<a class="row' . $statusClass . '" href="/edit/' . $pgSlug . '/' . $itemId . '">' . PHP_EOL;
+        $ht = '<a class="row' . $statusClass . '" href="/edit/' . $pgSlug . '/' . $itemId . '">' . PHP_EOL;
 
         foreach ($columns as $columnId => $column) {
             if (!$column) continue;
-$ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
+            $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
             foreach ($column['tablesAndCols'] as $dbTable => $dbColumns) {
                 $countFound = false;
-                    $i = 0;
+                $i          = 0;
                 foreach ($item[$dbTable] as $data) {
                     if ($countFound) continue;
                     $tagFound = false;
@@ -133,7 +251,7 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
                                 break;
 
                             case 'count':
-                                $r .= count($item[$dbTable]);
+                                $r          .= count($item[$dbTable]);
                                 $countFound = true;
                                 break;
 
@@ -142,7 +260,7 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
                                 $tagFound = true;
                                 if (!isset($tags[$value])) $tags[$value] = $currentColor++;
                                 $colRowItemClass .= ' brewer-' . h(1 + ($tags[$value] % 9));
-                                $r .= t($value);
+                                $r               .= t($value);
                                 break;
 
                             case 'slug':
@@ -156,7 +274,7 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
 
                             case 'date':
                                 $value = strtotime($value);
-                                $r .= h(gFormatDate($value, 'd MMM y'));
+                                $r     .= h(gFormatDate($value, 'd MMM y'));
                                 break;
 
                             case 'time':
@@ -166,7 +284,7 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
 
                             case 'month':
                                 $dt = DateTime::createFromFormat('!m', $value);
-                                $r .= h(ucfirst(gFormatDate($dt, 'MMM')));
+                                $r  .= h(ucfirst(gFormatDate($dt, 'MMM')));
                                 break;
 
                             case 'small':
@@ -180,19 +298,19 @@ $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
 
                         if (empty($value) && $columnData['type'] != 'thumb' && !$isHomeSlug) {
                             $colRowItemClass .= ' empty';
-                            $r .= t('Empty');
+                            $r               .= t('Empty');
                         }
 
-$ht .= '        <div class="' . $colRowItemClass . '">' . $r . '</div>' . PHP_EOL;
+                        $ht .= '        <div class="' . $colRowItemClass . '">' . $r . '</div>' . PHP_EOL;
                         $i++;
                     }
                 }
             }
 
-$ht .= '    </div>' . PHP_EOL;
+            $ht .= '    </div>' . PHP_EOL;
 
         }
-$ht .= '</a>' . PHP_EOL;
+        $ht            .= '</a>' . PHP_EOL;
         $rows[$itemId] = $ht;
     }
 
@@ -210,7 +328,7 @@ foreach ($filterInts as $filterId => $filter) {
     foreach ($filter['options'] as $int => $value) {
         $filterInts[$filterId]['options'][$int]['checked'] = false;
         if (strpos($filterInts[$filterId]['options'][$int]['cssClass'], 'active') !== false) {
-            $filterInts[$filterId]['options'][$int]['checked'] = true;
+            $filterInts[$filterId]['options'][$int]['checked']  = true;
             $filterInts[$filterId]['options'][$int]['cssClass'] = (str_replace('active', '', $filterInts[$filterId]['options'][$int]['cssClass']));
         }
         if (empty($_POST)) continue;
@@ -234,13 +352,14 @@ foreach ($filterInts as $filterId => $filter) {
 Director::timerStart('Filter Ints');
 foreach ($intFiltersActive as $filterId) {
 
-    $itemsByInt = $app->cacheGet('editor', 3, 'list', $pgSlug, 'filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
+    $itemsByInt = $app->cacheGet('editor', 3, 'list- ' . $pgSlug . '-filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
         $itemsByInt = [];
         foreach ($items as $itemId => $item)
             foreach ($filterInts[$filterId]['filterWhat'] as $dbTable => $dbColumns)
                 foreach ($dbColumns as $dbColumn)
                     foreach ($item[$dbTable] as $tableKeyId => $value)
                         $itemsByInt[$item[$dbTable][$tableKeyId][$dbColumn]][$itemId] = true;
+
         return $itemsByInt;
     });
 
@@ -266,7 +385,7 @@ Director::timerStop('Filter Ints');
 
 // text filters
 
-$filterTexts = $list['gcFilterTexts'];
+$filterTexts       = $list['gcFilterTexts'];
 $textFiltersActive = [];
 foreach ($_POST['filterTexts'] ?? [] as $filterId => $ints) {
     if (!isset($filterTexts[$filterId])) continue;
@@ -279,10 +398,10 @@ foreach ($textFiltersActive as $filterId) {
     if (!$filterInput) continue;
     $filterInput = explode('+', $filterInput);
 
-    $textFilterItems = $app->cacheGet('editor', 4, 'list', $pgSlug, 'filterText-' . $filterId, function() use ($app, $rows, $items, $filterTexts, $filterId) {
+    $textFilterItems = $app->cacheGet('editor', 4, 'list-' . $pgSlug . '-filterText-' . $filterId, function() use ($app, $rows, $items, $filterTexts, $filterId) {
         foreach ($rows as $itemId => $row) {
             $textFilterItems[$itemId] = '';
-            $emptyFound = false;
+            $emptyFound               = false;
             foreach ($filterTexts[$filterId]['filterWhat'] as $dbTable => $dbColumns) {
                 foreach ($dbColumns as $dbColumn) {
                     foreach ($items[$itemId][$dbTable] as $tableKeyId => $value) {
@@ -306,6 +425,7 @@ foreach ($textFiltersActive as $filterId) {
                 $textFilterItems[$itemId] = '{{empty}}' . $textFilterItems[$itemId];
             }
         }
+
         return $textFilterItems;
     });
 
@@ -329,7 +449,7 @@ Director::timerStop('Filter Texts');
 
 // pagination
 
-$pagination = new Pagination((int) ($_POST['page'] ?? 1), (int) ($_POST['itemsPerPage'] ?? 50));
+$pagination   = new Pagination((int)($_POST['page'] ?? 1), (int)($_POST['itemsPerPage'] ?? 50));
 $rowsFiltered = count($rows);
 $pagination->setItemsTotal($rowsFiltered);
 $offset = $pagination->itemFirst - 1;

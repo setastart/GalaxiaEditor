@@ -6,6 +6,9 @@ body {
     min-height: 100%;
     align-items: start;
 }
+body.menu-right {
+    grid-template-columns: 12px 1fr 12px 202px 12px;
+}
 #menu {
     grid-column: 2/3;
     grid-row: 2/3;
@@ -18,6 +21,10 @@ body {
     left: 0px;
     height: 100vh;
 }
+body.menu-right #menu {
+    left: initial;
+    right: 0;
+}
 #website-link {
     grid-column: 1/-1;
 }
@@ -26,9 +33,15 @@ body {
     grid-row: 1/2;
     justify-self: center;
 }
+body.menu-right #openboxes {
+    grid-column: 2/3;
+}
 #page {
     grid-column: 4/5;
     grid-row: 2/3;
+}
+body.menu-right #page {
+    grid-column: 2/3;
 }
 #msgboxes {
     order: -1;
@@ -37,6 +50,9 @@ body {
     grid-column: 4/5;
     grid-row: 4/5;
     align-self: end;
+}
+body.menu-right #footer {
+    grid-column: 2/3;
 }
 body::before {
     content: '';
@@ -69,6 +85,7 @@ a#website-link > img {
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #98b #cfe9ef;
+    scrollbar-color: #98b transparent;
     align-content: start;
     width: 225px;
     padding: 0 12px;
@@ -79,13 +96,13 @@ a#website-link > img {
 }
 .menu-separator {
     grid-column: 1 / -1;
-    height: 10px;
+    height: 8px;
 }
 .menu-item {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    min-height: 46px;
+    min-height: 42px;
     background: #f6e1e6 linear-gradient(160deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.0) 100%);
     padding: 0 3px;
     text-align: center;
@@ -101,7 +118,7 @@ a#website-link > img {
 a.menu-item {
     color: #102;
     text-decoration: none;
-    box-shadow: 0 0 0 1px #a78;
+    box-shadow: 0 0 0 1px #a78, 2px 2px 3px rgba(0, 0, 0, 0.075);
 }
 a.menu-item.active {
     background-image: linear-gradient(-135deg, #98b, #98b 8px, #eb1 8px, #eb1 12px, transparent 12px);
@@ -306,7 +323,7 @@ a.paper {
 /* message boxes */
 
 #openboxes {
-    padding: 5px;
+    padding: 7px;
     display: flex;
     flex-wrap: wrap;
 }
@@ -550,7 +567,8 @@ a.row .col-thumb {
     height: 4vw;
     min-height: 30px;
     max-height: 50px;
-    background: rgba(0, 0, 0, 0.15);
+    background: url('/edit/gfx/bg-transparency.png') center;
+    background-size: 15px;
     border-radius: 3px;
 }
 a.row .col-thumb.single {

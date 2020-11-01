@@ -41,5 +41,5 @@ $uploaded = $app->imageUpload([$app->dirImage . $imgSlug . '/' . $imgSlug . $img
 // finish
 
 $app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList', $pgSlug);
+$app->cacheDelete('editor', 'imageList-' . $pgSlug);
 redirect('edit/' . $pgSlug . '/' . $imgSlug);

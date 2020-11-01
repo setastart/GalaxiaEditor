@@ -10,7 +10,7 @@
 <?php   } ?>
         </div>
 <?php   } ?>
-<?php   if (in_array('dev', $me->perms)) { ?>
+<?php   if ($me->hasPerm('dev')) { ?>
         <div class="paper-header-links">
             <a href="/edit/dev/imageListDeleteResizes" class="hide-perm-dev btn-a"><?=t('Delete Resizes')?></a>
             <a href="/edit/dev/imageListReorder" class="hide-perm-dev btn-a"><?=t('Reorder Images')?></a>

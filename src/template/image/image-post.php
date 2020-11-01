@@ -1,7 +1,7 @@
 <?php
 
 $editor->view = 'image/image';
-$mtime = filemtime($app->dirImage . $imgSlug . '/');
+$mtime        = filemtime($app->dirImage . $imgSlug . '/');
 
 
 
@@ -15,7 +15,7 @@ foreach ($inputs as $name => $input) {
 
     if ($name == 'imgSlug' && $value != $imgSlug) {
         if ($value && is_dir($app->dirImage . $value)) {
-            $msg = 'Must be unique. An item with that value already exists.';
+            $msg               = 'Must be unique. An item with that value already exists.';
             $input['errors'][] = $msg;
             error($msg, 'form', $input['name']);
             if ($input['lang']) $langSelectClass[$input['lang']] = 'btn-red';
@@ -37,6 +37,7 @@ if (hasError()) return;
 if (!$itemChanges) {
     warning(t('No changes were made.'));
     if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);
+
     return;
 }
 
@@ -46,7 +47,7 @@ if (!$itemChanges) {
 // update alt and type
 
 $altsAndType = ['alt_', 'type'];
-arrayLanguifyRemovePerms($altsAndType, array_keys($app->locales));
+arrayLanguify($altsAndType, array_keys($app->locales));
 foreach ($itemChanges as $name => $value) {
 
     if (!in_array($name, $altsAndType)) continue;
@@ -99,8 +100,8 @@ if (isset($itemChanges['imgSlug'])) {
         foreach ($geConf[$pgSlug]['gcImagesInUse'] as $table => $inUse) {
             $imgSlugCol = $inUse['gcSelect'][$table][0];
             $slugChange = [$imgSlugCol => $itemChanges['imgSlug']];
-            $params = array_values($slugChange);
-            $params[] = $imgSlug;
+            $params     = array_values($slugChange);
+            $params[]   = $imgSlug;
 
             $query = queryUpdate([$table => [$imgSlugCol]]);
             $query .= queryUpdateSet(array_keys($slugChange));
@@ -108,7 +109,7 @@ if (isset($itemChanges['imgSlug'])) {
 
             $affectedRows = 0;
             try {
-                $stmt = $db->prepare($query);
+                $stmt  = $db->prepare($query);
                 $types = str_repeat('s', count($params));
                 $stmt->bind_param($types, ...$params);
                 $stmt->execute();
@@ -134,7 +135,7 @@ if (isset($itemChanges['imgSlug'])) {
 // finish
 
 $app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList', $pgSlug);
+$app->cacheDelete('editor', 'imageList-' . $pgSlug);
 
 if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);
 redirect('edit/' . $pgSlug . '/' . $imgSlug);

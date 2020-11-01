@@ -17,8 +17,8 @@ if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/' && substr($
 
 // autoload
 
-include __DIR__ . '/autoload.php';
-include __DIR__ . '/autoload-editor.php';
+require_once __DIR__ . '/autoload.php';
+require_once __DIR__ . '/autoload-editor.php';
 
 
 
@@ -26,13 +26,6 @@ include __DIR__ . '/autoload-editor.php';
 // init app
 
 $app = Director::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '')));
-
-// if (Director::$debug) {
-//     $app->cacheBypassAll = true;
-// }
-// if (Director::$dev) {
-//     register_shutdown_function(function() { Director::timerPrint(true, true); });
-// }
 
 
 Director::timerStart('locales');
@@ -53,7 +46,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.1.0';
+$editor->version = '4.2.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -67,6 +60,10 @@ $me = Director::initMe();
 $me->logInFromCookieSessionId($app->cookieEditorKey);
 
 $db = Director::getMysqli();
+
+if (Director::isDevDebug()) {
+    $app->cacheBypass = true;
+}
 
 
 
@@ -84,17 +81,14 @@ if ($me->loggedIn) {
 
     // set nginx cache bypass cookie
     if ($app->cookieNginxCacheBypassKey) {
-
         setcookie(
             $app->cookieNginxCacheBypassKey,
             '1',
-            /*[*/
-            /*    'expires'  => */ time() + 86400, // 1 day
-            /*    'path'     => */ '/; SameSite=Strict',
-            /*    'domain'   => */ '.' . $_SERVER['SERVER_NAME'],
-            /*    'secure'   => */ isset($_SERVER['HTTPS']),
-            /*    'httponly' => */ true
-        /*]*/
+            /* 'expires'  => */ time() + 86400, // 1 day
+            /* 'path'     => */ '/; SameSite=Strict',
+            /* 'domain'   => */ '.' . $_SERVER['SERVER_NAME'],
+            /* 'secure'   => */ isset($_SERVER['HTTPS']),
+            /* 'httponly' => */ true
         );
     }
 
@@ -106,7 +100,7 @@ if ($me->loggedIn) {
 
     // CSRF
     if (!isset($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(32));
-    if (!Director::$debug)
+    if (!Director::isDevDebug())
         if ($_SERVER['REQUEST_METHOD'] == 'POST')
             if (!isset($_POST['csrf']) || $_POST['csrf'] !== $_SESSION['csrf'])
                 geErrorPage(500, 'invalid csrf token.');
@@ -123,7 +117,7 @@ if ($me->loggedIn) {
     Director::timerStart('editor configuration');
 
     Director::timerStart('gecValidateArray');
-    require $editor->dir . 'src/include/configParse.php';
+    require $editor->dir . 'src/config/configParse.php';
     Director::timerStop('gecValidateArray');
 
 
@@ -179,7 +173,7 @@ if ($me->loggedIn) {
     Director::timerStop('arrayRemovePermsRecursive()');
 
     Director::timerStart('gecLanguify');
-    arrayLanguifyRemovePerms($geConf, array_keys($app->locales), $me->perms);
+    arrayLanguify($geConf, array_keys($app->locales), $me->perms);
     Director::timerStop('gecLanguify');
 
 
@@ -218,9 +212,9 @@ if ($me->loggedIn) {
     }
 
 
-    if (Director::$debug) {
+    if (Director::isDev()) {
         Director::timerStart('gecValidateDatabase');
-        require $editor->dir . 'src/include/configParseDebug.php';
+        require $editor->dir . 'src/config/configParseDebug.php';
         Director::timerStop('gecValidateDatabase');
     }
 
@@ -236,7 +230,7 @@ if ($me->loggedIn) {
         $r->post('/edit/{pgSlug:login}', 'redirect-home');
         $r->get('/edit/{pgSlug:logout}', 'login/logout');
 
-        if (in_array('dev', $me->perms)) {
+        if ($me->hasPerm('dev')) {
             $r->get('/edit/{pgSlug:dev}', 'dev/dev');
             $r->get('/edit/dev/{pgSlug:sitemap}', 'dev/sitemap');
             $r->get('/edit/dev/{pgSlug:cacheDeleteApp}', 'dev/cache-delete-app');
@@ -275,7 +269,7 @@ if ($me->loggedIn) {
                         }
                         if ($confPage['gcItem']['gcUpdate']) {
                             $r->post('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}', 'item/item-post');
-                            if (in_array('dev', $me->perms)) {
+                            if ($me->hasPerm('dev')) {
                                 $r->get('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}/history', 'item/item-post-save-history');
                             }
                         }
@@ -329,6 +323,21 @@ if ($me->loggedIn) {
     });
     Director::timerStop('routing');
 
+    $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+    switch ($routeInfo[0]) {
+        case FastRoute\Dispatcher::NOT_FOUND:
+            geErrorPage(404, __FILE__ . ':' . __LINE__);
+            break;
+        case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+            geErrorPage(403, __FILE__ . ':' . __LINE__);
+            break;
+        case FastRoute\Dispatcher::FOUND:
+            extract($routeInfo[2]); // make php $variables with names and values defined in the routing above.
+            $editor->logic = $editor->view = $routeInfo[1];
+            break;
+    }
+
 } else {
 
     $editor->layout = 'layout-default';
@@ -340,21 +349,22 @@ if ($me->loggedIn) {
 
     });
 
-}
+    $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
-$routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    switch ($routeInfo[0]) {
+        case FastRoute\Dispatcher::NOT_FOUND:
+            Director::errorPage(404, __FILE__ . ':' . __LINE__);
+            break;
+        case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+            Director::errorPage(403, __FILE__ . ':' . __LINE__);
+            break;
+        case FastRoute\Dispatcher::FOUND:
+            extract($routeInfo[2]); // make php $variables with names and values defined in the routing above.
+            $pgSlug        = $routeInfo[2]['pgSlug'];
+            $editor->logic = $editor->view = $routeInfo[1];
+            break;
+    }
 
-switch ($routeInfo[0]) {
-    case FastRoute\Dispatcher::NOT_FOUND:
-        Director::errorPageAndExit(404, __FILE__ . ':' . __LINE__);
-        break;
-    case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        Director::errorPageAndExit(403, __FILE__ . ':' . __LINE__);
-        break;
-    case FastRoute\Dispatcher::FOUND:
-        extract($routeInfo[2]); // make php $variables with names and values defined in the routing above.
-        $editor->logic = $editor->view = $routeInfo[1];
-        break;
 }
 
 
@@ -403,10 +413,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && hasError()) {
 // Exit on missing layouts or template view
 
 if (!file_exists($editor->dirLayout . $editor->layout . '.phtml')) {
-    Director::errorPageAndExit(500, 'missing layout: ' . h($editor->layout));
+    Director::errorPage(500, 'missing layout: ' . h($editor->layout));
 }
 if (!file_exists($editor->dirView . $editor->view . '.phtml')) {
-    Director::errorPageAndExit(500, 'missing template view: ' . $editor->dir . 'src/templates/' . $editor->view);
+    Director::errorPage(500, 'missing template view: ' . $editor->dir . 'src/templates/' . $editor->view);
 }
 
 
@@ -417,7 +427,9 @@ Director::timerStart('layout');
 include $editor->dirLayout . $editor->layout . '.phtml';
 Director::timerStop('layout');
 
-
+if (Director::isDev()) {
+    Director::timerPrint(true, true);
+}
 
 
 exit();

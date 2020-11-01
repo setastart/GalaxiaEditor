@@ -54,9 +54,8 @@ function gImageList($dirImage) {
     });
 
     foreach ($images as $key => $image) {
-        $images[$key] = $image['name'];
+        $images[$key] = $image['time'];
     }
-
     return $images;
 }
 

@@ -3,7 +3,7 @@
 <?php   if (!empty($me->perms)) { ?>
     <div class="switch-perms">
 <?php   foreach ($me->perms as $perm) { ?>
-        <label for="switch-hide-perm-<?=h($perm)?>" data-remember="true" class="btn btn-pill btn-yellow btn-small btn-checkbox active">
+        <label for="switch-hide-perm-<?=h($perm)?>" data-remember="true" class="btn btn-pill btn-blue btn-small btn-checkbox active">
             <?=h($perm)?>
             <input type="checkbox" value="hide-active-perm-<?=h($perm)?>" id="switch-hide-perm-<?=h($perm)?>" title="<?=h($perm)?>" checked>
         </label>

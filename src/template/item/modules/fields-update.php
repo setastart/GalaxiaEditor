@@ -5,11 +5,16 @@
 $itemColId = $item['gcTable'] . 'Id';
 
 foreach ($fieldsNew as $moduleKey => $fields) {
-    $module = $modules[$moduleKey];
+    $module   = $modules[$moduleKey];
+    $fieldCol = 'fieldKey';
+    if (in_array($module['gcTable'] . 'Field', $module['gcSelect'][$module['gcTable']])) {
+        $fieldCol = $module['gcTable'] . 'Field';
+    }
+
     foreach ($fields as $fieldKey => $inserts) {
         foreach ($inserts as $fieldVal => $insert) {
             $values = [];
-            $insert = array_merge([$itemColId => $itemId], ['fieldKey' => $fieldKey], $insert);
+            $insert = array_merge([$itemColId => $itemId], [$fieldCol => $fieldKey], $insert);
 
             foreach ($insert as $inputName => $value) {
                 $values[] = $value;
@@ -18,22 +23,23 @@ foreach ($fieldsNew as $moduleKey => $fields) {
             $query = queryInsert($module['gcUpdate'], $insert);
 
             try {
-                $stmt = $db->prepare($query);
+                $stmt  = $db->prepare($query);
                 $types = str_repeat('s', count($values));
                 $stmt->bind_param($types, ...$values);
-                $success = $stmt->execute();
+                $success    = $stmt->execute();
                 $insertedId = $stmt->insert_id;
                 $stmt->close();
                 info(sprintf(t('Added field: %s.'), t($fieldKey)));
                 foreach ($insert as $inputName => $value) {
                     if ($inputName == 'position') continue;
                     if (!isset($module['inputs'][$fieldKey][$fieldVal][$inputName]['name'])) continue;
-                    info(t('Added'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $insertedId . '][' . $inputName. ']');
+                    info(t('Added'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $insertedId . '][' . $inputName . ']');
                 }
 
             } catch (Exception $e) {
                 error('fields-update - Unable to insert field.');
                 error($e->getMessage());
+
                 return;
             }
 
@@ -45,12 +51,17 @@ foreach ($fieldsNew as $moduleKey => $fields) {
 // delete fields
 
 foreach ($fieldsDel as $moduleKey => $fields) {
-    $module = $modules[$moduleKey];
+    $module   = $modules[$moduleKey];
+    $fieldCol = 'fieldKey';
+    if (in_array($module['gcTable'] . 'Field', $module['gcSelect'][$module['gcTable']])) {
+        $fieldCol = $module['gcTable'] . 'Field';
+    }
+
     foreach ($fields as $fieldKey => $deleteIds) {
 
         $query = queryDeleteIn(
             $module['gcTable'],
-            [$itemColId, 'fieldKey'],
+            [$itemColId, $fieldCol],
             $module['gcTable'] . 'Id',
             $deleteIds
         );
@@ -58,7 +69,7 @@ foreach ($fieldsDel as $moduleKey => $fields) {
         try {
             $stmt = $db->prepare($query);
             $stmt->bind_param('ss' . str_repeat('d', count($deleteIds)), $itemId, $fieldKey, ...$deleteIds);
-            $success = $stmt->execute();
+            $success    = $stmt->execute();
             $insertedId = $stmt->insert_id;
             $stmt->close();
             info(sprintf(t('Deleted field: %s.'), t($fieldKey)));
@@ -66,6 +77,7 @@ foreach ($fieldsDel as $moduleKey => $fields) {
         } catch (Exception $e) {
             error('fields-update - Unable to delete fields.');
             error($e->getMessage());
+
             return;
         }
 
@@ -77,11 +89,16 @@ foreach ($fieldsDel as $moduleKey => $fields) {
 // update fields
 
 foreach ($fieldsUpd as $moduleKey => $fields) {
-    $module = $modules[$moduleKey];
+    $module   = $modules[$moduleKey];
+    $fieldCol = 'fieldKey';
+    if (in_array($module['gcTable'] . 'Field', $module['gcSelect'][$module['gcTable']])) {
+        $fieldCol = $module['gcTable'] . 'Field';
+    }
+
     foreach ($fields as $fieldKey => $updates) {
         foreach ($updates as $fieldVal => $update) {
-            $queryUpdateWhere = [$module['gcTable'] => [$module['gcTable'] . 'Id', $itemColId, 'fieldKey']];
-            $params = array_values($update);
+            $queryUpdateWhere = [$module['gcTable'] => [$module['gcTable'] . 'Id', $itemColId, $fieldCol]];
+            $params           = array_values($update);
             array_push($params, $fieldVal, $itemId, $fieldKey);
 
             $query = queryUpdate($module['gcUpdate']);
@@ -89,7 +106,7 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
             $query .= queryUpdateWhere($queryUpdateWhere);
 
             try {
-                $stmt = $db->prepare($query);
+                $stmt  = $db->prepare($query);
                 $types = str_repeat('s', count($update)) . 'dds';
                 $stmt->bind_param($types, ...$params);
                 $stmt->execute();
@@ -102,11 +119,12 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
                     info(sprintf(t('Updated field: %s.'), t($fieldKey)));
 
                     foreach ($update as $inputName => $value) {
-                        $lang = isset($module['inputs'][$fieldKey][$fieldVal][$inputName]['lang']) ? $module['inputs'][$fieldKey][$fieldVal][$inputName]['lang'] . ' - ': '';
+                        if ($inputName == 'position') continue;
+                        $lang = isset($module['inputs'][$fieldKey][$fieldVal][$inputName]['lang']) ? $module['inputs'][$fieldKey][$fieldVal][$inputName]['lang'] . ' - ' : '';
                         if ($value) {
                             info(t('Updated'), 'form', $module['inputs'][$fieldKey][$fieldVal][$inputName]['name']);
                         } else {
-                            info(t('Deleted'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputName. ']');
+                            info(t('Deleted'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputName . ']');
                         }
 
                         if ($item['gcTable'] == '_geUser') continue;
@@ -116,13 +134,13 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
             } catch (Exception $e) {
                 error('fields-update - Unable to save changes to field.');
                 error($e->getMessage());
+
                 return;
             }
 
         }
     }
 }
-
 
 
 
@@ -145,7 +163,7 @@ foreach ($modules as $module) {
             $params[] = '';
 
         try {
-            $stmt = $db->prepare($query);
+            $stmt  = $db->prepare($query);
             $types = str_repeat('s', count($params));
             $stmt->bind_param($types, ...$params);
             $stmt->execute();
@@ -160,6 +178,7 @@ foreach ($modules as $module) {
             error('fields-update - Unable to delete empty fields.');
             geD($query);
             error($e->getMessage());
+
             return;
         }
 

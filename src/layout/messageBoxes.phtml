@@ -27,7 +27,7 @@
 <?php       } ?>
     </ul>
 <?php   } ?>
-<?php   if (hasDevlog('devlogBox') && Director::$debug) { ?>
+<?php   if (hasDevlog('devlogBox') && Director::isDev()) { ?>
     <ul id="msgbox-devlog" class="msgbox pad">
         <div class="msgbox-title"><?=t('Devlog')?>:</div>
 <?php       foreach (devlogs('devlogBox') as $log) { ?>

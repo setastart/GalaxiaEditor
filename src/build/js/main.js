@@ -176,13 +176,13 @@ function handleEventClick(ev) {
 
 
     if (ev.target.matches('.scrape-jsonld')) {
-        gjImportJsonld(ev.target, ev);
+        gjScraper.jsonld(ev.target);
     }
     if (ev.target.matches('.scrape-youtube')) {
-        gjImportYoutube(ev.target, ev);
+        gjScraper.youtube(ev.target);
     }
     if (ev.target.matches('.scrape-vimeo')) {
-        gjImportVimeo(ev.target, ev);
+        gjScraper.vimeo(ev.target);
     }
 
 

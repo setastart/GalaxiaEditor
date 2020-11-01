@@ -152,7 +152,6 @@ class ImageVips {
         }
 
         if ($overwite) {
-            unlink($outOriginal);
             rename($out, $outOriginal);
         }
 

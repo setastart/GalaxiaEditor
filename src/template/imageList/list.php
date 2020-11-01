@@ -16,7 +16,7 @@ if (Director::$ajax) {
 
 // get images using cache
 
-$items = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'items', function() use ($app) {
+$items = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-items', function() use ($app) {
     $items = [];
     $imageList = gImageList($app->dirImage);
 
@@ -39,7 +39,7 @@ $items = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'items', function() u
 
 // get in use items using cache
 
-$inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() use ($db, $geConf, $pgSlug) {
+$inUse = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-inUse', function() use ($db, $geConf, $pgSlug) {
     $inUse = [];
     foreach ($geConf[$pgSlug]['gcImagesInUse'] as $gcImageInUse) {
 
@@ -115,7 +115,7 @@ $inUse = $app->cacheGet('editor', 2, 'imageList', $pgSlug, 'inUse', function() u
 
 switch ($_POST['imageListType'] ?? '') {
     case 'image-select':
-        $rows = $app->cacheGet('editor', 3, 'imageList', $pgSlug, 'rows-select', function() use ($app, $geConf, $pgSlug, $items) {
+        $rows = $app->cacheGet('editor', 3, 'imageList-' . $pgSlug . '-rows-select', function() use ($app, $geConf, $pgSlug, $items) {
         $rows = [];
 
             foreach ($items as $imgSlug => $img) {
@@ -133,7 +133,7 @@ $ht .= '</button>' . PHP_EOL;
         break;
 
     default:
-        $rows = $app->cacheGet('editor', 3, 'imageList', $pgSlug, 'rows', function() use ($editor, $geConf, $pgSlug, $items, $inUse) {
+        $rows = $app->cacheGet('editor', 3, 'imageList-' . $pgSlug . '-rows', function() use ($editor, $geConf, $pgSlug, $items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -155,11 +155,15 @@ $ht .= '        <div><span class="input-label-lang">' . t('Size') . ':</span> <s
 $ht .= '        <div><span class="input-label-lang">' . t('Created') . ':</span> <small class="grey">' . gFormatDate($img['mtime'], 'd MMM y - HH:mm') . '</small></div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
-                foreach ($img['alt'] as $lang => $alt) {
-                    if (empty($alt)) {
+                if (empty($img['alt'])) {
 $ht .= '        <div><span class="small red">' . t('Empty') . '</span></div>' . PHP_EOL;
-                    } else {
+                } else {
+                    foreach ($img['alt'] as $lang => $alt) {
+                        if (empty($alt)) {
+$ht .= '        <div><span class="small red">' . t('Empty') . '</span></div>' . PHP_EOL;
+                        } else {
 $ht .= '        <div><span class="input-label-lang">' . $lang . ':</span> ' . h($alt) . '</div>' . PHP_EOL;
+                        }
                     }
                 }
 $ht .= '    </div>' . PHP_EOL;
@@ -235,7 +239,7 @@ if ($textFiltersActive) {
         if (!$filterInput) continue;
         $filterInput = explode('+', $filterInput);
 
-        $itemsToFilter = $app->cacheGet('editor', 3, 'imageList', $pgSlug, 'filterTexts-' . $filterId, function() use ($app, $items, $inUse, $filterId) {
+        $itemsToFilter = $app->cacheGet('editor', 3, 'imageList-' . $pgSlug . '-filterTexts-' . $filterId, function() use ($app, $items, $inUse, $filterId) {
             switch ($filterId) {
                 case 'slug':
                     foreach ($items as $imgSlug => $img)
@@ -244,8 +248,8 @@ if ($textFiltersActive) {
 
                 case 'alt':
                     foreach ($items as $imgSlug => $img) {
-                        $emptyFound = false;
                         $return[$imgSlug] = '';
+                        $emptyFound = empty($img['alt']);
                         foreach ($img['alt'] as $lang => $alt) {
                             if (empty($alt)) $emptyFound = true;
                             else $return[$imgSlug] .= ' ' . $alt;
@@ -257,26 +261,34 @@ if ($textFiltersActive) {
 
                 case 'inuse':
                     foreach ($items as $imgSlug => $img) {
+                        $emptyFound = false;
                         if (!isset($inUse[$imgSlug])) {
                             $return[$imgSlug] = '{{empty}}';
                             continue;
                         }
                         $return[$imgSlug] = '';
                         foreach ($inUse[$imgSlug] as $itemKey => $item) {
-                            foreach ($item as $itemVal) {
-                                $return[$imgSlug] .= ' ' . $itemKey . '/' . $itemVal;
+                            if (empty($item)) $emptyFound = true;
+                            if (is_array($item)) {
+                                foreach ($item as $itemVal) {
+                                    if (empty($itemVal)) $emptyFound = true;
+                                    else $return[$imgSlug] .= ' ' . $itemKey . '/' . $itemVal;
+                                }
                             }
                         }
+                        if ($emptyFound) $return[$imgSlug] = '{{empty}}' . $return[$imgSlug];
                         $return[$imgSlug] = gPrepareTextForSearch($return[$imgSlug]);
                     }
                     break;
 
                 case 'type':
                     foreach ($items as $imgSlug => $img) {
+                        $emptyFound = false;
                         if (!isset($img['extra']['type'])) {
                             $return[$imgSlug] = '{{empty}}';
                             continue;
                         }
+                        if ($emptyFound) $return[$imgSlug] = '{{empty}}' . $return[$imgSlug];
                         $return[$imgSlug] = gPrepareTextForSearch(t($img['extra']['type']));
                     }
 

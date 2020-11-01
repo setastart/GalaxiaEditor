@@ -21,7 +21,7 @@ return [
     ],
 
     'gcList' => [
-        'gcPerms'  => ['dev'],
+        'gcPerms' => ['dev'],
 
         'gcSelect'        => ['_geUser' => ['_geUserId', 'email', 'name', 'perms', 'timestampLastOnline']],
         'gcSelectLJoin'   => [],
@@ -33,27 +33,29 @@ return [
                 'cssClass' => 'btn-blue active',
             ],
         ],
+
         'gcColumns' => [
             [
-                'label' => 'Name and Email',
-                'cssClass' => 'flex3',
+                'label'        => 'Name and Email',
+                'cssClass'     => 'flex3',
                 'gcColContent' => [['dbTab' => '_geUser', 'dbCols' => ['name', 'email'], 'colType' => 'text']],
             ],
             [
-                'label' => 'Permissions',
-                'cssClass' => 'flex2',
+                'label'        => 'Permissions',
+                'cssClass'     => 'flex2',
                 'gcColContent' => [['dbTab' => '_geUser', 'dbCols' => ['perms'], 'colType' => 'text']],
             ],
             [
-                'label' => 'Last Online',
-                'cssClass' => 'flexD',
+                'label'        => 'Last Online',
+                'cssClass'     => 'flexD',
                 'gcColContent' => [['dbTab' => '_geUser', 'dbCols' => ['timestampLastOnline'], 'colType' => 'timestamp']],
             ],
         ],
+
         'gcFilterTexts' => [
             [
-                'label'       => 'Filter Names and Emails',
-                'filterWhat'  => ['_geUser' => ['name', 'email']],
+                'label'      => 'Filter Names and Emails',
+                'filterWhat' => ['_geUser' => ['name', 'email']],
             ],
             [
                 'label'       => 'Filter Permissions',
@@ -61,6 +63,7 @@ return [
                 'filterEmpty' => true,
             ],
         ],
+
         'gcFilterInts' => [],
     ],
 
@@ -107,18 +110,32 @@ return [
                 'gcUpdate'        => ['_geUserOption' => ['value']],
 
                 'gcInputs' => ['value' => ['type' => 'textarea', 'nullable' => true]],
+
                 'gcInputsWhereCol' => [
                     'Language' => [
                         'value' => [
                             'type'    => 'select',
+                            'label'   => 'Language',
                             'options' => [
                                 'en' => ['label' => 'English'],
                                 'pt' => ['label' => 'Português'],
                                 'es' => ['label' => 'Español'],
                             ],
-                        ]
+                        ],
+                    ],
+
+                    'menuPosition' => [
+                        'value' => [
+                            'type'    => 'select',
+                            'label'   => 'Menu position',
+                            'options' => [
+                                ''      => ['label' => 'Left'],
+                                'right' => ['label' => 'Right'],
+                            ],
+                        ],
                     ],
                 ],
+
                 'gcInputsWhereParent' => [],
             ],
         ],

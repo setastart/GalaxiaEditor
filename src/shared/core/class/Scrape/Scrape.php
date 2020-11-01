@@ -92,7 +92,7 @@ class Scrape {
     }
 
 
-    static function exitJsonOnError(array $r) {
+    static function exitJsonOnError(array $r): void {
         if (!isset($r[self::ERROR])) {
             self::printJsonAndExit(array_merge($r, [self::ERROR => self::ERROR_INTERNAL_SCRAPER]));
         }
@@ -102,15 +102,16 @@ class Scrape {
     }
 
 
-    static function resultClean(array $r) {
+    static function resultClean(array $r): array {
         $r[self::ERROR] = t($r[self::ERROR]);
         foreach ($r[self::INFO] as $key => $val) {
             $r[self::INFO][$key] = t($val);
         }
 
-        return array_map_recursive(function ($a) {
-            return strip_tags($a, ALLOWED_TAGS);
-        }, $r);
+        array_walk_recursive($r, function(&$v) {
+            $v = strip_tags($v, ALLOWED_TAGS);
+        });
+        return $r;
     }
 
 }

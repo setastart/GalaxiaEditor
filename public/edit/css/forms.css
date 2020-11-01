@@ -3,7 +3,6 @@
     padding-bottom: 12px;
     display: flex;
     flex-wrap: wrap;
-    /*align-items: flex-start;*/
     justify-content: flex-end;
 }
 .input-wrap.paper-header-status {
@@ -199,7 +198,6 @@
     background: #fff;
     border-radius: 1px;
     border: 1px solid #b9a;
-    /*min-height: 60px;*/
     margin: 0;
     outline: none;
     padding: 0;
@@ -303,7 +301,6 @@ select:-moz-focusring {
     text-decoration: underline;
 }
 
-
 .required {
     font-weight: bold;
     color: #000;
@@ -311,7 +308,6 @@ select:-moz-focusring {
 
 .input-text:read-only {
     background: rgba(0, 0, 0, 0.05);
-    /*border: none;*/
 }
 
 
@@ -327,6 +323,9 @@ select:-moz-focusring {
 
 
 
+label.input-radio {
+    position: relative;
+}
 label.input-radio input {
     position: absolute;
     width: 100%;
@@ -338,16 +337,10 @@ label.input-radio input {
     opacity: 0.0;
     cursor: pointer;
 }
-label.input-radio input:hover {
-    /*opacity: 0.1;*/
-}
 
 
 .btn, a.btn {
     cursor: pointer;
-    -webkit-transform-style: preserve-3d; /* prevent flicker on safari */
-    -webkit-transform:translate3d(0,0,0); /* prevent flicker on safari */
-    -webkit-backface-visibility: hidden; /* prevent flicker on safari */
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -364,31 +357,44 @@ label.input-radio input:hover {
     padding: 6px;
     text-align: center;
     border-radius: 4px;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
-    background-color: #e7e7e7;
-    background-color: #ece6ef;
-    border: 1px solid #fff;
-    border-bottom-color: #999;
-    border-right-color: #aaa;
+    background: #ece6ef linear-gradient(160deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
+
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-right-color: rgba(0, 0, 0, 0.2);
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+
     float: left;
     text-decoration: none;
     word-wrap: break-word;
     overflow-wrap: break-word;
     -webkit-hyphens: auto;
             hyphens: auto;
-    transition: background-color 0.1s ease-out;
-    box-shadow: 0px 0px 2px rgba(187, 153, 170, 0.3);
+    transition: padding 65ms ease-in-out, background 65ms ease-in-out;
+    box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.04), 0 0 2px rgba(187, 153, 170, 0.3);
 }
 button.btn {
     padding: 4px 2px;
 }
-label.input-radio:checked,
+.btn:hover {
+    box-shadow: inset 2px 2px 32px rgba(255, 255, 255, 0.5), 0 0 2px rgba(187, 153, 170, 0.3);
+}
+.btn.active:hover {
+    box-shadow: inset 2px 2px 32px rgba(255, 255, 255, 0.3), 0 0 2px rgba(187, 153, 170, 0.3);
+}
 .btn:active {
+    box-shadow: inset 2px 2px 32px rgba(0, 0, 0, 0.1);
+}
+.btn.active:active {
     box-shadow: inset 2px 2px 32px rgba(0, 0, 0, 0.2);
 }
-label.input-radio:hover,
-.btn:hover, a.btn:hover {
-    background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0.1) 100%);
+
+.btn.input-radio.active {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), 0 0 2px rgba(187, 153, 170, 0.3);
+}
+.btn.input-radio.active:hover {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset 2px 2px 32px rgba(255, 255, 255, 0.3), 0 0 2px rgba(187, 153, 170, 0.3);
 }
 
 .btn-group-radio {
@@ -398,59 +404,43 @@ label.input-radio:hover,
 
 
 
-/*.btn:active:hover, a.btn:active:hover,*/
 .btn.active, a.btn.active {
-    border-top-color: #eef;
-    border-left-color: #eef;
-    border-bottom-color: #557;
-    border-right-color: #557;
     color: #fff;
     background-color: #b7d;
     text-shadow: 0 1px 1px rgba(0,0,0,0.6);
-    /*text-shadow: -1px -1px 0px rgba(255, 255, 255, 0.3);*/
 }
-
-
-/*.btn-red:active:hover, a.btn-red:active:hover,*/
 .btn-red.active, a.btn-red.active {
     background-color: #d43;
-    border-top-color: #fbb;
-    border-left-color: #fbb;
-    border-bottom-color: #821;
-    border-right-color: #821;
 }
-/*.btn-yellow:active:hover, a.btn-yellow:active:hover,*/
 .btn-yellow.active, a.btn-yellow.active {
-    background-color: #eb1;
-    border-top-color: #ffc;
-    border-left-color: #ffc;
-    border-bottom-color: #a60;
-    border-right-color: #a60;
+    background-color: #da0;
 }
-/*.btn-blue:active:hover, a.btn-blue:active:hover,*/
 .btn-blue.active, a.btn-blue.active {
     background-color: #09f;
-    border-top-color: #cef;
-    border-left-color: #cef;
-    border-bottom-color: #06a;
-    border-right-color: #06a;
 }
-/*.btn-green:active:hover, a.btn-green:active:hover,*/
 .btn-green.active, a.btn-green.active {
     background-color: #2c4;
-    border-top-color: #cfc;
-    border-left-color: #cfe;
-    border-bottom-color: #180;
-    border-right-color: #180;
 }
-/*.btn-white:active:hover, a.btn-white:active:hover,*/
-.btn-white.active, a.btn-white.active {
-    background-color: #fff;
-    border-color: #999;
-    color: #666;
-    text-shadow: none;
+.btn-red:not(.active), a.btn-red:not(.active) {
+    text-decoration: underline solid #d43;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
 }
-
+.btn-yellow:not(.active), a.btn-yellow:not(.active) {
+    text-decoration: underline solid #da0;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+}
+.btn-blue:not(.active), a.btn-blue:not(.active) {
+    text-decoration: underline solid #09f;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+}
+.btn-green:not(.active), a.btn-green:not(.active) {
+    text-decoration: underline solid #2c4;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+}
 
 
 
@@ -543,7 +533,6 @@ button.fake {
     font: inherit;
     cursor: pointer;
     text-decoration: underline;
-    text-decoration-skip: ink;
 }
 button.fake:hover { color: #00a; }
 
@@ -714,45 +703,27 @@ button.fake:hover { color: #00a; }
     position: relative;
     padding: 13px 0.1em 0;
     margin: 0;
+    line-height: 1.3;
+
     background-image: linear-gradient(
         180deg,
         rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 255, 255, 0.05) 20%,
-        rgba(0, 0, 0, 0.15) 20%,
-        rgba(0, 0, 0, 0.05) 100%
+        rgba(255, 255, 255, 0.05) 14%,
+        rgba(0, 0, 0, 0.15) 14%,
+        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, 0.05) 50%,
+        rgba(255, 255, 255, 0.1) 86%,
+        rgba(0, 0, 0, 0.3) 86%,
+        rgba(0, 0, 0, 0.2) 100%
     );
-    transition: padding 0.1s ease-out;
-    line-height: 1.3;
-}
-.btn-checkbox:hover {
-    background-image: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.8) 20%,
-        rgba(0, 0, 0, 0.05) 20%,
-        rgba(0, 0, 0, 0.0) 100%
-    );
-
+    background-size: 100% 130%;
+    background-position: center top;
 }
 .btn-checkbox.active {
     padding: 4px 0.1em 0;
-    background-image: linear-gradient(
-        180deg,
-        rgba(0, 0, 0, 0.2) 0%,
-        rgba(0, 0, 0, 0.1) 80%,
-        rgba(0, 0, 0, 0.4) 80%,
-        rgba(0, 0, 0, 0.3) 100%
-    );
+    background-position: center bottom;
 }
 .btn-checkbox.active:hover {
-    background-image: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.1) 80%,
-        rgba(0, 0, 0, 0.3) 80%,
-        rgba(0, 0, 0, 0.2) 100%
-    );
-
 }
 .btn-checkbox.btn-small {
     padding: 7px 0.2em 0;
@@ -780,9 +751,4 @@ button.fake:hover { color: #00a; }
     user-select: none;
 
 }
-.btn-checkbox:hover input {
-    /*opacity: 0.1;*/
-}
-
-
 

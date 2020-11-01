@@ -179,7 +179,7 @@ function geD() {
     // array_shift($backtrace);
 
     foreach ($backtrace as $trace) {
-        $dump .= '<span class="select-on-click">' . ($trace['file'] ?? $trace['function'] ?? '??') . ':' . ($trace['line'] ?? $trace['args'][0] ??'??') . '</span><br>';
+        $dump .= '<span class="select-on-click">' . ($trace['file'] ?? $trace['function'] ?? '??') . ':' . ($trace['line'] ?? $trace['args'][0] ?? '??') . '</span><br>';
     }
     foreach (func_get_args() as $arg) {
         ob_start();
@@ -196,13 +196,10 @@ function geD() {
 
 
 
-function geErrorPage($errorCode, $error = '') {
-    global $editor;
-    if (!in_array($errorCode, [403, 404, 500])) $errorCode = 500;
-    http_response_code($errorCode);
-    include $editor->dirLayout . 'layout-error.phtml';
-    exit();
+function geErrorPage($code, $msg = '') {
+    Director::errorPage($code, $msg);
 }
+
 
 
 

@@ -1,7 +1,7 @@
 <?php
 
 $editor->view = 'image/new/new';
-$type = '';
+$type         = '';
 
 
 
@@ -35,7 +35,6 @@ foreach ($inputs as $input) {
     }
 }
 if (hasError()) return;
-
 
 
 
@@ -75,7 +74,7 @@ if (hasError()) return;
 // finish
 
 $app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList', $pgSlug);
+$app->cacheDelete('editor', 'imageList-' . $pgSlug);
 if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);
 if (isset($_POST['submitAndAddMore'])) redirect('edit/' . $pgSlug . '/new');
 if (count($uploaded) == 1) redirect('edit/' . $pgSlug . '/' . $uploaded[0]['slug']);

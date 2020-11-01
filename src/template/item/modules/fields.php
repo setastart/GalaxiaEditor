@@ -28,6 +28,11 @@ foreach ($module['gcSelectExtra'] as $table => $cols) {
 
 $where = [$module['gcTable'] => [$item['gcTable'] . 'Id' => '=']];
 
+$fieldCol = 'fieldKey';
+if (in_array($module['gcTable'] . 'Field', $module['gcSelect'][$module['gcTable']])) {
+    $fieldCol = $module['gcTable'] . 'Field';
+}
+
 $query = querySelect($module['gcSelect']);
 $query .= querySelectLeftJoinUsing($module['gcSelectLJoin']);
 $query .= querySelectWhere($where);
@@ -42,7 +47,7 @@ $fieldsData = [];
 while ($data = $result->fetch_assoc()) {
     $data = array_map('strval', $data);
 
-    $fieldsData[$data['fieldKey']][$data[$module['gcTable'] . 'Id']] = $data;
+    $fieldsData[$data[$fieldCol]][$data[$module['gcTable'] . 'Id']] = $data;
 }
 $stmt->close();
 
@@ -56,7 +61,7 @@ foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
         if ($item['data'][$parentName] != $parentValue) continue;
         foreach ($inputsDefault as $fieldKey => $inputs) {
             foreach ($inputs as $inputKey => $input) {
-                if ($inputKey == 'fieldKey') continue;
+                if ($inputKey == $fieldCol) continue;
                 $module['inputs'][$fieldKey]['proto'][$inputKey] = [];
                 $module['inputs'][$fieldKey]['new-0'][$inputKey] = [];
             }

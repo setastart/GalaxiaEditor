@@ -15,7 +15,7 @@ trix-editor {
     word-wrap: break-word;
     background: linear-gradient(315deg, #98b, #98b 8px, #eb1 8px, #eb1 12px, #fff 12px);
     background-color: #fff;
-    font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
 }
 
 trix-editor * {

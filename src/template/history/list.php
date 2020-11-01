@@ -13,7 +13,7 @@ if (Director::$ajax) {
 
 
 
-$items = $app->cacheGet('editor', 2, 'list', $pgSlug, 'items', function() use ($db, $userNames) {
+$items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() use ($db, $userNames) {
     $query = querySelect(['_geHistory' => ['_geHistoryId', '_geUserId', 'uniqueId', 'tabName', 'tabId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
     $query .= querySelectOrderBy(['_geHistory' => ['uniqueId' => 'DESC']]);
 
@@ -67,7 +67,7 @@ $rowsTotal = count($items);
 
 // make html for all rows, using cache
 
-$rows = $app->cacheGet('editor', 3, 'list', $pgSlug, 'rows', function() use ($pgSlug, $items, $pageNames) {
+$rows = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use ($pgSlug, $items, $pageNames) {
     foreach ($items as $itemId => $item) {
 $ht = '<a class="row ' . $item['action'] . '" href="/edit/' . h($pgSlug) . '/' . h($item['tabName']) . '/' . h($item['tabId']) . '#' . h($itemId) . '">' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;

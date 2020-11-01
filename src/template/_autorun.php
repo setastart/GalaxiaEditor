@@ -1,12 +1,13 @@
 <?php
 
+
 $pgTitle = $_SERVER['SERVER_NAME'];
 $hdTitle = $_SERVER['SERVER_NAME'];
 
 
 // return if login page
 
-if (substr($app->logic, 0, 6) == 'login/') return;
+if (substr($editor->logic, 0, 6) == 'login/') return;
 
 
 

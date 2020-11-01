@@ -22,7 +22,7 @@ const ALLOWED_WHERE_LOGIC = ['=', '<', '>', '<=', '>=', 'BETWEEN', 'IS NOT NULL'
 
 function queryInsert($expression, $changes, array $langs = null) {
     $firstTable = key($expression);
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'INSERT INTO ' . q($firstTable) . ' (' . PHP_EOL;
     foreach ($changes as $key => $value) {
@@ -47,7 +47,7 @@ function queryInsert($expression, $changes, array $langs = null) {
 
 function querySelect(array $expression, array $langs = null) {
     $firstTable = key($expression);
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = PHP_EOL . 'SELECT ' . PHP_EOL;
     foreach ($expression as $table => $columns) {
@@ -89,7 +89,7 @@ function querySelect(array $expression, array $langs = null) {
 
 function querySelectOne(array $expression, array $langs = null) {
     $firstTable = key($expression);
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'SELECT 1' . PHP_EOL . PHP_EOL;
     $r .= 'FROM ' . q($firstTable) . PHP_EOL . PHP_EOL;
@@ -100,7 +100,7 @@ function querySelectOne(array $expression, array $langs = null) {
 
 function querySelectFirst(array $expression, array $langs = null) {
     $firstTable = key($expression);
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
     $firstColumn = $expression[$firstTable][0];
 
     $r = 'SELECT ' . q($firstColumn) . PHP_EOL . PHP_EOL;
@@ -117,7 +117,7 @@ function querySelectCount(string $param) {
 
 function querySelectLeftJoinUsing(array $expression, array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = '';
     foreach ($expression as $table => $columns) {
@@ -134,7 +134,7 @@ function querySelectLeftJoinUsing(array $expression, array $langs = null) {
 
 function querySelectWhere(array $expression, array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'WHERE ' . PHP_EOL;
     foreach ($expression as $table => $columns) {
@@ -160,39 +160,42 @@ function querySelectWhere(array $expression, array $langs = null) {
 
 function querySelectWherePrefix(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = $prefix . ' (' . PHP_EOL;
     foreach ($expression as $table => $columns) {
-        foreach ($columns as $column => $logic) {
-            if (!in_array($logic, ALLOWED_WHERE_LOGIC)) $logic = '=';
-            switch ($logic) {
-                case 'BETWEEN':
-                    $r .= q($table) . '.' . q($column) . ' BETWEEN ? AND ?' . PHP_EOL;
-                    break;
-                case 'IS NULL':
-                    $r .= q($table) . '.' . q($column) . ' IS NULL ' . $operation . PHP_EOL;
-                    break;
-                case 'IS NOT NULL':
-                    $r .= q($table) . '.' . q($column) . ' IS NOT NULL ' . $operation . PHP_EOL;
-                    break;
-                case 'NOT IN':
-                    $r .= q($column) . ' NOT IN (SELECT ' . q($column) . ' FROM ' . q($table) . ')' . PHP_EOL;
-                    break;
-                default:
-                    $r .= q($table) . '.' . q($column) . ' ' . $logic . ' ? ' . $operation . PHP_EOL;
-                    break;
+        foreach ($columns as $column => $logics) {
+            if (is_string($logics)) $logics = [$logics];
+            foreach ($logics as $logic) {
+                if (!in_array($logics, ALLOWED_WHERE_LOGIC)) $logics = '=';
+                switch ($logic) {
+                    case 'BETWEEN':
+                        $r .= q($table) . '.' . q($column) . ' BETWEEN ? AND ? ' . $operation . PHP_EOL;
+                        break;
+                    case 'IS NULL':
+                        $r .= q($table) . '.' . q($column) . ' IS NULL ' . $operation . PHP_EOL;
+                        break;
+                    case 'IS NOT NULL':
+                        $r .= q($table) . '.' . q($column) . ' IS NOT NULL ' . $operation . PHP_EOL;
+                        break;
+                    case 'NOT IN':
+                        $r .= q($column) . ' NOT IN (SELECT ' . q($column) . ' FROM ' . q($table) . ') ' . $operation . PHP_EOL;
+                        break;
+                    default:
+                        $r .= q($table) . '.' . q($column) . ' ' . $logic . ' ? ' . $operation . PHP_EOL;
+                        break;
+                }
             }
         }
     }
 
-    return rtrim($r, ' AND' . PHP_EOL) . PHP_EOL . ')' . PHP_EOL . PHP_EOL;
+    return rtrim($r, ' ' . $operation . PHP_EOL) . PHP_EOL . ')' . PHP_EOL . PHP_EOL;
 }
 
 
 function querySelectWhereRaw(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = $prefix . ' (' . PHP_EOL;
     foreach ($expression as $table => $columns) {
@@ -207,7 +210,7 @@ function querySelectWhereRaw(array $expression, string $prefix = 'WHERE', string
 
 function querySelectWhereOr(array $expression, string $prefix = 'WHERE', array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = $prefix . ' (' . PHP_EOL;
     foreach ($expression as $table => $columns) {
@@ -233,7 +236,7 @@ function querySelectWhereOr(array $expression, string $prefix = 'WHERE', array $
 
 function querySelectWhereIn(array $expression, array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'WHERE ' . PHP_EOL;
     foreach ($expression as $table => $columns) {
@@ -249,7 +252,7 @@ function querySelectWhereIn(array $expression, array $langs = null) {
 
 function querySelectWhereAndIn(array $expression, array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'AND ' . PHP_EOL;
     foreach ($expression as $table => $columns) {
@@ -265,7 +268,7 @@ function querySelectWhereAndIn(array $expression, array $langs = null) {
 
 function querySelectGroupBy(array $expression, array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'GROUP BY' . PHP_EOL;
     foreach ($expression as $table => $columns) {
@@ -296,7 +299,7 @@ function querySelectGroupBy(array $expression, array $langs = null) {
 
 function querySelectOrderBy(array $expression, array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'ORDER BY' . PHP_EOL;
     foreach ($expression as $table => $columns) {
@@ -338,7 +341,7 @@ function querySelectLimit($offset, $count) {
 
 function queryUpdate(array $expression, array $langs = null) {
     $firstTable = key($expression);
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     return 'UPDATE ' . q($firstTable) . PHP_EOL . PHP_EOL;
 }
@@ -355,7 +358,7 @@ function queryUpdateSet(array $params) {
 
 function queryUpdateWhere(array $expression, array $langs = null) {
     if (empty($expression)) return '';
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'WHERE ' . PHP_EOL;
     foreach ($expression as $table => $columns) {
@@ -374,7 +377,7 @@ function queryUpdateWhere(array $expression, array $langs = null) {
 
 function queryDelete($expression, array $langs = null) {
     $firstTable = key($expression);
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'DELETE FROM ' . q($firstTable) . PHP_EOL . PHP_EOL;
 
@@ -407,7 +410,7 @@ function queryDeleteIn($table, $whereCols, $inCol, $ids) {
 function queryDeleteOrNull($expression, array $langs = null) {
     // geD($expression);
     $firstTable = key($expression);
-    if ($langs) arrayLanguifyRemovePerms($expression, $langs);
+    if ($langs) arrayLanguify($expression, $langs);
 
     $r = 'DELETE FROM ' . q($firstTable) . PHP_EOL . PHP_EOL;
 
@@ -419,3 +422,34 @@ function queryDeleteOrNull($expression, array $langs = null) {
 
     return rtrim($r, ' AND' . PHP_EOL) . PHP_EOL . PHP_EOL;
 }
+
+
+
+
+function chunkSelectQuery(mysqli $db, string $sql, callable $f, array &$items = [], $chunkSize = 5000) {
+    $done       = 0;
+    $askForData = true;
+    do {
+        $chunk = $sql . PHP_EOL . 'LIMIT ' . $done . ', ' . $chunkSize . PHP_EOL;
+
+        $stmt = $db->prepare($chunk);
+        $stmt->execute();
+        $result   = $stmt->get_result();
+        $rowCount = $stmt->affected_rows;
+
+        if ($rowCount) {
+            $done += $rowCount;
+            $f($result, $items);
+        } else {
+            $askForData = false;
+        }
+
+
+        $stmt->close();
+
+    } while ($askForData);
+
+    return $items;
+}
+
+

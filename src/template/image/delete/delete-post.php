@@ -18,6 +18,6 @@ if (!gImageDelete($app->dirImage, $imgSlug)) {
 // finish
 
 $app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList', $pgSlug);
+$app->cacheDelete('editor', 'imageList-' . $pgSlug);
 info('Deleted image: ' . h($imgSlug));
 redirect('edit/' . $pgSlug);

@@ -16,7 +16,11 @@ spl_autoload_register(function($className) {
     $ext = '.php';
     if (substr($className, 0, 4) == 'View') $ext = '.phtml';
     $fileName .= str_replace('_', '/', $className) . $ext;
-    require $fileName;
+    $fileName = __DIR__ . '/' . $fileName;
+
+    if (file_exists($fileName)) {
+        include_once $fileName;
+    }
 });
 
 

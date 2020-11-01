@@ -1,34 +1,32 @@
 <?php
 
-use Galaxia\Director;
 
-$dbSchema = $app->cacheGet('editor', 0, 'schema', 'default', '', function() use ($db, $app) {
-    $array = [];
-    $query = '
-        SELECT TABLE_NAME, COLUMN_NAME, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_TYPE, COLUMN_KEY
-        FROM information_schema.COLUMNS
-        WHERE TABLE_SCHEMA = ?
-    ';
-    $stmt = $db->prepare($query);
-    $stmt->bind_param('s', $app->mysqlDb);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    while ($data = $result->fetch_assoc()) {
-        if (!isset($array[$data['TABLE_NAME']])) $array[$data['TABLE_NAME']] = [];
-        if (!isset($array[$data['TABLE_NAME']][$data['COLUMN_NAME']]))
-            $array[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [];
+$dbSchema = [];
 
-        $array[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [
-            'DATA_TYPE' => $data['DATA_TYPE'],
-            'CHARACTER_MAXIMUM_LENGTH' => $data['CHARACTER_MAXIMUM_LENGTH'],
-            'IS_NULLABLE' => $data['IS_NULLABLE'],
-            'COLUMN_TYPE' => $data['COLUMN_TYPE'],
-            'COLUMN_KEY' => $data['COLUMN_KEY']
-        ];
-    }
-    $stmt->close();
-    return $array;
-}, Director::$debug);
+$query = '
+    SELECT TABLE_NAME, COLUMN_NAME, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_TYPE, COLUMN_KEY
+    FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = ?
+';
+
+$stmt = $db->prepare($query);
+$stmt->bind_param('s', $app->mysqlDb);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($data = $result->fetch_assoc()) {
+    if (!isset($dbSchema[$data['TABLE_NAME']])) $dbSchema[$data['TABLE_NAME']] = [];
+    if (!isset($dbSchema[$data['TABLE_NAME']][$data['COLUMN_NAME']]))
+        $dbSchema[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [];
+
+    $dbSchema[$data['TABLE_NAME']][$data['COLUMN_NAME']] = [
+        'DATA_TYPE'                => $data['DATA_TYPE'],
+        'CHARACTER_MAXIMUM_LENGTH' => $data['CHARACTER_MAXIMUM_LENGTH'],
+        'IS_NULLABLE'              => $data['IS_NULLABLE'],
+        'COLUMN_TYPE'              => $data['COLUMN_TYPE'],
+        'COLUMN_KEY'               => $data['COLUMN_KEY'],
+    ];
+}
+$stmt->close();
 
 
 
@@ -56,8 +54,6 @@ foreach ($dbSchema as $table => $columns) {
         }
     }
 }
-
-
 
 
 
@@ -155,7 +151,7 @@ foreach ($geConf as $areaKey => $area) {
 
             gcTableExists($dbSchema, $errorStringPrefix . '/gcTable', $module['gcTable']);
             gcTableColumnExists($dbSchema, $errorStringPrefix . '/gcColKey', $module['gcTable'], $module['gcTable'] . 'Id');
-            gcTableColumnExists($dbSchema, $errorStringPrefix, $module['gcTable'], 'fieldKey');
+            gcTableColumnExists($dbSchema, $errorStringPrefix, $module['gcTable'], ['fieldKey', $module['gcTable'] . 'Field']);
             gcTableColumnExists($dbSchema, $errorStringPrefix . '/position', $module['gcTable'], 'position');
 
             foreach ($module['gcModuleDeleteIfEmpty'] as $col)
@@ -171,7 +167,7 @@ foreach ($geConf as $areaKey => $area) {
 
             if ($foundMulti) {
                 foreach ($module['gcSelect'] as $table => $cols) {
-                    gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'fieldKey');
+                    gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, ['fieldKey', $module['gcTable'] . 'Field']);
                     gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'position');
                 }
                 foreach ($module['gcUpdate'] as $table => $cols) {
@@ -291,9 +287,20 @@ function gcTableExists($dbSchema, $errorString, $table) {
 }
 
 
-function gcTableColumnExists($dbSchema, $errorString, $table, $col) {
-    $errorString .= '/' . $table . '/' . $col;
-    if (!isset($dbSchema[$table][$col])) {
+function gcTableColumnExists(array $dbSchema, string $errorString, string $table, $cols) {
+    if (is_string($cols)) $cols = [$cols];
+
+    $found = false;
+    foreach ($cols as $col) {
+        if (isset($dbSchema[$table][$col])) {
+            $found = true;
+            break;
+        }
+    }
+
+    if (!$found) {
+        $col = implode(', ', $cols);
+        $errorString .= '/' . $table . '/' . $col;
         error($errorString . ': db column missing.');
         geD('Table: ' . $table, 'Col: ' . $col);
         geErrorPage(500, 'config schema error');
@@ -301,9 +308,20 @@ function gcTableColumnExists($dbSchema, $errorString, $table, $col) {
 }
 
 
-function gcQueryColumnExists($errorString, $table, $cols, $col) {
-    $errorString .= '/' . $table . '/' . $col;
-    if (!in_array($col, $cols)) {
+function gcQueryColumnExists($errorString, $table, $colsExisting, $cols) {
+    if (is_string($cols)) $cols = [$cols];
+
+    $found = false;
+    foreach ($cols as $col) {
+        if (in_array($col, $colsExisting)) {
+            $found = true;
+            break;
+        }
+    }
+
+    if (!$found) {
+        $col = implode(', ', $cols);
+        $errorString .= '/' . $table . '/' . $col;
         error($errorString . ': query column missing.');
         geD('Table: ' . $table, 'Col: ' . $col);
         geErrorPage(500, 'config schema error');

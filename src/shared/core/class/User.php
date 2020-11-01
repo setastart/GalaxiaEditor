@@ -91,6 +91,7 @@ class User {
         } else {
             $this->id = null;
         }
+
         return false;
     }
 
@@ -166,6 +167,7 @@ class User {
 
     public function loadOptions() {
         if (!$this->loggedIn) return false;
+
         $optionName       = '';
         $optionValue      = '';
         $optionsTableName = $this->tableName . 'Option';
@@ -191,6 +193,7 @@ class User {
 
     public function setOptions($name, $value) {
         if (!$this->loggedIn) return false;
+
         if (!array_key_exists($name, $this->options)) {
             echo 'error: setOptions(name)';
             exit();
@@ -211,6 +214,11 @@ class User {
         $stmt->bind_param('dsss', $this->id, $name, $value, $value);
         $stmt->execute();
         $stmt->close();
+    }
+
+
+    public function hasPerm(string $perm) {
+        return in_array($perm, $this->perms);
     }
 
 }

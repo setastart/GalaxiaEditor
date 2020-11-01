@@ -6,7 +6,7 @@ foreach ($geConf as $rootSlug => $confPage) {
     if (!isset($me)) continue;
 
     if ($confPage['gcPageType'] == 'gcpSeparator') {
-        $menu[$rootSlug]['cssClass'] .= 'menu-separator';
+        $menu[$rootSlug]['cssClass'] = 'menu-separator';
         continue;
     }
 
@@ -26,7 +26,11 @@ foreach ($geConf as $rootSlug => $confPage) {
         } else if ($confPage['geLinkToItem'] ?? '') {
             $menu[$rootSlug]['link'] = '/edit/' . implode('/', $confPage['geLinkToItem']);
 
-            if (isset($itemId) && $pgSlug == $confPage['geLinkToItem'][0] && $itemId == $confPage['geLinkToItem'][1]) {
+            if (isset($itemId)) {
+                if ($pgSlug == $confPage['geLinkToItem'][0] && $itemId == $confPage['geLinkToItem'][1]) {
+                    $menu[$rootSlug]['cssClass'] .= ' active';
+                }
+            } else if ($pgSlug == 'dev' && $confPage['geLinkToItem'][0] == 'dev') {
                 $menu[$rootSlug]['cssClass'] .= ' active';
             }
         }

@@ -31,13 +31,13 @@ global $me;
 <?php   include 'menu.phtml'; ?>
 
 <div id="page">
-    <?php   include 'messageBoxes.phtml'; ?>
+<?php   include 'messageBoxes.phtml'; ?>
     <div class="paper pad">
         <div class="paper-header pad">
             <h1>Error <?=h($errorCode)?></h1>
         </div>
         <div class="pad">
-            <?=h($error)?>
+            <?=nl2br($error)?>
         </div>
     </div>
 </div>
@@ -45,7 +45,7 @@ global $me;
 <div id="footer">
     <div class="links">
         <a href="/edit/logout"><?=t('Logout')?></a>
-<?php   if (in_array('dev', $me->perms)) { ?>
+<?php   if ($me->hasPerm('dev')) { ?>
         <a href="/edit/dev" class="hide-perm-dev">Developer</a>
 <?php   } ?>
         <a href="/edit/dev/cacheDeleteEditor"><?=t('Delete Editor Caches')?></a>

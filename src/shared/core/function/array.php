@@ -19,24 +19,6 @@ function strvalIfNotNull($value) {
 
 
 
-if (!function_exists('array_key_first')) {
-    function array_key_first(array $arr) {
-        foreach ($arr as $key => $unused) {
-            return $key;
-        }
-
-        return null;
-    }
-}
-if (!function_exists('array_key_last')) {
-    function array_key_last(array $arr) {
-        if (empty($arr)) return null;
-
-        return key(array_slice($arr, -1, 1, true));
-    }
-}
-
-
 function array_splice_preserve_keys(&$input, $offset, $length = null, $replacement = array()) {
     if (empty($replacement)) {
         return array_splice($input, $offset, $length);
@@ -49,17 +31,6 @@ function array_splice_preserve_keys(&$input, $offset, $length = null, $replaceme
     $input = $part_before + $replacement + $part_after;
 
     return $part_removed;
-}
-
-
-
-
-function array_map_recursive(callable $func, array $arr) {
-    array_walk_recursive($arr, function(&$v) use ($func) {
-        $v = $func($v);
-    });
-
-    return $arr;
 }
 
 
@@ -86,12 +57,11 @@ function arrayRemovePermsRecursive(array &$arr, array $perms = []) {
 
 /**
  * Walk array recursively, making keys and values multilingual.
- * Also remove elements for which the user doesn't have permissions
  * Examples:
  *      keys: ['value_' => ['label' => 'Value']] becomes ['value_pt' => ['label' => 'Value'], 'value_en' => ['label' => 'Value']]
  *      values: ['slug_', 'pageId'] becomes ['slug_pt', 'slug_en', 'pageId']
  */
-function arrayLanguifyRemovePerms(&$arr, $langs, $perms = []) {
+function arrayLanguify(&$arr, $langs, $perms = []) {
     if (!is_array($arr)) return;
 
     $count = count($arr);
@@ -131,9 +101,6 @@ function arrayLanguifyRemovePerms(&$arr, $langs, $perms = []) {
             if (substr($subKey, -1) == '_') {
                 $j = $i;
                 foreach ($langs as $lang) {
-                    // foreach ($subVal as $key => &$val)
-                    //     if (is_string($val) && substr($val, -1) == '_') $val .= $lang;
-
                     $subItemNew = [$subKey . $lang => array_merge($subVal, [
                         'lang'   => $lang,
                         'prefix' => substr($subKey, 0, -1),
@@ -144,7 +111,7 @@ function arrayLanguifyRemovePerms(&$arr, $langs, $perms = []) {
                     $j++;
                 }
             } else {
-                arrayLanguifyRemovePerms($arr[$subKey], $langs, $perms);
+                arrayLanguify($arr[$subKey], $langs, $perms);
             }
 
         }

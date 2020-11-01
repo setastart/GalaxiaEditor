@@ -26,12 +26,12 @@ foreach ($postModule as $fieldKey => $fields) {
         // new fields
         if (is_string($fieldVal)) {
             if (substr($fieldVal, 0, 4) != 'new-') {
-                error('Invalid new input field name: ' . h($fieldKey) . '/' . h(fieldVal));
+                error('Invalid new input field name: ' . h($fieldKey) . '/' . h($fieldVal));
                 continue;
             }
             $newId = substr($fieldVal, 4);
             if (!ctype_digit($newId)) {
-                error('Invalid new input field id: ' . h($fieldKey) . '/' . h(fieldVal));
+                error('Invalid new input field id: ' . h($fieldKey) . '/' . h($fieldVal));
                 continue;
             }
             $newId = (int)$newId;
@@ -48,7 +48,7 @@ foreach ($postModule as $fieldKey => $fields) {
                     if (in_array($val, ['', 'on']))
                         $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId]['delete'] = $val;
                     else
-                        error('Invalid new input field delete: ' . h($fieldKey) . '/' . h(fieldVal) . '/' . h($val));
+                        error('Invalid new input field delete: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
                     continue;
                 }
                 if ($name == 'position') {
@@ -56,7 +56,7 @@ foreach ($postModule as $fieldKey => $fields) {
                         $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId]['position'] = $val;
                         $fieldsNew[$moduleKey][$fieldKey][$fieldVal][$name] = $val;
                     } else {
-                        error('Invalid new input field position: ' . h($fieldKey) . '/' . h(fieldVal) . '/' . h($val));
+                        error('Invalid new input field position: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
                     }
                     continue;
                 }
@@ -76,7 +76,7 @@ foreach ($postModule as $fieldKey => $fields) {
         }
 
         if (!is_int($fieldVal)) {
-            error('Invalid input field id - not numeric: ' . h($fieldKey) . '/' . h(fieldVal));
+            error('Invalid input field id - not numeric: ' . h($fieldKey) . '/' . h($fieldVal));
             continue;
         }
 
@@ -93,7 +93,7 @@ foreach ($postModule as $fieldKey => $fields) {
                 if (in_array($val, ['', 'on']))
                     $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal]['delete'] = $val;
                 else
-                    error('Invalid new input field delete: ' . h($fieldKey) . '/' . h(fieldVal) . '/' . h($val));
+                    error('Invalid new input field delete: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
                 continue;
             }
             if ($name == 'position') {
@@ -103,7 +103,7 @@ foreach ($postModule as $fieldKey => $fields) {
                         $fieldsUpd[$moduleKey][$fieldKey][$fieldVal][$name] = $val;
                     }
                 } else {
-                    error('Invalid new input field position: ' . h($fieldKey) . '/' . h(fieldVal) . '/' . h($val));
+                    error('Invalid new input field position: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
                 }
                 continue;
             }

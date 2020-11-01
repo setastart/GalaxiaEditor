@@ -29,13 +29,17 @@ function h($text, bool $condition = true) {
     return null;
 }
 
-function unsafe($text, bool $condition = true) {
+function unsafe(string $text, bool $condition = true) {
     if ($condition) return $text;
 
     return null;
 }
 
-function hg(array $arr, string $key, string $lang = '') {
+function hg(array $arr, string $key = null, string $lang = '') {
+    if (is_null($key)) {
+        $key = 'temp';
+        $arr = [$key => $arr];
+    }
     if (empty($arr)) return null;
     if (!isset($arr[$key])) return null;
     $text = null;
@@ -77,7 +81,12 @@ function hg(array $arr, string $key, string $lang = '') {
 
 
 
-function unsafeg(array $arr, string $key, string $lang = '') {
+function unsafeg(array $arr, string $key = null, string $lang = '') {
+    if (is_null($key)) {
+        $key = 'temp';
+        $arr = [$key => $arr];
+    }
+
     if (empty($arr)) return null;
     if (!isset($arr[$key])) return null;
     $text = null;
@@ -131,7 +140,7 @@ function st(string $text, int $h1 = 0, int $f1 = 0, int $f2 = 0) {
     $host = implode('\.', $host);
     $re   = '~<a href="https?(?!://' . $host . '/)://([^:/\s">]+)~m';
 
-    $text = preg_replace_callback($re, function ($matches) {
+    $text = preg_replace_callback($re, function($matches) {
         $inject = 'target="_blank" rel="noopener';
         if (nofollowHost($matches[1])) $inject .= ' nofollow';
 
@@ -158,7 +167,12 @@ function st(string $text, int $h1 = 0, int $f1 = 0, int $f2 = 0) {
     return $text;
 }
 
-function stg(array $arr, string $key, int $h1 = 0, int $f1 = 0, int $f2 = 0, string $lang = '') {
+function stg(array $arr, string $key = null, int $h1 = 0, int $f1 = 0, int $f2 = 0, string $lang = '') {
+    if (is_null($key)) {
+        $key = 'temp';
+        $arr = [$key => $arr];
+    }
+
     if (!isset($arr[$key])) return null;
     $text = '';
 
@@ -210,7 +224,7 @@ function stp(string $text, int $f1 = 0, int $f2 = 0, int $fp = 0) {
     $host = implode('\.', $host);
     $re   = '~<a href="https?(?!://' . $host . '/)://([^:/\s">]+)~m';
 
-    $text = preg_replace_callback($re, function ($matches) {
+    $text = preg_replace_callback($re, function($matches) {
         $inject = 'target="_blank" rel="noopener';
         if (nofollowHost($matches[1])) $inject .= ' nofollow';
 
@@ -249,7 +263,12 @@ function stp(string $text, int $f1 = 0, int $f2 = 0, int $fp = 0) {
     return $text;
 }
 
-function stpg(array $arr, string $key, int $f1 = 0, int $f2 = 0, int $fp = 0, string $lang = '') {
+function stpg(array $arr, string $key = null, int $f1 = 0, int $f2 = 0, int $fp = 0, string $lang = '') {
+    if (is_null($key)) {
+        $key = 'temp';
+        $arr = [$key => $arr];
+    }
+
     if (!isset($arr[$key])) return null;
     $text = '';
 
@@ -347,7 +366,12 @@ function desc(string $html, int $length = null, string $separator = ' / ') {
     return htmlspecialchars($text, HTMLSPECIALCHARS_FLAGS);
 }
 
-function descg(array $arr, string $key, int $length = null, string $separator = ' / ', string $lang = '') {
+function descg(array $arr, string $key = null, int $length = null, string $separator = ' / ', string $lang = '') {
+    if (is_null($key)) {
+        $key = 'temp';
+        $arr = [$key => $arr];
+    }
+
     if (!isset($arr[$key])) return null;
     if (is_null($length)) $length = 255;
     $text = '';
@@ -387,7 +411,7 @@ function descg(array $arr, string $key, int $length = null, string $separator = 
 
 
 
-function t($text, $lang = null) {
+function t(string $text, string $lang = null) {
     $app = Director::getApp();
     if ($lang == null) $lang = $app->lang;
     if (isset(Director::$translations[$text][$lang])) {
@@ -400,7 +424,7 @@ function t($text, $lang = null) {
 
 
 
-function unsafet($text, $lang = null) {
+function unsafet(string $text, string $lang = null) {
     $app = Director::getApp();
     if ($lang == null) $lang = $app->lang;
     if (isset(Director::$translations[$text][$lang])) {
@@ -415,7 +439,7 @@ function unsafet($text, $lang = null) {
 
 
 // put SQL query quotes around table and field names
-function q($text) {
+function q(string $text) {
     return '`' . str_replace('`', '``', h($text)) . '`';
 }
 
@@ -432,58 +456,6 @@ function firstLine(string $text) {
     if (mb_strlen($text) < $len) $text .= ' […]';
 
     return $text;
-}
-
-
-// debug
-function d() {
-    foreach (func_get_args() as $arg) {
-        ob_start();
-        var_dump($arg);
-        $dump = ob_get_clean();
-        $dump = preg_replace('/=>\n\s+/m', ' => ', (string)$dump);
-        $dump = str_replace('<?php ', '', (string)$dump);
-        echo $dump;
-    }
-}
-
-// debug with <pre>
-function dp() {
-    $args = func_get_args();
-    echo '<pre>';
-    call_user_func_array('d', $args);
-    echo '</pre>';
-}
-
-// debug and die
-function dd() {
-    $args = func_get_args();
-    call_user_func_array('d', $args);
-    exit();
-}
-
-// debug and die with <pre>
-function ddp() {
-    $args = func_get_args();
-    echo '<pre>';
-    call_user_func_array('d', $args);
-    echo '</pre>';
-    exit();
-}
-
-// debug backtrace
-function db() {
-    $args      = func_get_args();
-    $backtrace = array_reverse(debug_backtrace());
-    $error     = '';
-    foreach ($backtrace as $trace) {
-        if (empty($trace)) continue;
-        $error .= '<span class="select-on-click">' . $trace['file'] . ':' . $trace['line'] . '</span><br>';
-    }
-    echo $error;
-    echo '<pre>';
-    call_user_func_array('d', $args);
-    echo '</pre>';
 }
 
 
@@ -573,7 +545,7 @@ function gFormatSlug(string $text, array $existing = []) {
 
 
 
-function gNormalize($text, $delimiter = '-', $keep = '') {
+function gNormalize(string $text, string $delimiter = '-', string $keep = '') {
     $text = str_replace('<', ' <', $text);
     $text = strip_tags($text);
     $text = Normalizer::normalize($text);
@@ -587,7 +559,7 @@ function gNormalize($text, $delimiter = '-', $keep = '') {
 
 
 
-function gTranslit($text, $lower = true) {
+function gTranslit(string $text, bool $lower = true) {
     if ($lower)
         $tr = Director::$transliteratorLower ?? Director::getTransliteratorLower();
     else
@@ -616,11 +588,19 @@ function gPrepareTextForSearch(string $text) {
 
 
 
-// cached IntlDateFormatter for localized date and time
-// pattern reference: http://www.icu-project.org/apiref/icu4c/classSimpleDateFormat.html#details
-// escape with single quotes ''
+/**
+ * cached IntlDateFormatter for localized date and time
+ * pattern reference: http://userguide.icu-project.org/formatparse/datetime
+ * pattern characters inside single quotes are escaped: 'example'
+ *
+ * @param mixed $value a timestamp, a DateTime or a string that creates a DateTime
+ */
+function gFormatDate($value, string $pattern = '', string $lang = ''): string {
+    if (is_string($value) && !ctype_digit($value)) {
+        $value = date_create($value);
+        if (!$value instanceof DateTimeInterface) return '';
+    }
 
-function gFormatDate($value, string $pattern = '', string $lang = '') {
     $app = Director::getApp();
 
     if (empty($lang) || !isset($app->langs[$lang]))
@@ -634,12 +614,14 @@ function gFormatDate($value, string $pattern = '', string $lang = '') {
 
 
 
-function gFilesize(int $bytes, int $decimals = 2): string {
-    if ($bytes < 1024) return $bytes . ' B';
-    $size   = [' B', ' kB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB'];
+function gFilesize(int $bytes, int $decimals = 2, $byteAlign = ''): string {
+    $negative = ($bytes < 0) ? '-' : '';
+    $bytes    = abs($bytes);
+    if ($bytes < 1024) return $bytes . ' ' . $byteAlign . 'B';
+    $size   = [' ' . $byteAlign . 'B', ' kB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB'];
     $factor = (int)floor((strlen($bytes) - 1) / 3);
 
-    return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ($size[$factor] ?? '');
+    return $negative . sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ($size[$factor] ?? '');
 }
 
 
@@ -650,5 +632,6 @@ function commentHeader(string $text) {
     $r .= '/********' . str_repeat('*', strlen($text)) . '********/' . PHP_EOL;
     $r .= '/******  ' . h($text) . '  ******/' . PHP_EOL;
     $r .= '/********' . str_repeat('*', strlen($text)) . '********/' . PHP_EOL;
+
     return $r;
 }

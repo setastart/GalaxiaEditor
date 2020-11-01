@@ -137,7 +137,7 @@ function renderInput(App $app, $input) {
         $br = '<br>';
     }
 
-    $titleTitle = (Director::$dev) ? (h($input['prefix']) ?? h($input['name'])) : '';
+    $titleTitle = (Director::isDev()) ? (h($input['prefix']) ?? h($input['name'])) : '';
 
 $ht =  '<div class="' . h($css) . '">' . PHP_EOL;
 $ht .= '    <div class="input-label">' .
@@ -360,7 +360,7 @@ function getSlugInput($input) {
 
 
 function getSlugImageInput($input) {
-    $r = '    <textarea pattern="[a-z0-9\-]*" class="input-text input-slug" name="' . $input['name'] . '" rows="1" wrap="soft"';
+    $r = '    <textarea pattern="[a-z0-9\-]*" class="input-text input-slug input-slugImg" name="' . $input['name'] . '" rows="1" wrap="soft"';
 
     foreach ($input['options'] as $optionName => $optionValue)
         $r .= ' ' . $optionName . '="' . $optionValue . '"';

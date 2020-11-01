@@ -92,7 +92,7 @@ foreach ($modules as $moduleKey => $module) {
 <?php       } ?>
 <?php   } ?>
             <a target="_blank" href="/edit/history/<?=h($item['gcTable'])?>/<?=h($itemId)?>" class="btn-a"><?=t('Open History in a new tab')?></a>
-<?php   if (in_array('dev', $me->perms)) { ?>
+<?php   if ($me->hasPerm('dev')) { ?>
             <a href="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>/history" class="hide-perm-dev btn-a"><?=sprintf(t('Save %s in History'), t($geConf[$pgSlug]['gcTitleSingle']))?></a>
 <?php   } ?>
 <?php   if ($item['gcDelete']) { ?>

@@ -28,7 +28,7 @@ if ($itemId == 'new') return;
 // restrict edit acces to only own user
 
 if ($item['gcUpdateOnlyOwn'] ?? false) {
-    if (!in_array('dev', $me->perms) && $me->id != $itemId) {
+    if (!$me->hasPerm('dev') && $me->id != $itemId) {
         error(t('Redirected. You don\'t have access to that page.'));
         redirect('/edit/' . $editor->homeSlug);
     }

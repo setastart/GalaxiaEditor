@@ -19,8 +19,8 @@ foreach ($inputs as $inputKey => $input) {
         $input['errors'][] = 'Required.';
         continue;
     }
-    $value = $_POST[$input['name']];
-    $input = validateInput($input, $value);
+    $value             = $_POST[$input['name']];
+    $input             = validateInput($input, $value);
     $inputs[$inputKey] = $input;
 }
 
@@ -47,5 +47,5 @@ $uploaded = $app->imageUpload([reset($_FILES['images']['tmp_name']) => $imgSlug]
 // finish
 
 $app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList', $pgSlug);
+$app->cacheDelete('editor', 'imageList-' . $pgSlug);
 redirect('edit/' . $pgSlug . '/' . $imgSlug);
