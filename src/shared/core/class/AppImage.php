@@ -162,7 +162,7 @@ class AppImage {
 
 
     public static function slugRename(string $dirImage, string $imgSlugOld, $imgSlugNew) {
-        if (!self::valid($dirImage, $imgSlugOld)) return false;
+        if (!AppImage::valid($dirImage, $imgSlugOld)) return false;
 
         $dirOld = $dirImage . $imgSlugOld . '/';
         $dirNew = $dirImage . $imgSlugNew . '/';
@@ -200,7 +200,7 @@ class AppImage {
 
 
     public static function delete(string $dirImage, string $imgSlug) {
-        if (!self::valid($dirImage, $imgSlug)) return false;
+        if (!AppImage::valid($dirImage, $imgSlug)) return false;
 
         foreach (new DirectoryIterator($dirImage . $imgSlug) as $fileInfo) {
             if ($fileInfo->isDot()) continue;
@@ -215,7 +215,7 @@ class AppImage {
 
 
     public static function deleteResizes(string $dirImage, string $imgSlug) {
-        $resizes = self::resizes($dirImage, $imgSlug);
+        $resizes = AppImage::resizes($dirImage, $imgSlug);
         $mtime   = filemtime($dirImage . $imgSlug . '/');
 
         foreach ($resizes as $file) {

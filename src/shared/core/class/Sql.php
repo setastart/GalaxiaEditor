@@ -46,14 +46,14 @@ class Sql {
 
                 if (is_array($mods)) {
                     foreach ($mods as $mod) {
-                        if (!in_array($mod, self::ALLOWED_MODS)) continue;
+                        if (!in_array($mod, Sql::ALLOWED_MODS)) continue;
                         $r .= '    ' . $mod . '(' . q($table) . '.' . q($column) . ') AS ' . q($column . $mod) . ', ' . PHP_EOL;
                     }
                     continue;
                 }
 
                 $mod = $mods;
-                if (!is_int($column) && in_array($mod, self::ALLOWED_MODS)) {
+                if (!is_int($column) && in_array($mod, Sql::ALLOWED_MODS)) {
                     $r .= '    ' . $mod . '(' . q($table) . '.' . q($column) . ') AS ' . q($column . $mod) . ', ' . PHP_EOL;
                     continue;
                 } else if (substr($mod, 0, 3) == 'AS ') {
@@ -140,7 +140,7 @@ class Sql {
         $r = 'WHERE ' . PHP_EOL;
         foreach ($expression as $table => $columns) {
             foreach ($columns as $column => $logic) {
-                if (!in_array($logic, self::ALLOWED_WHERE_LOGIC)) $logic = '=';
+                if (!in_array($logic, Sql::ALLOWED_WHERE_LOGIC)) $logic = '=';
                 switch ($logic) {
                     case 'BETWEEN':
                         $r .= q($table) . '.' . q($column) . ' BETWEEN ? AND ?' . PHP_EOL;
@@ -170,7 +170,7 @@ class Sql {
             foreach ($columns as $column => $logics) {
                 if (is_string($logics)) $logics = [$logics];
                 foreach ($logics as $logic) {
-                    if (!in_array($logics, self::ALLOWED_WHERE_LOGIC)) $logics = '=';
+                    if (!in_array($logics, Sql::ALLOWED_WHERE_LOGIC)) $logics = '=';
                     switch ($logic) {
                         case 'BETWEEN':
                             $r .= q($table) . '.' . q($column) . ' BETWEEN ? AND ? ' . $operation . PHP_EOL;
@@ -219,7 +219,7 @@ class Sql {
         $r = $prefix . ' (' . PHP_EOL;
         foreach ($expression as $table => $columns) {
             foreach ($columns as $column => $logic) {
-                if (!in_array($logic, self::ALLOWED_WHERE_LOGIC)) $logic = '=';
+                if (!in_array($logic, Sql::ALLOWED_WHERE_LOGIC)) $logic = '=';
                 switch ($logic) {
                     case 'BETWEEN':
                         $r .= q($table) . '.' . q($column) . ' BETWEEN ? AND ?' . PHP_EOL;
@@ -286,14 +286,14 @@ class Sql {
 
                 if (is_array($mods)) {
                     foreach ($mods as $mod) {
-                        if (!in_array($mod, self::ALLOWED_MODS)) continue;
+                        if (!in_array($mod, Sql::ALLOWED_MODS)) continue;
                         $r .= $mod . '(' . q($table) . '.' . q($column) . '), ' . PHP_EOL;
                     }
                     continue;
                 }
 
                 $mod = $mods;
-                if (!is_int($column) && in_array($mod, self::ALLOWED_MODS)) {
+                if (!is_int($column) && in_array($mod, Sql::ALLOWED_MODS)) {
                     $r .= '    ' . $mod . '(' . q($table) . '.' . q($column) . '), ' . PHP_EOL;
                     continue;
                 }
@@ -320,7 +320,7 @@ class Sql {
                 if (is_array($orders)) {
                     foreach ($orders as $order => $mod) {
                         if (!in_array($order, ['ASC', 'DESC'])) $order = 'ASC';
-                        if (!in_array($mod, self::ALLOWED_MODS)) continue;
+                        if (!in_array($mod, Sql::ALLOWED_MODS)) continue;
                         $r .= $mod . '(' . q($table) . '.' . q($column) . ') ' . $order . ', ' . PHP_EOL;
                     }
                     continue;

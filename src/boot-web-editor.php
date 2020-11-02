@@ -1,6 +1,8 @@
 <?php
 
 use Galaxia\{ArrayShape, Authentication, Director, FastRoute};
+use GalaxiaEditor\config\Config;
+use GalaxiaEditor\config\ConfigDb;
 
 
 // redirect to url without trailing slashes
@@ -46,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.6.0';
+$editor->version = '4.7.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -117,7 +119,7 @@ if ($me->loggedIn) {
     Director::timerStart('editor configuration');
 
     Director::timerStart('gecValidateArray');
-    require $editor->dir . 'src/config/configParse.php';
+    Config::validate($geConf);
     Director::timerStop('gecValidateArray');
 
 
@@ -214,7 +216,7 @@ if ($me->loggedIn) {
 
     if (Director::isDev()) {
         Director::timerStart('gecValidateDatabase');
-        require $editor->dir . 'src/config/configParseDebug.php';
+        ConfigDb::validate($geConf);
         Director::timerStop('gecValidateDatabase');
     }
 

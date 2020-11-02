@@ -34,7 +34,7 @@ class ArrayShape {
                     }
                     $arr[$subKey]['gcPerms'] = $foundPerms;
                 }
-                self::removePermsRecursive($arr[$subKey], $perms);
+                ArrayShape::removePermsRecursive($arr[$subKey], $perms);
             }
         }
     }
@@ -65,7 +65,7 @@ class ArrayShape {
                     foreach ($langs as $lang) {
                         $subItemNew[$subKey . $lang] = $subVal;
                         $length                      = ($i == $j) ? 1 : 0;
-                        self::splicePreserveKeys($arr, $j, $length, $subItemNew);
+                        ArrayShape::splicePreserveKeys($arr, $j, $length, $subItemNew);
                         $j++;
                     }
 
@@ -94,11 +94,11 @@ class ArrayShape {
                         ])];
 
                         $length = ($i == $j) ? 1 : 0;
-                        self::splicePreserveKeys($arr, $j, $length, $subItemNew);
+                        ArrayShape::splicePreserveKeys($arr, $j, $length, $subItemNew);
                         $j++;
                     }
                 } else {
-                    self::languify($arr[$subKey], $langs, $perms);
+                    ArrayShape::languify($arr[$subKey], $langs, $perms);
                 }
 
             }
