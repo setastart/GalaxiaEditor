@@ -15,7 +15,7 @@ class Sql {
 
     public static function queryInsert($expression, $changes, array $langs = null) {
         $firstTable = key($expression);
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'INSERT INTO ' . q($firstTable) . ' (' . PHP_EOL;
         foreach ($changes as $key => $value) {
@@ -38,7 +38,7 @@ class Sql {
 
     public static function select(array $expression, array $langs = null) {
         $firstTable = key($expression);
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = PHP_EOL . 'SELECT ' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -82,7 +82,7 @@ class Sql {
 
     public static function selectOne(array $expression, array $langs = null) {
         $firstTable = key($expression);
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'SELECT 1' . PHP_EOL . PHP_EOL;
         $r .= 'FROM ' . q($firstTable) . PHP_EOL . PHP_EOL;
@@ -95,7 +95,7 @@ class Sql {
 
     public static function selectFirst(array $expression, array $langs = null) {
         $firstTable = key($expression);
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
         $firstColumn = $expression[$firstTable][0];
 
         $r = 'SELECT ' . q($firstColumn) . PHP_EOL . PHP_EOL;
@@ -116,7 +116,7 @@ class Sql {
 
     public static function selectLeftJoinUsing(array $expression, array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = '';
         foreach ($expression as $table => $columns) {
@@ -135,7 +135,7 @@ class Sql {
 
     public static function selectWhere(array $expression, array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'WHERE ' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -163,7 +163,7 @@ class Sql {
 
     public static function selectWherePrefix(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = $prefix . ' (' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -197,7 +197,7 @@ class Sql {
 
     public static function selectWhereRaw(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = $prefix . ' (' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -214,7 +214,7 @@ class Sql {
 
     public static function selectWhereOr(array $expression, string $prefix = 'WHERE', array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = $prefix . ' (' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -242,7 +242,7 @@ class Sql {
 
     public static function selectWhereIn(array $expression, array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'WHERE ' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -260,7 +260,7 @@ class Sql {
 
     public static function selectWhereAndIn(array $expression, array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'AND ' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -278,7 +278,7 @@ class Sql {
 
     public static function selectGroupBy(array $expression, array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'GROUP BY' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -311,7 +311,7 @@ class Sql {
 
     public static function selectOrderBy(array $expression, array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'ORDER BY' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -353,7 +353,7 @@ class Sql {
 
     public static function update(array $expression, array $langs = null) {
         $firstTable = key($expression);
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         return 'UPDATE ' . q($firstTable) . PHP_EOL . PHP_EOL;
     }
@@ -376,7 +376,7 @@ class Sql {
 
     public static function updateWhere(array $expression, array $langs = null) {
         if (empty($expression)) return '';
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'WHERE ' . PHP_EOL;
         foreach ($expression as $table => $columns) {
@@ -393,7 +393,7 @@ class Sql {
 
     public static function delete($expression, array $langs = null) {
         $firstTable = key($expression);
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'DELETE FROM ' . q($firstTable) . PHP_EOL . PHP_EOL;
 
@@ -430,7 +430,7 @@ class Sql {
     public static function deleteOrNull($expression, array $langs = null) {
         // geD($expression);
         $firstTable = key($expression);
-        if ($langs) arrayLanguify($expression, $langs);
+        if ($langs) ArrayShape::languify($expression, $langs);
 
         $r = 'DELETE FROM ' . q($firstTable) . PHP_EOL . PHP_EOL;
 

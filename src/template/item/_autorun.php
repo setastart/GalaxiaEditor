@@ -12,11 +12,11 @@ $langSelectClass = [];
 foreach ($app->locales as $lang => $locale) {
     $langSelectClass[$lang] = '';
 }
-$includeTrix = true;
+$includeTrix      = true;
 $querySelectWhere = [$item['gcTable'] => [$item['gcTable'] . 'Id' => '=']];
-$fieldsNew   = [];
-$fieldsDel   = [];
-$fieldsUpd   = [];
+$fieldsNew        = [];
+$fieldsDel        = [];
+$fieldsUpd        = [];
 
 
 
@@ -71,10 +71,12 @@ $stmt = $db->prepare($query);
 $stmt->bind_param('d', $itemId);
 $stmt->execute();
 $result = $stmt->get_result();
-$data = $result->fetch_assoc();
+$data   = $result->fetch_assoc();
 $stmt->close();
 
-$item['data'] = array_map('strvalIfNotNull', $data);
+$item['data'] = array_map(function($value) {
+    return ($value === null) ? null : strval($value);
+}, $data);
 
 
 
@@ -85,12 +87,12 @@ $extras = [];
 foreach ($item['gcSelectExtra'] as $table => $cols) {
     $query = Sql::select([$table => $cols]);
     $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
-    $stmt = $db->prepare($query);
+    $stmt  = $db->prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
 
     while ($extraData = $result->fetch_assoc()) {
-        $extraData = array_map('strval', $extraData);
+        $extraData        = array_map('strval', $extraData);
         $extras[$table][] = $extraData;
     }
     $stmt->close();
@@ -121,9 +123,9 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
     if (isset($input['lang']) && count($app->langs) > 1) $showSwitchesLang = true;
 
     $inputNew = [
-        'label'       => $input['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
-        'name'        => 'item[' . $inputKey . ']',
-        'nameFromDb'  => $inputKey,
+        'label'      => $input['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
+        'name'       => 'item[' . $inputKey . ']',
+        'nameFromDb' => $inputKey,
     ];
 
     if (!$firstStatus && $input['type'] == 'status') $firstStatus = $inputKey;
@@ -173,7 +175,7 @@ $hdTitle = t('Editing') . ': ' . $pgTitle;
 // add redirect module
 
 if ($item['gcRedirect']) {
-    $table = $geConf[$pgSlug]['gcItem']['gcTable'];
+    $table                                    = $geConf[$pgSlug]['gcItem']['gcTable'];
     $geConf[$pgSlug]['gcItem']['gcModules'][] = [
         'gcTable'               => $table . 'Redirect',
         'gcModuleType'          => 'fields',
@@ -182,14 +184,14 @@ if ($item['gcRedirect']) {
         'gcModuleDeleteIfEmpty' => [$table . 'RedirectSlug'],
         'gcModuleMultiple'      => ['Redirect' => ['reorder' => false, 'unique' => [$table . 'RedirectSlug'], 'label' => 'Redirects']],
 
-        'gcSelect' => [$table . 'Redirect' => [$table . 'RedirectId', 'fieldKey', $table . 'RedirectSlug', 'position']],
+        'gcSelect'        => [$table . 'Redirect' => [$table . 'RedirectId', 'fieldKey', $table . 'RedirectSlug', 'position']],
         'gcSelectLJoin'   => [],
         'gcSelectOrderBy' => [],
         'gcSelectExtra'   => [],
-        'gcUpdate' => [$table . 'Redirect' => [$table . 'RedirectSlug']],
+        'gcUpdate'        => [$table . 'Redirect' => [$table . 'RedirectSlug']],
 
-        'gcInputs' => [$table . 'RedirectSlug' => ['label' => 'Slug', 'type' => 'slug', 'dbUnique' => true]],
-        'gcInputsWhereCol' => [
+        'gcInputs'            => [$table . 'RedirectSlug' => ['label' => 'Slug', 'type' => 'slug', 'dbUnique' => true]],
+        'gcInputsWhereCol'    => [
             'Redirect' => [$table . 'RedirectSlug' => ['type' => 'text']],
         ],
         'gcInputsWhereParent' => [],

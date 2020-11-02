@@ -41,39 +41,42 @@ function calMonthDays($year, $month) {
     $dateToday = date('Ymd');
     $relativeToToday = '';
 
-    $year = $cal['dtPrev']->format('Y');
-    $month = $cal['dtPrev']->format('m');
-    for ($day = $cal['monthDaysPrev'] - $cal['monthStartsOn'] + 1; $day <= $cal['monthDaysPrev']; $day++) {
-        $day = str_pad((string)$day, 2, '0', STR_PAD_LEFT);
+    // previous month
+    $y = $cal['dtPrev']->format('Y');
+    $m = $cal['dtPrev']->format('m');
+    for ($d = $cal['monthDaysPrev'] - $cal['monthStartsOn'] + 1; $d <= $cal['monthDaysPrev']; $d++) {
+        $d = str_pad((string)$d, 2, '0', STR_PAD_LEFT);
 
-        if ($year . $month . $day < $dateToday) {
+        if ($y . $m . $d < $dateToday) {
             $relativeToToday = 'past';
-        } else if ($year . $month . $day == $dateToday) {
+        } else if ($y . $m . $d == $dateToday) {
             $relativeToToday = 'today';
             $cal['todayFound'] = true;
         } else {
             $relativeToToday = 'future';
         }
 
-        $cal['month'][$year][$month][$day] = $relativeToToday . ' prev';
+        $cal['month'][$y][$m][$d] = $relativeToToday . ' prev';
     }
 
-    $year  = $cal['dtStart']->format('Y');
-    $month = $cal['dtStart']->format('m');
+
+    // current month
+    $y  = $cal['dtStart']->format('Y');
+    $m = $cal['dtStart']->format('m');
     $week  = 1;
     $weekDay = $cal['monthStartsOn'];
-    for ($day = 1; $day <= $cal['monthDays']; $day++) {
+    for ($d = 1; $d <= $cal['monthDays']; $d++) {
         if ($weekDay > 6) {
             $weekDay = 0;
             $week++;
         }
         $weekDay++;
 
-        $day = str_pad((string)$day, 2, '0', STR_PAD_LEFT);
+        $d = str_pad((string)$d, 2, '0', STR_PAD_LEFT);
 
-        if ($year . $month . $day < $dateToday) {
+        if ($y . $m . $d < $dateToday) {
             $relativeToToday = 'past';
-        } else if ($year . $month . $day == $dateToday) {
+        } else if ($y . $m . $d == $dateToday) {
             $relativeToToday = 'today';
             $cal['todayFound']     = true;
             $cal['todayThisMonth'] = true;
@@ -82,24 +85,26 @@ function calMonthDays($year, $month) {
             $relativeToToday = 'future';
         }
 
-        $cal['month'][$year][$month][$day] = $relativeToToday;
+        $cal['month'][$y][$m][$d] = $relativeToToday;
     }
 
-    $year = $cal['dtNext']->format('Y');
-    $month = $cal['dtNext']->format('m');
-    for ($day = 1; $day < 7 - $cal['monthEndsOn']; $day++) {
-        $day = str_pad((string)$day, 2, '0', STR_PAD_LEFT);
 
-        if ($year . $month . $day < $dateToday) {
+    // next month
+    $y = $cal['dtNext']->format('Y');
+    $m = $cal['dtNext']->format('m');
+    for ($d = 1; $d < 7 - $cal['monthEndsOn']; $d++) {
+        $d = str_pad((string)$d, 2, '0', STR_PAD_LEFT);
+
+        if ($y . $m . $d < $dateToday) {
             $relativeToToday = 'past';
-        } else if ($year . $month . $day == $dateToday) {
+        } else if ($y . $m . $d == $dateToday) {
             $relativeToToday = 'today';
             $cal['todayFound'] = true;
         } else {
             $relativeToToday = 'future';
         }
 
-        $cal['month'][$year][$month][$day] = $relativeToToday . ' next';
+        $cal['month'][$y][$m][$d] = $relativeToToday . ' next';
     }
 
     if (isset($cal['month'][date('Y')][date('m')][date('d')]))

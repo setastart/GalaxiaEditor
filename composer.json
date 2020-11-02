@@ -26,7 +26,6 @@
             "Galaxia\\FastRoute\\": "src/shared/fastroute/src/"
         },
         "files": [
-            "src/shared/core/function/array.php",
             "src/shared/core/function/calendar.php",
             "src/shared/core/function/error.php",
             "src/shared/core/function/gFile.php",

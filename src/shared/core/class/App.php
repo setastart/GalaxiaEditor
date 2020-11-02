@@ -459,7 +459,7 @@ class App {
                         if ($method != 'GET') continue;
                         if (empty($route['sitemap'])) continue;
                         $sm = $route['sitemap'];
-                        arrayLanguify($sm, $this->langs);
+                        ArrayShape::languify($sm, $this->langs);
                         if (!isset($sm['priority'])) continue;
 
                         if (isset($sm['gcSelect'])) {

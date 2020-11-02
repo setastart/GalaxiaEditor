@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, Authentication, FastRoute};
+use Galaxia\{ArrayShape, Authentication, Director, FastRoute};
 
 
 // redirect to url without trailing slashes
@@ -46,7 +46,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.4.0';
+$editor->version = '4.5.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -169,11 +169,11 @@ if ($me->loggedIn) {
 
 
     Director::timerStart('arrayRemovePermsRecursive()');
-    arrayRemovePermsRecursive($geConf, $me->perms);
+    ArrayShape::removePermsRecursive($geConf, $me->perms);
     Director::timerStop('arrayRemovePermsRecursive()');
 
     Director::timerStart('gecLanguify');
-    arrayLanguify($geConf, array_keys($app->locales), $me->perms);
+    ArrayShape::languify($geConf, array_keys($app->locales), $me->perms);
     Director::timerStop('gecLanguify');
 
 
