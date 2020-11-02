@@ -2,6 +2,7 @@
 
 
 use Galaxia\Sql;
+use GalaxiaEditor\input\Input;
 
 
 if (!isset($_POST['item'])) $_POST['item'] = [];
@@ -44,7 +45,7 @@ if ($me->hasPerm('dev') && $me->id == $itemId) {
 
 foreach ($_POST['item'] as $name => $value) {
     if (!isset($item['inputs'][$name])) continue;
-    $input = validateInput($item['inputs'][$name], $value);
+    $input = Input::validateInput($item['inputs'][$name], $value);
 
     if ($input['dbUnique']) {
 

@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Sql;
+use GalaxiaEditor\input\Input;
 
 
 $editor->view = 'image/image';
@@ -14,7 +15,7 @@ $mtime        = filemtime($app->dirImage . $imgSlug . '/');
 foreach ($inputs as $name => $input) {
     if (!isset($_POST[$name])) continue;
     $value = $_POST[$name];
-    $input = validateInput($input, $value);
+    $input = Input::validateInput($input, $value);
 
     if ($name == 'imgSlug' && $value != $imgSlug) {
         if ($value && is_dir($app->dirImage . $value)) {

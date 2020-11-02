@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Sql;
+use GalaxiaEditor\input\Input;
 
 
 $editor->view = 'item/new/new';
@@ -11,7 +12,7 @@ $editor->view = 'item/new/new';
 foreach ($_POST['item'] ?? [] as $name => $value) {
     if (!isset($item['inputs'][$name])) continue;
 
-    $input = validateInput($item['inputs'][$name], $value);
+    $input = Input::validateInput($item['inputs'][$name], $value);
 
     if ($input['dbUnique']) {
         $query = Sql::selectOne($item['gcInsert']);

@@ -1,5 +1,8 @@
 <?php
 
+use GalaxiaEditor\input\Input;
+
+
 $editor->view = 'image/resize/resize';
 
 
@@ -12,7 +15,7 @@ foreach ($inputs as $inputKey => $input) {
         continue;
     }
     $value = $_POST[$input['name']];
-    $input = validateInput($input, $value);
+    $input = Input::validateInput($input, $value);
     $inputs[$inputKey] = $input;
 }
 

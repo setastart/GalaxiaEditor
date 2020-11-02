@@ -1,13 +1,14 @@
 <?php
 
-use Galaxia\{Director, Session};
+use Galaxia\{Session};
+use GalaxiaEditor\input\Input;
 
 
 $editor->view = 'login/login';
 
 
-$inputs['userEmail']    = validateInput($inputs['userEmail'], $_POST['userEmail']);
-$inputs['userPassword'] = validateInput($inputs['userPassword'], $_POST['userPassword']);
+$inputs['userEmail']    = Input::validateInput($inputs['userEmail'], $_POST['userEmail']);
+$inputs['userPassword'] = Input::validateInput($inputs['userPassword'], $_POST['userPassword']);
 
 
 if (!empty($inputs['userEmail']['errors'])) {

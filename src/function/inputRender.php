@@ -3,6 +3,7 @@
 
 use Galaxia\App;
 use Galaxia\Director;
+use GalaxiaEditor\input\Input;
 
 
 function renderForm($action = '', $id = '', $classes = '') {
@@ -21,7 +22,7 @@ function renderFormEnd() {
 
 
 function renderStatus($input) {
-    $input = array_merge(PROTO_INPUT, $input);
+    $input = array_merge(Input::PROTO_INPUT, $input);
 
     if (isset($input['gcPerms']))
         foreach ($input['gcPerms'] as $perm)
@@ -50,12 +51,12 @@ $ht .= '</div>' . PHP_EOL;
 
 
 function renderInputText($input) {
-    $input = array_merge(PROTO_INPUT, $input);
+    $input = array_merge(Input::PROTO_INPUT, $input);
     if (isset($input['gcPerms']))
         foreach ($input['gcPerms'] as $perm)
             $input['cssClass'] .= ' hide-perm-' . $perm;
 
-    $input = array_merge(PROTO_INPUT, $input);
+    $input = array_merge(Input::PROTO_INPUT, $input);
 
     $css = $input['lang'] ? 'hide-lang-' . $input['lang'] : '';
 
@@ -101,7 +102,7 @@ return $ht;
 
 
 function renderInput(App $app, $input) {
-    $input = array_merge(PROTO_INPUT, $input);
+    $input = array_merge(Input::PROTO_INPUT, $input);
     if ($input['type'] == 'none') return;
 
     $input['infos'] = infos('form', $input['name']);

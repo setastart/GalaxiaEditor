@@ -1,7 +1,7 @@
 <?php
 
 
-namespace build;
+namespace GalaxiaEditor\build;
 
 
 use Galaxia\Editor;

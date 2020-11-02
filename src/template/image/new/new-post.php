@@ -1,5 +1,8 @@
 <?php
 
+use GalaxiaEditor\input\Input;
+
+
 $editor->view = 'image/new/new';
 $type         = '';
 
@@ -21,7 +24,7 @@ foreach ($inputs as $inputKey => $input) {
         continue;
     }
     $value = $_POST[$input['name']];
-    $input = validateInput($input, $value);
+    $input = Input::validateInput($input, $value);
     if ($inputKey == 'type' && !$input['errors']) $type = $value;
     $inputs[$inputKey] = $input;
 }

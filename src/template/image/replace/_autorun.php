@@ -1,5 +1,8 @@
 <?php
 
+use GalaxiaEditor\input\Input;
+
+
 $pgTitle = t('Replace') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
 $hdTitle = t('Replace') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
 
@@ -30,5 +33,5 @@ $inputs['resize'] = [
 
 
 foreach ($inputs as $key => $input) {
-    $inputs[$key] = array_merge(PROTO_INPUT, $input);
+    $inputs[$key] = array_merge(Input::PROTO_INPUT, $input);
 }

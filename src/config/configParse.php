@@ -6,6 +6,9 @@
 // gcExample:  galaxia config
 // gcpExample: galaxia config proto
 
+use GalaxiaEditor\input\Input;
+
+
 const PROTO_GC = [
 
     'gcpSeparator' => [
@@ -320,7 +323,7 @@ function geConfigParseFine($schema, $config, $errorString) {
             foreach ($config as $inputCol => $input) {
                 if (!isset($input['type']) ||
                     !is_string($input['type']) ||
-                    !in_array($input['type'], ALLOWED_INPUT_TYPES)
+                    !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)
                 ) {
                     geConfigParseError($errorString . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
                 }
@@ -339,7 +342,7 @@ function geConfigParseFine($schema, $config, $errorString) {
                 foreach ($inputs as $inputCol => $input) {
                     if (!isset($input['type']) ||
                         !is_string($input['type']) ||
-                        !in_array($input['type'], ALLOWED_INPUT_TYPES)
+                        !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)
                     ) {
                         geConfigParseError($errorString . '/' . $whereVal . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
                     }
@@ -363,7 +366,7 @@ function geConfigParseFine($schema, $config, $errorString) {
                     foreach ($inputs as $inputCol => $input) {
                         if (!isset($input['type']) ||
                             !is_string($input['type']) ||
-                            !in_array($input['type'], ALLOWED_INPUT_TYPES)
+                            !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)
                         ) {
                             geConfigParseError($errorString . '/' . $whereKey . '/' . $whereVal . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
                         }
@@ -392,7 +395,7 @@ function geConfigParseFine($schema, $config, $errorString) {
                         foreach ($inputs as $inputCol => $input) {
                             if (!isset($input['type']) ||
                                 !is_string($input['type']) ||
-                                !in_array($input['type'], ALLOWED_INPUT_TYPES)
+                                !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)
                             ) {
                                 geConfigParseError($errorString . '/' . $parentKey . '/' . $parentVal . '/' . $whereVal . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
                             }

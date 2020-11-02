@@ -6,7 +6,6 @@ require_once __DIR__ . '/shared/core/function/calendar.php';
 require_once __DIR__ . '/shared/core/function/error.php';
 require_once __DIR__ . '/shared/core/function/gFile.php';
 require_once __DIR__ . '/shared/core/function/gImage.php';
-require_once __DIR__ . '/shared/core/function/input.php';
 require_once __DIR__ . '/shared/core/function/text.php';
 require_once __DIR__ . '/shared/core/function/util.php';
 
