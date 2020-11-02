@@ -3,11 +3,14 @@
 
 // get items from database
 
+use Galaxia\Sql;
+
+
 $items = [];
 
-$query = querySelect(['_geHistory' => ['_geHistoryId', 'uniqueId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
-$query .= querySelectWhere(['_geHistory' => ['tabName' => '=', 'tabId' => '=']]);
-$query .= querySelectOrderBy(['_geHistory' => ['timestampCreated' => 'DESC']]);
+$query = Sql::select(['_geHistory' => ['_geHistoryId', 'uniqueId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
+$query .= Sql::selectWhere(['_geHistory' => ['tabName' => '=', 'tabId' => '=']]);
+$query .= Sql::selectOrderBy(['_geHistory' => ['timestampCreated' => 'DESC']]);
 
 $stmt = $db->prepare($query);
 $stmt->bind_param('ss', $tabName, $tabId);

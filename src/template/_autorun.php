@@ -1,6 +1,9 @@
 <?php
 
 
+use Galaxia\Sql;
+
+
 $pgTitle = $_SERVER['SERVER_NAME'];
 $hdTitle = $_SERVER['SERVER_NAME'];
 
@@ -30,7 +33,7 @@ $itemChanges        = [];
 
 $pageById = [];
 
-$query = querySelect(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_']], $app->langs);
+$query = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_']], $app->langs);
 
 $stmt = $db->prepare($query);
 $stmt->execute();

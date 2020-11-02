@@ -1,6 +1,7 @@
 <?php
 
-use Galaxia\{Director, Pagination};
+use Galaxia\{Director, Pagination, Sql};
+
 
 // ajax
 
@@ -88,9 +89,9 @@ $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() us
         if ($i == 0) {
 
             $queryMain = [$table => $selectQuery[$table]];
-            $query     = querySelect($queryMain);
+            $query     = Sql::select($queryMain);
             if (isset($list['gcSelectOrderBy'][$table])) {
-                $query .= querySelectOrderBy([$table => $list['gcSelectOrderBy'][$table]]);
+                $query .= Sql::selectOrderBy([$table => $list['gcSelectOrderBy'][$table]]);
             }
 
             // geD($query);
@@ -104,12 +105,12 @@ $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() us
                 }
             };
 
-            $items = chunkSelectQuery($db, $query, $f, $items);
+            $items = Sql::chunkSelect($db, $query, $f, $items);
 
         } else {
 
             $queryJoin = [$firstTable => [$firstColumn], $table => $selectQuery[$table]];
-            $query     = querySelect($queryJoin);
+            $query     = Sql::select($queryJoin);
             $joins     = [];
             foreach ($list['gcSelectLJoin'][$table] ?? [] as $col) {
                 if (!isset($dbSchema[$firstTable][$col])) {
@@ -121,11 +122,11 @@ $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() us
                 }
                 $joins[$table] = $list['gcSelectLJoin'][$table] ?? [];
             }
-            $query .= querySelectLeftJoinUsing($joins);
+            $query .= Sql::selectLeftJoinUsing($joins);
 
             foreach ($list['gcSelectOrderBy'] ?? [] as $orderTable => $orderCols) {
                 if (isset($joins[$orderTable])) {
-                    $query .= querySelectOrderBy([$orderTable => $orderCols]);
+                    $query .= Sql::selectOrderBy([$orderTable => $orderCols]);
                 }
             }
 

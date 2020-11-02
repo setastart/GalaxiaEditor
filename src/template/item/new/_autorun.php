@@ -1,6 +1,9 @@
 <?php
 
 
+use Galaxia\Sql;
+
+
 $pgTitle = t('+ Add') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
 $hdTitle = t('+ Add') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
 
@@ -9,8 +12,8 @@ $hdTitle = t('+ Add') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
 
 $extras = [];
 foreach ($item['gcSelectExtra'] as $table => $cols) {
-    $query = querySelect([$table => $cols]);
-    $query .= querySelectOrderBy([$table => [$cols[1] => 'ASC']]);
+    $query = Sql::select([$table => $cols]);
+    $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
 
     $stmt = $db->prepare($query);
     $stmt->execute();

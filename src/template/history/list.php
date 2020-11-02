@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, Pagination};
+use Galaxia\{Director, Pagination, Sql};
 
 
 // ajax
@@ -14,8 +14,8 @@ if (Director::$ajax) {
 
 
 $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() use ($db, $userNames) {
-    $query = querySelect(['_geHistory' => ['_geHistoryId', '_geUserId', 'uniqueId', 'tabName', 'tabId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
-    $query .= querySelectOrderBy(['_geHistory' => ['uniqueId' => 'DESC']]);
+    $query = Sql::select(['_geHistory' => ['_geHistoryId', '_geUserId', 'uniqueId', 'tabName', 'tabId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
+    $query .= Sql::selectOrderBy(['_geHistory' => ['uniqueId' => 'DESC']]);
 
     $stmt = $db->prepare($query);
     $stmt->execute();

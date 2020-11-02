@@ -1,6 +1,9 @@
 <?php
 
 
+use Galaxia\Sql;
+
+
 foreach ($postModule as $fieldKey => $fields) {
 
     if (!isset($modules[$moduleKey]['inputs'][$fieldKey])) {
@@ -207,9 +210,9 @@ foreach ($postModule as $fieldName => $fieldValue) {
         }
 
         if (empty($input['errors']) && $input['dbUnique']) {
-            $query = querySelectFirst($module['gcSelect']);
-            $query .= querySelectWhere([$input['nameFromDb'] => '=']);
-            $query .= querySelectLimit(0, 1);
+            $query = Sql::selectFirst($module['gcSelect']);
+            $query .= Sql::selectWhere([$input['nameFromDb'] => '=']);
+            $query .= Sql::selectLimit(0, 1);
 
             $stmt = $db->prepare($query);
             $stmt->bind_param('s', $input['value']);

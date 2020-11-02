@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, Pagination};
+use Galaxia\{Director, Pagination, Sql};
 
 
 // ajax
@@ -46,9 +46,9 @@ $inUse = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-inUse', function
         if (empty($gcImageInUse['gcSelect'])) return;
         $firstTable = key($gcImageInUse['gcSelect']);
         $firstColumn = $gcImageInUse['gcSelect'][$firstTable][0] ?? [];
-        $query = querySelect($gcImageInUse['gcSelect']);
-        $query .= querySelectLeftJoinUsing($gcImageInUse['gcSelectLJoin'] ?? []);
-        $query .= querySelectOrderBy($gcImageInUse['gcSelectOrderBy'] ?? []);
+        $query = Sql::select($gcImageInUse['gcSelect']);
+        $query .= Sql::selectLeftJoinUsing($gcImageInUse['gcSelectLJoin'] ?? []);
+        $query .= Sql::selectOrderBy($gcImageInUse['gcSelectOrderBy'] ?? []);
 
         $stmt = $db->prepare($query);
         $stmt->execute();

@@ -1,6 +1,9 @@
 <?php
 
 
+use Galaxia\Sql;
+
+
 $module['inputs']       = [];
 $module['inputsUnused'] = [];
 
@@ -9,8 +12,8 @@ $module['inputsUnused'] = [];
 
 $extras = [];
 foreach ($module['gcSelectExtra'] as $table => $cols) {
-    $query = querySelect([$table => $cols]);
-    $query .= querySelectOrderBy([$table => [$cols[1] => 'ASC']]);
+    $query = Sql::select([$table => $cols]);
+    $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
     $stmt  = $db->prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -33,10 +36,10 @@ if (in_array($module['gcTable'] . 'Field', $module['gcSelect'][$module['gcTable'
     $fieldCol = $module['gcTable'] . 'Field';
 }
 
-$query = querySelect($module['gcSelect']);
-$query .= querySelectLeftJoinUsing($module['gcSelectLJoin']);
-$query .= querySelectWhere($where);
-$query .= querySelectOrderBy($module['gcSelectOrderBy']);
+$query = Sql::select($module['gcSelect']);
+$query .= Sql::selectLeftJoinUsing($module['gcSelectLJoin']);
+$query .= Sql::selectWhere($where);
+$query .= Sql::selectOrderBy($module['gcSelectOrderBy']);
 
 $stmt = $db->prepare($query);
 $stmt->bind_param('s', $itemId);

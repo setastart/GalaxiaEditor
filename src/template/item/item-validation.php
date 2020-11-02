@@ -1,6 +1,9 @@
 <?php
 
 
+use Galaxia\Sql;
+
+
 if (!isset($_POST['item'])) $_POST['item'] = [];
 
 
@@ -45,9 +48,9 @@ foreach ($_POST['item'] as $name => $value) {
 
     if ($input['dbUnique']) {
 
-        $query = querySelectFirst($item['gcUpdate']);
-        $query .= querySelectWhere([key($item['gcUpdate']) => [$input['nameFromDb'] => '=']]);
-        $query .= querySelectLimit(0, 1);
+        $query = Sql::selectFirst($item['gcUpdate']);
+        $query .= Sql::selectWhere([key($item['gcUpdate']) => [$input['nameFromDb'] => '=']]);
+        $query .= Sql::selectLimit(0, 1);
 
         $stmt = $db->prepare($query);
         $stmt->bind_param('s', $input['value']);

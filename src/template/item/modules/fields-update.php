@@ -2,6 +2,9 @@
 
 
 // insert fields
+use Galaxia\Sql;
+
+
 $itemColId = $item['gcTable'] . 'Id';
 
 foreach ($fieldsNew as $moduleKey => $fields) {
@@ -20,7 +23,7 @@ foreach ($fieldsNew as $moduleKey => $fields) {
                 $values[] = $value;
             }
 
-            $query = queryInsert($module['gcUpdate'], $insert);
+            $query = Sql::queryInsert($module['gcUpdate'], $insert);
 
             try {
                 $stmt  = $db->prepare($query);
@@ -59,7 +62,7 @@ foreach ($fieldsDel as $moduleKey => $fields) {
 
     foreach ($fields as $fieldKey => $deleteIds) {
 
-        $query = queryDeleteIn(
+        $query = Sql::deleteIn(
             $module['gcTable'],
             [$itemColId, $fieldCol],
             $module['gcTable'] . 'Id',
@@ -101,9 +104,9 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
             $params           = array_values($update);
             array_push($params, $fieldVal, $itemId, $fieldKey);
 
-            $query = queryUpdate($module['gcUpdate']);
-            $query .= queryUpdateSet(array_keys($update));
-            $query .= queryUpdateWhere($queryUpdateWhere);
+            $query = Sql::update($module['gcUpdate']);
+            $query .= Sql::updateSet(array_keys($update));
+            $query .= Sql::updateWhere($queryUpdateWhere);
 
             try {
                 $stmt  = $db->prepare($query);
@@ -156,7 +159,7 @@ foreach ($modules as $module) {
 
         $expression = [$module['gcTable'] => $cols];
 
-        $query = queryDeleteOrNull($expression);
+        $query = Sql::deleteOrNull($expression);
 
         $params = [$itemId];
         foreach ($module['gcModuleDeleteIfEmpty'] as $col)

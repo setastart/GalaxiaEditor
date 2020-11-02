@@ -1,5 +1,8 @@
 <?php
 
+use Galaxia\Sql;
+
+
 $editor->view = 'item/delete/delete';
 
 
@@ -8,7 +11,7 @@ $editor->view = 'item/delete/delete';
 // delete item from database
 
 try {
-    $query = queryDelete($item['gcDelete']);
+    $query = Sql::delete($item['gcDelete']);
 
     $stmt = $db->prepare($query);
     $stmt->bind_param('s', $itemId);

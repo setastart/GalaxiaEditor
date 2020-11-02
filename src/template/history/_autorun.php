@@ -1,9 +1,12 @@
 <?php
 
 
-$pageNames = [];
-$inputKeys = [];
-$rootSlugs = [];
+use Galaxia\Sql;
+
+
+$pageNames   = [];
+$inputKeys   = [];
+$rootSlugs   = [];
 $statusNames = [];
 foreach ($geConf as $rootSlug => $confPage) {
     if (!isset($confPage['gcItem'])) continue;
@@ -25,7 +28,7 @@ foreach ($geConf as $rootSlug => $confPage) {
 
 // get user names
 $userNames = [];
-$query = querySelect(['_geUser' => ['_geUserId', 'name']]);
+$query = Sql::select(['_geUser' => ['_geUserId', 'name']]);
 
 $stmt = $db->prepare($query);
 $stmt->execute();

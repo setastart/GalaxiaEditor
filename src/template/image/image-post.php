@@ -1,5 +1,8 @@
 <?php
 
+use Galaxia\Sql;
+
+
 $editor->view = 'image/image';
 $mtime        = filemtime($app->dirImage . $imgSlug . '/');
 
@@ -103,9 +106,9 @@ if (isset($itemChanges['imgSlug'])) {
             $params     = array_values($slugChange);
             $params[]   = $imgSlug;
 
-            $query = queryUpdate([$table => [$imgSlugCol]]);
-            $query .= queryUpdateSet(array_keys($slugChange));
-            $query .= queryUpdateWhere([$table => [$imgSlugCol]]);
+            $query = Sql::update([$table => [$imgSlugCol]]);
+            $query .= Sql::updateSet(array_keys($slugChange));
+            $query .= Sql::updateWhere([$table => [$imgSlugCol]]);
 
             $affectedRows = 0;
             try {

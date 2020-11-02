@@ -148,7 +148,7 @@ class App {
             $app       = Director::getApp();
             $db        = Director::getMysqli();
             $pagesById = [];
-            $query     = querySelect(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
+            $query     = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
             $query     .= 'WHERE pageStatus > 1' . PHP_EOL;
             // ddp($query);
             $stmt = $db->prepare($query);
@@ -188,7 +188,7 @@ class App {
             $db  = Director::getMysqli();
 
             $pagesByIdDraft = [];
-            $query          = querySelect(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
+            $query          = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
             $query          .= 'WHERE pageStatus = 1' . PHP_EOL;
             // ddp($query);
             $stmt = $db->prepare($query);
@@ -223,12 +223,12 @@ class App {
 
         $db = Director::getMysqli();
 
-        $query = querySelect([
+        $query = Sql::select([
             'page'         => ['pageId', 'pageStatus', 'pageSlug_', 'pageType'],
             'pageRedirect' => ['pageRedirectId', 'pageRedirectSlug'],
         ], $this->langs);
 
-        $query .= querySelectLeftJoinUsing(['pageRedirect' => ['pageId']]);
+        $query .= Sql::selectLeftJoinUsing(['pageRedirect' => ['pageId']]);
 
         $query .= 'WHERE pageStatus >= ' . $pageMinStatus . PHP_EOL;
         // dp($query);
@@ -376,18 +376,18 @@ class App {
 
         // query
 
-        $query = querySelect($arraySelect, $langs);
+        $query = Sql::select($arraySelect, $langs);
 
         if ($redirect)
-            $query .= querySelectLeftJoinUsing([$tableRedirect => [$tableId]]);
+            $query .= Sql::selectLeftJoinUsing([$tableRedirect => [$tableId]]);
 
         if ($status != null)
-            $query .= querySelectWhere([$table => [$tableStatus => '>=']]);
+            $query .= Sql::selectWhere([$table => [$tableStatus => '>=']]);
 
         if ($redirect)
             $arraySelectWhereOr[$tableRedirect] = [$tableRedirectSlug => '='];
 
-        $query .= querySelectWhereOr($arraySelectWhereOr, $statusGlue, $langs);
+        $query .= Sql::selectWhereOr($arraySelectWhereOr, $statusGlue, $langs);
 
         // ddp($query);
         $db   = Director::getMysqli();
@@ -430,7 +430,7 @@ class App {
 
     function generateSitemap($db) {
         $pages = [];
-        $query = querySelect(['page' => ['pageSlug_', 'pageType', 'timestampModified']], $this->langs);
+        $query = Sql::select(['page' => ['pageSlug_', 'pageType', 'timestampModified']], $this->langs);
         $query .= 'WHERE pageStatus > 1' . PHP_EOL;
         $stmt  = $db->prepare($query);
         $stmt->execute();
@@ -467,14 +467,14 @@ class App {
                             foreach ($sm['gcSelect'][key($sm['gcSelect'])] as $fieldName) {
                                 if (is_string($fieldName) && substr($fieldName, -6) == 'Status') $statusFound = $fieldName;
                             }
-                            $query = querySelect($sm['gcSelect'], $this->langs);
-                            $query .= querySelectLeftJoinUsing($sm['gcSelectLJoin'], $this->langs);
+                            $query = Sql::select($sm['gcSelect'], $this->langs);
+                            $query .= Sql::selectLeftJoinUsing($sm['gcSelectLJoin'], $this->langs);
                             if ($statusFound) $query .= 'WHERE ' . $statusFound . ' > 1' . PHP_EOL;
                             if (isset($sm['gcSelectWhere'])) {
                                 if ($statusFound) $query .= 'AND' . PHP_EOL;
-                                $query .= querySelectWhereRaw($sm['gcSelectWhere']);
+                                $query .= Sql::selectWhereRaw($sm['gcSelectWhere']);
                             }
-                            $query .= querySelectGroupBy($sm['gcSelectGroupBy'], $this->langs);
+                            $query .= Sql::selectGroupBy($sm['gcSelectGroupBy'], $this->langs);
 
                             $stmt = $db->prepare($query);
                             $stmt->execute();

@@ -1,5 +1,8 @@
 <?php
 
+use Galaxia\Sql;
+
+
 $editor->view = 'item/new/new';
 
 
@@ -11,9 +14,9 @@ foreach ($_POST['item'] ?? [] as $name => $value) {
     $input = validateInput($item['inputs'][$name], $value);
 
     if ($input['dbUnique']) {
-        $query = querySelectOne($item['gcInsert']);
-        $query .= querySelectWhere([$item['gcTable'] => [$input['nameFromDb'] => '=']]);
-        $query .= querySelectLimit(0, 1);
+        $query = Sql::selectOne($item['gcInsert']);
+        $query .= Sql::selectWhere([$item['gcTable'] => [$input['nameFromDb'] => '=']]);
+        $query .= Sql::selectLimit(0, 1);
 
         $stmt = $db->prepare($query);
         $stmt->bind_param('s', $input['value']);
@@ -53,7 +56,7 @@ if (!$itemChanges) {
 
 $values = array_values($itemChanges);
 try {
-    $query = queryInsert($item['gcInsert'], $itemChanges);
+    $query = Sql::queryInsert($item['gcInsert'], $itemChanges);
 
     $stmt = $db->prepare($query);
     $types = str_repeat('s', count($values));

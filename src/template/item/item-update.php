@@ -1,6 +1,9 @@
 <?php
 
 
+use Galaxia\Sql;
+
+
 unset($itemChanges['passwordCurrent']);
 unset($itemChanges['passwordRepeat']);
 if (isset($itemChanges['passwordHash']))
@@ -11,9 +14,9 @@ $params = array_values($itemChanges);
 $params[] = $itemId;
 $types = str_repeat('s', count($params));
 
-$query = queryUpdate($item['gcUpdate']);
-$query .= queryUpdateSet(array_keys($itemChanges));
-$query .= queryUpdateWhere([$item['gcTable'] => [$item['gcTable'] . 'Id']]);
+$query = Sql::update($item['gcUpdate']);
+$query .= Sql::updateSet(array_keys($itemChanges));
+$query .= Sql::updateWhere([$item['gcTable'] => [$item['gcTable'] . 'Id']]);
 
 try {
     $stmt = $db->prepare($query);

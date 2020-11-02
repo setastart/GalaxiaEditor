@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director};
+use Galaxia\{Director, Sql};
 
 
 
@@ -95,7 +95,7 @@ function insertHistory($uniqueId, $tabName, $tabId, $inputKey, $fieldKey, $actio
         'content'   => $content,
     ];
     $values  = array_values($changes);
-    $query   = queryInsert(['_geHistory' => ['_geUserId', 'uniqueId', 'action', 'tabName', 'tabId', 'fieldKey', 'inputKey', 'content']], $changes);
+    $query   = Sql::queryInsert(['_geHistory' => ['_geUserId', 'uniqueId', 'action', 'tabName', 'tabId', 'fieldKey', 'inputKey', 'content']], $changes);
     try {
         $db    = Director::getMysqli();
         $stmt  = $db->prepare($query);

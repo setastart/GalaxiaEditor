@@ -3,8 +3,11 @@
 
 // variables
 
-$uniqueId = uniqid(true);
-$item = &$geConf[$pgSlug]['gcItem'];
+use Galaxia\Sql;
+
+
+$uniqueId        = uniqid(true);
+$item            = &$geConf[$pgSlug]['gcItem'];
 $langSelectClass = [];
 foreach ($app->locales as $lang => $locale) {
     $langSelectClass[$lang] = '';
@@ -39,9 +42,9 @@ if ($item['gcUpdateOnlyOwn'] ?? false) {
 
 // item validation
 
-$query = querySelectOne($item['gcSelect']);
-$query .= querySelectWhere($querySelectWhere);
-$query .= querySelectLimit(0, 1);
+$query = Sql::selectOne($item['gcSelect']);
+$query .= Sql::selectWhere($querySelectWhere);
+$query .= Sql::selectLimit(0, 1);
 
 $stmt = $db->prepare($query);
 $stmt->bind_param('d', $itemId);
@@ -60,9 +63,9 @@ if (!$itemExists) {
 
 // query item
 
-$query = querySelect($item['gcSelect']);
-$query .= querySelectLeftJoinUsing($item['gcSelectLJoin'] ?? []);
-$query .= querySelectWhere($querySelectWhere);
+$query = Sql::select($item['gcSelect']);
+$query .= Sql::selectLeftJoinUsing($item['gcSelectLJoin'] ?? []);
+$query .= Sql::selectWhere($querySelectWhere);
 
 $stmt = $db->prepare($query);
 $stmt->bind_param('d', $itemId);
@@ -80,8 +83,8 @@ $item['data'] = array_map('strvalIfNotNull', $data);
 
 $extras = [];
 foreach ($item['gcSelectExtra'] as $table => $cols) {
-    $query = querySelect([$table => $cols]);
-    $query .= querySelectOrderBy([$table => [$cols[1] => 'ASC']]);
+    $query = Sql::select([$table => $cols]);
+    $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
     $stmt = $db->prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();

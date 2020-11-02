@@ -32,7 +32,6 @@
             "src/shared/core/function/gFile.php",
             "src/shared/core/function/gImage.php",
             "src/shared/core/function/input.php",
-            "src/shared/core/function/sql.php",
             "src/shared/core/function/text.php",
             "src/shared/core/function/util.php",
 

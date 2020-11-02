@@ -1,5 +1,8 @@
 <?php
 
+use Galaxia\Sql;
+
+
 $editor->view = 'item/item';
 
 
@@ -56,9 +59,9 @@ if ($fieldsNew || $fieldsDel || $fieldsUpd)
 // update timstampModified
 
 $params = [date('Y-m-d G:i:s'), $itemId];
-$query = queryUpdate($item['gcUpdate']);
-$query .= queryUpdateSet(['timestampModified']);
-$query .= queryUpdateWhere([$item['gcTable'] => [$item['gcTable'] . 'Id']]);
+$query = Sql::update($item['gcUpdate']);
+$query .= Sql::updateSet(['timestampModified']);
+$query .= Sql::updateWhere([$item['gcTable'] => [$item['gcTable'] . 'Id']]);
 $stmt = $db->prepare($query);
 $stmt->bind_param('sd', ...$params);
 $stmt->execute();
@@ -89,7 +92,7 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
 
             try {
                 $values = [null, '', $oldSlug, $newSlug];
-                $query = queryDeleteIn($redirectTable, [], $redirectTableSlug, $values);
+                $query = Sql::deleteIn($redirectTable, [], $redirectTableSlug, $values);
 
                 $stmt = $db->prepare($query);
                 $stmt->bind_param('ssss', ...$values);
@@ -103,7 +106,7 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
             }
 
             try {
-                $query = queryInsert(
+                $query = Sql::queryInsert(
                     [$redirectTable => [$redirectTableSlug]],
                     [$redirectTableId => $itemId, $redirectTableSlug => $oldSlug, 'fieldKey' => $redirectFieldKey]
                 );
