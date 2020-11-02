@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Pagination;
+use GalaxiaEditor\input\InputRender;
 
 
 if (!isset($filterTexts)) {
@@ -23,7 +24,7 @@ if (!isset($filterTexts)) {
         ],
     ];
 } ?>
-<?php   renderForm('/edit/' . $editor->imageSlug, 'image-select', 'hide');?>
+<?php   InputRender::form('/edit/' . $editor->imageSlug, 'image-select', 'hide');?>
 
     <div class="image-select-header pad">
         <h1><?=t('Select Image')?> <span class="rowsFiltered">0</span> &#8725; <span class="rowsTotal">0</span></h1>
@@ -77,4 +78,4 @@ if (!isset($filterTexts)) {
 
 <?php   renderPaginationFooter($pagination) ?>
 
-<?php   renderFormEnd(); ?>
+<?php   InputRender::renderFormEnd(); ?>

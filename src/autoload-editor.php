@@ -1,6 +1,5 @@
 <?php
 
-require __DIR__ . '/function/inputRender.php';
 require __DIR__ . '/function/paginationRender.php';
 require __DIR__ . '/function/utils.php';
 

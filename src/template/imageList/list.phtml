@@ -1,4 +1,7 @@
-<?php   renderForm('', 'image-list', 'paper pad');?>
+<?php use GalaxiaEditor\input\InputRender;
+
+
+InputRender::form('', 'image-list', 'paper pad');?>
 
     <div class="paper-header pad">
         <h1><span class="rowsFiltered"><?=h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=h($rowsTotal)?></span> <?=t($pgTitle);?></h1>
@@ -69,4 +72,4 @@
 <?php   renderPaginationFooter($pagination) ?>
 
 
-<?php   renderFormEnd(); ?>
+<?php   InputRender::renderFormEnd(); ?>

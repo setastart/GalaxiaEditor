@@ -1,9 +1,12 @@
-<?php   $userEmail = (isset($_SESSION['post']['userEmail'])) ? h($_SESSION['post']['userEmail']) : '' ?>
+<?php use GalaxiaEditor\input\InputRender;
+
+
+$userEmail = (isset($_SESSION['post']['userEmail'])) ? h($_SESSION['post']['userEmail']) : '' ?>
 
 <form action="/edit/login" method="post" autocomplete="on">
 
 <?php   foreach ($inputs as $input) { ?>
-<?php       echo renderInput($app, $input); ?>
+<?php       echo InputRender::renderInput($app, $input); ?>
 <?php   } ?>
 
 

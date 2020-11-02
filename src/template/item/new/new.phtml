@@ -1,10 +1,13 @@
-<?php   renderForm('', 'item-new', 'item item-new paper pad'); ?>
+<?php use GalaxiaEditor\input\InputRender;
+
+
+InputRender::form('', 'item-new', 'item item-new paper pad'); ?>
 
     <div class="paper-header pad">
         <h1><?=h($pgTitle)?></h1>
 
 <?php   if (isset($item['inputs']['status'])) { ?>
-<?php       echo renderStatus($item['inputs']['status']); ?>
+<?php       echo InputRender::status($item['inputs']['status']); ?>
 <?php   } ?>
     </div>
 
@@ -18,7 +21,7 @@
     </div>
     <div class="item-row">
 <?php       } ?>
-<?php       echo renderInput($app, $input); ?>
+<?php       echo InputRender::renderInput($app, $input); ?>
 <?php       $firstTime = false; ?>
 <?php       $prefixPrev = $input['prefix'] ?? ''; ?>
 <?php   } ?>
@@ -33,4 +36,4 @@
         </div>
     </div>
 
-<?php   renderFormEnd(); ?>
+<?php   InputRender::renderFormEnd(); ?>

@@ -1,4 +1,7 @@
-<?php   renderForm('', 'item-delete', 'item item-delete paper pad'); ?>
+<?php use GalaxiaEditor\input\InputRender;
+
+
+InputRender::form('', 'item-delete', 'item item-delete paper pad'); ?>
 
     <div class="paper-header pad">
         <h1><?=h($pgTitle)?></h1>
@@ -14,7 +17,7 @@
         </div>
         <div class="item-row">
 <?php       } ?>
-<?php       echo renderInputText($input); ?>
+<?php       echo InputRender::renderInputText($input); ?>
 <?php       $firstTime = false; ?>
 <?php       $prefixPrev = $input['prefix'] ?? null; ?>
 <?php   } ?>
@@ -30,7 +33,7 @@
         </div>
         <div class="item-row">
 <?php               } ?>
-<?php               echo renderInputText($input); ?>
+<?php               echo InputRender::renderInputText($input); ?>
 <?php               $prefixPrev = $fieldName; ?>
 <?php           } ?>
 <?php       } ?>
@@ -50,4 +53,4 @@
         </div>
     </div>
 
-<?php   renderFormEnd(); ?>
+<?php   InputRender::renderFormEnd(); ?>

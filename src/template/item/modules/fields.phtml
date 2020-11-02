@@ -1,3 +1,9 @@
+<?php
+
+use GalaxiaEditor\input\InputRender;
+
+
+?>
 <div id="module-<?=$moduleKey?>" class="module">
 <?php   if ($module['gcModuleTitle']) { ?>
     <h2 class="pad"><?=t($module['gcModuleTitle'])?></h2>
@@ -50,7 +56,7 @@
             </div>
             <div class="item-row">
 <?php               } ?>
-<?php               echo renderInput($app, $input); ?>
+<?php               echo InputRender::renderInput($app, $input); ?>
 <?php               $firstTime = false; ?>
 <?php               $prefixPrev = $input['prefix'] ?? null; ?>
 <?php           } ?>
@@ -118,7 +124,7 @@
             </div>
             <div class="item-row">
 <?php               } ?>
-<?php               echo renderInput($app, $input); ?>
+<?php               echo InputRender::renderInput($app, $input); ?>
 <?php               $firstTime = false; ?>
 <?php               $prefixPrev = $input['prefix'] ?? null; ?>
 <?php           } ?>

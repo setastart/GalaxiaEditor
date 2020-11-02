@@ -1,4 +1,7 @@
-<?php   renderForm('', 'image-new', 'image image-new paper pad'); ?>
+<?php use GalaxiaEditor\input\InputRender;
+
+
+InputRender::form('', 'image-new', 'image image-new paper pad'); ?>
 
     <div class="paper-header pad">
         <h1><?=h($pgTitle)?></h1>
@@ -13,7 +16,7 @@
 
     <div class="item-row">
 <?php       } ?>
-<?php       echo renderInput($app, $input); ?>
+<?php       echo InputRender::renderInput($app, $input); ?>
 <?php       $firstTime = false; ?>
 <?php       $prefixPrev = $input['prefix'] ?? ''; ?>
 <?php   } ?>
@@ -34,4 +37,4 @@
         </div>
     </div>
 
-<?php   renderFormEnd(); ?>
+<?php   InputRender::renderFormEnd(); ?>

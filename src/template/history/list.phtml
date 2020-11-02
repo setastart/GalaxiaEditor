@@ -1,4 +1,7 @@
-<?php   renderForm('', 'history-list', 'paper pad');?>
+<?php use GalaxiaEditor\input\InputRender;
+
+
+InputRender::form('', 'history-list', 'paper pad');?>
 
     <div class="paper-header">
         <h1 class="pad"><span class="nrFiltered"><?=h($rowsTotal)?></span> &#8725; <?=h($rowsTotal)?> <?=t($pgTitle);?></h1>
@@ -16,5 +19,5 @@
 <?php   renderPaginationFooter($pagination) ?>
 
 
-<?php   renderFormEnd(); ?>
+<?php   InputRender::renderFormEnd(); ?>
 

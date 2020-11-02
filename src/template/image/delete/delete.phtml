@@ -1,7 +1,8 @@
 <?php use Galaxia\AppImage;
+use GalaxiaEditor\input\InputRender;
 
 
-renderForm('', 'image-delete', 'image image-delete paper pad'); ?>
+InputRender::form('', 'image-delete', 'image image-delete paper pad'); ?>
 
     <div class="paper-header pad">
         <h1><?=h($pgTitle)?></h1>
@@ -24,4 +25,4 @@ renderForm('', 'image-delete', 'image image-delete paper pad'); ?>
         </div>
     </div>
 
-<?php   renderFormEnd(); ?>
+<?php   InputRender::renderFormEnd(); ?>
