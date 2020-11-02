@@ -20,29 +20,26 @@ Aspects of this have been posted in various comments but it's helpful to make it
 The custom session handler seems to perform actions in these orders:
 
 When session_start() is called:
-
-open
-read
-clean (if cleaning is being done this call)
-write
-close
+    open
+    read
+    clean (if cleaning is being done this call)
+    write
+    close
 
 When session_destroy() is called after session_start():
-
-open
-read
-clean (if cleaning is being done this call)
-destroy
-close
+    open
+    read
+    clean (if cleaning is being done this call)
+    destroy
+    close
 
 When session_regenerate_id(1) is called after session_start():
-
-open
-read
-clean (if cleaning is being done this call)
-destroy
-write
-close
+    open
+    read
+    clean (if cleaning is being done this call)
+    destroy
+    write
+    close
 
 */
 

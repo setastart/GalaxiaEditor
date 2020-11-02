@@ -39,21 +39,6 @@ class Director {
      */
     static $ajax = false;
 
-    /**
-     * @deprecated
-     */
-    static $pDefault = [
-        'id'      => '', // current subpage or page id
-        'type'    => 'default',
-        'status'  => 1,
-        'url'     => [],
-        'slug'    => [],
-        'title'   => [],
-        'noindex' => false,
-        'ogImage' => '',
-    ];
-
-
     static $nofollowHosts = ['facebook', 'google', 'instagram', 'twitter', 'linkedin', 'youtube']; // todo: refactor
 
     private static $timers      = [];
@@ -179,11 +164,11 @@ class Director {
             exit();
         });
 
-        if (self::isDevEnv()) {
+        if (self::isDevEnv() || self::isCli()) {
             ini_set('display_errors', '1');
         } else {
+            ini_set('display_errors', '0');
         }
-        ini_set('display_errors', '0');
     }
 
 

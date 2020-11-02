@@ -54,7 +54,7 @@ class Request {
         $this->pathOriginal = strtok($this->uri, '?');
         $this->path         = gTranslit($this->pathOriginal);
 
-        $this->query  = $query ?? $_SERVER['QUERY_STRING'] ?? '';
+        $this->query = $query ?? $_SERVER['QUERY_STRING'] ?? '';
 
         $this->scheme = $scheme ?? $_SERVER['REQUEST_SCHEME'] ?? 'https';
         $this->scheme = in_array($this->scheme, ['http', 'https']) ? $this->scheme : 'https';
@@ -62,16 +62,16 @@ class Request {
         $this->method = $method ?? $_SERVER['REQUEST_METHOD'] ?? 'GET';
         $this->method = in_array($this->method, ['GET', 'POST']) ? $this->method : 'GET';
 
-        $this->xhr = $xhr ?? (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'XMLHttpRequest')    ;
+        $this->xhr  = $xhr ?? (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'XMLHttpRequest');
         $this->json = $json ?? (($_SERVER['HTTP_ACCEPT'] ?? '') == 'application/json');
 
         $this->get  = $get ?? $_GET ?? [];
         $this->post = $post ?? $_POST ?? [];
 
-        $this->minStatus       = 2;
-        $this->cacheBypass     = false;
-        $this->cacheBypassHtml = false;
-        $this->cacheWrite      = true;
+        $this->minStatus       = $minStatus ?? 2;
+        $this->cacheBypass     = $cacheBypass ?? false;
+        $this->cacheBypassHtml = $cacheBypassHtml ?? false;
+        $this->cacheWrite      = $cacheWrite ?? true;
     }
 
 

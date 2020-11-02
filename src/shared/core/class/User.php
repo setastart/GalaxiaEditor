@@ -55,7 +55,7 @@ class User {
                 '.' . $_SERVER['SERVER_NAME'],
                 isset($_SERVER['HTTPS']),
                 true
-            ); // 31536000 seconds = 1 year
+            );
         }
         session_set_save_handler(new Session('_geUser'), true);
         session_register_shutdown();
