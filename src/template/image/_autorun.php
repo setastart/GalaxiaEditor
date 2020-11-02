@@ -1,6 +1,9 @@
 <?php
 
 
+use Galaxia\AppImage;
+
+
 $pgTitle = t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
 $hdTitle = t('Editing') . ' ' . $pgTitle;
 
@@ -17,7 +20,7 @@ if ($imgSlug == 'new') return;
 
 // item validation
 
-if (!gImageValid($app->dirImage, $imgSlug)) {
+if (!AppImage::valid($app->dirImage, $imgSlug)) {
     error(sprintf(t('Image \'%s\' does not exist.'), h($imgSlug)));
     redirect('edit/' . $pgSlug);
 }
@@ -28,7 +31,7 @@ if (!gImageValid($app->dirImage, $imgSlug)) {
 // load image and build inputs
 
 $img = $app->imageGet($imgSlug, ['w' => 256, 'h' => 256, 'fit' => 'cover', 'version' => time(), 'extra' => ['type']]);
-$img['resizes'] = gImageGetResizes($app->dirImage, $imgSlug) ?? [];
+$img['resizes'] = AppImage::resizes($app->dirImage, $imgSlug) ?? [];
 
 
 $inputs = [

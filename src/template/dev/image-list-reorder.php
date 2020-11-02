@@ -1,13 +1,16 @@
 <?php
 
 
+use Galaxia\AppImage;
+
+
 $editor->view = 'dev/dev';
 
 
-$images = gImageList($app->dirImage);
+$images = AppImage::list($app->dirImage);
 
 foreach ($images as $imgSlug => $mtimeDir) {
-    if (!$ext = gImageValid($app->dirImage, $imgSlug)) continue;
+    if (!$ext = AppImage::valid($app->dirImage, $imgSlug)) continue;
     $mtime = filemtime($app->dirImage . $imgSlug . '/' . $imgSlug . $ext);
     touch($app->dirImage . $imgSlug . '/', $mtime);
 }

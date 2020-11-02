@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\AppImage;
 use Galaxia\ArrayShape;
 use Galaxia\Sql;
 use GalaxiaEditor\input\Input;
@@ -98,7 +99,7 @@ foreach ($itemChanges as $name => $value) {
 // rename
 
 if (isset($itemChanges['imgSlug'])) {
-    if (gImageSlugRename($app->dirImage, $imgSlug, $itemChanges['imgSlug'])) {
+    if (AppImage::slugRename($app->dirImage, $imgSlug, $itemChanges['imgSlug'])) {
         info(t('Updated') . ': ' . 'Slug');
         info(t('Updated'), 'form', 'imgSlug');
 

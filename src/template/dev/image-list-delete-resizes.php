@@ -1,14 +1,17 @@
 <?php
 
 
+use Galaxia\AppImage;
+
+
 $editor->view = 'dev/dev';
 
 
-$images = gImageList($app->dirImage);
+$images = AppImage::list($app->dirImage);
 
 $count = 0;
 foreach ($images as $imgSlug => $mtime) {
-    $count += gImageDeleteResizes($app->dirImage, $imgSlug);
+    $count += AppImage::deleteResizes($app->dirImage, $imgSlug);
     touch($app->dirImage . $imgSlug . '/', $mtime);
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, Pagination, Sql};
+use Galaxia\{AppImage, Director, Pagination, Sql};
 
 
 // ajax
@@ -242,7 +242,7 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
                                 } else {
                                     $img = $app->imageGet($value, ['w' => 256, 'h' => 256, 'fit' => 'cover', 'version' => 'mtime'], false);
                                     if ($img) {
-                                        $r .= gImageRender($img) . PHP_EOL;
+                                        $r .= AppImage::render($img) . PHP_EOL;
                                     } else {
                                         $r .= '<div class="nophoto" style="background-image:url(/edit/gfx/no-photo.png);"></div>' . PHP_EOL;
                                     }

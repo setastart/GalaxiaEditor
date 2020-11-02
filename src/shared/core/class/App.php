@@ -565,9 +565,9 @@ class App {
     // images
 
     public function imageGet($imgSlug, $img = [], $resize = true) {
-        $img = array_merge(PROTO_IMAGE, $img);
+        $img = array_merge(AppImage::PROTO_IMAGE, $img);
 
-        if (!$img['ext'] = gImageValid($this->dirImage, $imgSlug)) return [];
+        if (!$img['ext'] = AppImage::valid($this->dirImage, $imgSlug)) return [];
         $imgDir     = $this->dirImage . $imgSlug . '/';
         $imgDirSlug = $imgDir . $imgSlug;
 
@@ -620,7 +620,7 @@ class App {
         $img['wOriginal'] = (int)$dim[0];
         $img['hOriginal'] = (int)$dim[1];
 
-        $img = array_merge($img, gImageFit($img));
+        $img = array_merge($img, AppImage::fit($img));
         // ddp($img);
 
         $ratio       = $img['w'] / $img['h'];
@@ -748,7 +748,7 @@ class App {
             } catch (Exception $e) {
                 error($e->getMessage());
                 devlog($e->getTraceAsString());
-                if ($dirCreated) gImageDelete($this->dirImage, $fileSlug);
+                if ($dirCreated) AppImage::delete($this->dirImage, $fileSlug);
                 if ($dirCreated) rmdir($fileDir);
                 continue;
             }
@@ -759,7 +759,7 @@ class App {
                     if ($format == $imageVips->ext) continue;
                     if (file_exists($fileDir . $fileSlug . $format)) unlink($fileDir . $fileSlug . $format);
                 }
-                gImageDeleteResizes($this->dirImage, $fileSlug);
+                AppImage::deleteResizes($this->dirImage, $fileSlug);
             }
 
 

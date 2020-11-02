@@ -1,6 +1,7 @@
 <?php
 
 
+use Galaxia\AppImage;
 use Galaxia\Director;
 use Galaxia\Scrape\Scrape;
 use Galaxia\Scrape\Vimeo;
@@ -15,7 +16,7 @@ if ($r[Scrape::DATA][Vimeo::IMG_SLUG] ?? '') {
     $app     = Director::getApp();
     $imgSlug = $r[Scrape::DATA][Vimeo::IMG_SLUG];
 
-    if (gImageValid($app->dirImage, $imgSlug)) {
+    if (AppImage::valid($app->dirImage, $imgSlug)) {
         $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_EXISTS;
     } else {
         $imgUrl = $r[Scrape::DATA][Vimeo::IMG_URL];

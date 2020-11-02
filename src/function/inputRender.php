@@ -2,6 +2,7 @@
 
 
 use Galaxia\App;
+use Galaxia\AppImage;
 use Galaxia\Director;
 use GalaxiaEditor\input\Input;
 
@@ -238,7 +239,7 @@ $ht .= '    <div class="input-label">' .
         $imgType = t($input['options']['imgType'] ?? '');
         if ($img = $app->imageGet($input['value'] ?? '', ['w' => 256, 'h' => 256, 'fit' => 'cover', 'version' => 'mtime'], false)) {
 $ht .= '    <button type="button" class="slugImage figure" data-imgtype="' . $imgType . '">' . PHP_EOL;
-$ht .= '        ' . gImageRender($img) . PHP_EOL;
+$ht .= '        ' . AppImage::render($img) . PHP_EOL;
 $ht .= '    </button>' . PHP_EOL;
         } else {
 $ht .= '    <button type="button" class="slugImage figure empty" data-imgtype="' . h($imgType) . '">' . PHP_EOL;

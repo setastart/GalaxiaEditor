@@ -1,5 +1,8 @@
 <?php
 
+use Galaxia\AppImage;
+
+
 $editor->view = 'image/delete/delete';
 
 
@@ -7,7 +10,7 @@ $editor->view = 'image/delete/delete';
 
 // item validation
 
-if (!gImageDelete($app->dirImage, $imgSlug)) {
+if (!AppImage::delete($app->dirImage, $imgSlug)) {
     error('image-delete-post - Unable to delete image: ' . h($imgSlug));
     return;
 }

@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, Pagination, Sql};
+use Galaxia\{AppImage, Director, Pagination, Sql};
 
 
 // ajax
@@ -18,7 +18,7 @@ if (Director::$ajax) {
 
 $items = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-items', function() use ($app) {
     $items = [];
-    $imageList = gImageList($app->dirImage);
+    $imageList = AppImage::list($app->dirImage);
 
     foreach ($imageList as $imgSlug => $mtime) {
         if (!$img = $app->imageGet($imgSlug, ['w' => 256, 'h' => 256, 'fit' => 'cover', 'extra' => ['type'], 'version' => 'mtime', 'fileSize' => true], false)) continue;
@@ -122,7 +122,7 @@ switch ($_POST['imageListType'] ?? '') {
 $ht = '';
 $ht .= '<button type="button" id="' . h($imgSlug) . '" class="imageSelectItem">' . PHP_EOL;
 $ht .= '    <figure>' . PHP_EOL;
-$ht .= '        ' . gImageRender($img) . PHP_EOL;
+$ht .= '        ' . AppImage::render($img) . PHP_EOL;
 $ht .= '    </figure>' . PHP_EOL;
 $ht .= '    <p>' . h($imgSlug) . '</p>' . PHP_EOL;
 $ht .= '</button>' . PHP_EOL;
@@ -145,7 +145,7 @@ $ht = '';
 $ht .= '<a class="row row-image" href="/edit/' . $editor->imageSlug .  '/' . $imgSlug . '">' . PHP_EOL;
 $ht .= '    <div class="col flexT">' . PHP_EOL;
 $ht .= '        <div class="col-thumb figure single">' . PHP_EOL;
-$ht .= '            ' . gImageRender($img) . PHP_EOL;
+$ht .= '            ' . AppImage::render($img) . PHP_EOL;
 $ht .= '        </div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;

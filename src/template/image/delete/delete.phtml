@@ -1,4 +1,7 @@
-<?php   renderForm('', 'image-delete', 'image image-delete paper pad'); ?>
+<?php use Galaxia\AppImage;
+
+
+renderForm('', 'image-delete', 'image image-delete paper pad'); ?>
 
     <div class="paper-header pad">
         <h1><?=h($pgTitle)?></h1>
@@ -9,7 +12,7 @@
 
     <div class="image-preview pad">
         <figure>
-            <?=gImageRender($img), PHP_EOL?>
+            <?=AppImage::render($img), PHP_EOL?>
         </figure>
     </div>
 
