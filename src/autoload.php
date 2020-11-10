@@ -50,7 +50,6 @@ if (Director::isDevEnv()) {
             $dump = preg_replace('/=>\n\s+/m', ' => ', (string)$dump);
             $dump = str_replace('<?php ', '', (string)$dump);
             echo $dump;
-            ob_end_clean();
         }
     }
     function s(...$vars) { d($vars); }
@@ -78,7 +77,6 @@ if (Director::isDevEnv()) {
 
 
 require_once __DIR__ . '/shared/core/function/polyfill.php';
-require_once __DIR__ . '/shared/core/function/calendar.php';
 require_once __DIR__ . '/shared/core/function/error.php';
 require_once __DIR__ . '/shared/core/function/gFile.php';
 require_once __DIR__ . '/shared/core/function/text.php';
