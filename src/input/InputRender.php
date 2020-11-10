@@ -7,6 +7,7 @@ namespace GalaxiaEditor\input;
 use Galaxia\App;
 use Galaxia\AppImage;
 use Galaxia\Director;
+use Galaxia\Flash;
 
 
 class InputRender {
@@ -109,7 +110,7 @@ $ht .= '</div>' . PHP_EOL;
         $input = array_merge(Input::PROTO_INPUT, $input);
         if ($input['type'] == 'none') return;
 
-        $input['infos'] = infos('form', $input['name']);
+        $input['infos'] = Flash::infos('form', $input['name']);
 
         $css = 'input-wrap input-wrap-' . $input['type'];
         $css .= $input['lang'] ? ' hide-lang-' . $input['lang'] : '';

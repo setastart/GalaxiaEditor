@@ -2,6 +2,7 @@
 
 use Galaxia\AppImage;
 use Galaxia\Director;
+use Galaxia\Flash;
 
 
 $editor->view = 'image/delete/delete';
@@ -12,7 +13,7 @@ $editor->view = 'image/delete/delete';
 // item validation
 
 if (!AppImage::delete($app->dirImage, $imgSlug)) {
-    error('image-delete-post - Unable to delete image: ' . h($imgSlug));
+    Flash::error('image-delete-post - Unable to delete image: ' . h($imgSlug));
     return;
 }
 
@@ -23,5 +24,5 @@ if (!AppImage::delete($app->dirImage, $imgSlug)) {
 
 $app->cacheDelete(['app', 'fastroute']);
 $app->cacheDelete('editor', 'imageList-' . $pgSlug);
-info('Deleted image: ' . h($imgSlug));
+Flash::info('Deleted image: ' . h($imgSlug));
 Director::redirect('edit/' . $pgSlug);

@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Director;
+use Galaxia\Flash;
 use GalaxiaEditor\input\Input;
 
 
@@ -22,14 +23,14 @@ foreach ($inputs as $inputKey => $input) {
 
 foreach ($inputs as $input) {
     foreach ($input['errors'] as $msg) {
-        error($msg, 'form', $input['name']);
+        Flash::error($msg, 'form', $input['name']);
         if ($input['lang']) {
             $langSelectClass[$input['lang']] = 'btn-red';
         }
     }
 }
 
-if (hasError()) return;
+if (Flash::hasError()) return;
 
 
 

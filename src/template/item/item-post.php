@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Director;
+use Galaxia\Flash;
 use Galaxia\Sql;
 
 
@@ -31,9 +32,9 @@ foreach ($_POST['modules'] ?? [] as $moduleKey => $postModule) {
 
 // finish validation
 
-if (hasError()) return;
+if (Flash::hasError()) return;
 if (!$itemChanges && !$fieldsNew && !$fieldsDel && !$fieldsUpd) {
-    warning(t('No changes were made.'));
+    Flash::warning(t('No changes were made.'));
     if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
     return;
 }
@@ -101,9 +102,9 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
                 $affectedRows = $stmt->affected_rows;
                 $stmt->close();
 
-                devlog('item-post - deleted ' . $affectedRows . ' old redirect slug: ' . h($oldSlug));
+                Flash::devlog('item-post - deleted ' . $affectedRows . ' old redirect slug: ' . h($oldSlug));
             } catch (Exception $e) {
-                devlog('item-post - could not delete old redirect slug: ' . h($oldSlug));
+                Flash::devlog('item-post - could not delete old redirect slug: ' . h($oldSlug));
             }
 
             try {
@@ -116,10 +117,10 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
                 $success = $stmt->execute();
                 $itemIdNew = $stmt->insert_id;
                 $stmt->close();
-                if ($success) info('item-post - added redirect slug: ' . h($oldSlug));
+                if ($success) Flash::info('item-post - added redirect slug: ' . h($oldSlug));
             } catch (Exception $e) {
-                devlog('item-post - Unable to insert redirect slug: ' . h($oldSlug));
-                devlog($e->getMessage());
+                Flash::devlog('item-post - Unable to insert redirect slug: ' . h($oldSlug));
+                Flash::devlog($e->getMessage());
                 return;
             }
 

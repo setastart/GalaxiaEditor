@@ -1,36 +1,40 @@
-<?php   use Galaxia\Director; ?>
+<?php use Galaxia\Director;
+use Galaxia\Flash;
+
+
+?>
 <div id="msgboxes">
-<?php   if (hasError('errorBox')) { ?>
+<?php   if (Flash::hasError('errorBox')) { ?>
     <ul id="msgbox-error" class="msgbox pad">
         <div class="msgbox-title"><?=t('Errors')?>:</div>
-<?php       foreach (errors('errorBox') as $log) { ?>
+<?php       foreach (Flash::errors('errorBox') as $log) { ?>
 <?php           if (is_array($log)) continue; ?>
         <li><?=$log?></li>
 <?php       } ?>
     </ul>
 <?php   } ?>
-<?php   if (hasWarning('warningBox')) { ?>
+<?php   if (Flash::hasWarning('warningBox')) { ?>
     <ul id="msgbox-warning" class="msgbox pad">
         <div class="msgbox-title"><?=t('Warnings')?>:</div>
-<?php       foreach (warnings('warningBox') as $log) { ?>
+<?php       foreach (Flash::warnings('warningBox') as $log) { ?>
 <?php           if (is_array($log)) continue; ?>
         <li><?=$log?></li>
 <?php       } ?>
     </ul>
 <?php   } ?>
-<?php   if (hasInfo('infoBox')) { ?>
+<?php   if (Flash::hasInfo('infoBox')) { ?>
     <ul id="msgbox-info" class="msgbox pad">
         <div class="msgbox-title"><?=t('Information')?>:</div>
-<?php       foreach (infos('infoBox') as $log) { ?>
+<?php       foreach (Flash::infos('infoBox') as $log) { ?>
 <?php           if (is_array($log)) continue; ?>
         <li><?=$log?></li>
 <?php       } ?>
     </ul>
 <?php   } ?>
-<?php   if (hasDevlog('devlogBox') && Director::isDev()) { ?>
+<?php   if (Flash::hasDevlog('devlogBox') && Director::isDev()) { ?>
     <ul id="msgbox-devlog" class="msgbox pad">
         <div class="msgbox-title"><?=t('Devlog')?>:</div>
-<?php       foreach (devlogs('devlogBox') as $log) { ?>
+<?php       foreach (Flash::devlogs('devlogBox') as $log) { ?>
 <?php           if (is_array($log)) continue; ?>
         <li><?=$log?></li>
 <?php       } ?>

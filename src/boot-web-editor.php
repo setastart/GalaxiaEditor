@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{ArrayShape, Authentication, Director, FastRoute};
+use Galaxia\{ArrayShape, Authentication, Director, FastRoute, Flash};
 use GalaxiaEditor\config\Config;
 use GalaxiaEditor\config\ConfigDb;
 
@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.10.0';
+$editor->version = '4.12.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -405,8 +405,8 @@ Director::timerStop('logic');
 
 // POST actions
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && hasError()) {
-    error(t('Form errors found.'));
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && Flash::hasError()) {
+    Flash::error(t('Form errors found.'));
 }
 
 

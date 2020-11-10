@@ -4,6 +4,7 @@
 namespace GalaxiaEditor\input;
 
 
+use Galaxia\Flash;
 use Normalizer;
 
 
@@ -325,7 +326,7 @@ class Input {
             $input['valueToDb'] = $input['value'];
         } else {
             foreach ($input['errors'] as $msg) {
-                error($msg, 'form', $input['name']);
+                Flash::error($msg, 'form', $input['name']);
             }
         }
 

@@ -4,6 +4,7 @@
 namespace GalaxiaEditor\config;
 
 
+use Galaxia\Flash;
 use GalaxiaEditor\input\Input;
 
 
@@ -218,7 +219,7 @@ class Config {
             if (substr($key, 0, 1) == '?') continue;
             if (isset($schema['?' . $key])) continue;
 
-            devlog($errorString . ' - extra keys: ' . $key);
+            Flash::devlog($errorString . ' - extra keys: ' . $key);
         }
     }
 

@@ -2,6 +2,7 @@
 
 // insert item history
 use Galaxia\Director;
+use Galaxia\Flash;
 
 
 foreach ($item['inputs'] as $inputName => $input) {
@@ -24,6 +25,6 @@ foreach ($modules as $moduleKey => $module) {
             break;
     }
 }
-info('Saved in History: ' . $geConf[$pgSlug]['gcTitleSingle']);
+Flash::info('Saved in History: ' . $geConf[$pgSlug]['gcTitleSingle']);
 
 Director::redirect('edit/' . $pgSlug);

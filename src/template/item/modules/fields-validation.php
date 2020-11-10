@@ -1,6 +1,7 @@
 <?php
 
 
+use Galaxia\Flash;
 use Galaxia\Sql;
 use GalaxiaEditor\input\Input;
 
@@ -8,7 +9,7 @@ use GalaxiaEditor\input\Input;
 foreach ($postModule as $fieldKey => $fields) {
 
     if (!isset($modules[$moduleKey]['inputs'][$fieldKey])) {
-        error('Invalid input field name: ' . h($fieldKey));
+        Flash::error('Invalid input field name: ' . h($fieldKey));
         continue;
     }
 
@@ -30,18 +31,18 @@ foreach ($postModule as $fieldKey => $fields) {
         // new fields
         if (is_string($fieldVal)) {
             if (substr($fieldVal, 0, 4) != 'new-') {
-                error('Invalid new input field name: ' . h($fieldKey) . '/' . h($fieldVal));
+                Flash::error('Invalid new input field name: ' . h($fieldKey) . '/' . h($fieldVal));
                 continue;
             }
             $newId = substr($fieldVal, 4);
             if (!ctype_digit($newId)) {
-                error('Invalid new input field id: ' . h($fieldKey) . '/' . h($fieldVal));
+                Flash::error('Invalid new input field id: ' . h($fieldKey) . '/' . h($fieldVal));
                 continue;
             }
             $newId = (int)$newId;
 
             if (!isset($modules[$moduleKey]['inputs'][$fieldKey]['new-0'])) {
-                error('Missing new input field id in module: ' . h($fieldKey) . '/new-0');
+                Flash::error('Missing new input field id in module: ' . h($fieldKey) . '/new-0');
                 continue;
             }
 
@@ -52,7 +53,7 @@ foreach ($postModule as $fieldKey => $fields) {
                     if (in_array($val, ['', 'on']))
                         $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId]['delete'] = $val;
                     else
-                        error('Invalid new input field delete: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
+                        Flash::error('Invalid new input field delete: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
                     continue;
                 }
                 if ($name == 'position') {
@@ -60,7 +61,7 @@ foreach ($postModule as $fieldKey => $fields) {
                         $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId]['position'] = $val;
                         $fieldsNew[$moduleKey][$fieldKey][$fieldVal][$name] = $val;
                     } else {
-                        error('Invalid new input field position: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
+                        Flash::error('Invalid new input field position: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
                     }
                     continue;
                 }
@@ -80,7 +81,7 @@ foreach ($postModule as $fieldKey => $fields) {
         }
 
         if (!is_int($fieldVal)) {
-            error('Invalid input field id - not numeric: ' . h($fieldKey) . '/' . h($fieldVal));
+            Flash::error('Invalid input field id - not numeric: ' . h($fieldKey) . '/' . h($fieldVal));
             continue;
         }
 
@@ -97,7 +98,7 @@ foreach ($postModule as $fieldKey => $fields) {
                 if (in_array($val, ['', 'on']))
                     $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal]['delete'] = $val;
                 else
-                    error('Invalid new input field delete: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
+                    Flash::error('Invalid new input field delete: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
                 continue;
             }
             if ($name == 'position') {
@@ -107,7 +108,7 @@ foreach ($postModule as $fieldKey => $fields) {
                         $fieldsUpd[$moduleKey][$fieldKey][$fieldVal][$name] = $val;
                     }
                 } else {
-                    error('Invalid new input field position: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
+                    Flash::error('Invalid new input field position: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
                 }
                 continue;
             }
@@ -176,7 +177,7 @@ foreach ($postModule as $fieldKey => $fields) {
                 $fieldValSearch = array_search($current_array, $visited);
                 if ($fieldVal != $fieldValSearch) {
                     foreach ($current_array as $unique => $values) {
-                        error($msg, 'form', $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['name']);
+                        Flash::error($msg, 'form', $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['name']);
                         $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['errors'][] = $msg;
                         if ($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['lang']) {
                             $langSelectClass[$modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['lang']] = 'btn-red';
@@ -229,7 +230,7 @@ foreach ($postModule as $fieldName => $fieldValue) {
         }
 
         foreach ($input['errors'] as $msg) {
-            error($msg, 'form', $input['name']);
+            Flash::error($msg, 'form', $input['name']);
             if ($input['lang']) {
                 $langSelectClass[$input['lang']] = 'btn-red';
             }

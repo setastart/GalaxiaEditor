@@ -443,7 +443,7 @@ class App {
         $stmt->close();
 
         if (empty($pages)) {
-            devlog('Sitemap not generated.');
+            Flash::devlog('Sitemap not generated.');
 
             return;
         }
@@ -540,19 +540,19 @@ class App {
         if ($found > 0) {
             $result = file_put_contents($this->dir . 'public/sitemap.xml', $r);
             if ($result === false) {
-                devlog('Sitemap could not be written to file.');
+                Flash::devlog('Sitemap could not be written to file.');
 
                 return;
             }
             if ($result == 0) {
-                devlog('Sitemap written with 0 bytes.');
+                Flash::devlog('Sitemap written with 0 bytes.');
 
                 return;
             }
 
-            devlog(sprintf('Sitemap generated: %d items', $found) . ' <a target="blank" href="/sitemap.xml">' . t('Open in new tab') . '</a>');
+            Flash::devlog(sprintf('Sitemap generated: %d items', $found) . ' <a target="blank" href="/sitemap.xml">' . t('Open in new tab') . '</a>');
         } else {
-            devlog('Sitemap not generated, no items found.');
+            Flash::devlog('Sitemap not generated, no items found.');
         }
     }
 
@@ -704,8 +704,8 @@ class App {
             try {
                 $imageVips = new ImageVips($fileNameTemp);
             } catch (Exception $e) {
-                error($e->getMessage());
-                devlog($e->getTraceAsString());
+                Flash::error($e->getMessage());
+                Flash::devlog($e->getTraceAsString());
                 continue;
             }
 
@@ -727,7 +727,7 @@ class App {
                     if (mkdir($fileDir)) {
                         $dirCreated = true;
                     } else {
-                        error('Unable to create directory: ' . h($fileDir));
+                        Flash::error('Unable to create directory: ' . h($fileDir));
                         continue;
                     }
                 }
@@ -735,7 +735,7 @@ class App {
                 if (mkdir($fileDir)) {
                     $dirCreated = true;
                 } else {
-                    error('Unable to create directory: ' . h($fileDir));
+                    Flash::error('Unable to create directory: ' . h($fileDir));
                     continue;
                 }
             }
@@ -743,8 +743,8 @@ class App {
             try {
                 $imageVips->save($fileDir . $fileSlug, $replace, $toFit);
             } catch (Exception $e) {
-                error($e->getMessage());
-                devlog($e->getTraceAsString());
+                Flash::error($e->getMessage());
+                Flash::devlog($e->getTraceAsString());
                 if ($dirCreated) AppImage::delete($this->dirImage, $fileSlug);
                 if ($dirCreated) rmdir($fileDir);
                 continue;
@@ -771,16 +771,16 @@ class App {
             // finish
             if ($replace) {
                 if ($imageVips->resized)
-                    info('Resized image: ' . h($fileSlug . $imageVips->ext));
+                    Flash::info('Resized image: ' . h($fileSlug . $imageVips->ext));
                 else
-                    info('Replaced image: ' . h($fileSlug . $imageVips->ext));
+                    Flash::info('Replaced image: ' . h($fileSlug . $imageVips->ext));
 
                 if ($mtime) {
                     touch($fileDir . $fileSlug . $imageVips->ext, $mtime);
                     touch($this->dirImage . $fileSlug . '/', $mtime);
                 }
             } else {
-                info('Uploaded image: ' . h($fileSlug . $imageVips->ext));
+                Flash::info('Uploaded image: ' . h($fileSlug . $imageVips->ext));
             }
             $uploaded[] = [
                 'slug'     => $fileSlug,
@@ -855,7 +855,7 @@ class App {
         }
 
         if (!is_array($result)) {
-            error('Cache: invalid result');
+            Flash::error('Cache: invalid result');
         }
 
         Director::timerStop($timerName);
@@ -891,7 +891,7 @@ class App {
             $total++;
         }
 
-        devlog(implode(', ', $scopes) . ': caches deleted: ' . $deleted . '/' . $total);
+        Flash::devlog(implode(', ', $scopes) . ': caches deleted: ' . $deleted . '/' . $total);
 
         $pattern = $this->dirCache . 'editor/list-history-*.cache';
         $glob    = glob($pattern, GLOB_NOSORT);
@@ -905,7 +905,7 @@ class App {
                 if (unlink($fileName)) $deleted++;
                 $total++;
             }
-            if ($deleted) devlog('nginx caches deleted: ' . $deleted . '/' . $total);
+            if ($deleted) Flash::devlog('nginx caches deleted: ' . $deleted . '/' . $total);
         }
         if (is_dir($this->dirCache . 'nginxAjax/')) {
             $glob    = glob($this->dirCache . 'nginxAjax/*/*/*');
@@ -915,7 +915,7 @@ class App {
                 if (unlink($fileName)) $deleted++;
                 $total++;
             }
-            if ($deleted) devlog('nginxAjax caches deleted: ' . $deleted . '/' . $total);
+            if ($deleted) Flash::devlog('nginxAjax caches deleted: ' . $deleted . '/' . $total);
         }
     }
 
@@ -944,7 +944,7 @@ class App {
             $total++;
         }
 
-        devlog('ALL caches deleted: ' . $deleted . '/' . $total);
+        Flash::devlog('ALL caches deleted: ' . $deleted . '/' . $total);
 
         if (is_dir($this->dirCache . 'nginx/')) {
             $glob    = glob($this->dirCache . 'nginx/*/*/*');
@@ -954,7 +954,7 @@ class App {
                 if (unlink($fileName)) $deleted++;
                 $total++;
             }
-            if ($deleted) devlog('nginx caches deleted: ' . $deleted);
+            if ($deleted) Flash::devlog('nginx caches deleted: ' . $deleted);
         }
         if (is_dir($this->dirCache . 'nginxAjax/')) {
             $glob    = glob($this->dirCache . 'nginxAjax/*/*/*');
@@ -964,7 +964,7 @@ class App {
                 if (unlink($fileName)) $deleted++;
                 $total++;
             }
-            if ($deleted) devlog('nginxAjax caches deleted: ' . $deleted);
+            if ($deleted) Flash::devlog('nginxAjax caches deleted: ' . $deleted);
         }
     }
 
@@ -982,7 +982,7 @@ class App {
                 if ($now - filemtime($fileName) >= $old)
                     if (unlink($fileName)) $deleted++;
 
-        devlog('App old caches deleted: ' . $deleted);
+        Flash::devlog('App old caches deleted: ' . $deleted);
     }
 
 }

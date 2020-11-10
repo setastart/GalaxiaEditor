@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Director;
+use Galaxia\Flash;
 use GalaxiaEditor\input\Input;
 
 
@@ -32,13 +33,13 @@ foreach ($inputs as $inputKey => $input) {
 
 foreach ($inputs as $input) {
     foreach ($input['errors'] as $msg) {
-        error($msg, 'form', $input['name']);
+        Flash::error($msg, 'form', $input['name']);
         if ($input['lang']) {
             $langSelectClass[$input['lang']] = 'btn-red';
         }
     }
 }
-if (hasError()) return;
+if (Flash::hasError()) return;
 
 
 
@@ -50,27 +51,27 @@ foreach ($uploaded as $img) {
     if ($type) {
         $file = $app->dirImage . $img['slug'] . '/' . $img['slug'] . '_type.txt';
         if (file_put_contents($file, $type) !== false) {
-            info('Updated: ' . t('Image Type'));
+            Flash::info('Updated: ' . t('Image Type'));
         } else {
-            error('Not updated: ' . t('Image Type'));
+            Flash::error('Not updated: ' . t('Image Type'));
         }
     }
 
     if (!$img['replaced'] && $img['fileName']) {
         $file = $app->dirImage . $img['slug'] . '/' . $img['slug'] . '_alt_' . $app->lang . '.txt';
         if (file_put_contents($file, $img['fileName']) !== false) {
-            info('Updated: ' . t('Image Alt'));
+            Flash::info('Updated: ' . t('Image Alt'));
         } else {
-            error('Not updated: ' . t('Image Alt'));
+            Flash::error('Not updated: ' . t('Image Alt'));
         }
     }
 }
-foreach (errors('errorBox') as $msg) {
+foreach (Flash::errors('errorBox') as $msg) {
     $inputs['images']['errors'][] = $msg;
-    error($msg, 'form', $inputs['images']);
+    Flash::error($msg, 'form', $inputs['images']);
 }
 
-if (hasError()) return;
+if (Flash::hasError()) return;
 
 
 

@@ -3,6 +3,7 @@
 use Galaxia\AppImage;
 use Galaxia\ArrayShape;
 use Galaxia\Director;
+use Galaxia\Flash;
 use Galaxia\Sql;
 use GalaxiaEditor\input\Input;
 
@@ -24,7 +25,7 @@ foreach ($inputs as $name => $input) {
         if ($value && is_dir($app->dirImage . $value)) {
             $msg               = 'Must be unique. An item with that value already exists.';
             $input['errors'][] = $msg;
-            error($msg, 'form', $input['name']);
+            Flash::error($msg, 'form', $input['name']);
             if ($input['lang']) $langSelectClass[$input['lang']] = 'btn-red';
         }
     }
@@ -40,9 +41,9 @@ foreach ($inputs as $name => $input) {
 
 // finish validation
 
-if (hasError()) return;
+if (Flash::hasError()) return;
 if (!$itemChanges) {
-    warning(t('No changes were made.'));
+    Flash::warning(t('No changes were made.'));
     if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
 
     return;
@@ -68,11 +69,11 @@ foreach ($itemChanges as $name => $value) {
 
     $fp = fopen($file, 'w');
     if (fwrite($fp, $value)) {
-        info(t('Updated') . ': ' . $name);
-        info(t('Updated'), 'form', $name);
+        Flash::info(t('Updated') . ': ' . $name);
+        Flash::info(t('Updated'), 'form', $name);
     } else {
-        info(t('Not updated') . ': ' . $name);
-        info(t('Not updated'), 'form', $name);
+        Flash::info(t('Not updated') . ': ' . $name);
+        Flash::info(t('Not updated'), 'form', $name);
     }
     fclose($fp);
 }
@@ -86,11 +87,11 @@ touch($app->dirImage . $imgSlug . '/', $mtime);
 foreach ($itemChanges as $name => $value) {
     if ($name != 'timestampM') continue;
     if (touch($app->dirImage . $imgSlug . '/', strtotime($value))) {
-        info(t('Updated') . ': ' . $name);
-        info(t('Updated'), 'form', $name);
+        Flash::info(t('Updated') . ': ' . $name);
+        Flash::info(t('Updated'), 'form', $name);
     } else {
-        info(t('Not updated') . ': ' . $name);
-        info(t('Not updated'), 'form', $name);
+        Flash::info(t('Not updated') . ': ' . $name);
+        Flash::info(t('Not updated'), 'form', $name);
     }
 }
 
@@ -101,8 +102,8 @@ foreach ($itemChanges as $name => $value) {
 
 if (isset($itemChanges['imgSlug'])) {
     if (AppImage::slugRename($app->dirImage, $imgSlug, $itemChanges['imgSlug'])) {
-        info(t('Updated') . ': ' . 'Slug');
-        info(t('Updated'), 'form', 'imgSlug');
+        Flash::info(t('Updated') . ': ' . 'Slug');
+        Flash::info(t('Updated'), 'form', 'imgSlug');
 
         foreach ($geConf[$pgSlug]['gcImagesInUse'] as $table => $inUse) {
             $imgSlugCol = $inUse['gcSelect'][$table][0];
@@ -123,16 +124,16 @@ if (isset($itemChanges['imgSlug'])) {
                 $affectedRows = $stmt->affected_rows;
                 $stmt->close();
             } catch (Exception $e) {
-                error('image-update - Unable to rename database image slug in: ' . h($table));
-                error($e->getMessage());
+                Flash::error('image-update - Unable to rename database image slug in: ' . h($table));
+                Flash::error($e->getMessage());
                 continue;
             }
             if ($affectedRows)
-                info(h($table) . ': Renamed slugs: ' . h($affectedRows));
+                Flash::info(h($table) . ': Renamed slugs: ' . h($affectedRows));
         }
         $imgSlug = $itemChanges['imgSlug'];
     } else {
-        error('image-update - Unable to update image slug: ' . $imgSlug);
+        Flash::error('image-update - Unable to update image slug: ' . $imgSlug);
     }
 }
 

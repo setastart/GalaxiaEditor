@@ -77,7 +77,6 @@ if (Director::isDevEnv()) {
 
 
 require_once __DIR__ . '/shared/core/function/polyfill.php';
-require_once __DIR__ . '/shared/core/function/error.php';
 require_once __DIR__ . '/shared/core/function/gFile.php';
 require_once __DIR__ . '/shared/core/function/text.php';
 require_once __DIR__ . '/shared/core/function/util.php';

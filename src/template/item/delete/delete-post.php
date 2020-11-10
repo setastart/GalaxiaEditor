@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Director;
+use Galaxia\Flash;
 use Galaxia\Sql;
 
 
@@ -21,12 +22,12 @@ try {
     $stmt->close();
 
     if ($affectedRows < 1) {
-        error('delete-post - Unable to delete from database.');
+        Flash::error('delete-post - Unable to delete from database.');
         return;
     }
 } catch (Exception $e) {
-    error('delete-post - Unable to delete item.');
-    error($e->getMessage());
+    Flash::error('delete-post - Unable to delete item.');
+    Flash::error($e->getMessage());
     return;
 }
 
@@ -61,7 +62,7 @@ foreach ($modules as $moduleKey => $module) {
 // finish
 
 $app->cacheDelete('editor');
-info(sprintf(t('Deleted: %s.'), t($geConf[$pgSlug]['gcTitleSingle'])));
+Flash::info(sprintf(t('Deleted: %s.'), t($geConf[$pgSlug]['gcTitleSingle'])));
 
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     $app->cacheDelete(['app', 'fastroute']);

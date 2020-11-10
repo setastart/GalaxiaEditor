@@ -486,7 +486,7 @@ class Authentication {
 
 
     function logout() {
-        cleanMessages();
+        Flash::cleanMessages();
         session_destroy();
         foreach ($_COOKIE as $key => $val) {
             setcookie(

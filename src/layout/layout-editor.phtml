@@ -1,6 +1,8 @@
 <?php
 
 use Galaxia\Director;
+use Galaxia\Flash;
+
 
 $permColors = [
     'dev' => '#fe9',
@@ -107,7 +109,7 @@ document.addEventListener('trix-file-accept', function(event) {
 
 <div id="openboxes">
 <?php   foreach (['error', 'info', 'warning'] as $box) { ?>
-<?php       if ($msgs = msgBoxes($box)) { ?>
+<?php       if ($msgs = Flash::msgBoxes($box)) { ?>
     <div id="openbox-<?=h($box)?>" class="openbox">
         <label for="switch-hide-msgbox-<?=h($box)?>" class="btn btn-pill btn-small btn-checkbox">
             <?=t(ucfirst($box))?>
@@ -119,7 +121,7 @@ document.addEventListener('trix-file-accept', function(event) {
 <?php   } ?>
 <?php   if (Director::isDev()) { ?>
 <?php       $box = 'devlog'; ?>
-<?php       if ($msgs = msgBoxes($box)) { ?>
+<?php       if ($msgs = Flash::msgBoxes($box)) { ?>
     <div id="openbox-<?=h($box)?>" class="openbox hide-perm-dev">
         <label for="switch-hide-msgbox-<?=h($box)?>" class="btn btn-pill btn-small btn-checkbox">
             <?=t(ucfirst($box))?>
@@ -194,4 +196,4 @@ document.addEventListener('trix-file-accept', function(event) {
 
 </body>
 </html>
-<?php   cleanMessages(); ?>
+<?php   Flash::cleanMessages(); ?>

@@ -169,7 +169,7 @@ class AppImage {
         $mtime  = filemtime($dirOld);
 
         if (!rename($dirOld, $dirNew)) {
-            error('Error renaming directory');
+            Flash::error('Error renaming directory');
 
             return false;
         }
@@ -185,7 +185,7 @@ class AppImage {
                 // $nameNew = str_replace($imgSlugOld, $imgSlugNew, $nameOld);
 
                 if (!rename($nameOld, $nameNew)) {
-                    error('Error renaming file:' . h($nameOld) . ' -> ' . h($nameNew));
+                    Flash::error('Error renaming file:' . h($nameOld) . ' -> ' . h($nameNew));
 
                     return false;
                 }
@@ -220,7 +220,7 @@ class AppImage {
 
         foreach ($resizes as $file) {
             if (!unlink($dirImage . $imgSlug . '/' . $file)) {
-                error('Error removing resized image: ' . h($imgSlug));
+                Flash::error('Error removing resized image: ' . h($imgSlug));
             }
         }
 

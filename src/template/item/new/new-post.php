@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Director;
+use Galaxia\Flash;
 use Galaxia\Sql;
 use GalaxiaEditor\input\Input;
 
@@ -32,7 +33,7 @@ foreach ($_POST['item'] ?? [] as $name => $value) {
     }
 
     foreach ($input['errors'] as $msg) {
-        error($msg, 'form', $input['name']);
+        Flash::error($msg, 'form', $input['name']);
         if ($input['lang']) {
             $langSelectClass[$input['lang']] = 'btn-red';
         }
@@ -44,9 +45,9 @@ foreach ($_POST['item'] ?? [] as $name => $value) {
     $item['inputs'][$name] = $input;
 }
 
-if (hasError()) return;
+if (Flash::hasError()) return;
 if (!$itemChanges) {
-    warning('Item not added.');
+    Flash::warning('Item not added.');
     if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
     return;
 }
@@ -68,13 +69,13 @@ try {
     $stmt->close();
 
     if (!$success) {
-        error('new-post - item not inserted.');
+        Flash::error('new-post - item not inserted.');
         return;
     }
 
 } catch (Exception $e) {
-    error('new-post - Unable to insert item.');
-    error($e->getMessage());
+    Flash::error('new-post - Unable to insert item.');
+    Flash::error($e->getMessage());
     return;
 }
 
@@ -92,7 +93,7 @@ foreach ($itemChanges as $key => $value)
 // finish
 
 $app->cacheDelete('editor');
-info(sprintf(t('Added: %s.'), t($geConf[$pgSlug]['gcTitleSingle'])));
+Flash::info(sprintf(t('Added: %s.'), t($geConf[$pgSlug]['gcTitleSingle'])));
 
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     $app->cacheDelete(['app', 'fastroute']);

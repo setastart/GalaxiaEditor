@@ -1,8 +1,9 @@
 <?php
 
 use Galaxia\Director;
+use Galaxia\Flash;
 
 
 $auth->logout();
-cleanMessages();
+Flash::cleanMessages();
 Director::redirect('edit', 303);

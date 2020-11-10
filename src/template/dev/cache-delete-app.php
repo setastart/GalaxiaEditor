@@ -1,9 +1,12 @@
 <?php
 
 
+use Galaxia\Flash;
+
+
 $editor->view = 'dev/dev';
 
 
 $app->cacheDelete(['app', 'fastroute']);
 
-info('app caches deleted');
+Flash::info('app caches deleted');

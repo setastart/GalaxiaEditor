@@ -5,6 +5,7 @@ namespace GalaxiaEditor\config;
 
 
 use Galaxia\Director;
+use Galaxia\Flash;
 
 
 class ConfigDb {
@@ -60,7 +61,7 @@ class ConfigDb {
             foreach ($columns as $col => $colSchema) {
 
                 if ($colSchema['DATA_TYPE'] == 'text' && $colSchema['IS_NULLABLE'] == 'NO') {
-                    error('schema: ' . $table . '/' . $col . ' - TEXT column should have IS_NULLABLE set');
+                    Flash::error('schema: ' . $table . '/' . $col . ' - TEXT column should have IS_NULLABLE set');
                     geD($table);
                     geErrorPage(500, 'config schema error');
                 }
@@ -270,17 +271,17 @@ class ConfigDb {
 
         if (isset($input['nullable'])) {
             if ($input['nullable'] && $dbSchema[$table][$col]['IS_NULLABLE'] == 'NO') {
-                error($errorString . ': input IS nullable but db table column is NOT.');
+                Flash::error($errorString . ': input IS nullable but db table column is NOT.');
                 geD($table, $col);
                 geErrorPage(500, 'config schema error');
             } else if (!$input['nullable'] && $dbSchema[$table][$col]['IS_NULLABLE'] == 'YES') {
-                error($errorString . ': input is NOT nullable but db table column IS.');
+                Flash::error($errorString . ': input is NOT nullable but db table column IS.');
                 geD($table, $col);
                 geErrorPage(500, 'config schema error');
             }
         } else {
             if ($dbSchema[$table][$col]['IS_NULLABLE'] == 'YES') {
-                error($errorString . ': input is NOT nullable but db table column IS.');
+                Flash::error($errorString . ': input is NOT nullable but db table column IS.');
                 geD($table, $col);
                 geErrorPage(500, 'config schema error');
             }
@@ -290,7 +291,7 @@ class ConfigDb {
     public static function gcTableExists($dbSchema, $errorString, $table) {
         $errorString .= '/' . $table;
         if (!isset($dbSchema[$table])) {
-            error($errorString . ': db table missing.');
+            Flash::error($errorString . ': db table missing.');
             geD($table);
             geErrorPage(500, 'config schema error');
         }
@@ -310,7 +311,7 @@ class ConfigDb {
         if (!$found) {
             $col         = implode(', ', $cols);
             $errorString .= '/' . $table . '/' . $col;
-            error($errorString . ': db column missing.');
+            Flash::error($errorString . ': db column missing.');
             geD('Table: ' . $table, 'Col: ' . $col);
             geErrorPage(500, 'config schema error');
         }
@@ -330,7 +331,7 @@ class ConfigDb {
         if (!$found) {
             $col         = implode(', ', $cols);
             $errorString .= '/' . $table . '/' . $col;
-            error($errorString . ': query column missing.');
+            Flash::error($errorString . ': query column missing.');
             geD('Table: ' . $table, 'Col: ' . $col);
             geErrorPage(500, 'config schema error');
         }

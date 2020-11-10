@@ -3,6 +3,7 @@
 
 use Galaxia\AppImage;
 use Galaxia\Director;
+use Galaxia\Flash;
 
 
 $pgTitle = t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
@@ -22,7 +23,7 @@ if ($imgSlug == 'new') return;
 // item validation
 
 if (!AppImage::valid($app->dirImage, $imgSlug)) {
-    error(sprintf(t('Image \'%s\' does not exist.'), h($imgSlug)));
+    Flash::error(sprintf(t('Image \'%s\' does not exist.'), h($imgSlug)));
     Director::redirect('edit/' . $pgSlug);
 }
 

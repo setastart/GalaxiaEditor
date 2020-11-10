@@ -2,6 +2,7 @@
 
 
 // insert fields
+use Galaxia\Flash;
 use Galaxia\Sql;
 
 
@@ -32,16 +33,16 @@ foreach ($fieldsNew as $moduleKey => $fields) {
                 $success    = $stmt->execute();
                 $insertedId = $stmt->insert_id;
                 $stmt->close();
-                info(sprintf(t('Added field: %s.'), t($fieldKey)));
+                Flash::info(sprintf(t('Added field: %s.'), t($fieldKey)));
                 foreach ($insert as $inputName => $value) {
                     if ($inputName == 'position') continue;
                     if (!isset($module['inputs'][$fieldKey][$fieldVal][$inputName]['name'])) continue;
-                    info(t('Added'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $insertedId . '][' . $inputName . ']');
+                    Flash::info(t('Added'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $insertedId . '][' . $inputName . ']');
                 }
 
             } catch (Exception $e) {
-                error('fields-update - Unable to insert field.');
-                error($e->getMessage());
+                Flash::error('fields-update - Unable to insert field.');
+                Flash::error($e->getMessage());
 
                 return;
             }
@@ -75,11 +76,11 @@ foreach ($fieldsDel as $moduleKey => $fields) {
             $success    = $stmt->execute();
             $insertedId = $stmt->insert_id;
             $stmt->close();
-            info(sprintf(t('Deleted field: %s.'), t($fieldKey)));
+            Flash::info(sprintf(t('Deleted field: %s.'), t($fieldKey)));
 
         } catch (Exception $e) {
-            error('fields-update - Unable to delete fields.');
-            error($e->getMessage());
+            Flash::error('fields-update - Unable to delete fields.');
+            Flash::error($e->getMessage());
 
             return;
         }
@@ -117,17 +118,17 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
                 $stmt->close();
 
                 if ($affectedRows < 1) {
-                    error('fields-update - Unable to update database.');
+                    Flash::error('fields-update - Unable to update database.');
                 } else {
-                    info(sprintf(t('Updated field: %s.'), t($fieldKey)));
+                    Flash::info(sprintf(t('Updated field: %s.'), t($fieldKey)));
 
                     foreach ($update as $inputName => $value) {
                         if ($inputName == 'position') continue;
                         $lang = isset($module['inputs'][$fieldKey][$fieldVal][$inputName]['lang']) ? $module['inputs'][$fieldKey][$fieldVal][$inputName]['lang'] . ' - ' : '';
                         if ($value) {
-                            info(t('Updated'), 'form', $module['inputs'][$fieldKey][$fieldVal][$inputName]['name']);
+                            Flash::info(t('Updated'), 'form', $module['inputs'][$fieldKey][$fieldVal][$inputName]['name']);
                         } else {
-                            info(t('Deleted'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputName . ']');
+                            Flash::info(t('Deleted'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputName . ']');
                         }
 
                         if ($item['gcTable'] == '_geUser') continue;
@@ -135,8 +136,8 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
                     }
                 }
             } catch (Exception $e) {
-                error('fields-update - Unable to save changes to field.');
-                error($e->getMessage());
+                Flash::error('fields-update - Unable to save changes to field.');
+                Flash::error($e->getMessage());
 
                 return;
             }
@@ -174,13 +175,13 @@ foreach ($modules as $module) {
             $stmt->close();
 
             if ($affectedRows > 0) {
-                info(sprintf(t('Empty fields deleted: %d'), $affectedRows));
+                Flash::info(sprintf(t('Empty fields deleted: %d'), $affectedRows));
             }
 
         } catch (Exception $e) {
-            error('fields-update - Unable to delete empty fields.');
+            Flash::error('fields-update - Unable to delete empty fields.');
             geD($query);
-            error($e->getMessage());
+            Flash::error($e->getMessage());
 
             return;
         }

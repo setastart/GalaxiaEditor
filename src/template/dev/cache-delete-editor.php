@@ -2,10 +2,11 @@
 
 
 use Galaxia\Director;
+use Galaxia\Flash;
 
 
 $app->cacheDelete('editor');
 
-info('editor caches deleted');
+Flash::info('editor caches deleted');
 
 Director::redirect('edit/' . $editor->homeSlug);

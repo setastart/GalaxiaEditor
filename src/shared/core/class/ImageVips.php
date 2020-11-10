@@ -69,7 +69,7 @@ class ImageVips {
                 if ($this->vips) {
                     $this->resized = true;
                 } else {
-                    devlog('Could not resize to fit - vips thumbnail.');
+                    Flash::devlog('Could not resize to fit - vips thumbnail.');
                 }
             }
         }
@@ -112,7 +112,7 @@ class ImageVips {
                 if ($compressed) {
                     file_put_contents($out, $compressed);
                 } else {
-                    devlog('Could not pngquant image.');
+                    Flash::devlog('Could not pngquant image.');
                 }
             } catch (Exception $e) {
                 throw $e;

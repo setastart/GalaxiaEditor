@@ -1,6 +1,7 @@
 <?php
 
 
+use Galaxia\Flash;
 use Galaxia\Sql;
 
 
@@ -26,12 +27,12 @@ try {
     $stmt->close();
 
     if ($affectedRows < 1) {
-        error('item-update - Unable to update database.');
+        Flash::error('item-update - Unable to update database.');
     } else {
         foreach ($itemChanges as $inputKey => $content) {
             $lang = $item['inputs'][$inputKey]['lang'] ? ' - ' . $item['inputs'][$inputKey]['lang'] : '';
-            info(t('Updated') . ': ' . t($item['inputs'][$inputKey]['label']) . $lang);
-            info(t('Updated'), 'form', $item['inputs'][$inputKey]['name']);
+            Flash::info(t('Updated') . ': ' . t($item['inputs'][$inputKey]['label']) . $lang);
+            Flash::info(t('Updated'), 'form', $item['inputs'][$inputKey]['name']);
 
             if ($item['gcTable'] == '_geUser')
                 if ($inputKey == 'passwordHash')
@@ -41,7 +42,7 @@ try {
         }
     }
 } catch (Exception $e) {
-    error('item-update - Unable to save changes to item.');
+    Flash::error('item-update - Unable to save changes to item.');
     geD($e->getMessage(), $query, $types, $params);
     return;
 }

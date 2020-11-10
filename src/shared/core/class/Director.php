@@ -470,51 +470,6 @@ class Director {
 
 
 
-    // shutdown functions
-
-    static function onShutdownCLI() {
-        if (haserror()) {
-            echo '🍎 errors: ' . PHP_EOL;
-            foreach (errors() as $key => $msgs) {
-                echo '    ' . escapeshellcmd($key) . PHP_EOL;
-                foreach ($msgs as $msg) {
-                    echo '        ' . escapeshellcmd($msg) . PHP_EOL;
-                }
-            }
-        }
-        if (haswarning()) {
-            echo '🍋 warnings: ' . PHP_EOL;
-            foreach (warnings() as $key => $msgs) {
-                echo '    ' . escapeshellcmd($key) . PHP_EOL;
-                foreach ($msgs as $msg) {
-                    echo '        ' . escapeshellcmd($msg) . PHP_EOL;
-                }
-            }
-        }
-        if (hasinfo()) {
-            echo '🍐 infos: ' . PHP_EOL;
-            foreach (infos() as $key => $msgs) {
-                echo '    ' . escapeshellcmd($key) . PHP_EOL;
-                foreach ($msgs as $msg) {
-                    echo '        ' . escapeshellcmd($msg) . PHP_EOL;
-                }
-            }
-        }
-        if (hasdevlog()) {
-            echo '🥔 devlogs: ' . PHP_EOL;
-            foreach (devlogs() as $key => $msgs) {
-                echo '    ' . escapeshellcmd($key) . PHP_EOL;
-                foreach ($msgs as $msg) {
-                    echo '        ' . escapeshellcmd($msg) . PHP_EOL;
-                }
-            }
-        }
-        Director::timerPrint();
-    }
-
-
-
-
     // app + editor error page
 
     static function errorPage(int $code, string $msg = '', string $debugText = '') {

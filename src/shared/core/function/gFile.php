@@ -12,9 +12,12 @@
  - See the Licence for the specific language governing permissions and limitations under the Licence.
 */
 
+use Galaxia\Flash;
+
+
 function gFileUploadRemoveErrors(string $inputName) {
     if (!isset($_FILES[$inputName])) {
-        error('Required.', 'form', $inputName);
+        Flash::error('Required.', 'form', $inputName);
     }
 
     $errors = [];

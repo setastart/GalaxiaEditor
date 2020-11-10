@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, Sql};
+use Galaxia\{Director, Flash, Sql};
 
 
 
@@ -162,7 +162,7 @@ function myErrorHandler($errNo, $errStr, $errFile, $errLine) {
     }
     $error .= "<span class=\"select-on-click\">$errFile:$errLine</span> <span class=\"red\">$errStr<span><br>";
 
-    devlog($error);
+    Flash::devlog($error);
 
     return true; // Skip internal PHP error handler
 }
@@ -190,7 +190,7 @@ function geD() {
         $dumpTemp = str_replace('&lt;?php&nbsp;', '', $dumpTemp);
         $dump     .= $dumpTemp . PHP_EOL;
     }
-    devlog($dump);
+    Flash::devlog($dump);
 }
 
 
