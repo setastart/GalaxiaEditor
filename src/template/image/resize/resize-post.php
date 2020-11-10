@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\Director;
 use GalaxiaEditor\input\Input;
 
 
@@ -45,4 +46,4 @@ $uploaded = $app->imageUpload([$app->dirImage . $imgSlug . '/' . $imgSlug . $img
 
 $app->cacheDelete(['app', 'fastroute']);
 $app->cacheDelete('editor', 'imageList-' . $pgSlug);
-redirect('edit/' . $pgSlug . '/' . $imgSlug);
+Director::redirect('edit/' . $pgSlug . '/' . $imgSlug);

@@ -13,19 +13,6 @@
 */
 
 
-function redirect($location = '', int $code = 303) {
-    $location = trim($location);
-    if (headers_sent()) {
-        echo 'headers already sent. redirect: <a href="' . h($location) . '">' . h($location) . '</a>' . PHP_EOL;
-        exit();
-    }
-    $location = trim(h($location), '/');
-    if ($_SERVER['QUERY_STRING'] ?? '') $location .= '?' . $_SERVER['QUERY_STRING'];
-    header('Location: /' . $location, true, $code);
-    exit();
-}
-
-
 
 
 // session messages

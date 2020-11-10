@@ -1,5 +1,8 @@
 <?php
 
+use Galaxia\Director;
+
+
 $auth->logout();
 cleanMessages();
-redirect('edit', 303);
+Director::redirect('edit', 303);

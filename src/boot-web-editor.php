@@ -374,7 +374,7 @@ if ($me->loggedIn) {
 
 // custom redirects
 
-if ($routeInfo[1] == 'redirect-home') redirect('edit/' . $editor->homeSlug, 303);
+if ($routeInfo[1] == 'redirect-home') Director::redirect('edit/' . $editor->homeSlug, 303);
 
 
 

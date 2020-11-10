@@ -3,6 +3,7 @@
 
 // variables
 
+use Galaxia\Director;
 use Galaxia\Sql;
 
 
@@ -33,7 +34,7 @@ if ($itemId == 'new') return;
 if ($item['gcUpdateOnlyOwn'] ?? false) {
     if (!$me->hasPerm('dev') && $me->id != $itemId) {
         error(t('Redirected. You don\'t have access to that page.'));
-        redirect('/edit/' . $editor->homeSlug);
+        Director::redirect('/edit/' . $editor->homeSlug);
     }
 }
 
@@ -55,7 +56,7 @@ $stmt->close();
 
 if (!$itemExists) {
     error(sprintf(t('%s with id %s does not exist.'), t($geConf[$pgSlug]['gcTitleSingle']), h($itemId)));
-    redirect('edit/' . $pgSlug);
+    Director::redirect('edit/' . $pgSlug);
 }
 
 

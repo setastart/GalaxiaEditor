@@ -1,9 +1,10 @@
 <?php
 
 use Galaxia\AppImage;
+use Galaxia\Director;
 
 
 $count = AppImage::deleteResizes($app->dirImage, $imgSlug);
 
 info('Deleted image resizes: ' . $count);
-redirect('edit/' . $pgSlug . '/' . $imgSlug);
+Director::redirect('edit/' . $pgSlug . '/' . $imgSlug);

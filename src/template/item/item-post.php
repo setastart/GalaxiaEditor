@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\Director;
 use Galaxia\Sql;
 
 
@@ -33,7 +34,7 @@ foreach ($_POST['modules'] ?? [] as $moduleKey => $postModule) {
 if (hasError()) return;
 if (!$itemChanges && !$fieldsNew && !$fieldsDel && !$fieldsUpd) {
     warning(t('No changes were made.'));
-    if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);
+    if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
     return;
 }
 
@@ -148,5 +149,5 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
 
 }
 
-if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);
-redirect('edit/' . $pgSlug . '/' . $itemId);
+if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
+Director::redirect('edit/' . $pgSlug . '/' . $itemId);

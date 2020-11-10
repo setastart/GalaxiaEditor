@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\Director;
 use GalaxiaEditor\input\Input;
 
 
@@ -78,7 +79,7 @@ if (hasError()) return;
 
 $app->cacheDelete(['app', 'fastroute']);
 $app->cacheDelete('editor', 'imageList-' . $pgSlug);
-if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);
-if (isset($_POST['submitAndAddMore'])) redirect('edit/' . $pgSlug . '/new');
-if (count($uploaded) == 1) redirect('edit/' . $pgSlug . '/' . $uploaded[0]['slug']);
-redirect('edit/' . $pgSlug);
+if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
+if (isset($_POST['submitAndAddMore'])) Director::redirect('edit/' . $pgSlug . '/new');
+if (count($uploaded) == 1) Director::redirect('edit/' . $pgSlug . '/' . $uploaded[0]['slug']);
+Director::redirect('edit/' . $pgSlug);

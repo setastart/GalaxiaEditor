@@ -1,6 +1,9 @@
 <?php
 
 // insert item history
+use Galaxia\Director;
+
+
 foreach ($item['inputs'] as $inputName => $input) {
     insertHistory($uniqueId, $item['gcTable'], $itemId, $inputName, '', 1, $input['valueFromDb'], $me->id);
 }
@@ -23,4 +26,4 @@ foreach ($modules as $moduleKey => $module) {
 }
 info('Saved in History: ' . $geConf[$pgSlug]['gcTitleSingle']);
 
-redirect('edit/' . $pgSlug);
+Director::redirect('edit/' . $pgSlug);

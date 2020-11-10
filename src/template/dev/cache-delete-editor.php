@@ -1,8 +1,11 @@
 <?php
 
 
+use Galaxia\Director;
+
+
 $app->cacheDelete('editor');
 
 info('editor caches deleted');
 
-redirect('edit/' . $editor->homeSlug);
+Director::redirect('edit/' . $editor->homeSlug);

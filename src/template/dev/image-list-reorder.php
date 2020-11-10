@@ -2,6 +2,7 @@
 
 
 use Galaxia\AppImage;
+use Galaxia\Director;
 
 
 $editor->view = 'dev/dev';
@@ -18,4 +19,4 @@ foreach ($images as $imgSlug => $mtimeDir) {
 $app->cacheDelete('editor');
 info(t('Reordered images by upload time'));
 
-redirect('edit/' . $editor->imageSlug);
+Director::redirect('edit/' . $editor->imageSlug);

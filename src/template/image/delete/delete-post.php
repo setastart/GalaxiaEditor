@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\AppImage;
+use Galaxia\Director;
 
 
 $editor->view = 'image/delete/delete';
@@ -23,4 +24,4 @@ if (!AppImage::delete($app->dirImage, $imgSlug)) {
 $app->cacheDelete(['app', 'fastroute']);
 $app->cacheDelete('editor', 'imageList-' . $pgSlug);
 info('Deleted image: ' . h($imgSlug));
-redirect('edit/' . $pgSlug);
+Director::redirect('edit/' . $pgSlug);

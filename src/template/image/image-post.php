@@ -2,6 +2,7 @@
 
 use Galaxia\AppImage;
 use Galaxia\ArrayShape;
+use Galaxia\Director;
 use Galaxia\Sql;
 use GalaxiaEditor\input\Input;
 
@@ -42,7 +43,7 @@ foreach ($inputs as $name => $input) {
 if (hasError()) return;
 if (!$itemChanges) {
     warning(t('No changes were made.'));
-    if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);
+    if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
 
     return;
 }
@@ -143,5 +144,5 @@ if (isset($itemChanges['imgSlug'])) {
 $app->cacheDelete(['app', 'fastroute']);
 $app->cacheDelete('editor', 'imageList-' . $pgSlug);
 
-if (isset($_POST['submitAndGoBack'])) redirect('edit/' . $pgSlug);
-redirect('edit/' . $pgSlug . '/' . $imgSlug);
+if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
+Director::redirect('edit/' . $pgSlug . '/' . $imgSlug);

@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\Director;
 use Galaxia\Sql;
 
 
@@ -69,4 +70,4 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
         include $app->dir .'src/script/_editor-item-update-hard.php';
 }
 
-redirect('edit/' . $pgSlug);
+Director::redirect('edit/' . $pgSlug);
