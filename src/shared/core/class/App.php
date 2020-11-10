@@ -150,7 +150,7 @@ class App {
             $pagesById = [];
             $query     = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
             $query     .= 'WHERE pageStatus > 1' . PHP_EOL;
-            // ddp($query);
+            // dd($query);
             $stmt = $db->prepare($query);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -190,7 +190,7 @@ class App {
             $pagesByIdDraft = [];
             $query          = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
             $query          .= 'WHERE pageStatus = 1' . PHP_EOL;
-            // ddp($query);
+            // dd($query);
             $stmt = $db->prepare($query);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -231,7 +231,7 @@ class App {
         $query .= Sql::selectLeftJoinUsing(['pageRedirect' => ['pageId']]);
 
         $query .= 'WHERE pageStatus >= ' . $pageMinStatus . PHP_EOL;
-        // dp($query);
+        // d($query);
 
         $stmt = $db->prepare($query);
         $stmt->execute();
@@ -389,7 +389,7 @@ class App {
 
         $query .= Sql::selectWhereOr($arraySelectWhereOr, $statusGlue, $langs);
 
-        // ddp($query);
+        // dd($query);
         $db   = Director::getMysqli();
         $stmt = $db->prepare($query);
         $stmt->bind_param(implode(array_map('key', $params)), ...array_map('reset', $params));
@@ -397,7 +397,7 @@ class App {
         $result = $stmt->get_result();
 
         while ($data = $result->fetch_assoc()) {
-            // dp($data);
+            // d($data);
             if ($data[$tableSlug . $langCur] == $matchSlug) {
                 $id = $data[$tableId];
                 break;
@@ -503,7 +503,7 @@ class App {
                                     }
                                 }
 
-                                // ddp($this->addLangPrefix($page['pageSlug_' . key($this->locales)], key($this->locales)));
+                                // dd($this->addLangPrefix($page['pageSlug_' . key($this->locales)], key($this->locales)));
 
                                 $r .= '<url>' . PHP_EOL;
                                 $r .= '  <priority>' . $sm['priority'] . '</priority>' . PHP_EOL;
@@ -621,7 +621,7 @@ class App {
         $img['hOriginal'] = (int)$dim[1];
 
         $img = array_merge($img, AppImage::fit($img));
-        // ddp($img);
+        // dd($img);
 
         $ratio       = $img['w'] / $img['h'];
         $img['name'] = $this->urlImages . $imgSlug . '/' . $imgSlug;

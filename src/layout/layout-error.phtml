@@ -1,4 +1,6 @@
 <?php
+use Galaxia\Director;
+
 global $editor;
 global $geConf;
 global $pgSlug;
@@ -39,6 +41,11 @@ global $me;
         <div class="pad">
             <?=nl2br($error)?>
         </div>
+<?php   if (Director::isDevDebug()) { ?>
+        <div class="pad">
+            <?php db(); ?>
+        </div>
+<?php   } ?>
     </div>
 </div>
 

@@ -102,53 +102,9 @@ class Director {
     private static function initEnv() {
         error_reporting(E_ALL);
 
-        // set_exception_handler(function(Throwable $e) {
-        //     $r = "";
-        //     $count = 0;
-        //     foreach ($e->getTrace() as $frame) {
-        //         $args = "";
-        //         if (isset($frame['args'])) {
-        //             $args = array();
-        //             foreach ($frame['args'] as $arg) {
-        //                 if (is_string($arg)) {
-        //                     $args[] = "'" . $arg . "'";
-        //                 } elseif (is_array($arg)) {
-        //                     $args[] = "Array";
-        //                 } elseif (is_null($arg)) {
-        //                     $args[] = 'NULL';
-        //                 } elseif (is_bool($arg)) {
-        //                     $args[] = ($arg) ? "true" : "false";
-        //                 } elseif (is_object($arg)) {
-        //                     $args[] = get_class($arg);
-        //                 } elseif (is_resource($arg)) {
-        //                     $args[] = get_resource_type($arg);
-        //                 } else {
-        //                     $args[] = $arg;
-        //                 }
-        //             }
-        //             $args = join(", ", $args);
-        //         }
-        //         $current_file = "[internal function]";
-        //         if(isset($frame['file']))
-        //         {
-        //             $current_file = $frame['file'];
-        //         }
-        //         $current_line = "";
-        //         if(isset($frame['line']))
-        //         {
-        //             $current_line = $frame['line'];
-        //         }
-        //         $r .= sprintf( "#%s %s(%s): %s(%s)\n",
-        //             $count,
-        //             $current_file,
-        //             $current_line,
-        //             $frame['function'],
-        //             $args );
-        //         $count++;
-        //     }
-        //
-        //     self::errorPage($e->getCode(), $e->getMessage() . PHP_EOL . $r);
-        // });
+        set_exception_handler(function(Throwable $e) {
+            self::errorPage($e->getCode(), $e->getMessage());
+        });
 
         set_error_handler(function($code, $msg, $file = '', $line = 0) {
             self::errorPage($code, $msg, $file . ':' . $line);
@@ -575,10 +531,11 @@ class Director {
         $backtrace = array_reverse(debug_backtrace());
 
         if (self::isCli()) {
-            echo 'Error: ' . h($codeOriginal) . ' - ' . $msg . PHP_EOL;
-            // if (self::isDev()) {
-            echo h($debugText) . PHP_EOL;
-            // }
+            d('Error: ' . h($codeOriginal) . ' - ' . $msg);
+            if (self::isDev()) {
+                d($debugText);
+            }
+            db();
             exit();
         }
 
@@ -593,7 +550,6 @@ class Director {
                 }
 
                 include self::$editor->dirLayout . 'layout-error.phtml';
-
                 exit();
             }
         }
@@ -623,36 +579,12 @@ class Director {
 
 
         if (self::isDevEnv()) {
-            $pre = '<!-- ';
-            $suf = ' -->' . PHP_EOL;
-
-            echo $pre . PHP_EOL;
-            echo 'devEnv - Error message:' . PHP_EOL . PHP_EOL;
-            echo nl2br($msg) . PHP_EOL . PHP_EOL;
-            echo 'devEnv - Error debug text:' . PHP_EOL . PHP_EOL;
-            echo nl2br($debugText) . PHP_EOL . PHP_EOL;
-            if ($errorFile) echo $suf;
-
-            echo self::echoBacktrace($backtrace, $pre, $suf);
+            d($msg);
+            d($debugText);
+            db();
         }
 
         exit();
-    }
-
-    private static function echoBacktrace(array $backtrace, string $pre, string $suf) {
-        $r = '';
-        foreach ($backtrace as $trace) {
-            $r .= $pre;
-            if ($trace['file'] ?? '') $r .= $trace['file'] . ' - ';
-            if ($trace['class'] ?? '') $r .= $trace['class'] . ' - ';
-            if ($trace['function'] ?? '') $r .= $trace['function'] . ' - ';
-            if ($trace['line'] ?? '') $r .= $trace['line'] . ' - ';
-            if ($trace['type'] ?? '') $r .= $trace['type'] . ' - ';
-            $r .= $suf;
-
-        }
-
-        return $r;
     }
 
 }

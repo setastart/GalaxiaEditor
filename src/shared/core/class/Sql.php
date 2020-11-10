@@ -251,7 +251,7 @@ class Sql {
             }
         }
 
-        // ddp($r);
+        // dd($r);
         return rtrim($r, ' AND' . PHP_EOL) . PHP_EOL . PHP_EOL;
     }
 
@@ -269,7 +269,7 @@ class Sql {
             }
         }
 
-        // ddp($r);
+        // dd($r);
         return rtrim($r, ' AND' . PHP_EOL) . PHP_EOL . PHP_EOL;
     }
 
