@@ -10,25 +10,30 @@ spl_autoload_register(function($className) {
     if ($classes[0] == 'Galaxia') {
         switch ($classes[1]) {
             case 'FastRoute':
-                $fileName = __DIR__ . '/shared/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php';
+                $fileName = __DIR__ . '/Galaxia/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php';
                 break;
 
             case 'RedisCli':
-                $fileName = __DIR__ . '/shared/redis/src/RedisCli.php';
+                $fileName = __DIR__ . '/Galaxia/redis/src/RedisCli.php';
                 break;
 
             default:
-                $fileName = __DIR__ . '/shared/core/class/' . implode('/', array_slice($classes, 1)) . '.php';
+                $fileName = __DIR__ . '/Galaxia/core/' . implode('/', array_slice($classes, 1)) . '.php';
                 break;
         }
         require_once $fileName;
     }
 });
 
+require_once __DIR__ . '/Galaxia/polyfill.php';
+require_once __DIR__ . '/Galaxia/fastroute/src/functions.php';
+
+
+
 
 // @formatter:off
 if (Director::isDevEnv()) {
-    include_once __DIR__ . '/shared/kint.phar';
+    include_once __DIR__ . '/Galaxia/kint.phar';
     Kint\Renderer\RichRenderer::$folder = false;
     function dd(...$vars) {
         d(...$vars);
@@ -73,11 +78,6 @@ if (Director::isDevEnv()) {
     function db() {}
 }
 // @formatter:on
-
-
-
-require_once __DIR__ . '/shared/core/function/polyfill.php';
-require_once __DIR__ . '/shared/fastroute/src/functions.php';
 
 
 

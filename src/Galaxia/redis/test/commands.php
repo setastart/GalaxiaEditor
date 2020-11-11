@@ -2,7 +2,7 @@
 
 use Galaxia\RedisCli;
 
-require dirname(__DIR__).DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'RedisCli.php';
+require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'RedisCli.php';
 
 class commandsTest extends \PHPUnit\Framework\TestCase
 {

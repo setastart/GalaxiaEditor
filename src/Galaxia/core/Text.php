@@ -21,7 +21,9 @@ class Text {
 Second Line.</pre><blockquote>This is a quotation or something. First line, a bit long so it wraps around, to see how it looks if it wraps. This first line ends in a newline after the dot.<br>Second Line.</blockquote>
 HTML;
 
-    public static  $translations        = [];
+    public static $translations       = [];
+    public static $translationMissing = false;
+
     private static $transliterator      = null;
     private static $transliteratorLower = null;
     private static $intlDateFormatters  = [];
@@ -418,6 +420,8 @@ HTML;
         if ($lang == null) $lang = $app->lang;
         if (isset(self::$translations[$text][$lang])) {
             return self::$translations[$text][$lang];
+        } else {
+            self::$translationMissing = true;
         }
 
         // if (Director::$debug) $text = '@' . $text;

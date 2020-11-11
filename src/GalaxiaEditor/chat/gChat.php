@@ -67,11 +67,11 @@ $redis->cmd('HSET', $app->mysqlDb . ':usersLastSeen', $me->id, substr(microtime(
 
 switch ($_SERVER['REQUEST_URI']) {
     case '/edit/chat/listen':
-        require $editor->dir . 'src/include/gChatListener.php';
+        require __DIR__ . '/gChatListener.php';
         break;
 
     case '/edit/chat/publish':
-        require $editor->dir . 'src/include/gChatPublisher.php';
+        require __DIR__ . '/gChatPublisher.php';
         break;
 
     default:

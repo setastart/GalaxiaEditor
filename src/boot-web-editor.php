@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.15.0';
+$editor->version = '4.16.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -97,7 +97,7 @@ if ($me->loggedIn) {
 
     // galaxia chat
     if (isset($geConf['chat']) && $_SERVER['REQUEST_METHOD'] == 'POST' && in_array($_SERVER['REQUEST_URI'], ['/edit/chat/listen', '/edit/chat/publish']))
-        require $editor->dir . 'src/include/gChat.php';
+        require __DIR__ . '/GalaxiaEditor/chat/gChat.php';
 
 
     // CSRF

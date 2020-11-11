@@ -1,7 +1,7 @@
 <?php
 
-require __DIR__ . '/function/paginationRender.php';
-require __DIR__ . '/function/utils.php';
+require __DIR__ . '/GalaxiaEditor/function/paginationRender.php';
+require __DIR__ . '/GalaxiaEditor/function/utils.php';
 
 
 spl_autoload_register(function($className) {
@@ -9,7 +9,7 @@ spl_autoload_register(function($className) {
     $classes   = explode('\\', $className);
 
     if ($classes[0] == 'GalaxiaEditor') {
-        $fileName = __DIR__ . '/' . implode('/', array_slice($classes, 1)) . '.php';
+        $fileName = __DIR__ . '/GalaxiaEditor/' . implode('/', array_slice($classes, 1)) . '.php';
         require_once $fileName;
     }
 });

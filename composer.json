@@ -21,13 +21,13 @@
 
     "autoload": {
         "psr-4": {
-            "Galaxia\\": "src/shared/core/class/",
-            "Galaxia\\RedisCli\\": "src/shared/redis/src/",
-            "Galaxia\\FastRoute\\": "src/shared/fastroute/src/"
+            "Galaxia\\": "src/Galaxia/core/",
+            "Galaxia\\RedisCli\\": "src/Galaxia/redis/src/",
+            "Galaxia\\FastRoute\\": "src/Galaxia/fastroute/src/"
         },
         "files": [
-            "src/shared/core/function/polyfill.php",
-            "src/shared/fastroute/src/functions.php"
+            "src/Galaxia/polyfill.php",
+            "src/Galaxia/fastroute/src/functions.php"
         ]
     }
 }
