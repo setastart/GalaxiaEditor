@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Director;
+use Galaxia\File;
 use Galaxia\Flash;
 use GalaxiaEditor\input\Input;
 
@@ -13,7 +14,7 @@ $type         = '';
 
 // item validation
 
-foreach (gFileUploadRemoveErrors('images') as $error)
+foreach (File::uploadRemoveErrors('images') as $error)
     $inputs['images']['errors'][] = 'Error uploading ' . $error['file'] . ' - ' . $error['msg'];
 
 if (empty($_FILES['images']['name'] ?? []))
