@@ -1,32 +1,33 @@
-<?php use GalaxiaEditor\input\InputRender;
+<?php use Galaxia\Text;
+use GalaxiaEditor\input\InputRender;
 
 
 InputRender::form('', 'item-edit', 'item paper pad'); ?>
 
     <div class="paper-header pad">
-        <h1><?=h($pgTitle)?></h1>
+        <h1><?=Text::h($pgTitle)?></h1>
 
 <?php   if ($firstStatus) { ?>
 <?php       echo InputRender::status($item['inputs'][$firstStatus]); ?>
 <?php   } ?>
 
         <div class="paper-header-actions">
-            <button type="submit" class="btn btn-green active"><?=t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=t('Save and go back')?></button>
+            <button type="submit" class="btn btn-green active"><?=Text::t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=Text::t('Save and go back')?></button>
         </div>
 
         <div class="paper-header-links">
-            <a href="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>" class="btn-a"><?=t('Reload')?></a>
+            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>" class="btn-a"><?=Text::t('Reload')?></a>
 <?php   if ($item['gcVisit']) { ?>
-            <?=t('Open in new tab')?>:
+            <?=Text::t('Open in new tab')?>:
 <?php   } ?>
 
 <?php   if (is_int($item['gcVisit']) || (is_bool($item['gcVisit']) && $item['gcVisit'])) { ?>
 <?php       foreach ($app->langs as $lang) { ?>
 <?php           if (isset($item['inputs']['slug_' . $lang])) { ?>
-            <a target="_blank" rel="noreferrer" href="<?=$app->addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=h($lang)?></a>
+            <a target="_blank" rel="noreferrer" href="<?=$app->addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
 <?php           } else if (isset($item['inputs'][$item['gcTable'] . 'Slug_' . $lang])) { ?>
-            <a target="_blank" rel="noreferrer" href="<?=$app->addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=h($lang)?></a>
+            <a target="_blank" rel="noreferrer" href="<?=$app->addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
 <?php           } ?>
 <?php       } ?>
 <?php   } else if (is_array($item['gcVisit'])) { ?>
@@ -36,7 +37,7 @@ InputRender::form('', 'item-edit', 'item paper pad'); ?>
 <?php           $id = $item['inputs'][$link['id']]['value'] ?? ''; ?>
 <?php           $prefix = $link['prefix'] ?? ''; ?>
 <?php           $name = $prefix . $item['inputs'][$link['id']]['value']; ?>
-            <a target="_blank" rel="noreferrer" href="<?=h($name)?>" class="btn-a"><?=h($name)?></a>
+            <a target="_blank" rel="noreferrer" href="<?=Text::h($name)?>" class="btn-a"><?=Text::h($name)?></a>
 <?php       } ?>
 <?php   } ?>
         </div>
@@ -91,20 +92,20 @@ foreach ($modules as $moduleKey => $module) {
         <div class="item-info">
 <?php   if ($item['gcInfo']) { ?>
 <?php       foreach ($item['gcInfo'] as $info) { ?>
-            <p><?=t($info['label'])?>: <?=h($info['value'])?></p>
+            <p><?=Text::t($info['label'])?>: <?=Text::h($info['value'])?></p>
 <?php       } ?>
 <?php   } ?>
-            <a target="_blank" href="/edit/history/<?=h($item['gcTable'])?>/<?=h($itemId)?>" class="btn-a"><?=t('Open History in a new tab')?></a>
+            <a target="_blank" href="/edit/history/<?=Text::h($item['gcTable'])?>/<?=Text::h($itemId)?>" class="btn-a"><?=Text::t('Open History in a new tab')?></a>
 <?php   if ($me->hasPerm('dev')) { ?>
-            <a href="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>/history" class="hide-perm-dev btn-a"><?=sprintf(t('Save %s in History'), t($geConf[$pgSlug]['gcTitleSingle']))?></a>
+            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>/history" class="hide-perm-dev btn-a"><?=sprintf(Text::t('Save %s in History'), Text::t($geConf[$pgSlug]['gcTitleSingle']))?></a>
 <?php   } ?>
 <?php   if ($item['gcDelete']) { ?>
-            <a href="/edit/<?=h($pgSlug)?>/<?=h($itemId)?>/delete" class="red btn-a"><?=sprintf(t('Delete %s'), t($geConf[$pgSlug]['gcTitleSingle']))?></a>
+            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>/delete" class="red btn-a"><?=sprintf(Text::t('Delete %s'), Text::t($geConf[$pgSlug]['gcTitleSingle']))?></a>
 <?php   } ?>
         </div>
         <div class="paper-footer-actions">
-            <button type="submit" class="btn btn-green active"><?=t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(t('Save and go back to %s'), t($geConf[$pgSlug]['gcTitlePlural']))?></button>
+            <button type="submit" class="btn btn-green active"><?=Text::t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t($geConf[$pgSlug]['gcTitlePlural']))?></button>
         </div>
     </div>
 

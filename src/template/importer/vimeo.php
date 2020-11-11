@@ -5,11 +5,12 @@ use Galaxia\AppImage;
 use Galaxia\Director;
 use Galaxia\Scrape\Scrape;
 use Galaxia\Scrape\Vimeo;
+use Galaxia\Text;
 
 
 $editor->layout = 'none';
 
-$id = h($_GET['id']) ?? '';
+$id = Text::h($_GET['id']) ?? '';
 $r = Vimeo::getVideoFromId($id);
 
 if ($r[Scrape::DATA][Vimeo::IMG_SLUG] ?? '') {

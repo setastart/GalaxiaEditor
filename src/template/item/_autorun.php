@@ -6,6 +6,7 @@
 use Galaxia\Director;
 use Galaxia\Flash;
 use Galaxia\Sql;
+use Galaxia\Text;
 
 
 $uniqueId        = uniqid(true);
@@ -34,7 +35,7 @@ if ($itemId == 'new') return;
 
 if ($item['gcUpdateOnlyOwn'] ?? false) {
     if (!$me->hasPerm('dev') && $me->id != $itemId) {
-        Flash::error(t('Redirected. You don\'t have access to that page.'));
+        Flash::error(Text::t('Redirected. You don\'t have access to that page.'));
         Director::redirect('/edit/' . $editor->homeSlug);
     }
 }
@@ -56,7 +57,7 @@ $stmt->fetch();
 $stmt->close();
 
 if (!$itemExists) {
-    Flash::error(sprintf(t('%s with id %s does not exist.'), t($geConf[$pgSlug]['gcTitleSingle']), h($itemId)));
+    Flash::error(sprintf(Text::t('%s with id %s does not exist.'), Text::t($geConf[$pgSlug]['gcTitleSingle']), Text::h($itemId)));
     Director::redirect('edit/' . $pgSlug);
 }
 
@@ -151,7 +152,7 @@ foreach ($item['gcInfo'] as $inputKey => $input) {
 
     $value = $item['data'][$inputKey];
     if ($input['type'] == 'timestamp')
-        if (!empty($value)) $value = gFormatDate($item['data'][$inputKey], 'd MMM y - HH:mm');
+        if (!empty($value)) $value = Text::formatDate($item['data'][$inputKey], 'd MMM y - HH:mm');
     $item['gcInfo'][$inputKey]['value'] = $value;
 }
 
@@ -167,9 +168,9 @@ if (is_array($item['gcColKey'])) {
 }
 
 $titleTemp = $item['data'][$item['gcColKey']];
-if (substr($item['gcColKey'], 0, 9) == 'timestamp') $titleTemp = gFormatDate($titleTemp, 'd MMM y - HH:mm');
-$pgTitle = t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $titleTemp;
-$hdTitle = t('Editing') . ': ' . $pgTitle;
+if (substr($item['gcColKey'], 0, 9) == 'timestamp') $titleTemp = Text::formatDate($titleTemp, 'd MMM y - HH:mm');
+$pgTitle = Text::t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $titleTemp;
+$hdTitle = Text::t('Editing') . ': ' . $pgTitle;
 
 
 

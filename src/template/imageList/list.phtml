@@ -1,22 +1,23 @@
-<?php use GalaxiaEditor\input\InputRender;
+<?php use Galaxia\Text;
+use GalaxiaEditor\input\InputRender;
 
 
 InputRender::form('', 'image-list', 'paper pad');?>
 
     <div class="paper-header pad">
-        <h1><span class="rowsFiltered"><?=h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=h($rowsTotal)?></span> <?=t($pgTitle);?></h1>
+        <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t($pgTitle);?></h1>
 
 <?php   if (!empty($geConf[$pgSlug]['gcImageList']['gcLinks'])) { ?>
         <div class="list-actions">
 <?php   foreach ($geConf[$pgSlug]['gcImageList']['gcLinks'] as $href => $link) { ?>
-            <a href="/edit/<?=h($pgSlug)?>/<?=h($href)?>" class="btn btn-pad <?=h($link['cssClass'])?>"><?=sprintf(t('+ Add new %s'), t('Image'))?></a>
+            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($href)?>" class="btn btn-pad <?=Text::h($link['cssClass'])?>"><?=sprintf(Text::t('+ Add new %s'), Text::t('Image'))?></a>
 <?php   } ?>
         </div>
 <?php   } ?>
 <?php   if ($me->hasPerm('dev')) { ?>
         <div class="paper-header-links">
-            <a href="/edit/dev/imageListDeleteResizes" class="hide-perm-dev btn-a"><?=t('Delete Resizes')?></a>
-            <a href="/edit/dev/imageListReorder" class="hide-perm-dev btn-a"><?=t('Reorder Images')?></a>
+            <a href="/edit/dev/imageListDeleteResizes" class="hide-perm-dev btn-a"><?=Text::t('Delete Resizes')?></a>
+            <a href="/edit/dev/imageListReorder" class="hide-perm-dev btn-a"><?=Text::t('Reorder Images')?></a>
         </div>
 <?php   } ?>
     </div>
@@ -28,18 +29,18 @@ InputRender::form('', 'image-list', 'paper pad');?>
 <?php   if (!empty($filterTexts)) { ?>
 <?php       foreach ($filterTexts as $filterId => $filter) { ?>
         <div class="input-wrap pad">
-            <div class="input-label"><?=t($filter['label'])?></div>
+            <div class="input-label"><?=Text::t($filter['label'])?></div>
 <?php           if (empty($filter['filterEmpty'])) { ?>
-            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=h($_POST['filterTexts'][$filterId] ?? '')?>">
+            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
 <?php           } else { ?>
-            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=h($_POST['filterTexts'][$filterId] ?? '')?>">
-            <label for="<?=h($filterId)?>-empty" class="btn btn-pill btn-checkbox rr">
-                <?=t('Empty')?>
-                <input class="filterChangeEmpty" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=h($filterId)?>-empty" title="<?=t('Empty')?>">
+            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
+            <label for="<?=Text::h($filterId)?>-empty" class="btn btn-pill btn-checkbox rr">
+                <?=Text::t('Empty')?>
+                <input class="filterChangeEmpty" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=Text::h($filterId)?>-empty" title="<?=Text::t('Empty')?>">
             </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map('t', array_filter($geConf[$pgSlug]['gcImageTypes'])))?></p>
+            <p class="small"><?=implode(', ', array_map(array("\Galaxia\Text", "t"), array_filter($geConf[$pgSlug]['gcImageTypes'])))?></p>
 <?php           } ?>
         </div>
 <?php       } ?>
@@ -48,11 +49,11 @@ InputRender::form('', 'image-list', 'paper pad');?>
 <?php   if (!empty($filterInts)) { ?>
 <?php       foreach ($filterInts as $filterId => $filter) { ?>
         <div class="input-wrap input-filter-int pad">
-            <div class="input-label"><?=t($filter['label'])?></div>
+            <div class="input-label"><?=Text::t($filter['label'])?></div>
 <?php       foreach ($filter['options'] as $key => $options) { ?>
-            <label for="<?=h($filterId)?>-<?=h($key)?>" class="btn btn-pill btn-checkbox <?=h($options['cssClass'])?><?=($options['checked']) ? ' active' : ''?>">
-                <?=t($options['label'])?>
-                <input class="filterChange" name="filterInts[<?=$filterId?>][<?=h($key)?>]" type="checkbox" value="1" id="<?=h($filterId)?>-<?=h($key)?>" title="<?=t($options['label'])?>" <?=($options['checked']) ? ' checked' : ''?>>
+            <label for="<?=Text::h($filterId)?>-<?=Text::h($key)?>" class="btn btn-pill btn-checkbox <?=Text::h($options['cssClass'])?><?=($options['checked']) ? ' active' : ''?>">
+                <?=Text::t($options['label'])?>
+                <input class="filterChange" name="filterInts[<?=$filterId?>][<?=Text::h($key)?>]" type="checkbox" value="1" id="<?=Text::h($filterId)?>-<?=Text::h($key)?>" title="<?=Text::t($options['label'])?>" <?=($options['checked']) ? ' checked' : ''?>>
             </label>
 <?php       } ?>
         </div>

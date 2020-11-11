@@ -1,10 +1,11 @@
 <?php
 
+use Galaxia\Text;
 use GalaxiaEditor\input\Input;
 
 
-$pgTitle = t('+ Add') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
-$hdTitle = t('+ Add') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
+$pgTitle = Text::t('+ Add') . ' ' . Text::t($geConf[$pgSlug]['gcTitleSingle']);
+$hdTitle = Text::t('+ Add') . ' ' . Text::t($geConf[$pgSlug]['gcTitleSingle']);
 
 $inputs = [
     'images' => [

@@ -3,6 +3,7 @@
 
 use Galaxia\Flash;
 use Galaxia\Sql;
+use Galaxia\Text;
 use GalaxiaEditor\input\Input;
 
 
@@ -13,13 +14,13 @@ if (!isset($_POST['item'])) $_POST['item'] = [];
 // password field changes require inputting current password
 
 if ($passwordColsFound) {
-    if (!isset($_POST['item']['passwordCurrent'])) Flash::error(t('Your current password is required.'));
-    if (!isset($_POST['item']['passwordHash']))    Flash::error(t('Your new password is required.'));
-    if (!isset($_POST['item']['passwordRepeat']))  Flash::error(t('Your new password repeat is required.'));
+    if (!isset($_POST['item']['passwordCurrent'])) Flash::error(Text::t('Your current password is required.'));
+    if (!isset($_POST['item']['passwordHash']))    Flash::error(Text::t('Your new password is required.'));
+    if (!isset($_POST['item']['passwordRepeat']))  Flash::error(Text::t('Your new password repeat is required.'));
 
-    if (!isset($item['inputs']['passwordCurrent'])) Flash::error(t('Your current password is required - input.'));
-    if (!isset($item['inputs']['passwordHash']))    Flash::error(t('Your new password is required - input.'));
-    if (!isset($item['inputs']['passwordRepeat']))  Flash::error(t('Your new password repeat is required - input.'));
+    if (!isset($item['inputs']['passwordCurrent'])) Flash::error(Text::t('Your current password is required - input.'));
+    if (!isset($item['inputs']['passwordHash']))    Flash::error(Text::t('Your new password is required - input.'));
+    if (!isset($item['inputs']['passwordRepeat']))  Flash::error(Text::t('Your new password repeat is required - input.'));
 
     if (!$auth->userAuthenticateIdPassword($me->id, $_POST['item']['passwordCurrent'])) {
         $item['inputs']['passwordCurrent']['errors'][] = 'Wrong current password.';

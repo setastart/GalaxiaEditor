@@ -258,7 +258,7 @@ class ConfigDb {
 
     }
 
-    public static function gcTableColumnInput($dbSchema, $errorString, $table, $col, $input) {
+    static function gcTableColumnInput($dbSchema, $errorString, $table, $col, $input) {
         $errorString .= '/' . $table . '/' . $col;
 
         if (!$input) return;
@@ -288,7 +288,7 @@ class ConfigDb {
         }
     }
 
-    public static function gcTableExists($dbSchema, $errorString, $table) {
+    static function gcTableExists($dbSchema, $errorString, $table) {
         $errorString .= '/' . $table;
         if (!isset($dbSchema[$table])) {
             Flash::error($errorString . ': db table missing.');
@@ -297,7 +297,7 @@ class ConfigDb {
         }
     }
 
-    public static function gcTableColumnExists(array $dbSchema, string $errorString, string $table, $cols) {
+    static function gcTableColumnExists(array $dbSchema, string $errorString, string $table, $cols) {
         if (is_string($cols)) $cols = [$cols];
 
         $found = false;
@@ -317,7 +317,7 @@ class ConfigDb {
         }
     }
 
-    public static function gcQueryColumnExists($errorString, $table, $colsExisting, $cols) {
+    static function gcQueryColumnExists($errorString, $table, $colsExisting, $cols) {
         if (is_string($cols)) $cols = [$cols];
 
         $found = false;

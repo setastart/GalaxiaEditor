@@ -6,7 +6,7 @@ namespace Galaxia;
 
 class ArrayShape {
 
-    public static function splicePreserveKeys(&$input, $offset, $length = null, $replacement = array()) {
+    static function splicePreserveKeys(&$input, $offset, $length = null, $replacement = array()) {
         if (empty($replacement)) {
             return array_splice($input, $offset, $length);
         }
@@ -23,7 +23,7 @@ class ArrayShape {
 
 
 
-    public static function removePermsRecursive(array &$arr, array $perms = []) {
+    static function removePermsRecursive(array &$arr, array $perms = []) {
         foreach ($arr as $subKey => $subVal) {
             if (is_array($subVal)) {
                 if (isset($subVal['gcPerms']) && is_array($subVal['gcPerms'])) {
@@ -48,7 +48,7 @@ class ArrayShape {
      *      keys: ['value_' => ['label' => 'Value']] becomes ['value_pt' => ['label' => 'Value'], 'value_en' => ['label' => 'Value']]
      *      values: ['slug_', 'pageId'] becomes ['slug_pt', 'slug_en', 'pageId']
      */
-    public static function languify(&$arr, $langs, $perms = []) {
+    static function languify(&$arr, $langs, $perms = []) {
         if (!is_array($arr)) return;
 
         $count = count($arr);

@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Flash;
+use Galaxia\Text;
 
 
 ?>
@@ -11,15 +12,15 @@ use Galaxia\Flash;
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
 
-    <title><?=h($hdTitle)?></title>
+    <title><?=Text::h($hdTitle)?></title>
 
-    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=h($editor->version)?>">
+    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h($editor->version)?>">
 
-    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/text.css?version=<?=h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/galaxiaPublic.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/text.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/galaxiaPublic.css?version=<?=Text::h($editor->version)?>">
 
-    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=Text::h($editor->version)?>">
 </head>
 <body>
 
@@ -32,7 +33,7 @@ use Galaxia\Flash;
 </div>
 
 <div id="footer">
-    <p><img class="icon" src="/edit/favicon.ico?version=<?=h($editor->version)?>">Galaxia Editor</p>
+    <p><img class="icon" src="/edit/favicon.ico?version=<?=Text::h($editor->version)?>">Galaxia Editor</p>
     <p><a href="https://setastart.com/" target="_blank"> <img class="icon" src="/edit/gfx/icon-setastart-white-32.png"/>setastart.com</a> &copy; 2017-<?=date("Y")?></p>
 </div>
 

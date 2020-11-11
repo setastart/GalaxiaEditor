@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, Flash, Sql};
+use Galaxia\{Director, Flash, Sql, Text};
 
 
 
@@ -34,7 +34,7 @@ function prepareInput($input, $extras) {
                             $found[] = substr($colVal, 0, -2);
                         }
 
-                        $optionColVal[] = unsafet($option[$colVal]);
+                        $optionColVal[] = Text::unsafet($option[$colVal]);
                     }
                     $optionColVal = array_filter($optionColVal);
 

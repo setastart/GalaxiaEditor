@@ -2,10 +2,11 @@
 
 
 use Galaxia\Sql;
+use Galaxia\Text;
 
 
-$pgTitle = t('+ Add') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
-$hdTitle = t('+ Add') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
+$pgTitle = Text::t('+ Add') . ' ' . Text::t($geConf[$pgSlug]['gcTitleSingle']);
+$hdTitle = Text::t('+ Add') . ' ' . Text::t($geConf[$pgSlug]['gcTitleSingle']);
 
 
 // query extras

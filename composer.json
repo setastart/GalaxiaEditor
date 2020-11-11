@@ -27,8 +27,6 @@
         },
         "files": [
             "src/shared/core/function/polyfill.php",
-            "src/shared/core/function/text.php",
-
             "src/shared/fastroute/src/functions.php"
         ]
     }

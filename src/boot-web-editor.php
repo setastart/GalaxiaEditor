@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{ArrayShape, Authentication, Director, FastRoute, Flash};
+use Galaxia\{ArrayShape, Authentication, Director, FastRoute, Flash, Text};
 use GalaxiaEditor\config\Config;
 use GalaxiaEditor\config\ConfigDb;
 
@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.14.0';
+$editor->version = '4.15.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -406,7 +406,7 @@ Director::timerStop('logic');
 // POST actions
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && Flash::hasError()) {
-    Flash::error(t('Form errors found.'));
+    Flash::error(Text::t('Form errors found.'));
 }
 
 
@@ -415,7 +415,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && Flash::hasError()) {
 // Exit on missing layouts or template view
 
 if (!file_exists($editor->dirLayout . $editor->layout . '.phtml')) {
-    Director::errorPage(500, 'missing layout: ' . h($editor->layout));
+    Director::errorPage(500, 'missing layout: ' . Text::h($editor->layout));
 }
 if (!file_exists($editor->dirView . $editor->view . '.phtml')) {
     Director::errorPage(500, 'missing template view: ' . $editor->dir . 'src/templates/' . $editor->view);

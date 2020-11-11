@@ -1,9 +1,12 @@
-<?php   renderPaginationHiddenHTMLResults($pagination, $rowsFiltered, $rowsTotal) ?>
+<?php use Galaxia\Text;
+
+
+renderPaginationHiddenHTMLResults($pagination, $rowsFiltered, $rowsTotal) ?>
 
     <div class="list pad">
         <div class="row-head">
 <?php   foreach ($columns as $column) { ?>
-            <div class="col <?=h($column['cssClass'])?>"><?=t($column['label'])?></div>
+            <div class="col <?=Text::h($column['cssClass'])?>"><?=Text::t($column['label'])?></div>
 <?php   } ?>
         </div>
 

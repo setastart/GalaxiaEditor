@@ -3,13 +3,14 @@
 
 use Galaxia\Flash;
 use Galaxia\Sql;
+use Galaxia\Text;
 use GalaxiaEditor\input\Input;
 
 
 foreach ($postModule as $fieldKey => $fields) {
 
     if (!isset($modules[$moduleKey]['inputs'][$fieldKey])) {
-        Flash::error('Invalid input field name: ' . h($fieldKey));
+        Flash::error('Invalid input field name: ' . Text::h($fieldKey));
         continue;
     }
 
@@ -31,18 +32,18 @@ foreach ($postModule as $fieldKey => $fields) {
         // new fields
         if (is_string($fieldVal)) {
             if (substr($fieldVal, 0, 4) != 'new-') {
-                Flash::error('Invalid new input field name: ' . h($fieldKey) . '/' . h($fieldVal));
+                Flash::error('Invalid new input field name: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal));
                 continue;
             }
             $newId = substr($fieldVal, 4);
             if (!ctype_digit($newId)) {
-                Flash::error('Invalid new input field id: ' . h($fieldKey) . '/' . h($fieldVal));
+                Flash::error('Invalid new input field id: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal));
                 continue;
             }
             $newId = (int)$newId;
 
             if (!isset($modules[$moduleKey]['inputs'][$fieldKey]['new-0'])) {
-                Flash::error('Missing new input field id in module: ' . h($fieldKey) . '/new-0');
+                Flash::error('Missing new input field id in module: ' . Text::h($fieldKey) . '/new-0');
                 continue;
             }
 
@@ -53,7 +54,7 @@ foreach ($postModule as $fieldKey => $fields) {
                     if (in_array($val, ['', 'on']))
                         $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId]['delete'] = $val;
                     else
-                        Flash::error('Invalid new input field delete: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
+                        Flash::error('Invalid new input field delete: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal) . '/' . Text::h($val));
                     continue;
                 }
                 if ($name == 'position') {
@@ -61,7 +62,7 @@ foreach ($postModule as $fieldKey => $fields) {
                         $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId]['position'] = $val;
                         $fieldsNew[$moduleKey][$fieldKey][$fieldVal][$name] = $val;
                     } else {
-                        Flash::error('Invalid new input field position: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
+                        Flash::error('Invalid new input field position: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal) . '/' . Text::h($val));
                     }
                     continue;
                 }
@@ -81,7 +82,7 @@ foreach ($postModule as $fieldKey => $fields) {
         }
 
         if (!is_int($fieldVal)) {
-            Flash::error('Invalid input field id - not numeric: ' . h($fieldKey) . '/' . h($fieldVal));
+            Flash::error('Invalid input field id - not numeric: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal));
             continue;
         }
 
@@ -98,7 +99,7 @@ foreach ($postModule as $fieldKey => $fields) {
                 if (in_array($val, ['', 'on']))
                     $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal]['delete'] = $val;
                 else
-                    Flash::error('Invalid new input field delete: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
+                    Flash::error('Invalid new input field delete: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal) . '/' . Text::h($val));
                 continue;
             }
             if ($name == 'position') {
@@ -108,7 +109,7 @@ foreach ($postModule as $fieldKey => $fields) {
                         $fieldsUpd[$moduleKey][$fieldKey][$fieldVal][$name] = $val;
                     }
                 } else {
-                    Flash::error('Invalid new input field position: ' . h($fieldKey) . '/' . h($fieldVal) . '/' . h($val));
+                    Flash::error('Invalid new input field position: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal) . '/' . Text::h($val));
                 }
                 continue;
             }
@@ -172,7 +173,7 @@ foreach ($postModule as $fieldKey => $fields) {
                 }
             }
 
-            $msg = t('Must be unique. An item with that value already exists.');
+            $msg = Text::t('Must be unique. An item with that value already exists.');
             foreach ($visited as $fieldVal => $current_array) {
                 $fieldValSearch = array_search($current_array, $visited);
                 if ($fieldVal != $fieldValSearch) {

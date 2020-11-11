@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{AppImage, Director, Pagination, Sql};
+use Galaxia\{AppImage, Director, Pagination, Sql, Text};
 
 
 // ajax
@@ -260,46 +260,46 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
                                 if (!$value) break;
                                 $tagFound = true;
                                 if (!isset($tags[$value])) $tags[$value] = $currentColor++;
-                                $colRowItemClass .= ' brewer-' . h(1 + ($tags[$value] % 9));
-                                $r               .= t($value);
+                                $colRowItemClass .= ' brewer-' . Text::h(1 + ($tags[$value] % 9));
+                                $r               .= Text::t($value);
                                 break;
 
                             case 'slug':
-                                $r .= '/&puncsp;' . h($value);
+                                $r .= '/&puncsp;' . Text::h($value);
                                 break;
 
                             case 'timestamp':
                             case 'datetime':
-                                $r .= h(gFormatDate($value, 'd MMM y H:m'));
+                                $r .= Text::h(Text::formatDate($value, 'd MMM y H:m'));
                                 break;
 
                             case 'date':
                                 $value = strtotime($value);
-                                $r     .= h(gFormatDate($value, 'd MMM y'));
+                                $r     .= Text::h(Text::formatDate($value, 'd MMM y'));
                                 break;
 
                             case 'time':
                                 if (substr($value, -3) == ':00') $value = substr($value, 0, 5);
-                                $r .= h($value);
+                                $r .= Text::h($value);
                                 break;
 
                             case 'month':
                                 $dt = DateTime::createFromFormat('!m', $value);
-                                $r  .= h(ucfirst(gFormatDate($dt, 'MMM')));
+                                $r  .= Text::h(ucfirst(Text::formatDate($dt, 'MMM')));
                                 break;
 
                             case 'small':
-                                $r .= h($value);
+                                $r .= Text::h($value);
                                 break;
 
                             default:
-                                if (is_string($value)) $r .= firstLine($value);
+                                if (is_string($value)) $r .= Text::firstLine($value);
                                 break;
                         }
 
                         if (empty($value) && $columnData['type'] != 'thumb' && !$isHomeSlug) {
                             $colRowItemClass .= ' empty';
-                            $r               .= t('Empty');
+                            $r               .= Text::t('Empty');
                         }
 
                         $ht .= '        <div class="' . $colRowItemClass . '">' . $r . '</div>' . PHP_EOL;
@@ -412,11 +412,11 @@ foreach ($textFiltersActive as $filterId) {
                         if (empty($value)) {
                             $emptyFound = true;
                         } else if (substr($dbColumn, 0, 9) == 'timestamp') {
-                            $textFilterItems[$itemId] .= gPrepareTextForSearch(gFormatDate($value, 'd MMM y')) . ' ';
+                            $textFilterItems[$itemId] .= Text::formatSearch(Text::formatDate($value, 'd MMM y')) . ' ';
                         } else if (substr($dbColumn, 0, 4) == 'date') {
-                            $textFilterItems[$itemId] .= gPrepareTextForSearch(gFormatDate(strtotime($value), 'd MMM y')) . ' ';
+                            $textFilterItems[$itemId] .= Text::formatSearch(Text::formatDate(strtotime($value), 'd MMM y')) . ' ';
                         } else {
-                            $textFilterItems[$itemId] .= gPrepareTextForSearch($value) . ' ';
+                            $textFilterItems[$itemId] .= Text::formatSearch($value) . ' ';
                         }
                     }
                 }
@@ -434,7 +434,7 @@ foreach ($textFiltersActive as $filterId) {
     foreach ($textFilterItems as $itemId => $text) {
         $filterFound = true;
         foreach ($filterInput as $word) {
-            $word = gPrepareTextForSearch($word);
+            $word = Text::formatSearch($word);
             if (strpos($text, $word) === false) {
                 $filterFound = false;
             }
@@ -464,6 +464,6 @@ $rows = array_slice($rows, $offset, $length);
 
 // finish
 
-$hdTitle = t($geConf[$pgSlug]['gcTitlePlural']) . ' - ' . $hdTitle;
-$pgTitle = t($geConf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']) . ' - ' . $hdTitle;
+$pgTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']);
 

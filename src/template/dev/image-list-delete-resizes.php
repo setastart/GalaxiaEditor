@@ -4,6 +4,7 @@
 use Galaxia\AppImage;
 use Galaxia\Director;
 use Galaxia\Flash;
+use Galaxia\Text;
 
 
 $editor->view = 'dev/dev';
@@ -18,6 +19,6 @@ foreach ($images as $imgSlug => $mtime) {
 }
 
 $app->cacheDelete('editor');
-Flash::info(sprintf(t('Deleted %d image resizes'), $count));
+Flash::info(sprintf(Text::t('Deleted %d image resizes'), $count));
 
 Director::redirect('edit/dev');

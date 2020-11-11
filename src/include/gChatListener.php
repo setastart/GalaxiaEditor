@@ -1,6 +1,7 @@
 <?php
 
-use Galaxia\Director;
+use Galaxia\Text;
+
 
 //  Listen to activity in room
 //
@@ -54,7 +55,7 @@ foreach ($post['rooms'] ?? [] as $room => $roomData) {
     $roomsprefixed[$app->mysqlDb . ':rooms:' . $room] = $roomData['lastId'];
 
     if (!$redis->cmd('EXISTS', $app->mysqlDb . ':rooms:' . $room)->get())
-        $redis->cmd('XADD', $app->mysqlDb . ':rooms:' . $room, '*', 'user', $me->id, 'create', t('Room Created'))->set();
+        $redis->cmd('XADD', $app->mysqlDb . ':rooms:' . $room, '*', 'user', $me->id, 'create', Text::t('Room Created'))->set();
 
     if ($room != '/edit/chat')
         $redis->cmd('EXPIRE', $app->mysqlDb . ':rooms:' . $room, TIMEOUT_ROOM_INACTIVE)->set();

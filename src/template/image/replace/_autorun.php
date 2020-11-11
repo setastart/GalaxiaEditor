@@ -1,10 +1,11 @@
 <?php
 
+use Galaxia\Text;
 use GalaxiaEditor\input\Input;
 
 
-$pgTitle = t('Replace') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
-$hdTitle = t('Replace') . ' ' . t($geConf[$pgSlug]['gcTitleSingle']);
+$pgTitle = Text::t('Replace') . ' ' . Text::t($geConf[$pgSlug]['gcTitleSingle']);
+$hdTitle = Text::t('Replace') . ' ' . Text::t($geConf[$pgSlug]['gcTitleSingle']);
 
 
 $inputs = [

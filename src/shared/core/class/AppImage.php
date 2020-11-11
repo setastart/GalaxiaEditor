@@ -33,7 +33,7 @@ class AppImage {
 
 
 
-    public static function list($dirImage) {
+    static function list($dirImage) {
         $images = [];
         $glob   = glob($dirImage . '*', GLOB_NOSORT);
         if ($glob === false) return $images;
@@ -62,7 +62,7 @@ class AppImage {
 
 
 
-    public static function valid(string $dirImage, string $imgSlug) {
+    static function valid(string $dirImage, string $imgSlug) {
         if (empty($imgSlug)) return false;
         if (preg_match('/[^a-z0-9-]/', $imgSlug)) return false;
         if (realpath($dirImage) == realpath($dirImage . $imgSlug)) return false;
@@ -78,7 +78,7 @@ class AppImage {
 
 
 
-    public static function dimensions(string $dirImage, string $imgSlug) {
+    static function dimensions(string $dirImage, string $imgSlug) {
         $file = $dirImage . $imgSlug . '/' . $imgSlug . '_dim.txt';
         if (!file_exists($file)) return [];
         $dim = explode('x', file_get_contents($file));
@@ -89,7 +89,7 @@ class AppImage {
 
 
 
-    public static function fit($img) {
+    static function fit($img) {
         $ratioOriginal = $img['wOriginal'] / $img['hOriginal'];
 
         if ($img['fit'] && is_int($img['w']) && is_int($img['h']) && $img['w'] > 0 && $img['h'] > 0) {
@@ -130,7 +130,7 @@ class AppImage {
 
 
 
-    public static function alt(string $dirImage, string $imgSlug, $lang) {
+    static function alt(string $dirImage, string $imgSlug, $lang) {
         $file = $dirImage . $imgSlug . '/' . $imgSlug . '_alt_' . $lang . '.txt';
         if (!file_exists($file)) return '';
 
@@ -140,7 +140,7 @@ class AppImage {
 
 
 
-    public static function resizes(string $dirImage, string $imgSlug) {
+    static function resizes(string $dirImage, string $imgSlug) {
         $files    = [];
         $dirImage = $dirImage . $imgSlug;
         $glob     = glob($dirImage . '/*');
@@ -161,7 +161,7 @@ class AppImage {
 
 
 
-    public static function slugRename(string $dirImage, string $imgSlugOld, $imgSlugNew) {
+    static function slugRename(string $dirImage, string $imgSlugOld, $imgSlugNew) {
         if (!AppImage::valid($dirImage, $imgSlugOld)) return false;
 
         $dirOld = $dirImage . $imgSlugOld . '/';
@@ -185,7 +185,7 @@ class AppImage {
                 // $nameNew = str_replace($imgSlugOld, $imgSlugNew, $nameOld);
 
                 if (!rename($nameOld, $nameNew)) {
-                    Flash::error('Error renaming file:' . h($nameOld) . ' -> ' . h($nameNew));
+                    Flash::error('Error renaming file:' . Text::h($nameOld) . ' -> ' . Text::h($nameNew));
 
                     return false;
                 }
@@ -199,7 +199,7 @@ class AppImage {
 
 
 
-    public static function delete(string $dirImage, string $imgSlug) {
+    static function delete(string $dirImage, string $imgSlug) {
         if (!AppImage::valid($dirImage, $imgSlug)) return false;
 
         foreach (new DirectoryIterator($dirImage . $imgSlug) as $fileInfo) {
@@ -214,13 +214,13 @@ class AppImage {
 
 
 
-    public static function deleteResizes(string $dirImage, string $imgSlug) {
+    static function deleteResizes(string $dirImage, string $imgSlug) {
         $resizes = AppImage::resizes($dirImage, $imgSlug);
         $mtime   = filemtime($dirImage . $imgSlug . '/');
 
         foreach ($resizes as $file) {
             if (!unlink($dirImage . $imgSlug . '/' . $file)) {
-                Flash::error('Error removing resized image: ' . h($imgSlug));
+                Flash::error('Error removing resized image: ' . Text::h($imgSlug));
             }
         }
 
@@ -232,14 +232,14 @@ class AppImage {
 
 
 
-    public static function render($img, $extra = '') {
+    static function render($img, $extra = '') {
         if (!$img || !isset($img['src'])) return '';
-        if ($img['version']) $img['src'] .= '?v=' . h($img['version']);
+        if ($img['version']) $img['src'] .= '?v=' . Text::h($img['version']);
         $r = '<img';
 
         if ($img['lang']) {
-            $r .= ' alt="' . h($img['alt'][$img['lang']] ?? '') . '"';
-            $r .= ' lang="' . h($img['lang']) . '"';
+            $r .= ' alt="' . Text::h($img['alt'][$img['lang']] ?? '') . '"';
+            $r .= ' lang="' . Text::h($img['lang']) . '"';
         } else {
             $r .= ' alt=""';
         }
@@ -248,12 +248,12 @@ class AppImage {
             $r .= ' loading="lazy"';
         }
 
-        $r .= ' src="' . h($img['src'] ?? '') . '"';
-        if ($img['srcset']) $r .= ' srcset="' . h($img['srcset'] ?? '') . '"';
+        $r .= ' src="' . Text::h($img['src'] ?? '') . '"';
+        if ($img['srcset']) $r .= ' srcset="' . Text::h($img['srcset'] ?? '') . '"';
 
         if ($extra) $r .= ' ' . $extra;
 
-        $r .= ' width="' . h($img['w']) . '" height="' . h($img['h']) . '">';
+        $r .= ' width="' . Text::h($img['w']) . '" height="' . Text::h($img['h']) . '">';
 
         return $r;
     }

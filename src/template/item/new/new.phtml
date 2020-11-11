@@ -1,10 +1,11 @@
-<?php use GalaxiaEditor\input\InputRender;
+<?php use Galaxia\Text;
+use GalaxiaEditor\input\InputRender;
 
 
 InputRender::form('', 'item-new', 'item item-new paper pad'); ?>
 
     <div class="paper-header pad">
-        <h1><?=h($pgTitle)?></h1>
+        <h1><?=Text::h($pgTitle)?></h1>
 
 <?php   if (isset($item['inputs']['status'])) { ?>
 <?php       echo InputRender::status($item['inputs']['status']); ?>
@@ -30,9 +31,9 @@ InputRender::form('', 'item-new', 'item item-new paper pad'); ?>
 
     <div class="paper-footer pad">
         <div class="paper-footer-actions">
-            <button class="btn btn-green active"><?=t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(t('Save and go back to %s'), t($geConf[$pgSlug]['gcTitlePlural']))?></button>
-            <button class="btn btn-blue active" name="submitAndAddMore"><?=t('Save and add more')?></button>
+            <button class="btn btn-green active"><?=Text::t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t($geConf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-blue active" name="submitAndAddMore"><?=Text::t('Save and add more')?></button>
         </div>
     </div>
 

@@ -1,5 +1,8 @@
 <?php
 
+use Galaxia\Text;
+
+
 $menu = [];
 
 foreach ($geConf as $rootSlug => $confPage) {
@@ -12,7 +15,7 @@ foreach ($geConf as $rootSlug => $confPage) {
 
     if (!$confPage['gcMenuShow']) continue;
 
-    $menu[$rootSlug]['link']     = '/edit/' . h($rootSlug);
+    $menu[$rootSlug]['link']     = '/edit/' . Text::h($rootSlug);
     $menu[$rootSlug]['title']    = $confPage['gcMenuTitle'];
     $menu[$rootSlug]['cssClass'] = '';
 
@@ -43,7 +46,7 @@ foreach ($geConf as $rootSlug => $confPage) {
     if (!is_array($confPage['gcMenuShow']['gcPerms'])) continue;
 
     foreach ($confPage['gcMenuShow']['gcPerms'] as $perm) {
-        $menu[$rootSlug]['cssClass'] .= ' hide-perm-' . h($perm);
+        $menu[$rootSlug]['cssClass'] .= ' hide-perm-' . Text::h($perm);
     }
 }
 
@@ -52,15 +55,15 @@ foreach ($geConf as $rootSlug => $confPage) {
 ?>
 <div id="menu" class="non-selectable">
     <a id="website-link" target="_blank" rel="noopener" href="/">
-        <img src="/favicon.ico" alt="<?=t('Icon')?>" class="thumb-mini">
-        <span><?=h($_SERVER['SERVER_NAME'])?></span>
+        <img src="/favicon.ico" alt="<?=Text::t('Icon')?>" class="thumb-mini">
+        <span><?=Text::h($_SERVER['SERVER_NAME'])?></span>
     </a>
 
 <?php   foreach ($menu as $menuItem) { ?>
 <?php       if (($menuItem['cssClass'] ?? '') == 'menu-separator') { ?>
-    <div class="<?=h($menuItem['cssClass'])?>"></div>
+    <div class="<?=Text::h($menuItem['cssClass'])?>"></div>
 <?php       } else {?>
-    <a class="menu-item<?=h($menuItem['cssClass'])?>" href="<?=h($menuItem['link'])?>"><?=t($menuItem['title'])?></a>
+    <a class="menu-item<?=Text::h($menuItem['cssClass'])?>" href="<?=Text::h($menuItem['link'])?>"><?=Text::t($menuItem['title'])?></a>
 <?php       } ?>
 <?php   } ?>
 

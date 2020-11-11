@@ -1,21 +1,27 @@
+<?php
+
+use Galaxia\Text;
+
+
+?>
 <div class="history">
     <div class="item-title">
-        <h1><?=h($pgTitle)?></h1>
+        <h1><?=Text::h($pgTitle)?></h1>
     </div>
 <?php   if (isset($rootSlugs[$tabName])) { ?>
     <div class="paper-header">
-        <a href="/edit/<?=h($rootSlugs[$tabName])?>/<?=h($tabId)?>"><?=t('Edit Item')?></a>
+        <a href="/edit/<?=Text::h($rootSlugs[$tabName])?>/<?=Text::h($tabId)?>"><?=Text::t('Edit Item')?></a>
     </div>
 <?php   } ?>
 <?php   foreach ($items as $itemId => $item) { ?>
-    <div id="<?=h($itemId)?>" class="history-item paper pad action-<?=h($item['action'])?>">
+    <div id="<?=Text::h($itemId)?>" class="history-item paper pad action-<?=Text::h($item['action'])?>">
 <?php       foreach ($item['changes'] as $change) { ?>
-        <div class="input-label pad"><span class="input-label-lang"><?=t($change['lang'])?></span> <?=t($change['name'])?></div>
-        <div class="content pad"><?=strip_tags($change['content'], ALLOWED_TAGS)?></div>
+        <div class="input-label pad"><span class="input-label-lang"><?=Text::t($change['lang'])?></span> <?=Text::t($change['name'])?></div>
+        <div class="content pad"><?=strip_tags($change['content'], Text::ALLOWED_TAGS)?></div>
 <?php       } ?>
         <div class="paper-footer">
-            <p class="pad"><?=t('action-' . $item['action'])?>: <?=gFormatDate($item['created'], 'd MMM y - HH:mm')?></p>
-            <p class="grey pad"><?=t('Id')?>: <?=h($itemId)?></p>
+            <p class="pad"><?=Text::t('action-' . $item['action'])?>: <?=Text::formatDate($item['created'], 'd MMM y - HH:mm')?></p>
+            <p class="grey pad"><?=Text::t('Id')?>: <?=Text::h($itemId)?></p>
         </div>
     </div>
 <?php   } ?>

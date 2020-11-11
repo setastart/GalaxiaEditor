@@ -1,18 +1,19 @@
 <?php
 
 use Galaxia\Pagination;
+use Galaxia\Text;
 
 
 function renderPaginationHeader(Pagination $pagination): void {
     if (!$pagination->active) return;
 ?>
     <div class="pagination btn-row pad">
-        <label class="input-label" for="itemsPerPage"><?=t('Per page')?></label>
+        <label class="input-label" for="itemsPerPage"><?=Text::t('Per page')?></label>
         <div class="btn-group space-rgt">
             <input class="itemsPerPage" id="itemsPerPage" type="number" min="1" name="itemsPerPage" value="<?=$pagination->itemsPerPage?>">
         </div>
         <label class="input-label" for="pageCurrent">
-            <?=t('Page')?>
+            <?=Text::t('Page')?>
         </label>
         <div class="btn-group">
             <input class="pageCurrent" id="pageCurrent" type="number" min="1" name="page" value="<?=$pagination->pageCurrent?>">
@@ -46,7 +47,7 @@ function renderPaginationFooter(Pagination $pagination): void {
             <button name="page" value="<?=$pagination->pagePrev?>" class="pagePrev btn-new pagination-prev active" <?=($pagination->pagePrev) ?: 'disabled'?>></button>
         </div>
 
-        <div class="space-rgt"><?=t('Page')?>&nbsp;<span class="pageCurrent"><?=$pagination->pageCurrent?></span> &nbsp;&#8725;&nbsp; <span class="pageLast"><?=$pagination->pageLast?></span></div>
+        <div class="space-rgt"><?=Text::t('Page')?>&nbsp;<span class="pageCurrent"><?=$pagination->pageCurrent?></span> &nbsp;&#8725;&nbsp; <span class="pageLast"><?=$pagination->pageLast?></span></div>
 
         <div class="btn-group">
             <button name="page" value="<?=$pagination->pageNext?>" class="pageNext btn-new pagination-next active" <?=($pagination->pageNext) ?: 'disabled'?>></button>

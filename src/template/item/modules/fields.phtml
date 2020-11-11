@@ -1,12 +1,13 @@
 <?php
 
+use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
 
 
 ?>
 <div id="module-<?=$moduleKey?>" class="module">
 <?php   if ($module['gcModuleTitle']) { ?>
-    <h2 class="pad"><?=t($module['gcModuleTitle'])?></h2>
+    <h2 class="pad"><?=Text::t($module['gcModuleTitle'])?></h2>
 <?php   } ?>
 <?php   foreach ($module['inputs'] as $fieldKey => $fields) {
 
@@ -29,21 +30,21 @@ use GalaxiaEditor\input\InputRender;
             if ($multi) {
 ?>
     <div id="<?=$modKeyField?>-header" class="module-field-multi-header pad" data-target="<?=$modKeyField?>">
-        <h2><?=t($module['gcModuleMultiple'][$fieldKey]['label'] ?? $fieldKey)?>: <span class="module-field-count"><?=count($fields) - 2?></span></h2>
+        <h2><?=Text::t($module['gcModuleMultiple'][$fieldKey]['label'] ?? $fieldKey)?>: <span class="module-field-count"><?=count($fields) - 2?></span></h2>
 <?php               if ($gallery) { ?>
         <div class="btn-group">
-            <button type="button" class="ev-gallery-delete-none btn-new btn-new-text active" id="empty-<?=$modKeyField?>"><?=t('Delete None')?></button>
-            <button type="button" class="ev-gallery-delete-all btn-new btn-new-text active" id="empty-<?=$modKeyField?>"><?=t('Delete All')?></button>
+            <button type="button" class="ev-gallery-delete-none btn-new btn-new-text active" id="empty-<?=$modKeyField?>"><?=Text::t('Delete None')?></button>
+            <button type="button" class="ev-gallery-delete-all btn-new btn-new-text active" id="empty-<?=$modKeyField?>"><?=Text::t('Delete All')?></button>
         </div>
         <div class="btn-group">
-            <button type="button" class="ev-gallery-reorder btn-new btn-new-text active" id="reorder-<?=$modKeyField?>"><?=t('Reorder Images')?></button>
+            <button type="button" class="ev-gallery-reorder btn-new btn-new-text active" id="reorder-<?=$modKeyField?>"><?=Text::t('Reorder Images')?></button>
         </div>
         <div class="btn-group">
-            <button type="button" class="ev-gallery-add btn-new btn-new-plus-text active" id="add-<?=$modKeyField?>-new"><?=t('Add')?></button>
+            <button type="button" class="ev-gallery-add btn-new btn-new-plus-text active" id="add-<?=$modKeyField?>-new"><?=Text::t('Add')?></button>
         </div>
 <?php               } else { ?>
         <div class="btn-group">
-            <button type="button" class="ev-module-add btn-new btn-new-plus-text active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="0"><?=t('Add')?></button>
+            <button type="button" class="ev-module-add btn-new btn-new-plus-text active" id="add-<?=$modKeyField?>-new" data-target="<?=$modKeyField?>-new" data-where="<?=$modKeyField?>" data-pos="0"><?=Text::t('Add')?></button>
         </div>
 <?php               } ?>
         <div id="<?=$modKeyField?>-new" class="module-field-group hide">
@@ -63,30 +64,30 @@ use GalaxiaEditor\input\InputRender;
             </div>
             <div class="module-field-group-footer btn-row pad">
                 <div class="btn-group">
-                    <button title="<?=t("Remove")?>" disabled type="button" class="ev-module-rem module-field-btn-delete btn-new btn-new-x active rc" data-target="<?=$modKeyField?>-new"></button>
+                    <button title="<?=Text::t("Remove")?>" disabled type="button" class="ev-module-rem module-field-btn-delete btn-new btn-new-x active rc" data-target="<?=$modKeyField?>-new"></button>
                     <input disabled class="hide" type="checkbox" name="<?=$modKeyFieldArr?>[new-0][delete]">
                 </div>
 <?php           if ($reorder) { ?>
                 <div class="btn-group">
-                    <button title="<?=t("First")?>" disabled type="button" class="ev-module-first btn-new reorder-first active" data-target="<?=$modKeyField?>-new"></button>
-                    <button title="<?=t("Previous")?>" disabled type="button" class="ev-module-up btn-new reorder-prev active" data-target="<?=$modKeyField?>-new"></button>
+                    <button title="<?=Text::t("First")?>" disabled type="button" class="ev-module-first btn-new reorder-first active" data-target="<?=$modKeyField?>-new"></button>
+                    <button title="<?=Text::t("Previous")?>" disabled type="button" class="ev-module-up btn-new reorder-prev active" data-target="<?=$modKeyField?>-new"></button>
                 </div>
                 <div class="btn-group">
                     <input disabled class="module-position input-text" type="text" min="1" name="<?=$modKeyFieldArr?>[new-0][position]" value="1">
                     <button disabled type="button" class="ev-module-go btn-new active" data-target="<?=$modKeyField?>-new">go!</button>
                 </div>
                 <div class="btn-group">
-                    <button title="<?=t("Next")?>" disabled type="button" class="ev-module-down btn-new reorder-next active" data-target="<?=$modKeyField?>-new"></button>
-                    <button title="<?=t("Last")?>" disabled type="button" class="ev-module-last btn-new reorder-last active" data-target="<?=$modKeyField?>-new"></button>
+                    <button title="<?=Text::t("Next")?>" disabled type="button" class="ev-module-down btn-new reorder-next active" data-target="<?=$modKeyField?>-new"></button>
+                    <button title="<?=Text::t("Last")?>" disabled type="button" class="ev-module-last btn-new reorder-last active" data-target="<?=$modKeyField?>-new"></button>
                 </div>
 <?php           } ?>
             </div>
 <?php               if ($gallery) { ?>
             <div class="btn-group">
-                <button title="<?=t('Add')?>" type="button" class="ev-gallery-add before btn-new btn-new-plus active"></button>
+                <button title="<?=Text::t('Add')?>" type="button" class="ev-gallery-add before btn-new btn-new-plus active"></button>
             </div>
             <div class="btn-group">
-                <button title="<?=t('Add')?>" type="button" class="ev-gallery-add after btn-new btn-new-plus active"></button>
+                <button title="<?=Text::t('Add')?>" type="button" class="ev-gallery-add after btn-new btn-new-plus active"></button>
             </div>
 <?php               } ?>
         </div>
@@ -132,30 +133,30 @@ use GalaxiaEditor\input\InputRender;
 <?php           if ($multi) { ?>
             <div class="module-field-group-footer btn-row pad">
                 <div class="btn-group">
-                    <button title="<?=t("Remove")?>" type="button" class="ev-module-rem module-field-btn-delete btn-new btn-new-x active rc" data-target="<?=$modKeyFieldVal?>"></button>
+                    <button title="<?=Text::t("Remove")?>" type="button" class="ev-module-rem module-field-btn-delete btn-new btn-new-x active rc" data-target="<?=$modKeyFieldVal?>"></button>
                     <input class="hide" type="checkbox" name="<?=$modKeyFieldValArr?>[delete]"<?=($deleteChecked) ? ' checked' : ''?>>
                 </div>
 <?php               if ($reorder) { ?>
                 <div class="btn-group">
-                    <button title="<?=t("First")?>" type="button" class="ev-module-first btn-new reorder-first active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
-                    <button title="<?=t("Previous")?>" type="button" class="ev-module-up btn-new reorder-prev active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
+                    <button title="<?=Text::t("First")?>" type="button" class="ev-module-first btn-new reorder-first active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
+                    <button title="<?=Text::t("Previous")?>" type="button" class="ev-module-up btn-new reorder-prev active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
                 </div>
                 <div class="btn-group">
                     <input class="module-position input-text" type="text" min="1" name="<?=$modKeyFieldValArr?>[position]" value="<?=$field['position']?>"<?=($deleteChecked) ? ' disabled' : ''?>>
                     <button type="button" class="ev-module-go btn-new active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>>go!</button>
                 </div>
                 <div class="btn-group">
-                    <button title="<?=t("Next")?>" type="button" class="ev-module-down btn-new reorder-next active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
-                    <button title="<?=t("Last")?>" type="button" class="ev-module-last btn-new reorder-last active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
+                    <button title="<?=Text::t("Next")?>" type="button" class="ev-module-down btn-new reorder-next active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
+                    <button title="<?=Text::t("Last")?>" type="button" class="ev-module-last btn-new reorder-last active" data-target="<?=$modKeyFieldVal?>"<?=($deleteChecked) ? ' disabled' : ''?>></button>
                 </div>
 <?php               } ?>
             </div>
 <?php               if ($gallery) { ?>
             <div class="btn-group">
-                <button title="<?=t('Add')?>" type="button" class="ev-gallery-add before btn-new btn-new-plus active"></button>
+                <button title="<?=Text::t('Add')?>" type="button" class="ev-gallery-add before btn-new btn-new-plus active"></button>
             </div>
             <div class="btn-group">
-                <button title="<?=t('Add')?>" type="button" class="ev-gallery-add after btn-new btn-new-plus active"></button>
+                <button title="<?=Text::t('Add')?>" type="button" class="ev-gallery-add after btn-new btn-new-plus active"></button>
             </div>
 <?php               } ?>
 <?php           } ?>

@@ -1,5 +1,8 @@
 <?php
 
-$pgTitle = sprintf(t('Delete %s: %s?'), t($geConf[$pgSlug]['gcTitleSingle']), h($imgSlug));
-$hdTitle = sprintf(t('Delete %s: %s?'), t($geConf[$pgSlug]['gcTitleSingle']), h($imgSlug));
+use Galaxia\Text;
+
+
+$pgTitle = sprintf(Text::t('Delete %s: %s?'), Text::t($geConf[$pgSlug]['gcTitleSingle']), Text::h($imgSlug));
+$hdTitle = sprintf(Text::t('Delete %s: %s?'), Text::t($geConf[$pgSlug]['gcTitleSingle']), Text::h($imgSlug));
 

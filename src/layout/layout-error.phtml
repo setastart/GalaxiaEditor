@@ -2,6 +2,7 @@
 
 use Galaxia\Director;
 use Galaxia\Flash;
+use Galaxia\Text;
 
 
 global $editor;
@@ -15,18 +16,18 @@ global $me;
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Error <?=h($errorCode)?></title>
+    <title>Error <?=Text::h($errorCode)?></title>
 
-    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=h($editor->version)?>">
+    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h($editor->version)?>">
 
-    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/text.css?version=<?=h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/galaxiaEditor.css?version=<?=h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/filters.css?version=<?=h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/responsive.css?version=<?=h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/text.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/galaxiaEditor.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/filters.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/responsive.css?version=<?=Text::h($editor->version)?>">
 
-    <script type="text/javascript" src="/edit/js/galaxiaEditor.js?version=<?=h($editor->version)?>"></script>
+    <script type="text/javascript" src="/edit/js/galaxiaEditor.js?version=<?=Text::h($editor->version)?>"></script>
 </head>
 <body class="page-error">
 
@@ -39,7 +40,7 @@ global $me;
 <?php   include 'messageBoxes.phtml'; ?>
     <div class="paper pad">
         <div class="paper-header pad">
-            <h1>Error <?=h($errorCode)?></h1>
+            <h1>Error <?=Text::h($errorCode)?></h1>
         </div>
         <div class="pad">
             <?=nl2br($error)?>
@@ -54,13 +55,13 @@ global $me;
 
 <div id="footer">
     <div class="links">
-        <a href="/edit/logout"><?=t('Logout')?></a>
+        <a href="/edit/logout"><?=Text::t('Logout')?></a>
 <?php   if ($me->hasPerm('dev')) { ?>
         <a href="/edit/dev" class="hide-perm-dev">Developer</a>
 <?php   } ?>
-        <a href="/edit/dev/cacheDeleteEditor"><?=t('Delete Editor Caches')?></a>
+        <a href="/edit/dev/cacheDeleteEditor"><?=Text::t('Delete Editor Caches')?></a>
     </div>
-    <p class="version"><img class="icon" src="/edit/favicon.ico"><?=h($me->name)?>@galaxia v<?=h($editor->version);?></p>
+    <p class="version"><img class="icon" src="/edit/favicon.ico"><?=Text::h($me->name)?>@galaxia v<?=Text::h($editor->version);?></p>
     <p class="copy"><img class="icon" src="/edit/gfx/icon-setastart-white-32.png"/><a href="https://setastart.com/" target="_blank">setastart.com</a> &copy; 2017-<?=date("Y")?></p>
 </div>
 

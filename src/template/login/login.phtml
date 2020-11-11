@@ -1,7 +1,8 @@
-<?php use GalaxiaEditor\input\InputRender;
+<?php use Galaxia\Text;
+use GalaxiaEditor\input\InputRender;
 
 
-$userEmail = (isset($_SESSION['post']['userEmail'])) ? h($_SESSION['post']['userEmail']) : '' ?>
+$userEmail = (isset($_SESSION['post']['userEmail'])) ? Text::h($_SESSION['post']['userEmail']) : '' ?>
 
 <form action="/edit/login" method="post" autocomplete="on">
 

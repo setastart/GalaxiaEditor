@@ -4,6 +4,7 @@
 // get items from database
 
 use Galaxia\Sql;
+use Galaxia\Text;
 
 
 $items = [];
@@ -41,11 +42,11 @@ while ($data = $result->fetch_assoc()) {
     }
 
     $content = $data['content'];
-    if ($data['content'] == '') $content = '[' . t('Empty') . ']';
+    if ($data['content'] == '') $content = '[' . Text::t('Empty') . ']';
     if ($data['inputKey'] == 'status')
         if (isset($statusNames[$tabName]))
             if (isset($statusNames[$tabName][$data['content']]))
-                $content = t($statusNames[$tabName][$data['content']]);
+                $content = Text::t($statusNames[$tabName][$data['content']]);
 
 
 
@@ -62,5 +63,5 @@ $itemCount = count($items);
 
 
 
-$hdTitle = sprintf(t('History of %s'), ($pageNames[$tabName] ?? $tabName) . ': ' . $tabId);
-$pgTitle = sprintf(t('History of %s'), ($pageNames[$tabName] ?? $tabName) . ': ' . $tabId);
+$hdTitle = sprintf(Text::t('History of %s'), ($pageNames[$tabName] ?? $tabName) . ': ' . $tabId);
+$pgTitle = sprintf(Text::t('History of %s'), ($pageNames[$tabName] ?? $tabName) . ': ' . $tabId);

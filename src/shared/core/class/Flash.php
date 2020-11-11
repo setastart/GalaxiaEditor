@@ -6,7 +6,7 @@ namespace Galaxia;
 
 class Flash {
 
-    public static function msgBoxes($type, $arrayIndex = false) {
+    static function msgBoxes($type, $arrayIndex = false) {
         $key    = $type . 's';
         $domain = $type . 'Box';
         if ($arrayIndex !== false) return $_SESSION[$key][$domain][$arrayIndex] ?? [];
@@ -17,7 +17,7 @@ class Flash {
 
 
 
-    public static function error($msg, $domain = 'errorBox', $arrayIndex = false) {
+    static function error($msg, $domain = 'errorBox', $arrayIndex = false) {
         if ($arrayIndex !== false) {
             $_SESSION['errors'][$domain][$arrayIndex][] = $msg;
         } else {
@@ -25,7 +25,7 @@ class Flash {
         }
     }
 
-    public static function hasError($domain = null, $arrayIndex = false) {
+    static function hasError($domain = null, $arrayIndex = false) {
         if (isset($domain)) {
             if ($arrayIndex !== false) return (isset($_SESSION['errors'][$domain][$arrayIndex]));
 
@@ -35,7 +35,7 @@ class Flash {
         }
     }
 
-    public static function errors($domain = null, $arrayIndex = false) {
+    static function errors($domain = null, $arrayIndex = false) {
         if (isset($domain)) {
             if ($arrayIndex !== false) return $_SESSION['errors'][$domain][$arrayIndex] ?? [];
 
@@ -49,7 +49,7 @@ class Flash {
 
 
 
-    public static function warning($msg, $domain = 'warningBox', $arrayIndex = false) {
+    static function warning($msg, $domain = 'warningBox', $arrayIndex = false) {
         if ($arrayIndex !== false) {
             $_SESSION['warnings'][$domain][$arrayIndex][] = $msg;
         } else {
@@ -57,7 +57,7 @@ class Flash {
         }
     }
 
-    public static function hasWarning($domain = null, $arrayIndex = false) {
+    static function hasWarning($domain = null, $arrayIndex = false) {
         if (isset($domain)) {
             if ($arrayIndex !== false) return (isset($_SESSION['warnings'][$domain][$arrayIndex]));
 
@@ -67,7 +67,7 @@ class Flash {
         }
     }
 
-    public static function warnings($domain = null, $arrayIndex = false) {
+    static function warnings($domain = null, $arrayIndex = false) {
         if (isset($domain)) {
             if ($arrayIndex !== false) return $_SESSION['warnings'][$domain][$arrayIndex] ?? [];
 
@@ -81,7 +81,7 @@ class Flash {
 
 
 
-    public static function info($msg, $domain = 'infoBox', $arrayIndex = false) {
+    static function info($msg, $domain = 'infoBox', $arrayIndex = false) {
         if ($arrayIndex !== false) {
             $_SESSION['infos'][$domain][$arrayIndex][] = $msg;
         } else {
@@ -89,7 +89,7 @@ class Flash {
         }
     }
 
-    public static function hasInfo($domain = null, $arrayIndex = false) {
+    static function hasInfo($domain = null, $arrayIndex = false) {
         if (isset($domain)) {
             if ($arrayIndex !== false) return (isset($_SESSION['infos'][$domain][$arrayIndex]));
 
@@ -99,7 +99,7 @@ class Flash {
         }
     }
 
-    public static function infos($domain = null, $arrayIndex = false) {
+    static function infos($domain = null, $arrayIndex = false) {
         if (isset($domain)) {
             if ($arrayIndex !== false) return $_SESSION['infos'][$domain][$arrayIndex] ?? [];
 
@@ -113,7 +113,7 @@ class Flash {
 
 
 
-    public static function devlog($msg, $domain = 'devlogBox', $arrayIndex = false) {
+    static function devlog($msg, $domain = 'devlogBox', $arrayIndex = false) {
         if ($arrayIndex !== false) {
             $_SESSION['devlogs'][$domain][$arrayIndex][] = $msg;
         } else {
@@ -121,7 +121,7 @@ class Flash {
         }
     }
 
-    public static function hasDevlog($domain = null, $arrayIndex = false) {
+    static function hasDevlog($domain = null, $arrayIndex = false) {
         if (isset($domain)) {
             if ($arrayIndex !== false) return (isset($_SESSION['devlogs'][$domain][$arrayIndex]));
 
@@ -131,7 +131,7 @@ class Flash {
         }
     }
 
-    public static function devlogs($domain = null, $arrayIndex = false) {
+    static function devlogs($domain = null, $arrayIndex = false) {
         if (isset($domain)) {
             if ($arrayIndex !== false) return $_SESSION['devlogs'][$domain][$arrayIndex] ?? [];
 
@@ -145,7 +145,7 @@ class Flash {
 
 
 
-    public static function cleanMessages() {
+    static function cleanMessages() {
         if (session_status() !== PHP_SESSION_ACTIVE) return;
         unset($_SESSION['errors']);
         unset($_SESSION['infos']);
@@ -158,7 +158,7 @@ class Flash {
 
 
 
-    public static function printCli() {
+    static function printCli() {
         if (Flash::haserror()) {
             echo '🍎 errors: ' . PHP_EOL;
             foreach (Flash::errors() as $key => $msgs) {

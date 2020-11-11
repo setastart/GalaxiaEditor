@@ -3,6 +3,7 @@
 use Galaxia\Director;
 use Galaxia\File;
 use Galaxia\Flash;
+use Galaxia\Text;
 use GalaxiaEditor\input\Input;
 
 
@@ -52,18 +53,18 @@ foreach ($uploaded as $img) {
     if ($type) {
         $file = $app->dirImage . $img['slug'] . '/' . $img['slug'] . '_type.txt';
         if (file_put_contents($file, $type) !== false) {
-            Flash::info('Updated: ' . t('Image Type'));
+            Flash::info('Updated: ' . Text::t('Image Type'));
         } else {
-            Flash::error('Not updated: ' . t('Image Type'));
+            Flash::error('Not updated: ' . Text::t('Image Type'));
         }
     }
 
     if (!$img['replaced'] && $img['fileName']) {
         $file = $app->dirImage . $img['slug'] . '/' . $img['slug'] . '_alt_' . $app->lang . '.txt';
         if (file_put_contents($file, $img['fileName']) !== false) {
-            Flash::info('Updated: ' . t('Image Alt'));
+            Flash::info('Updated: ' . Text::t('Image Alt'));
         } else {
-            Flash::error('Not updated: ' . t('Image Alt'));
+            Flash::error('Not updated: ' . Text::t('Image Alt'));
         }
     }
 }

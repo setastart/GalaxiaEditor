@@ -127,7 +127,7 @@ class App {
         if (!isset($this->locales[$lang])) $lang = $this->lang;
         if ($url == '') return $this->locales[$lang]['url'];
 
-        return h(rtrim($this->locales[$lang]['url'], '/') . '/' . $url);
+        return Text::h(rtrim($this->locales[$lang]['url'], '/') . '/' . $url);
     }
 
 
@@ -499,7 +499,7 @@ class App {
                                 foreach ($this->locales as $lang => $locale) {
                                     $subLang[$lang] = '';
                                     foreach ($subs as $col => $data) {
-                                        $subLang[$lang] .= '/' . hg($subs, $col, $lang);
+                                        $subLang[$lang] .= '/' . Text::hg($subs, $col, $lang);
                                     }
                                 }
 
@@ -550,7 +550,7 @@ class App {
                 return;
             }
 
-            Flash::devlog(sprintf('Sitemap generated: %d items', $found) . ' <a target="blank" href="/sitemap.xml">' . t('Open in new tab') . '</a>');
+            Flash::devlog(sprintf('Sitemap generated: %d items', $found) . ' <a target="blank" href="/sitemap.xml">' . Text::t('Open in new tab') . '</a>');
         } else {
             Flash::devlog('Sitemap not generated, no items found.');
         }
@@ -697,7 +697,7 @@ class App {
         foreach ($files as $fileNameTemp => $fileNameProposed) {
 
             $mtime = false;
-            $fileNameProposed = gNormalize($fileNameProposed, ' ', '.');
+            $fileNameProposed = Text::normalize($fileNameProposed, ' ', '.');
             $shouldReplace = false;
 
             // load image
@@ -711,7 +711,7 @@ class App {
 
             // prepare directories
             $fileSlug   = $fileSlugInitial = pathinfo($fileNameProposed, PATHINFO_FILENAME);
-            $fileSlug   = gFormatSlug($fileSlug);
+            $fileSlug   = Text::formatSlug($fileSlug);
             $fileDir    = $this->dirImage . $fileSlug . '/';
             $dirCreated = false;
             if (is_dir($this->dirImage . $fileSlug)) {
@@ -721,13 +721,13 @@ class App {
                 } else {
                     for ($j = 0; $j < 3; $j++) {
                         if (!is_dir($this->dirImage . $fileSlug)) break;
-                        $fileSlug = gFormatSlug('temp' . uniqid() . '-' . $fileSlugInitial);
+                        $fileSlug = Text::formatSlug('temp' . uniqid() . '-' . $fileSlugInitial);
                         $fileDir  = $this->dirImage . $fileSlug . '/';
                     }
                     if (mkdir($fileDir)) {
                         $dirCreated = true;
                     } else {
-                        Flash::error('Unable to create directory: ' . h($fileDir));
+                        Flash::error('Unable to create directory: ' . Text::h($fileDir));
                         continue;
                     }
                 }
@@ -735,7 +735,7 @@ class App {
                 if (mkdir($fileDir)) {
                     $dirCreated = true;
                 } else {
-                    Flash::error('Unable to create directory: ' . h($fileDir));
+                    Flash::error('Unable to create directory: ' . Text::h($fileDir));
                     continue;
                 }
             }
@@ -763,7 +763,7 @@ class App {
             // dimensions
             file_put_contents($fileDir . $fileSlug . '_dim.txt', $imageVips->w . 'x' . $imageVips->h);
             if ($type) {
-                file_put_contents($fileDir . $fileSlug . '_type.txt', h($type));
+                file_put_contents($fileDir . $fileSlug . '_type.txt', Text::h($type));
             }
             $fileNameStripped = pathinfo($fileNameProposed, PATHINFO_FILENAME);
 
@@ -771,16 +771,16 @@ class App {
             // finish
             if ($replace) {
                 if ($imageVips->resized)
-                    Flash::info('Resized image: ' . h($fileSlug . $imageVips->ext));
+                    Flash::info('Resized image: ' . Text::h($fileSlug . $imageVips->ext));
                 else
-                    Flash::info('Replaced image: ' . h($fileSlug . $imageVips->ext));
+                    Flash::info('Replaced image: ' . Text::h($fileSlug . $imageVips->ext));
 
                 if ($mtime) {
                     touch($fileDir . $fileSlug . $imageVips->ext, $mtime);
                     touch($this->dirImage . $fileSlug . '/', $mtime);
                 }
             } else {
-                Flash::info('Uploaded image: ' . h($fileSlug . $imageVips->ext));
+                Flash::info('Uploaded image: ' . Text::h($fileSlug . $imageVips->ext));
             }
             $uploaded[] = [
                 'slug'     => $fileSlug,

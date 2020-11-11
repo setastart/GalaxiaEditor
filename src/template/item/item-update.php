@@ -3,6 +3,7 @@
 
 use Galaxia\Flash;
 use Galaxia\Sql;
+use Galaxia\Text;
 
 
 unset($itemChanges['passwordCurrent']);
@@ -31,8 +32,8 @@ try {
     } else {
         foreach ($itemChanges as $inputKey => $content) {
             $lang = $item['inputs'][$inputKey]['lang'] ? ' - ' . $item['inputs'][$inputKey]['lang'] : '';
-            Flash::info(t('Updated') . ': ' . t($item['inputs'][$inputKey]['label']) . $lang);
-            Flash::info(t('Updated'), 'form', $item['inputs'][$inputKey]['name']);
+            Flash::info(Text::t('Updated') . ': ' . Text::t($item['inputs'][$inputKey]['label']) . $lang);
+            Flash::info(Text::t('Updated'), 'form', $item['inputs'][$inputKey]['name']);
 
             if ($item['gcTable'] == '_geUser')
                 if ($inputKey == 'passwordHash')

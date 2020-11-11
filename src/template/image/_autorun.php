@@ -4,10 +4,11 @@
 use Galaxia\AppImage;
 use Galaxia\Director;
 use Galaxia\Flash;
+use Galaxia\Text;
 
 
-$pgTitle = t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
-$hdTitle = t('Editing') . ' ' . $pgTitle;
+$pgTitle = Text::t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
+$hdTitle = Text::t('Editing') . ' ' . $pgTitle;
 
 $item = $geConf[$pgSlug]['gcImage'];
 $action = $action ?? '';
@@ -23,7 +24,7 @@ if ($imgSlug == 'new') return;
 // item validation
 
 if (!AppImage::valid($app->dirImage, $imgSlug)) {
-    Flash::error(sprintf(t('Image \'%s\' does not exist.'), h($imgSlug)));
+    Flash::error(sprintf(Text::t('Image \'%s\' does not exist.'), Text::h($imgSlug)));
     Director::redirect('edit/' . $pgSlug);
 }
 

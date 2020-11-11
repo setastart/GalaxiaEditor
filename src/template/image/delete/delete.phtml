@@ -1,13 +1,14 @@
 <?php use Galaxia\AppImage;
+use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
 
 
 InputRender::form('', 'image-delete', 'image image-delete paper pad'); ?>
 
     <div class="paper-header pad">
-        <h1><?=h($pgTitle)?></h1>
+        <h1><?=Text::h($pgTitle)?></h1>
         <div class="paper-header-links">
-            <a href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>" class="btn-a"><?=t('Go back')?></a>
+            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>" class="btn-a"><?=Text::t('Go back')?></a>
         </div>
     </div>
 
@@ -20,8 +21,8 @@ InputRender::form('', 'image-delete', 'image image-delete paper pad'); ?>
     <div class="paper-footer pad">
 <?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions">
-            <a class="btn btn-blue btn-mb active" href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>"><?=t('Cancel')?></a>
-            <button class="btn btn-red btn-mb active"><?=sprintf(t('Delete %s'), t($geConf[$pgSlug]['gcTitleSingle']))?></button>
+            <a class="btn btn-blue btn-mb active" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>"><?=Text::t('Cancel')?></a>
+            <button class="btn btn-red btn-mb active"><?=sprintf(Text::t('Delete %s'), Text::t($geConf[$pgSlug]['gcTitleSingle']))?></button>
         </div>
     </div>
 

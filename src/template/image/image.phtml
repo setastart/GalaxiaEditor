@@ -1,19 +1,20 @@
 <?php use Galaxia\AppImage;
+use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
 
 
 InputRender::form('', 'image-edit', 'image image-new paper pad'); ?>
 
     <div class="paper-header pad">
-        <h1><?=h($pgTitle)?></h1>
+        <h1><?=Text::h($pgTitle)?></h1>
 
         <div class="paper-header-actions">
-            <button type="submit" class="btn btn-green active"><?=t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=t('Save and go back')?></button>
+            <button type="submit" class="btn btn-green active"><?=Text::t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=Text::t('Save and go back')?></button>
         </div>
 
         <div class="paper-header-links">
-            <a href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>" class="btn-a"><?=t('Reload')?></a>
+            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>" class="btn-a"><?=Text::t('Reload')?></a>
         </div>
     </div>
 
@@ -41,8 +42,8 @@ InputRender::form('', 'image-edit', 'image image-new paper pad'); ?>
     <div class="paper-footer pad">
 <?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions">
-            <button class="btn btn-green active"><?=t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(t('Save and go back to %s'), t($geConf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-green active"><?=Text::t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t($geConf[$pgSlug]['gcTitlePlural']))?></button>
         </div>
     </div>
 

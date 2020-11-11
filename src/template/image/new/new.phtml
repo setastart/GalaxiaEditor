@@ -1,10 +1,11 @@
-<?php use GalaxiaEditor\input\InputRender;
+<?php use Galaxia\Text;
+use GalaxiaEditor\input\InputRender;
 
 
 InputRender::form('', 'image-new', 'image image-new paper pad'); ?>
 
     <div class="paper-header pad">
-        <h1><?=h($pgTitle)?></h1>
+        <h1><?=Text::h($pgTitle)?></h1>
     </div>
 
     <div class="item-row">
@@ -26,14 +27,14 @@ InputRender::form('', 'image-new', 'image image-new paper pad'); ?>
         <div class="item-info">
 <?php   if (isset($item['gcInfo'])) { ?>
 <?php       foreach ($item['gcInfo'] as $info) { ?>
-            <p><?=t($info['label'])?>: <?=h($info['value'])?></p>
+            <p><?=Text::t($info['label'])?>: <?=Text::h($info['value'])?></p>
 <?php       } ?>
 <?php   } ?>
         </div>
         <div class="paper-footer-actions">
-            <button class="btn btn-green active"><?=t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=t('Save and go back')?></button>
-            <button class="btn btn-blue active" name="submitAndAddMore"><?=t('Save and add more')?></button>
+            <button class="btn btn-green active"><?=Text::t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=Text::t('Save and go back')?></button>
+            <button class="btn btn-blue active" name="submitAndAddMore"><?=Text::t('Save and add more')?></button>
         </div>
     </div>
 

@@ -4,6 +4,9 @@
 namespace Galaxia\Scrape;
 
 
+use Galaxia\Text;
+
+
 class Scrape {
 
     const ERROR  = 'error';
@@ -103,13 +106,13 @@ class Scrape {
 
 
     static function resultClean(array $r): array {
-        $r[self::ERROR] = t($r[self::ERROR]);
+        $r[self::ERROR] = Text::t($r[self::ERROR]);
         foreach ($r[self::INFO] as $key => $val) {
-            $r[self::INFO][$key] = t($val);
+            $r[self::INFO][$key] = Text::t($val);
         }
 
         array_walk_recursive($r, function(&$v) {
-            $v = strip_tags($v, ALLOWED_TAGS);
+            $v = strip_tags($v, Text::ALLOWED_TAGS);
         });
         return $r;
     }

@@ -3,6 +3,7 @@
 use Galaxia\Director;
 use Galaxia\Flash;
 use Galaxia\Sql;
+use Galaxia\Text;
 use GalaxiaEditor\input\Input;
 
 
@@ -93,7 +94,7 @@ foreach ($itemChanges as $key => $value)
 // finish
 
 $app->cacheDelete('editor');
-Flash::info(sprintf(t('Added: %s.'), t($geConf[$pgSlug]['gcTitleSingle'])));
+Flash::info(sprintf(Text::t('Added: %s.'), Text::t($geConf[$pgSlug]['gcTitleSingle'])));
 
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     $app->cacheDelete(['app', 'fastroute']);

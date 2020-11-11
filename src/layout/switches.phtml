@@ -1,11 +1,14 @@
-<?php   if (!($showSwitchesLang ?? false) && empty($me->perms)) return; ?>
+<?php use Galaxia\Text;
+
+
+if (!($showSwitchesLang ?? false) && empty($me->perms)) return; ?>
 <div id="switches">
 <?php   if (!empty($me->perms)) { ?>
     <div class="switch-perms">
 <?php   foreach ($me->perms as $perm) { ?>
-        <label for="switch-hide-perm-<?=h($perm)?>" data-remember="true" class="btn btn-pill btn-blue btn-small btn-checkbox active">
-            <?=h($perm)?>
-            <input type="checkbox" value="hide-active-perm-<?=h($perm)?>" id="switch-hide-perm-<?=h($perm)?>" title="<?=h($perm)?>" checked>
+        <label for="switch-hide-perm-<?=Text::h($perm)?>" data-remember="true" class="btn btn-pill btn-blue btn-small btn-checkbox active">
+            <?=Text::h($perm)?>
+            <input type="checkbox" value="hide-active-perm-<?=Text::h($perm)?>" id="switch-hide-perm-<?=Text::h($perm)?>" title="<?=Text::h($perm)?>" checked>
         </label>
 <?php   } ?>
     </div>
@@ -13,9 +16,9 @@
 <?php   if ($showSwitchesLang ?? false) { ?>
     <div class="switch-lang">
 <?php   foreach ($app->locales as $lang => $locale) { ?>
-        <label for="switch-hide-lang-<?=h($lang)?>" data-remember="true" class="btn btn-pill btn-small btn-checkbox active">
-            <?=h($lang)?>
-            <input type="checkbox" value="hide-active-lang-<?=h($lang)?>" id="switch-hide-lang-<?=h($lang)?>" title="<?=h($lang)?>" checked>
+        <label for="switch-hide-lang-<?=Text::h($lang)?>" data-remember="true" class="btn btn-pill btn-small btn-checkbox active">
+            <?=Text::h($lang)?>
+            <input type="checkbox" value="hide-active-lang-<?=Text::h($lang)?>" id="switch-hide-lang-<?=Text::h($lang)?>" title="<?=Text::h($lang)?>" checked>
         </label>
 <?php       } ?>
     </div>

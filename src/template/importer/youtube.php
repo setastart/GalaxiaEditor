@@ -4,6 +4,7 @@ use Galaxia\AppImage;
 use Galaxia\Director;
 use Galaxia\Scrape\Scrape;
 use Galaxia\Scrape\Youtube;
+use Galaxia\Text;
 
 
 $editor->layout = 'none';
@@ -12,7 +13,7 @@ $editor->layout = 'none';
 // $r = Youtube::getPlaylistVideos('https://www.youtube.com/playlist?list=PLi5BhhFIMLyjhkd2Vj-VjHXtWUM2oQNIm');
 // Scrape::printJsonAndExit($r);
 
-$id = h($_GET['id']) ?? '';
+$id = Text::h($_GET['id']) ?? '';
 $r = Youtube::getVideoFromId($id);
 
 if ($r[Scrape::DATA][Youtube::IMG_SLUG] ?? '') {

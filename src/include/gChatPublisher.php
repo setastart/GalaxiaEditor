@@ -1,6 +1,7 @@
 <?php
 
-use Galaxia\Director;
+use Galaxia\Text;
+
 
 //  Process messages sent from the clients (browser tabs).
 //
@@ -29,7 +30,7 @@ switch ($post['type']) {
     case 'speak':
         $room = $post['room'];
         // send message to room
-        if ($redis->cmd('XADD', $app->mysqlDb . ':rooms:' . $room, '*', 'user', $me->id, 'speak', h(trim($msg)))->set()) {
+        if ($redis->cmd('XADD', $app->mysqlDb . ':rooms:' . $room, '*', 'user', $me->id, 'speak', Text::h(trim($msg)))->set()) {
             $redis->cmd('SET', $app->mysqlDb . ':editing:' . $room . ':' . $clientId, $me->id, 'EX', TIMEOUT_ALIVE)->set();
             exitArrayToJson(['status' => 'ok']);
         } else {

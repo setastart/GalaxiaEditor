@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, Pagination, Sql};
+use Galaxia\{Director, Pagination, Sql, Text};
 
 
 // ajax
@@ -47,11 +47,11 @@ $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() us
         if ($data['inputKey'] == 'status')
             if (isset($statusNames[$data['tabName']]))
                 if (isset($statusNames[$data['tabName']][$data['content']]))
-                    $content = t($statusNames[$data['tabName']][$data['content']]);
+                    $content = Text::t($statusNames[$data['tabName']][$data['content']]);
 
         $name = trim($name);
         $items[$data['uniqueId']]['changes'][] = [
-            'name'    => t($name),
+            'name'    => Text::t($name),
             'content' => $content,
             'lang'    => $lang,
         ];
@@ -69,19 +69,19 @@ $rowsTotal = count($items);
 
 $rows = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use ($pgSlug, $items, $pageNames) {
     foreach ($items as $itemId => $item) {
-$ht = '<a class="row ' . $item['action'] . '" href="/edit/' . h($pgSlug) . '/' . h($item['tabName']) . '/' . h($item['tabId']) . '#' . h($itemId) . '">' . PHP_EOL;
+$ht = '<a class="row ' . $item['action'] . '" href="/edit/' . Text::h($pgSlug) . '/' . Text::h($item['tabName']) . '/' . Text::h($item['tabId']) . '#' . Text::h($itemId) . '">' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
-$ht .= '        <small class="grey">table: </small>' . h($pageNames[$item['tabName']] ?? $item['tabName']) . '<br>' . PHP_EOL;
-$ht .= '        <small class="grey">Id: </small>' . h($item['tabId']) . '<br>' . PHP_EOL;
-$ht .= '        <small class="grey">User: </small>' . h($item['user']) . '<br>' . PHP_EOL;
-$ht .= '        <small class="">' . h(gFormatDate($item['created'], 'd MMM y')) . '</small><br>' . PHP_EOL;
+$ht .= '        <small class="grey">table: </small>' . Text::h($pageNames[$item['tabName']] ?? $item['tabName']) . '<br>' . PHP_EOL;
+$ht .= '        <small class="grey">Id: </small>' . Text::h($item['tabId']) . '<br>' . PHP_EOL;
+$ht .= '        <small class="grey">User: </small>' . Text::h($item['user']) . '<br>' . PHP_EOL;
+$ht .= '        <small class="">' . Text::h(Text::formatDate($item['created'], 'd MMM y')) . '</small><br>' . PHP_EOL;
 $ht .= '        <small class="">' . date('G:i', $item['created']) . '</small><br>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex2">' . PHP_EOL;
         foreach ($item['changes'] as $change) {
 $ht .= '    <div class="col flex">' . PHP_EOL;
-$ht .= '        <div class="col flex2"><span class="input-label-lang">' . h($change['lang']) . '</span> ' . h($change['name']) . ' - ' . h($item['inputKey']) . '</div>' . PHP_EOL;
-$ht .= '        <div class="col flex3"><span class="input-label-lang">' . h($change['lang']) . '</span> ' . firstLine($change['content'] ?? '') . '</div>' . PHP_EOL;
+$ht .= '        <div class="col flex2"><span class="input-label-lang">' . Text::h($change['lang']) . '</span> ' . Text::h($change['name']) . ' - ' . Text::h($item['inputKey']) . '</div>' . PHP_EOL;
+$ht .= '        <div class="col flex3"><span class="input-label-lang">' . Text::h($change['lang']) . '</span> ' . Text::firstLine($change['content'] ?? '') . '</div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
         }
 $ht .= '    </div>' . PHP_EOL;
@@ -110,5 +110,5 @@ $rows = array_slice($rows, $offset, $length);
 
 // finish
 
-$hdTitle = t($geConf[$pgSlug]['gcTitlePlural']);
-$pgTitle = t($geConf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']);
+$pgTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']);

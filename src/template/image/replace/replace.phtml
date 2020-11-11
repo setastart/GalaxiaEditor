@@ -1,13 +1,14 @@
 <?php use Galaxia\AppImage;
+use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
 
 
 InputRender::form('', 'image-replace', 'image image-new paper pad'); ?>
 
     <div class="paper-header pad">
-        <h1><?=h($pgTitle)?></h1>
+        <h1><?=Text::h($pgTitle)?></h1>
         <div class="paper-header-links">
-            <a href="/edit/<?=h($pgSlug)?>/<?=h($imgSlug)?>" class="btn-a"><?=t('Go back')?></a>
+            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>" class="btn-a"><?=Text::t('Go back')?></a>
         </div>
     </div>
 
@@ -35,7 +36,7 @@ InputRender::form('', 'image-replace', 'image image-new paper pad'); ?>
     <div class="paper-footer pad">
 <?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions pad">
-            <button class="btn btn-green active"><?=t('Replace')?></button>
+            <button class="btn btn-green active"><?=Text::t('Replace')?></button>
         </div>
     </div>
 

@@ -1,11 +1,17 @@
+<?php
+
+use Galaxia\Text;
+
+
+?>
 <div class="paper pad">
 
     <div class="paper-header pad">
-        <h1><?=t($pgTitle);?></h1>
+        <h1><?=Text::t($pgTitle);?></h1>
     </div>
 
     <div class="gchat-room pad" data-room="/edit/chat">
-        <div class="title"><?=t($pgTitle);?></div>
+        <div class="title"><?=Text::t($pgTitle);?></div>
         <div class="users"></div>
         <div class="messages-wrapper">
             <div class="s0w s1w messages">
@@ -14,10 +20,10 @@
         publish status: <span class="status-publish"></span>
         <div class="send input-wrap input-wrap-textarea">
             <div class="input-label">
-                <?=t('Send message')?><br>
+                <?=Text::t('Send message')?><br>
             </div>
             <textarea class="gchat-room-text input-text input-textarea rl" name="msg" rows="1" wrap="soft" data-room="/edit/chat"></textarea>
-            <button class="gchat-room-btn btn btn-green active rr" data-room="/edit/chat"><?=t('Send')?></button>
+            <button class="gchat-room-btn btn btn-green active rr" data-room="/edit/chat"><?=Text::t('Send')?></button>
         </div>
     </div>
 

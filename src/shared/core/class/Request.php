@@ -52,7 +52,7 @@ class Request {
         $this->uri  = urldecode($this->uri);
 
         $this->pathOriginal = strtok($this->uri, '?');
-        $this->path         = gTranslit($this->pathOriginal);
+        $this->path         = Text::translit($this->pathOriginal);
 
         $this->query = $query ?? $_SERVER['QUERY_STRING'] ?? '';
 

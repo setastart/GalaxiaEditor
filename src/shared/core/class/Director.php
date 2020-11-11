@@ -15,10 +15,8 @@
 namespace Galaxia;
 
 
-use IntlDateFormatter;
 use mysqli;
 use Throwable;
-use Transliterator;
 
 
 class Director {
@@ -27,12 +25,6 @@ class Director {
     private static $editor = null;
     private static $me     = null;
     private static $mysqli = null;
-
-    static $transliterator      = null;
-    static $transliteratorLower = null;
-    static $intlDateFormatters  = [];
-
-    static $translations = [];
 
     /**
      * @deprecated
@@ -234,8 +226,8 @@ class Director {
             if (self::isDev()) mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
             self::$mysqli->set_charset('utf8mb4');
-            self::$mysqli->query('SET time_zone = ' . q(self::$app->timeZone) . ';');
-            self::$mysqli->query('SET lc_time_names = ' . q(self::$app->locale['long']) . ';');
+            self::$mysqli->query('SET time_zone = ' . Text::q(self::$app->timeZone) . ';');
+            self::$mysqli->query('SET lc_time_names = ' . Text::q(self::$app->locale['long']) . ';');
 
             self::timerStop('DB Connection');
         }
@@ -246,54 +238,14 @@ class Director {
 
 
 
-    static function getTransliteratorLower() {
-        if (self::$transliteratorLower == null) {
-            self::$transliteratorLower = Transliterator::createFromRules(':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: Lower(); :: NFC;');
-        }
-
-        return self::$transliteratorLower;
-    }
-
-
-
-
-    static function getTransliterator() {
-        if (self::$transliterator == null) {
-            self::$transliterator = Transliterator::createFromRules(':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: NFC;');
-        }
-
-        return self::$transliterator;
-    }
-
-
-
-
-    static function getIntlDateFormatter(string $pattern, string $lang) {
-        if (!isset(self::$intlDateFormatters[$pattern][$lang])) {
-            self::$intlDateFormatters[$pattern][$lang] = new IntlDateFormatter(
-                $lang,                        // locale
-                IntlDateFormatter::FULL,      // datetype
-                IntlDateFormatter::NONE,      // timetype
-                null,                         // timezone
-                IntlDateFormatter::GREGORIAN, // calendar
-                $pattern                      // pattern
-            );
-        }
-
-        return self::$intlDateFormatters[$pattern][$lang];
-    }
-
-
-
-
     static function loadTranslations() {
         self::timerStart('Translations');
 
         if (self::$editor && file_exists(self::$editor->dir . 'resource/stringTranslations.php'))
-            self::$translations = array_merge(self::$translations, include(self::$editor->dir . 'resource/stringTranslations.php'));
+            Text::$translations = array_merge(Text::$translations, include(self::$editor->dir . 'resource/stringTranslations.php'));
 
         if (self::$app && file_exists(self::$app->dir . 'resource/stringTranslations.php'))
-            self::$translations = array_merge(self::$translations, include(self::$app->dir . 'resource/stringTranslations.php'));
+            Text::$translations = array_merge(Text::$translations, include(self::$app->dir . 'resource/stringTranslations.php'));
 
         self::timerStop('Translations');
     }
@@ -395,7 +347,7 @@ class Director {
                 $cols[$timerLabel]['time'] = number_format($time['total'] * 1000, 2, '.', ',');
             }
 
-            $cols[$timerLabel]['mem'] = gFilesize($time['mem'], 2, '.');
+            $cols[$timerLabel]['mem'] = Text::filesize($time['mem'], 2, '.');
             $cols[$timerLabel]['%']   = number_format((($time['total'] * 100) / $timeTotal), 2, '.', ',');
 
             $cols[$timerLabel][$time['level']] = $percentOfParent;
@@ -442,10 +394,10 @@ class Director {
             $r .= $postfix;
         }
 
-        $memEnd      = ' ' . gFileSize(memory_get_usage(false), 2, '.');
-        $memPeak     = ' ' . gFileSize(memory_get_peak_usage(false), 2, '.');
-        $memEndReal  = ' ' . gFileSize(memory_get_usage(true), 2, '.');
-        $memPeakReal = ' ' . gFileSize(memory_get_peak_usage(true), 2, '.');
+        $memEnd      = ' ' . Text::filesize(memory_get_usage(false), 2, '.');
+        $memPeak     = ' ' . Text::filesize(memory_get_peak_usage(false), 2, '.');
+        $memEndReal  = ' ' . Text::filesize(memory_get_usage(true), 2, '.');
+        $memPeakReal = ' ' . Text::filesize(memory_get_peak_usage(true), 2, '.');
         $memLenMax   = ' ' . max(strlen($memEnd), strlen($memPeak), strlen($memEndReal), strlen($memPeakReal));
 
         if ($memory) {
@@ -486,7 +438,7 @@ class Director {
         $backtrace = array_reverse(debug_backtrace());
 
         if (self::isCli()) {
-            d('Error: ' . h($codeOriginal) . ' - ' . $msg);
+            d('Error: ' . Text::h($codeOriginal) . ' - ' . $msg);
             if (self::isDev()) {
                 d($debugText);
             }
@@ -546,10 +498,10 @@ class Director {
     static function redirect($location = '', int $code = 303, bool $addServerQuery = false) {
         $location = trim($location);
         if (headers_sent()) {
-            echo 'headers already sent. redirect: <a href="' . h($location) . '">' . h($location) . '</a>' . PHP_EOL;
+            echo 'headers already sent. redirect: <a href="' . Text::h($location) . '">' . Text::h($location) . '</a>' . PHP_EOL;
             exit();
         }
-        $location = trim(h($location), '/');
+        $location = trim(Text::h($location), '/');
         if ($addServerQuery && $_SERVER['QUERY_STRING'] ?? '') $location .= '?' . $_SERVER['QUERY_STRING'];
         header('Location: /' . $location, true, $code);
         exit();

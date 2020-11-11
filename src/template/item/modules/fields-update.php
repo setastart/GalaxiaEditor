@@ -4,6 +4,7 @@
 // insert fields
 use Galaxia\Flash;
 use Galaxia\Sql;
+use Galaxia\Text;
 
 
 $itemColId = $item['gcTable'] . 'Id';
@@ -33,11 +34,11 @@ foreach ($fieldsNew as $moduleKey => $fields) {
                 $success    = $stmt->execute();
                 $insertedId = $stmt->insert_id;
                 $stmt->close();
-                Flash::info(sprintf(t('Added field: %s.'), t($fieldKey)));
+                Flash::info(sprintf(Text::t('Added field: %s.'), Text::t($fieldKey)));
                 foreach ($insert as $inputName => $value) {
                     if ($inputName == 'position') continue;
                     if (!isset($module['inputs'][$fieldKey][$fieldVal][$inputName]['name'])) continue;
-                    Flash::info(t('Added'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $insertedId . '][' . $inputName . ']');
+                    Flash::info(Text::t('Added'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $insertedId . '][' . $inputName . ']');
                 }
 
             } catch (Exception $e) {
@@ -76,7 +77,7 @@ foreach ($fieldsDel as $moduleKey => $fields) {
             $success    = $stmt->execute();
             $insertedId = $stmt->insert_id;
             $stmt->close();
-            Flash::info(sprintf(t('Deleted field: %s.'), t($fieldKey)));
+            Flash::info(sprintf(Text::t('Deleted field: %s.'), Text::t($fieldKey)));
 
         } catch (Exception $e) {
             Flash::error('fields-update - Unable to delete fields.');
@@ -120,15 +121,15 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
                 if ($affectedRows < 1) {
                     Flash::error('fields-update - Unable to update database.');
                 } else {
-                    Flash::info(sprintf(t('Updated field: %s.'), t($fieldKey)));
+                    Flash::info(sprintf(Text::t('Updated field: %s.'), Text::t($fieldKey)));
 
                     foreach ($update as $inputName => $value) {
                         if ($inputName == 'position') continue;
                         $lang = isset($module['inputs'][$fieldKey][$fieldVal][$inputName]['lang']) ? $module['inputs'][$fieldKey][$fieldVal][$inputName]['lang'] . ' - ' : '';
                         if ($value) {
-                            Flash::info(t('Updated'), 'form', $module['inputs'][$fieldKey][$fieldVal][$inputName]['name']);
+                            Flash::info(Text::t('Updated'), 'form', $module['inputs'][$fieldKey][$fieldVal][$inputName]['name']);
                         } else {
-                            Flash::info(t('Deleted'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputName . ']');
+                            Flash::info(Text::t('Deleted'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputName . ']');
                         }
 
                         if ($item['gcTable'] == '_geUser') continue;
@@ -175,7 +176,7 @@ foreach ($modules as $module) {
             $stmt->close();
 
             if ($affectedRows > 0) {
-                Flash::info(sprintf(t('Empty fields deleted: %d'), $affectedRows));
+                Flash::info(sprintf(Text::t('Empty fields deleted: %d'), $affectedRows));
             }
 
         } catch (Exception $e) {

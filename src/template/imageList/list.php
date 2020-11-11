@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{AppImage, Director, Pagination, Sql};
+use Galaxia\{AppImage, Director, Pagination, Sql, Text};
 
 
 // ajax
@@ -72,9 +72,9 @@ $inUse = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-inUse', function
                         }
 
                         if (empty($data[$column])) {
-                            $inUse[$data[$firstColumn]][$table] = '<span class="small red">' . t('Empty') . '</span>';
+                            $inUse[$data[$firstColumn]][$table] = '<span class="small red">' . Text::t('Empty') . '</span>';
                         } else {
-                            $inUse[$data[$firstColumn]][$table] = h($data[$column]);
+                            $inUse[$data[$firstColumn]][$table] = Text::h($data[$column]);
                         }
                     }
 
@@ -94,9 +94,9 @@ $inUse = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-inUse', function
                         }
 
                         if (empty($data[$column])) {
-                            $inUse[$data[$firstColumn]][$table][] = '<span class="small red">' . t('Empty') . '</span>';
+                            $inUse[$data[$firstColumn]][$table][] = '<span class="small red">' . Text::t('Empty') . '</span>';
                         } else {
-                            $inUse[$data[$firstColumn]][$table][] = h($data[$column]);
+                            $inUse[$data[$firstColumn]][$table][] = Text::h($data[$column]);
                         }
                     }
 
@@ -120,11 +120,11 @@ switch ($_POST['imageListType'] ?? '') {
 
             foreach ($items as $imgSlug => $img) {
 $ht = '';
-$ht .= '<button type="button" id="' . h($imgSlug) . '" class="imageSelectItem">' . PHP_EOL;
+$ht .= '<button type="button" id="' . Text::h($imgSlug) . '" class="imageSelectItem">' . PHP_EOL;
 $ht .= '    <figure>' . PHP_EOL;
 $ht .= '        ' . AppImage::render($img) . PHP_EOL;
 $ht .= '    </figure>' . PHP_EOL;
-$ht .= '    <p>' . h($imgSlug) . '</p>' . PHP_EOL;
+$ht .= '    <p>' . Text::h($imgSlug) . '</p>' . PHP_EOL;
 $ht .= '</button>' . PHP_EOL;
                 $rows[$imgSlug] = $ht;
             }
@@ -149,20 +149,20 @@ $ht .= '            ' . AppImage::render($img) . PHP_EOL;
 $ht .= '        </div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
-$ht .= '        <div><span class="input-label-lang">' . t('Slug') . ':</span> ' . h($imgSlug) . '</div>' . PHP_EOL;
-$ht .= '        <div><span class="input-label-lang">' . t('Dimensions') . ':</span> <small class="grey">' . h($img['wOriginal'] . 'x' . $img['hOriginal']) . '</small></div>' . PHP_EOL;
-$ht .= '        <div><span class="input-label-lang">' . t('Size') . ':</span> <small class="grey">' . h(number_format($img['fileSize'], 0, '', ',') . ' B') . '</small></div>' . PHP_EOL;
-$ht .= '        <div><span class="input-label-lang">' . t('Created') . ':</span> <small class="grey">' . gFormatDate($img['mtime'], 'd MMM y - HH:mm') . '</small></div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . Text::t('Slug') . ':</span> ' . Text::h($imgSlug) . '</div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . Text::t('Dimensions') . ':</span> <small class="grey">' . Text::h($img['wOriginal'] . 'x' . $img['hOriginal']) . '</small></div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . Text::t('Size') . ':</span> <small class="grey">' . Text::h(number_format($img['fileSize'], 0, '', ',') . ' B') . '</small></div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . Text::t('Created') . ':</span> <small class="grey">' . Text::formatDate($img['mtime'], 'd MMM y - HH:mm') . '</small></div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
                 if (empty($img['alt'])) {
-$ht .= '        <div><span class="small red">' . t('Empty') . '</span></div>' . PHP_EOL;
+$ht .= '        <div><span class="small red">' . Text::t('Empty') . '</span></div>' . PHP_EOL;
                 } else {
                     foreach ($img['alt'] as $lang => $alt) {
                         if (empty($alt)) {
-$ht .= '        <div><span class="small red">' . t('Empty') . '</span></div>' . PHP_EOL;
+$ht .= '        <div><span class="small red">' . Text::t('Empty') . '</span></div>' . PHP_EOL;
                         } else {
-$ht .= '        <div><span class="input-label-lang">' . $lang . ':</span> ' . h($alt) . '</div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . $lang . ':</span> ' . Text::h($alt) . '</div>' . PHP_EOL;
                         }
                     }
                 }
@@ -172,22 +172,22 @@ $ht .= '    <div class="col flex1">' . PHP_EOL;
                     foreach ($inUse[$imgSlug] as $itemKey => $item) {
                         if (is_array($item)) {
                             foreach ($item as $itemVal) {
-$ht .= '        <div>' . h($itemKey) . ' / ' . $itemVal . '</div>' . PHP_EOL;
+$ht .= '        <div>' . Text::h($itemKey) . ' / ' . $itemVal . '</div>' . PHP_EOL;
                             }
                         } else {
-$ht .= '        <div>' . h($itemKey) . ' / ' . $item . '</div>' . PHP_EOL;
+$ht .= '        <div>' . Text::h($itemKey) . ' / ' . $item . '</div>' . PHP_EOL;
                         }
                     }
                 } else {
-$ht .= '        <div><span class="small red">' . t('Empty') . '</span></div>' . PHP_EOL;
+$ht .= '        <div><span class="small red">' . Text::t('Empty') . '</span></div>' . PHP_EOL;
                 }
 $ht .= '    </div>' . PHP_EOL;
                 if (!empty($geConf[$pgSlug]['gcImageTypes'])) {
 $ht .= '    <div class="col flexD tags">' . PHP_EOL;
                     if (isset($img['extra']['type'])) {
-$ht .= '        <div class="col-tags brewer-' . h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . h(t($img['extra']['type'])) . '</div>' . PHP_EOL;
+$ht .= '        <div class="col-tags brewer-' . Text::h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . Text::h(Text::t($img['extra']['type'])) . '</div>' . PHP_EOL;
                     } else {
-$ht .= '        <span class="small red">' . t('Empty') . '</span>' . PHP_EOL;
+$ht .= '        <span class="small red">' . Text::t('Empty') . '</span>' . PHP_EOL;
                     }
 $ht .= '    </div>' . PHP_EOL;
                 }
@@ -255,7 +255,7 @@ if ($textFiltersActive) {
                             else $return[$imgSlug] .= ' ' . $alt;
                         }
                         if ($emptyFound) $return[$imgSlug] = '{{empty}}' . $return[$imgSlug];
-                        $return[$imgSlug] = gPrepareTextForSearch($return[$imgSlug]);
+                        $return[$imgSlug] = Text::formatSearch($return[$imgSlug]);
                     }
                     break;
 
@@ -277,7 +277,7 @@ if ($textFiltersActive) {
                             }
                         }
                         if ($emptyFound) $return[$imgSlug] = '{{empty}}' . $return[$imgSlug];
-                        $return[$imgSlug] = gPrepareTextForSearch($return[$imgSlug]);
+                        $return[$imgSlug] = Text::formatSearch($return[$imgSlug]);
                     }
                     break;
 
@@ -289,7 +289,7 @@ if ($textFiltersActive) {
                             continue;
                         }
                         if ($emptyFound) $return[$imgSlug] = '{{empty}}' . $return[$imgSlug];
-                        $return[$imgSlug] = gPrepareTextForSearch(t($img['extra']['type']));
+                        $return[$imgSlug] = Text::formatSearch(Text::t($img['extra']['type']));
                     }
 
                     break;
@@ -304,7 +304,7 @@ if ($textFiltersActive) {
             foreach ($itemsToFilter as $itemId => $text) {
                 $filterFound = true;
                 foreach ($filterInput as $word) {
-                    $word = gPrepareTextForSearch($word);
+                    $word = Text::formatSearch($word);
                     $word = str_replace(' ', '-', $word);
                     if (strpos($itemId, $word) === false) {
                         $filterFound = false;
@@ -319,7 +319,7 @@ if ($textFiltersActive) {
         foreach ($itemsToFilter as $itemId => $text) {
             $filterFound = true;
             foreach ($filterInput as $word) {
-                $word = gPrepareTextForSearch($word);
+                $word = Text::formatSearch($word);
                 if (strpos($text, $word) === false) {
                     $filterFound = false;
                 }
@@ -349,5 +349,5 @@ $rows = array_slice($rows, $offset, $length);
 
 // finish
 
-$hdTitle = t($geConf[$pgSlug]['gcTitlePlural']);
-$pgTitle = t($geConf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']);
+$pgTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']);

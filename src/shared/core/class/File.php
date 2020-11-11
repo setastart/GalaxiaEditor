@@ -6,7 +6,7 @@ namespace Galaxia;
 
 class File {
 
-    public static function uploadRemoveErrors(string $inputName) {
+    static function uploadRemoveErrors(string $inputName) {
         if (!isset($_FILES[$inputName])) {
             Flash::error('Required.', 'form', $inputName);
         }

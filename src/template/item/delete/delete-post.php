@@ -3,6 +3,7 @@
 use Galaxia\Director;
 use Galaxia\Flash;
 use Galaxia\Sql;
+use Galaxia\Text;
 
 
 $editor->view = 'item/delete/delete';
@@ -62,7 +63,7 @@ foreach ($modules as $moduleKey => $module) {
 // finish
 
 $app->cacheDelete('editor');
-Flash::info(sprintf(t('Deleted: %s.'), t($geConf[$pgSlug]['gcTitleSingle'])));
+Flash::info(sprintf(Text::t('Deleted: %s.'), Text::t($geConf[$pgSlug]['gcTitleSingle'])));
 
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     $app->cacheDelete(['app', 'fastroute']);

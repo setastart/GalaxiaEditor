@@ -5,6 +5,7 @@ namespace GalaxiaEditor\build;
 
 
 use Galaxia\Editor;
+use Galaxia\Text;
 
 
 class Js {
@@ -40,9 +41,7 @@ class Js {
                 $js = file_get_contents($sourcePath);
                 if (!$js) continue;
 
-                $jsBuild .= '/********' . str_repeat('*', strlen($source)) . '********/' . PHP_EOL;
-                $jsBuild .= '/******  ' . h($source) . '  ******/' . PHP_EOL;
-                $jsBuild .= '/********' . str_repeat('*', strlen($source)) . '********/' . str_repeat(PHP_EOL, 2);
+                $jsBuild .= Text::commentHeader($source) . PHP_EOL;
                 $jsBuild .= $js;
                 $jsBuild .= str_repeat(PHP_EOL, 4);
             }

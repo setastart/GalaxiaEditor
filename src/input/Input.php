@@ -5,6 +5,7 @@ namespace GalaxiaEditor\input;
 
 
 use Galaxia\Flash;
+use Galaxia\Text;
 use Normalizer;
 
 
@@ -54,7 +55,7 @@ class Input {
         'importerVimeo',
     ];
 
-    public static function validateInput($input, $value) {
+    static function validateInput($input, $value) {
         $input          = array_merge(self::PROTO_INPUT, $input);
         $input['value'] = Normalizer::normalize($value);
 
@@ -254,7 +255,7 @@ class Input {
             case 'slug':
                 $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
                 // $input['value'] = trim($input['value'], "- \t\n\r\0\x0B");
-                $input['value'] = gFormatSlug($input['value']);
+                $input['value'] = Text::formatSlug($input['value']);
 
                 $minLength = max($input['options']['minlength'] ?? 0, 0);
                 if (mb_strlen($input['value']) < $minLength)
@@ -298,7 +299,7 @@ class Input {
 
             case 'textarea':
             case 'trix':
-                $input['value'] = strip_tags($input['value'], ALLOWED_TAGS);
+                $input['value'] = strip_tags($input['value'], Text::ALLOWED_TAGS);
                 break;
 
 

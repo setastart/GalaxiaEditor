@@ -1,11 +1,14 @@
-<?php   renderPaginationHiddenHTMLResults($pagination, $rowsFiltered, $rowsTotal) ?>
+<?php use Galaxia\Text;
+
+
+renderPaginationHiddenHTMLResults($pagination, $rowsFiltered, $rowsTotal) ?>
 
     <div class="list list-history s0w s1w s2w f0w pad">
         <div class="row-head">
-            <div class="col flex1"><?=t('Information')?></div>
+            <div class="col flex1"><?=Text::t('Information')?></div>
             <div class="col flex2 flex">
-                <div class="col flex2"><?=t('Type')?></div>
-                <div class="col flex3"><?=t('Content')?></div>
+                <div class="col flex2"><?=Text::t('Type')?></div>
+                <div class="col flex3"><?=Text::t('Content')?></div>
             </div>
         </div>
 
