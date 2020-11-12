@@ -1,7 +1,8 @@
 <?php use Galaxia\Text;
+use GalaxiaEditor\render\view\ViewPagination;
 
 
-renderPaginationHiddenHTMLResults($pagination, $rowsFiltered, $rowsTotal) ?>
+ViewPagination::renderHiddenData($pagination, $rowsFiltered, $rowsTotal) ?>
 
     <div class="list list-history s0w s1w s2w f0w pad">
         <div class="row-head">

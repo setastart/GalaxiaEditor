@@ -1,5 +1,6 @@
 <?php use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
+use GalaxiaEditor\render\view\ViewPagination;
 
 
 InputRender::form('', 'image-list', 'paper pad');?>
@@ -62,7 +63,7 @@ InputRender::form('', 'image-list', 'paper pad');?>
     </div>
 
 
-<?php   renderPaginationHeader($pagination) ?>
+<?php ViewPagination::renderHeader($pagination) ?>
 
 
     <div class="load">
@@ -70,7 +71,7 @@ InputRender::form('', 'image-list', 'paper pad');?>
     </div>
 
 
-<?php   renderPaginationFooter($pagination) ?>
+<?php ViewPagination::renderFooter($pagination) ?>
 
 
 <?php   InputRender::renderFormEnd(); ?>

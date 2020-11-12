@@ -618,7 +618,7 @@ HTML;
 
 
 
-    static function filesize(int $bytes, int $decimals = 2, $byteAlign = ''): string {
+    static function bytesIntToAbbr(int $bytes, int $decimals = 2, $byteAlign = ''): string {
         $negative = ($bytes < 0) ? '-' : '';
         $bytes    = abs($bytes);
         if ($bytes < 1024) return $bytes . ' ' . $byteAlign . 'B';
@@ -628,6 +628,21 @@ HTML;
         return $negative . sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ($size[$factor] ?? '');
     }
 
+    /**
+     * converts for example 1M => 1048576 or 1k => 1024
+     * @param string $size
+     * @return int
+     */
+    public static function bytesAbbrToInt(string $size): int {
+        $unit = preg_replace('/[^bkmgtpezy]/i', '', $size);
+
+        $size = preg_replace('/[^0-9\\.]/', '', $size);
+        if ($unit) {
+            return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+        } else {
+            return round($size);
+        }
+    }
 
 
 
@@ -677,7 +692,5 @@ HTML;
 
         return self::$intlDateFormatters[$pattern][$lang];
     }
-
-
 
 }

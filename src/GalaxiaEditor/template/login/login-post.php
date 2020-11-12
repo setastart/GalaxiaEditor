@@ -7,8 +7,8 @@ use GalaxiaEditor\input\Input;
 $editor->view = 'login/login';
 
 
-$inputs['userEmail']    = Input::validateInput($inputs['userEmail'], $_POST['userEmail']);
-$inputs['userPassword'] = Input::validateInput($inputs['userPassword'], $_POST['userPassword']);
+$inputs['userEmail']    = Input::validate($inputs['userEmail'], $_POST['userEmail']);
+$inputs['userPassword'] = Input::validate($inputs['userPassword'], $_POST['userPassword']);
 
 
 if (!empty($inputs['userEmail']['errors'])) {

@@ -94,8 +94,6 @@ $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() us
                 $query .= Sql::selectOrderBy([$table => $list['gcSelectOrderBy'][$table]]);
             }
 
-            // geD($query);
-
             $f = function(mysqli_result $result, &$items) use ($list, $firstColumn, $table, $queryMain) {
                 while ($data = $result->fetch_assoc()) {
                     $data = array_map('strval', $data);
@@ -129,9 +127,6 @@ $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() us
                     $query .= Sql::selectOrderBy([$orderTable => $orderCols]);
                 }
             }
-
-            // geD($query);
-
 
             $done       = 0;
             $askForData = true;

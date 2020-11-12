@@ -318,11 +318,11 @@ $r .= ' ' . $optionName . '="' . $option . '"';
 
     static function getImageInput($input) {
 
-        $maxMemory   = sizeShorthandToInt(ini_get('memory_limit'));
-        $maxPostSize = sizeShorthandToInt(ini_get('post_max_size'));
+        $maxMemory   = Text::bytesAbbrToInt(ini_get('memory_limit'));
+        $maxPostSize = Text::bytesAbbrToInt(ini_get('post_max_size'));
         $maxTotal    = min($maxMemory, $maxPostSize);
 
-        $maxUploadSize  = min($maxTotal, sizeShorthandToInt(ini_get('upload_max_filesize')));
+        $maxUploadSize  = min($maxTotal, Text::bytesAbbrToInt(ini_get('upload_max_filesize')));
         $maxUploadFiles = ini_get('max_file_uploads');
 
         $dataSizes = ' data-maxtotal="' . $maxTotal . '" data-maxsize="' . $maxUploadSize . '" data-maxcount="' . $maxUploadFiles . '"';
@@ -335,8 +335,8 @@ $r .= '    <div>' . PHP_EOL;
 $r .= '        <input type="hidden" name="MAX_FILE_SIZE" value="' . $maxUploadSize . '"' . $disabled . '>' . PHP_EOL;
 $r .= '        <input name="' . $input['name'] . '" pattern="[a-z0-9\-]*" class="input-file input-image btn active" type="file" accept="image/jpeg,image/png"' . $dataSizes . $multiple . $disabled . '>' . PHP_EOL;
 $r .= '        <div class="info">' . PHP_EOL;
-$r .= '            <div>' . sprintf(Text::unsafet('Total size: <span class="maxtotal">0 B</span> / %s'), Text::filesize($maxTotal)) . '</div>' . PHP_EOL;
-$r .= '            <div>' . sprintf(Text::unsafet('Max file size: <span class="maxsize">0 B</span> / %s'), Text::filesize($maxUploadSize)) . '</div>' . PHP_EOL;
+$r .= '            <div>' . sprintf(Text::unsafet('Total size: <span class="maxtotal">0 B</span> / %s'), Text::bytesIntToAbbr($maxTotal)) . '</div>' . PHP_EOL;
+$r .= '            <div>' . sprintf(Text::unsafet('Max file size: <span class="maxsize">0 B</span> / %s'), Text::bytesIntToAbbr($maxUploadSize)) . '</div>' . PHP_EOL;
 $r .= '            <div>' . sprintf(Text::unsafet('Number of files: <span class="maxcount">0</span> / %s'), $maxUploadFiles) . '</div>' . PHP_EOL;
 $r .= '        </div>' . PHP_EOL;
 $r .= '        <ul class="upload-files">' . PHP_EOL;

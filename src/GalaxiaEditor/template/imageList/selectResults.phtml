@@ -1,7 +1,8 @@
 <?php use Galaxia\Text;
+use GalaxiaEditor\render\view\ViewPagination;
 
 
-renderPaginationHiddenHTMLResults($pagination, $rowsFiltered, $rowsTotal) ?>
+ViewPagination::renderHiddenData($pagination, $rowsFiltered, $rowsTotal) ?>
 
 <?php
 $yearMonthPrev = '';

@@ -69,7 +69,7 @@ foreach ($postModule as $fieldKey => $fields) {
 
                 $input = $modules[$moduleKey]['inputs'][$fieldKey]['new-0'][$name];
                 $input['name'] = 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $fieldVal . '][' . $name . ']';
-                $input = Input::validateInput($input, $val);
+                $input = Input::validate($input, $val);
 
                 $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId][$name] = $input;
 
@@ -114,7 +114,7 @@ foreach ($postModule as $fieldKey => $fields) {
                 continue;
             }
 
-            $input = Input::validateInput($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$name], $val);
+            $input = Input::validate($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$name], $val);
 
             $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$name] = $input;
 
@@ -201,11 +201,11 @@ return;
 foreach ($postModule as $fieldName => $fieldValue) {
     foreach ($fieldValue as $name => $value) {
         if (isset($modules[$moduleKey]['inputs'][$fieldName][$name])) {
-            $input = Input::validateInput($modules[$moduleKey]['inputs'][$fieldName][$name], $value);
+            $input = Input::validate($modules[$moduleKey]['inputs'][$fieldName][$name], $value);
 
             $modules[$moduleKey]['inputs'][$fieldName][$name] = $input;
         } else if (isset($modules[$moduleKey]['inputsUnused'][$fieldName][$name])) {
-            $input = Input::validateInput($modules[$moduleKey]['inputsUnused'][$fieldName][$name], $value);
+            $input = Input::validate($modules[$moduleKey]['inputsUnused'][$fieldName][$name], $value);
 
             $modules[$moduleKey]['inputsUnused'][$fieldName][$name] = $input;
         } else {

@@ -47,7 +47,7 @@ if ($me->hasPerm('dev') && $me->id == $itemId) {
 
 foreach ($_POST['item'] as $name => $value) {
     if (!isset($item['inputs'][$name])) continue;
-    $input = Input::validateInput($item['inputs'][$name], $value);
+    $input = Input::validate($item['inputs'][$name], $value);
 
     if ($input['dbUnique']) {
 

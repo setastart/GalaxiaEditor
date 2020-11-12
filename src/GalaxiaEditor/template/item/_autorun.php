@@ -7,6 +7,7 @@ use Galaxia\Director;
 use Galaxia\Flash;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\input\Input;
 
 
 $uniqueId        = uniqid(true);
@@ -120,7 +121,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
     if (empty($input)) continue;
     if ($input['type'] == 'status' && !isset($input['options'][$item['data'][$inputKey]])) continue;
 
-    $input = prepareInput($input, $extras);
+    $input = Input::prepare($input, $extras);
 
     if ($input['type'] == 'password' || substr($inputKey, 0, 8) == 'password') $passwordColsFound = true;
     if (isset($input['lang']) && count($app->langs) > 1) $showSwitchesLang = true;

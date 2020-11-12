@@ -2,6 +2,7 @@
 
 
 use Galaxia\Sql;
+use GalaxiaEditor\input\Input;
 
 
 $module['inputs']       = [];
@@ -72,7 +73,7 @@ foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
     }
 }
 foreach ($module['gcInputs'] as $inputKey => $input) {
-    $module['gcInputs'][$inputKey] = prepareInput($input, $extras);
+    $module['gcInputs'][$inputKey] = Input::prepare($input, $extras);
 }
 
 
@@ -84,7 +85,7 @@ foreach ($module['gcInputs'] as $inputKey => $input) {
 foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
     foreach ($inputs as $inputKey => $inputOriginal) {
         $input = array_replace_recursive($module['gcInputs'][$inputKey], $inputOriginal);
-        $input = prepareInput($input, $extras);
+        $input = Input::prepare($input, $extras);
 
         $input['label']      = $inputOriginal['label'] ?? $module['gcInputs'][$inputKey]['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey;
         $input['nameFromDb'] = $inputKey;
@@ -121,7 +122,7 @@ foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
                 //     continue 2;
                 // }
                 $input = array_replace_recursive($module['gcInputsWhereCol'][$fieldKey][$inputKey] ?? $module['gcInputs'][$inputKey], $inputOriginal);
-                $input = prepareInput($input, $extras);
+                $input = Input::prepare($input, $extras);
 
                 $input['label']      = $inputOriginal['label'] ?? $module['gcInputsWhereCol'][$fieldKey][$inputKey]['label'] ?? $module['gcInputs'][$inputKey]['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $fieldKey ?? $inputKey;
                 $input['nameFromDb'] = $inputKey;

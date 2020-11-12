@@ -4,6 +4,7 @@ use Galaxia\Director;
 use Galaxia\Flash;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\history\History;
 use GalaxiaEditor\input\Input;
 
 
@@ -15,7 +16,7 @@ $editor->view = 'item/new/new';
 foreach ($_POST['item'] ?? [] as $name => $value) {
     if (!isset($item['inputs'][$name])) continue;
 
-    $input = Input::validateInput($item['inputs'][$name], $value);
+    $input = Input::validate($item['inputs'][$name], $value);
 
     if ($input['dbUnique']) {
         $query = Sql::selectOne($item['gcInsert']);
@@ -86,7 +87,7 @@ try {
 //  history
 
 foreach ($itemChanges as $key => $value)
-    insertHistory($uniqueId, $item['gcTable'], $itemIdNew, $key, '', 3, $value, $me->id);
+    History::insert($uniqueId, $item['gcTable'], $itemIdNew, $key, '', 3, $value, $me->id);
 
 
 

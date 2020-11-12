@@ -55,7 +55,10 @@ class Input {
         'importerVimeo',
     ];
 
-    static function validateInput($input, $value) {
+
+
+
+    static function validate($input, $value) {
         $input          = array_merge(self::PROTO_INPUT, $input);
         $input['value'] = Normalizer::normalize($value);
 
@@ -328,6 +331,76 @@ class Input {
         } else {
             foreach ($input['errors'] as $msg) {
                 Flash::error($msg, 'form', $input['name']);
+            }
+        }
+
+        return $input;
+    }
+
+
+
+
+
+
+
+    public static function prepare($input, $extras) {
+
+        if ($input['type'] == 'select' && isset($input['geExtraOptions'])) {
+            foreach ($input['geExtraOptions'] as $key => $val) {
+                foreach ($val as $colKey => $colVals) {
+                    if (!isset($extras[$key])) continue;
+                    if (is_string($colVals)) $colVals = [$colVals];
+                    foreach ($extras[$key] as $option) {
+                        $add = true;
+                        if (isset($input['geExtraOptionHas'][$key])) {
+                            foreach ($input['geExtraOptionHas'][$key] as $constraintKey => $constraintVals) {
+                                if (is_string($constraintVals)) $constraintVals = [$constraintVals];
+                                foreach ($constraintVals as $constraintVal) {
+                                    if ($option[$constraintKey] != $constraintVal) {
+                                        $add = false;
+                                    }
+                                }
+                            }
+                        }
+
+                        $found        = [];
+                        $optionColVal = [];
+                        foreach ($colVals as $colVal) {
+                            if (substr($colVal, -3, 1) == '_') {
+                                $canonical = substr($colVal, 0, -2);
+                                if (empty($option[$colVal])) continue;
+                                if (in_array($canonical, $found)) continue;
+                                $found[] = substr($colVal, 0, -2);
+                            }
+
+                            $optionColVal[] = Text::unsafet($option[$colVal]);
+                        }
+                        $optionColVal = array_filter($optionColVal);
+
+                        if ($add) $input['options'][$option[$colKey]] = ['label' => implode(' / ', $optionColVal)];
+                    }
+                }
+            }
+        }
+
+        if (isset($input['options']['prefill'])) {
+            switch ($input['options']['prefill']) {
+                case 'week':
+                    $todayDt = new \DateTime();
+                    $afterDt = new \DateTime();
+                    $afterDt->modify('+1 week');
+                    $today          = $todayDt->format('Y-m-d');
+                    $after          = $afterDt->format('Y-m-d');
+                    $input['value'] = substr($today, 0, strspn($today ^ $after, "\0"));
+                    break;
+
+                case 'day':
+                    $todayDt        = new \DateTime();
+                    $input['value'] = $todayDt->format('Y-m-d');
+                    break;
+
+                default:
+                    break;
             }
         }
 

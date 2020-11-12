@@ -3,6 +3,7 @@
 
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\input\Input;
 
 
 $pgTitle = Text::t('+ Add') . ' ' . Text::t($geConf[$pgSlug]['gcTitleSingle']);
@@ -31,7 +32,7 @@ foreach ($item['gcSelectExtra'] as $table => $cols) {
 
 
 foreach ($item['gcInputs'] as $inputKey => $input) {
-    $input = prepareInput($input, $extras);
+    $input = Input::prepare($input, $extras);
 
     $item['inputs'][$inputKey] = array_merge($input, [
         'label'       => $input['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,

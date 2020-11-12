@@ -5,6 +5,7 @@
 use Galaxia\Flash;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\history\History;
 
 
 $itemColId = $item['gcTable'] . 'Id';
@@ -133,7 +134,7 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
                         }
 
                         if ($item['gcTable'] == '_geUser') continue;
-                        insertHistory($uniqueId, $item['gcTable'], $itemId, $inputName, $fieldKey, 2, $value, $me->id);
+                        History::insert($uniqueId, $item['gcTable'], $itemId, $inputName, $fieldKey, 2, $value, $me->id);
                     }
                 }
             } catch (Exception $e) {

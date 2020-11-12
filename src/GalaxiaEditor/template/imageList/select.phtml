@@ -3,6 +3,7 @@
 use Galaxia\Pagination;
 use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
+use GalaxiaEditor\render\view\ViewPagination;
 
 
 if (!isset($filterTexts)) {
@@ -70,13 +71,13 @@ if (!isset($filterTexts)) {
 
 <?php   $pagination = new Pagination(1, 100); ?>
 <?php   $pagination->setItemsTotal(200); ?>
-<?php   renderPaginationHeader($pagination) ?>
+<?php ViewPagination::renderHeader($pagination) ?>
 
 
     <div id="imageSelector" class="load">
     </div>
 
 
-<?php   renderPaginationFooter($pagination) ?>
+<?php ViewPagination::renderFooter($pagination) ?>
 
 <?php   InputRender::renderFormEnd(); ?>

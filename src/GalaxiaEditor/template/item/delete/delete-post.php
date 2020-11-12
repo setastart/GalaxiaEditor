@@ -4,6 +4,7 @@ use Galaxia\Director;
 use Galaxia\Flash;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\history\History;
 
 
 $editor->view = 'item/delete/delete';
@@ -38,7 +39,7 @@ try {
 // history
 
 foreach ($item['inputs'] as $inputName => $input) {
-    insertHistory($uniqueId, $item['gcTable'], $itemId, $inputName, '', 0, $input['valueFromDb'] ?? '', $me->id);
+    History::insert($uniqueId, $item['gcTable'], $itemId, $inputName, '', 0, $input['valueFromDb'] ?? '', $me->id);
 }
 
 foreach ($modules as $moduleKey => $module) {
@@ -47,7 +48,7 @@ foreach ($modules as $moduleKey => $module) {
             foreach ($module['inputs'] as $fieldKey => $inputs) {
                 foreach ($inputs as $inputKey => $input) {
                     if (!isset($input['valueFromDb'])) continue;
-                    insertHistory($uniqueId, $item['gcTable'], $itemId, $inputKey, $fieldKey, 0, $input['valueFromDb'], $me->id);
+                    History::insert($uniqueId, $item['gcTable'], $itemId, $inputKey, $fieldKey, 0, $input['valueFromDb'], $me->id);
                 }
             }
             break;

@@ -347,7 +347,7 @@ class Director {
                 $cols[$timerLabel]['time'] = number_format($time['total'] * 1000, 2, '.', ',');
             }
 
-            $cols[$timerLabel]['mem'] = Text::filesize($time['mem'], 2, '.');
+            $cols[$timerLabel]['mem'] = Text::bytesIntToAbbr($time['mem'], 2, '.');
             $cols[$timerLabel]['%']   = number_format((($time['total'] * 100) / $timeTotal), 2, '.', ',');
 
             $cols[$timerLabel][$time['level']] = $percentOfParent;
@@ -394,10 +394,10 @@ class Director {
             $r .= $postfix;
         }
 
-        $memEnd      = ' ' . Text::filesize(memory_get_usage(false), 2, '.');
-        $memPeak     = ' ' . Text::filesize(memory_get_peak_usage(false), 2, '.');
-        $memEndReal  = ' ' . Text::filesize(memory_get_usage(true), 2, '.');
-        $memPeakReal = ' ' . Text::filesize(memory_get_peak_usage(true), 2, '.');
+        $memEnd      = ' ' . Text::bytesIntToAbbr(memory_get_usage(false), 2, '.');
+        $memPeak     = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(false), 2, '.');
+        $memEndReal  = ' ' . Text::bytesIntToAbbr(memory_get_usage(true), 2, '.');
+        $memPeakReal = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(true), 2, '.');
         $memLenMax   = ' ' . max(strlen($memEnd), strlen($memPeak), strlen($memEndReal), strlen($memPeakReal));
 
         if ($memory) {

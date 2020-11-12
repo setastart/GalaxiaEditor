@@ -1,6 +1,5 @@
 <?php
 
-require __DIR__ . '/GalaxiaEditor/function/paginationRender.php';
 require __DIR__ . '/GalaxiaEditor/function/utils.php';
 
 

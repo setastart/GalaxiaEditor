@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Text;
+use GalaxiaEditor\chat\Chat;
 
 
 //  Process messages sent from the clients (browser tabs).
@@ -32,9 +33,9 @@ switch ($post['type']) {
         // send message to room
         if ($redis->cmd('XADD', $app->mysqlDb . ':rooms:' . $room, '*', 'user', $me->id, 'speak', Text::h(trim($msg)))->set()) {
             $redis->cmd('SET', $app->mysqlDb . ':editing:' . $room . ':' . $clientId, $me->id, 'EX', TIMEOUT_ALIVE)->set();
-            exitArrayToJson(['status' => 'ok']);
+            Chat::exitArrayToJson(['status' => 'ok']);
         } else {
-            exitArrayToJson(['status' => 'error', 'error' => 'could not store message']);
+            Chat::exitArrayToJson(['status' => 'error', 'error' => 'could not store message']);
         } break;
 
     case 'leave':
@@ -43,16 +44,16 @@ switch ($post['type']) {
             $redis->cmd('EXPIRE', $app->mysqlDb . ':editing:' . $roomToLeave . ':' . $clientId, TIMEOUT_LEAVE)->set();
         }
         // $redis->cmd('SET', $app->mysqlDb . ':leaving:' . $roomToLeave . ':' . $clientId, $me->id, 'EX', TIMEOUT_ALIVE)->set();
-        exitArrayToJson(['status' => 'ok', 'type' => 'leaving ' . $clientId]);
+        Chat::exitArrayToJson(['status' => 'ok', 'type' => 'leaving ' . $clientId]);
         break;
 
     default:
-        exitArrayToJson(['status' => 'error', 'error' => 'invalid message type']);
+        Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid message type']);
         break;
 }
 
 
 
-exitArrayToJson(['status' => 'error', 'error' => 'invalid message', 'post' => $post]);
+Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid message', 'post' => $post]);
 
 exit();

@@ -4,6 +4,7 @@
 use Galaxia\Flash;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\history\History;
 
 
 unset($itemChanges['passwordCurrent']);
@@ -39,7 +40,7 @@ try {
                 if ($inputKey == 'passwordHash')
                     continue;
 
-            insertHistory($uniqueId, $item['gcTable'], $itemId, $inputKey, '', 2, $content, $me->id);
+            History::insert($uniqueId, $item['gcTable'], $itemId, $inputKey, '', 2, $content, $me->id);
         }
     }
 } catch (Exception $e) {

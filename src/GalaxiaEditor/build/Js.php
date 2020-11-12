@@ -30,7 +30,7 @@ class Js {
 
 
     static function build() {
-        $editor = new Editor(dirname(dirname(__DIR__)));
+        $editor = new Editor(dirname(dirname(dirname(__DIR__))));
 
         foreach (self::JS_FILENAMES as $buildName => $sources) {
             $jsBuild = '\'use strict\';' . str_repeat(PHP_EOL, 2);

@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Text;
+use GalaxiaEditor\chat\Chat;
 
 
 //  Listen to activity in room
@@ -38,9 +39,9 @@ $r = [
 
 // validation
 
-if (!isset($post['clientId'])) exitArrayToJson(['status' => 'error', 'error' => 'missing clientId']);
-if (!isset($post['rooms'])) exitArrayToJson(['status' => 'error', 'error' => 'missing rooms']);
-if (empty($post['rooms'])) exitArrayToJson(['status' => 'error', 'error' => 'rooms empty']);
+if (!isset($post['clientId'])) Chat::exitArrayToJson(['status' => 'error', 'error' => 'missing clientId']);
+if (!isset($post['rooms'])) Chat::exitArrayToJson(['status' => 'error', 'error' => 'missing rooms']);
+if (empty($post['rooms'])) Chat::exitArrayToJson(['status' => 'error', 'error' => 'rooms empty']);
 
 
 
@@ -148,7 +149,7 @@ foreach ($xread ?? [] as $streams) {
 
 
 
-exitArrayToJson($r);
+Chat::exitArrayToJson($r);
 
 
 

@@ -1,20 +1,25 @@
 <?php
 
+
+namespace GalaxiaEditor\render\view;
+
+
 use Galaxia\Pagination;
 use Galaxia\Text;
 
 
-function renderPaginationHeader(Pagination $pagination): void {
-    if (!$pagination->active) return;
-?>
+class ViewPagination {
+
+    public static function renderHeader(Pagination $pagination): void {
+        if (!$pagination->active) return;
+
+// @formatter:off ?>
     <div class="pagination btn-row pad">
         <label class="input-label" for="itemsPerPage"><?=Text::t('Per page')?></label>
         <div class="btn-group space-rgt">
             <input class="itemsPerPage" id="itemsPerPage" type="number" min="1" name="itemsPerPage" value="<?=$pagination->itemsPerPage?>">
         </div>
-        <label class="input-label" for="pageCurrent">
-            <?=Text::t('Page')?>
-        </label>
+        <label class="input-label" for="pageCurrent"><?=Text::t('Page')?></label>
         <div class="btn-group">
             <input class="pageCurrent" id="pageCurrent" type="number" min="1" name="page" value="<?=$pagination->pageCurrent?>">
         </div>
@@ -32,13 +37,17 @@ function renderPaginationHeader(Pagination $pagination): void {
             <button name="page" value="<?=$pagination->pageLast?>" class="pageLast btn-new pagination-last active" <?=($pagination->pageCurrent < $pagination->pageLast) ?: 'disabled'?>></button>
         </div>
     </div>
-<?php
-}
+<?php // @formatter:on
+
+    }
 
 
-function renderPaginationFooter(Pagination $pagination): void {
-    if (!$pagination->active) return;
-?>
+
+
+    public static function renderFooter(Pagination $pagination): void {
+        if (!$pagination->active) return;
+
+// @formatter:off ?>
     <div class="pagination pagination-footer btn-row pad">
         <div class="btn-group">
             <button name="page" value="<?=$pagination->pageFirst?>" class="pageFirst btn-new pagination-first active" <?=($pagination->pageFirst) ?: 'disabled'?>></button>
@@ -56,13 +65,15 @@ function renderPaginationFooter(Pagination $pagination): void {
             <button name="page" value="<?=$pagination->pageLast?>" class="pageLast btn-new pagination-last active" <?=($pagination->pageCurrent < $pagination->pageLast) ?: 'disabled'?>></button>
         </div>
     </div>
-<?php
-}
+<?php // @formatter:on
+    }
 
 
 
-function renderPaginationHiddenHTMLResults(Pagination $pagination, int $rowsFiltered, int $rowsTotal): void {
-?>
+
+    public static function renderHiddenData(Pagination $pagination, int $rowsFiltered, int $rowsTotal): void {
+
+// @formatter:off ?>
     <div class="results hide"
          data-pageCurrent="<?=$pagination->pageCurrent?>"
          data-pageFirst="<?=$pagination->pageFirst?>"
@@ -72,5 +83,7 @@ function renderPaginationHiddenHTMLResults(Pagination $pagination, int $rowsFilt
          data-rowsFiltered="<?=$rowsFiltered?>"
          data-rowsTotal="<?=$rowsTotal?>"
     ></div>
-<?php
+<?php // @formatter:on
+    }
+
 }

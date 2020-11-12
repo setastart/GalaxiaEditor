@@ -428,7 +428,6 @@ class Sql {
 
 
     static function deleteOrNull($expression, array $langs = null) {
-        // geD($expression);
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 

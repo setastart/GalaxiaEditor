@@ -17,7 +17,7 @@ foreach ($inputs as $inputKey => $input) {
         continue;
     }
     $value = $_POST[$input['name']];
-    $input = Input::validateInput($input, $value);
+    $input = Input::validate($input, $value);
     $inputs[$inputKey] = $input;
 }
 

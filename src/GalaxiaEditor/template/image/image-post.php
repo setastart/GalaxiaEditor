@@ -20,7 +20,7 @@ $mtime        = filemtime($app->dirImage . $imgSlug . '/');
 foreach ($inputs as $name => $input) {
     if (!isset($_POST[$name])) continue;
     $value = $_POST[$name];
-    $input = Input::validateInput($input, $value);
+    $input = Input::validate($input, $value);
 
     if ($name == 'imgSlug' && $value != $imgSlug) {
         if ($value && is_dir($app->dirImage . $value)) {

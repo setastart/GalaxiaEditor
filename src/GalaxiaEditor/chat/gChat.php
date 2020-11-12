@@ -1,6 +1,8 @@
 <?php
 
 use Galaxia\{RedisCli};
+use GalaxiaEditor\chat\Chat;
+
 
 session_write_close();
 
@@ -17,10 +19,10 @@ const TIMEOUT_ROOM_INACTIVE = 60 * 30; // seconds
 // process post json
 
 $postJson = file_get_contents('php://input');
-if ($postJson === false) exitArrayToJson(['status' => 'error', 'error' => 'invalid request']);
+if ($postJson === false) Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid request']);
 
 $post = json_decode($postJson, true);
-if ($post === null) exitArrayToJson(['status' => 'error', 'error' => 'invalid json']);
+if ($post === null) Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid json']);
 
 $r = [
     'status' => 'ok',
@@ -32,7 +34,7 @@ $r = [
 // csrf
 
 if (!isset($_SESSION['csrf']) || !isset($post['csrf']) || $post['csrf'] !== $_SESSION['csrf'])
-    exitArrayToJson(['status' => 'error', 'error' => 'invalid csrf token']);
+    Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid csrf token']);
 
 
 
@@ -41,10 +43,10 @@ if (!isset($_SESSION['csrf']) || !isset($post['csrf']) || $post['csrf'] !== $_SE
 
 $redis = new RedisCli('localhost', '6379', true);
 $redis->set_error_function(function($error) {
-    exitArrayToJson(['status' => 'error', 'error' => $error]);
+    Chat::exitArrayToJson(['status' => 'error', 'error' => $error]);
 });
 if ($redis->cmd('PING')->get() != 'PONG')
-    exitArrayToJson(['status' => 'error', 'error' =>'redis not connected']);
+    Chat::exitArrayToJson(['status' => 'error', 'error' => 'redis not connected']);
 
 
 
@@ -75,7 +77,7 @@ switch ($_SERVER['REQUEST_URI']) {
         break;
 
     default:
-        exitArrayToJson(['status' => 'error', 'error' =>'invalid url']);
+        Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid url']);
         break;
 }
 
