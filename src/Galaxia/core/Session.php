@@ -45,11 +45,13 @@ When session_regenerate_id(1) is called after session_start():
 
 namespace Galaxia;
 
+
 use SessionHandlerInterface;
 
 
 class Session implements SessionHandlerInterface {
-    private $tableName;
+
+    private string $tableName;
 
     function __construct($tableName) {
         $this->tableName = $tableName . 'Session';
@@ -67,6 +69,7 @@ class Session implements SessionHandlerInterface {
         $sessionData = '';
 
         $db = Director::getMysqli();
+
         $stmt = $db->prepare("
             SELECT sessionData
             FROM $this->tableName
@@ -75,11 +78,13 @@ class Session implements SessionHandlerInterface {
                 timestampCreated > NOW() - INTERVAL 1 YEAR AND
                 timestampModified > NOW() - INTERVAL 6 MONTH
         ");
+
         $stmt->bind_param('s', $sessionId);
         $stmt->bind_result($sessionData);
         $stmt->execute();
         $stmt->fetch();
         $stmt->close();
+
         return $sessionData ?? '';
     }
 
@@ -87,6 +92,7 @@ class Session implements SessionHandlerInterface {
         $sessionId = filter_var($sessionId, FILTER_SANITIZE_STRING);
 
         $db = Director::getMysqli();
+
         $stmt = $db->prepare("
             INSERT INTO $this->tableName (
                 _geUserSessionId,
@@ -101,6 +107,7 @@ class Session implements SessionHandlerInterface {
                 sessionData = ?,
                 timestampModified = NOW()
         ");
+
         $stmt->bind_param('ssss', $sessionId, $sessionData, $sessionId, $sessionData);
         $success = $stmt->execute();
         $stmt->close();
@@ -121,26 +128,32 @@ class Session implements SessionHandlerInterface {
 
     public function destroy($sessionId) {
         $db = Director::getMysqli();
+
         $stmt = $db->prepare("
             DELETE FROM $this->tableName
             WHERE _geUserSessionId = ?
         ");
+
         $stmt->bind_param('s', $sessionId);
         $success = $stmt->execute();
         $stmt->close();
+
         return $success;
     }
 
     public function gc($maxlifetime) {
         $db = Director::getMysqli();
+
         $stmt = $db->prepare("
             DELETE FROM $this->tableName
             WHERE
                 timestampModified < NOW() - INTERVAL 6 MONTH OR
                 timestampCreated < NOW() - INTERVAL 1 YEAR
             ");
+
         $success = $stmt->execute();
         $stmt->close();
+
         return $success;
     }
 

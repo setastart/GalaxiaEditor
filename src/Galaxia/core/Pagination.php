@@ -17,19 +17,19 @@ namespace Galaxia;
 
 class Pagination {
 
-    public $active = false;
+    public bool $active = false;
 
     // pages
-    public $pageCurrent = 1;
-    public $pagePrev    = 0;
-    public $pageNext    = 0;
-    public $pageFirst   = 0;
-    public $pageLast    = 0;
+    public int $pageCurrent = 1;
+    public int $pagePrev    = 0;
+    public int $pageNext    = 0;
+    public int $pageFirst   = 0;
+    public int $pageLast    = 0;
 
     // items
-    public $itemsPerPage = 50;
-    public $itemsTotal   = 0;
-    public $itemFirst    = 1;
+    public int $itemsPerPage = 50;
+    public int $itemsTotal   = 0;
+    public int $itemFirst    = 1;
 
 
     public function __construct(int $pageCurrent, int $itemsPerPage = null) {

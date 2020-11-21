@@ -21,22 +21,22 @@ use Throwable;
 
 class Director {
 
-    private static $app    = null;
-    private static $editor = null;
-    private static $me     = null;
-    private static $mysqli = null;
+    private static ?App $app    = null;
+    private static ?Editor $editor = null;
+    private static ?User $me     = null;
+    private static ?mysqli $mysqli = null;
 
     /**
      * @deprecated
      */
-    static $ajax = false;
+    public static bool $ajax = false;
 
-    static $nofollowHosts = ['facebook', 'google', 'instagram', 'twitter', 'linkedin', 'youtube']; // todo: refactor
+    public static array $nofollowHosts = ['facebook', 'google', 'instagram', 'twitter', 'linkedin', 'youtube']; // todo: refactor
 
-    private static $timers      = [];
-    private static $timerLevel  = 0;
-    private static $timerMaxLen = 0;
-    private static $timerMaxLev = 0;
+    private static array $timers = [];
+    private static int   $timerLevel = 0;
+    private static int   $timerMaxLen = 0;
+    private static int   $timerMaxLev = 0;
 
 
     static function init(string $dir): App {
@@ -434,8 +434,6 @@ class Director {
 
         if (!in_array($code, [403, 404, 500])) $code = 500;
         http_response_code($code);
-
-        $backtrace = array_reverse(debug_backtrace());
 
         if (self::isCli()) {
             d('Error: ' . Text::h($codeOriginal) . ' - ' . $msg);

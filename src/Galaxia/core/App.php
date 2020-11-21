@@ -23,56 +23,56 @@ class App {
     /**
      * @deprecated
      */
-    public $version = '2020';
+    public string $version = '2020';
 
-    public $dir       = '';
-    public $dirLog    = '';
-    public $dirCache  = '';
-    public $dirImage  = '';
-    public $urlImages = '/media/image/';
+    public string $dir = '';
+    public string $dirLog = '';
+    public string $dirCache = '';
+    public string $dirImage = '';
+    public string $urlImages = '/media/image/';
 
-    public $routes = [];
-
-    /**
-     * @deprecated
-     */
-    public $pageId = 0;
+    public array $routes = [];
 
     /**
      * @deprecated
      */
-    public $pageIsRoot = false;
+    public int $pageId = 0;
 
     /**
      * @deprecated
      */
-    public $pagesById = null;
+    public bool $pageIsRoot = false;
 
-    public $locale  = ['url' => '/', 'long' => 'en_US', 'full' => 'English'];
-    public $locales = [
+    /**
+     * @deprecated
+     */
+    public ?array $pagesById = null;
+
+    public array $locale  = ['url' => '/', 'long' => 'en_US', 'full' => 'English'];
+    public array $locales = [
         'en' => ['url' => '/', 'long' => 'en_US', 'full' => 'English'],
     ];
 
-    public $localesInactive = [];
+    public array $localesInactive = [];
 
-    public $langs    = ['en'];
-    public $lang     = 'en';
-    public $timeZone = 'Europe/Lisbon';
+    public array  $langs    = ['en'];
+    public string $lang     = 'en';
+    public string $timeZone = 'Europe/Lisbon';
 
-    public $cookieEditorKey           = 'galaxiaEditor';
-    public $cookieNginxCacheBypassKey = '';
-    public $cookieDebugKey            = 'debug';
-    public $cookieDebugVal            = '';
+    public string $cookieEditorKey           = 'galaxiaEditor';
+    public string $cookieNginxCacheBypassKey = '';
+    public string $cookieDebugKey            = 'debug';
+    public string $cookieDebugVal            = '';
 
-    public $mysqlHost = '127.0.0.1';
-    public $mysqlDb   = '';
-    public $mysqlUser = '';
-    public $mysqlPass = '';
+    public string $mysqlHost = '127.0.0.1';
+    public string $mysqlDb   = '';
+    public string $mysqlUser = '';
+    public string $mysqlPass = '';
 
     /**
      * @deprecated
      */
-    public $cacheBypass = false;
+    public bool $cacheBypass = false;
 
     public function __construct(string $dir) {
         $this->dir      = rtrim($dir, '/') . '/';

@@ -20,13 +20,13 @@ $result = $stmt->get_result();
 
 while ($data = $result->fetch_assoc()) {
     if (!isset($items[$data['uniqueId']])) {
-        $items[$data['uniqueId']] = [];
+        $items[$data['uniqueId']]            = [];
         $items[$data['uniqueId']]['changes'] = [];
-        $items[$data['uniqueId']]['action'] = $data['action'];
+        $items[$data['uniqueId']]['action']  = $data['action'];
         $items[$data['uniqueId']]['created'] = $data['timestampCreated'];
     }
 
-    $items[$data['uniqueId']] = $items[$data['uniqueId']] ?? [];
+    $items[$data['uniqueId']] ??= [];
 
 
 
@@ -50,9 +50,10 @@ while ($data = $result->fetch_assoc()) {
 
 
 
-    $items[$data['uniqueId']]['changes'] = $items[$data['uniqueId']]['changes'] ?? [];
+    $items[$data['uniqueId']]['changes'] ??= [];
+
     $items[$data['uniqueId']]['changes'][] = [
-        'name' => $name,
+        'name'    => $name,
         'content' => $content,
         'lang'    => $lang,
     ];

@@ -21,12 +21,12 @@ class Text {
 Second Line.</pre><blockquote>This is a quotation or something. First line, a bit long so it wraps around, to see how it looks if it wraps. This first line ends in a newline after the dot.<br>Second Line.</blockquote>
 HTML;
 
-    public static $translations       = [];
-    public static $translationMissing = false;
+    public static array $translations       = [];
+    public static bool  $translationMissing = false;
 
-    private static $transliterator      = null;
-    private static $transliteratorLower = null;
-    private static $intlDateFormatters  = [];
+    private static ?Transliterator $transliterator      = null;
+    private static ?Transliterator $transliteratorLower = null;
+    private static array $intlDateFormatters = [];
 
 
     static function unsafe(string $text, bool $condition = true) {

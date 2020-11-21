@@ -16,21 +16,21 @@ namespace Galaxia;
 
 class Editor {
 
-    public $debug = false;
-    public $version = '';
+    public bool   $debug   = false;
+    public string $version = '';
 
-    public $dir       = '';
-    public $dirLayout = '';
-    public $dirLogic  = '';
-    public $dirView   = '';
+    public string $dir       = '';
+    public string $dirLayout = '';
+    public string $dirLogic  = '';
+    public string $dirView   = '';
 
-    public $logic  = '';
-    public $view   = '';
-    public $layout = 'layout-default';
-    public $homeSlug = 'page';
-    public $imageSlug = 'image';
+    public string $logic     = '';
+    public string $view      = '';
+    public string $layout    = 'layout-default';
+    public string $homeSlug  = 'page';
+    public string $imageSlug = 'image';
 
-    public $locales = [
+    public array $locales = [
         'pt' => ['long' => 'pt_PT', 'full' => 'Português'],
         'en' => ['long' => 'en_US', 'full' => 'English'],
         'es' => ['long' => 'es_ES', 'full' => 'Castellano'],

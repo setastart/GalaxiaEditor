@@ -17,17 +17,17 @@ namespace Galaxia;
 
 class User {
 
-    private $tableName;
+    private string $tableName;
 
-    public $id             = null;
-    public $loggedIn       = false;
-    public $email          = '';
-    public $name           = '';
-    public $timeLastOnline = '';
-    public $timeCreated    = '';
+    public ?int    $id             = null;
+    public bool    $loggedIn       = false;
+    public string  $email          = '';
+    public string  $name           = '';
+    public string  $timeLastOnline = '';
+    public string  $timeCreated    = '';
 
-    public $perms   = [];
-    public $options = [];
+    public array $perms   = [];
+    public array $options = [];
 
 
     function __construct(string $tableName) {

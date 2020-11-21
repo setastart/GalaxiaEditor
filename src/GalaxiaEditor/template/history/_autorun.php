@@ -11,9 +11,9 @@ $statusNames = [];
 foreach ($geConf as $rootSlug => $confPage) {
     if (!isset($confPage['gcItem'])) continue;
     if (!isset($confPage['gcItem']['gcTable'])) continue;
-    $pageNames[$confPage['gcItem']['gcTable']] = $pageNames[$confPage['gcItem']['gcTable']] ?? $confPage['gcMenuTitle'];
-    $inputKeys[$confPage['gcItem']['gcTable']] = $inputKeys[$confPage['gcItem']['gcTable']] ?? $confPage['gcColNames'];
-    $rootSlugs[$confPage['gcItem']['gcTable']] = $rootSlugs[$confPage['gcItem']['gcTable']] ?? $rootSlug;
+    $pageNames[$confPage['gcItem']['gcTable']] ??= $confPage['gcMenuTitle'];
+    $inputKeys[$confPage['gcItem']['gcTable']] ??= $confPage['gcColNames'];
+    $rootSlugs[$confPage['gcItem']['gcTable']] ??= $rootSlug;
 
     if (!isset($confPage['gcItem']['gcInputs'])) continue;
     if (!isset($confPage['gcItem']['gcInputs']['status'])) continue;

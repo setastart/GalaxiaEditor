@@ -47,6 +47,9 @@ class ArrayShape {
      * Examples:
      *      keys: ['value_' => ['label' => 'Value']] becomes ['value_pt' => ['label' => 'Value'], 'value_en' => ['label' => 'Value']]
      *      values: ['slug_', 'pageId'] becomes ['slug_pt', 'slug_en', 'pageId']
+     * @param $arr
+     * @param $langs
+     * @param array $perms
      */
     static function languify(&$arr, $langs, $perms = []) {
         if (!is_array($arr)) return;

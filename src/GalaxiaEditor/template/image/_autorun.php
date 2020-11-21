@@ -10,8 +10,8 @@ use Galaxia\Text;
 $pgTitle = Text::t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
 $hdTitle = Text::t('Editing') . ' ' . $pgTitle;
 
-$item = $geConf[$pgSlug]['gcImage'];
-$action = $action ?? '';
+$item   = $geConf[$pgSlug]['gcImage'];
+$action ??= '';
 
 
 // skip for new item page

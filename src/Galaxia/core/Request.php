@@ -6,27 +6,27 @@ namespace Galaxia;
 
 class Request {
 
-    public $host;
-    public $uri;
+    public string $host;
+    public string $uri;
 
-    public $pathOriginal;
-    public $path;
+    public string $pathOriginal;
+    public string $path;
 
-    public $query;
-    public $scheme;
-    public $method;
+    public string $query;
+    public string $scheme;
+    public string $method;
 
-    public $xhr;
-    public $json;
+    public bool $xhr;
+    public bool $json;
 
-    public $get;
-    public $post;
-    public $cookie;
+    public array $get;
+    public array $post;
+    public array $cookie;
 
-    public $minStatus;
-    public $cacheBypass;
-    public $cacheBypassHtml;
-    public $cacheWrite;
+    public int  $minStatus;
+    public bool $cacheBypass;
+    public bool $cacheBypassHtml;
+    public bool $cacheWrite;
 
 
     function __construct(

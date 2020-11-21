@@ -14,14 +14,16 @@ class ImageVips {
     const FORMATS = [self::EXT_JPG, self::EXT_PNG];
     const LOADERS = ['jpegload' => self::EXT_JPG, 'pngload' => self::EXT_PNG];
 
-    static $qualityJpg    = 85;
-    static $qualityPngMin = 70;
-    static $qualityPngMax = 90;
+    public static int $qualityJpg    = 85;
+    public static int $qualityPngMin = 70;
+    public static int $qualityPngMax = 90;
 
     public $vips = null;
-    public $fromUrl = false;
-    public $in, $slug, $ext;
-    public $w, $h, $resized;
+    public bool $fromUrl = false;
+    public string $in;
+    public ?string $ext;
+    public int $w, $h;
+    public bool $resized;
 
 
     /**

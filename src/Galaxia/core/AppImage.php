@@ -142,7 +142,7 @@ class AppImage {
 
     static function resizes(string $dirImage, string $imgSlug) {
         $files    = [];
-        $dirImage = $dirImage . $imgSlug;
+        $dirImage .= $imgSlug;
         $glob     = glob($dirImage . '/*');
         if ($glob === false) return $files;
         foreach ($glob as $filename) {

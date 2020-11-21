@@ -367,7 +367,7 @@ foreach ($intFiltersActive as $filterId) {
         krsort($ints);
         foreach ($ints as $int => $value) {
             if ($value && isset($itemsByInt[$int])) {
-                $filteredInts = $filteredInts + $itemsByInt[$int];
+                $filteredInts += $itemsByInt[$int];
             }
         }
     }

@@ -6,8 +6,8 @@ namespace Galaxia;
 
 trait Style {
 
-    static public $viewportMaxDefault = 1000;
-    static public $viewportMinDefault = 320;
+    public static int $viewportMaxDefault = 1000;
+    public static int $viewportMinDefault = 320;
 
 
 

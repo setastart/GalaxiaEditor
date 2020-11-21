@@ -17,13 +17,13 @@ namespace Galaxia;
 
 class Authentication {
 
-    private $tblUser;
-    private $tblUserRegisterRequest;
-    private $tblUserOption;
-    private $tblUserPasswordResetRequest;
-    private $tblUserEmailChangeRequest;
+    private string $tblUser;
+    private string $tblUserRegisterRequest;
+    private string $tblUserOption;
+    private string $tblUserPasswordResetRequest;
+    private string $tblUserEmailChangeRequest;
 
-    private $cryptoNrOfBytes = 16;
+    private int $cryptoNrOfBytes = 16;
 
 
     function __construct(string $tableNamePrefix = '_geUser') {
