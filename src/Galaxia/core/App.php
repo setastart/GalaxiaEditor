@@ -107,7 +107,7 @@ class App {
 
 
     public function setLang(string $lang = null): void {
-        if ($lang == null || !isset($this->locales[$lang])) $lang = $this->lang;
+        if (!is_string($lang) || !isset($this->locales[$lang])) $lang = $this->lang;
         $this->lang   = $lang;
         $this->locale = $this->locales[$this->lang];
         $this->langs  = array_keys($this->locales);
