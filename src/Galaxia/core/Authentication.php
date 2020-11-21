@@ -492,11 +492,14 @@ class Authentication {
             setcookie(
                 $key,
                 '0',
-                /* 'expires'  => */ 1,
-                /* 'path'     => */ '/; SameSite=Strict',
-                /* 'domain'   => */ '.' . $_SERVER['SERVER_NAME'],
-                /* 'secure'   => */ isset($_SERVER['HTTPS']),
-                /* 'httponly' => */ true
+                [
+                    'expires'  => 1,
+                    'path'     => '/',
+                    'domain'   => '.' . $_SERVER['SERVER_NAME'],
+                    'secure'   => isset($_SERVER['HTTPS']),
+                    'httponly' => true,
+                    'samesite' => 'Strict',
+                ]
             );
         }
     }

@@ -495,14 +495,12 @@ class Director {
     }
 
 
-    static function redirect($location = '', int $code = 303, bool $addServerQuery = false) {
-        $location = trim($location);
+    static function redirect($location = '', int $code = 302) {
+        $location = trim($location, "/ \t\n\r\0\x0B");
         if (headers_sent()) {
             echo 'headers already sent. redirect: <a href="' . Text::h($location) . '">' . Text::h($location) . '</a>' . PHP_EOL;
             exit();
         }
-        $location = trim(Text::h($location), '/');
-        if ($addServerQuery && $_SERVER['QUERY_STRING'] ?? '') $location .= '?' . $_SERVER['QUERY_STRING'];
         header('Location: /' . $location, true, $code);
         exit();
     }

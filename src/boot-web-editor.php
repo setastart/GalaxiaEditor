@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.17.0';
+$editor->version = '4.18.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -86,11 +86,14 @@ if ($me->loggedIn) {
         setcookie(
             $app->cookieNginxCacheBypassKey,
             '1',
-            /* 'expires'  => */ time() + 86400, // 1 day
-            /* 'path'     => */ '/; SameSite=Strict',
-            /* 'domain'   => */ '.' . $_SERVER['SERVER_NAME'],
-            /* 'secure'   => */ isset($_SERVER['HTTPS']),
-            /* 'httponly' => */ true
+            [
+                'expires'  => time() + 86400, // 1 day
+                'path'     => '/',
+                'domain'   => '.' . $_SERVER['SERVER_NAME'],
+                'secure'   => isset($_SERVER['HTTPS']),
+                'httponly' => true,
+                'samesite' => 'Strict'
+            ]
         );
     }
 

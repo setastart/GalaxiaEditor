@@ -21,6 +21,7 @@ class Request {
 
     public $get;
     public $post;
+    public $cookie;
 
     public $minStatus;
     public $cacheBypass;
@@ -41,6 +42,7 @@ class Request {
 
         array $get = null,
         array $post = null,
+        array $cookie = null,
 
         int $minStatus = null,
         bool $cacheBypass = null,
@@ -65,8 +67,9 @@ class Request {
         $this->xhr  = $xhr ?? (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'XMLHttpRequest');
         $this->json = $json ?? (($_SERVER['HTTP_ACCEPT'] ?? '') == 'application/json');
 
-        $this->get  = $get ?? $_GET ?? [];
-        $this->post = $post ?? $_POST ?? [];
+        $this->get    = $get ?? $_GET ?? [];
+        $this->post   = $post ?? $_POST ?? [];
+        $this->cookie = $cookie ?? $_COOKIE ?? [];
 
         $this->minStatus       = $minStatus ?? 2;
         $this->cacheBypass     = $cacheBypass ?? false;
@@ -99,25 +102,15 @@ class Request {
 
     function redirectRemoveSlashes() {
         if ($this->path != '/' && substr($this->path, -1, 1) == '/') {
-            $this->uri = rtrim($this->path, '/');
-            if ($this->uri == '') $this->uri = '/';
-            if ($this->query ?? '') $this->uri .= '?' . $this->query;
-            header('Location: ' . $this->uri, true, 302);
-            exit();
+            Director::redirect($this->path, 301);
         }
     }
 
 
     function redirectTransliterated() {
         if ($this->path != $this->pathOriginal) {
-            $this->uri = rtrim($this->path, '/');
-            if ($this->uri == '') $this->uri = '/';
-            if ($this->query ?? '') $this->uri .= '?' . $this->query;
-            header('Location: ' . $this->uri, true, 302);
-            exit();
+            Director::redirect($this->path, 301);
         }
-
     }
-
 
 }

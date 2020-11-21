@@ -1,24 +1,6 @@
 <?php
 
 
-if (!function_exists('array_key_first')) {
-    function array_key_first(array $arr) {
-        foreach ($arr as $key => $unused) {
-            return $key;
-        }
-
-        return null;
-    }
-}
-
-if (!function_exists('array_key_last')) {
-    function array_key_last(array $arr) {
-        if (empty($arr)) return null;
-
-        return key(array_slice($arr, -1, 1, true));
-    }
-}
-
 if (!function_exists('str_contains')) {
     function str_contains(string $haystack, string $needle): bool {
         return '' === $needle || false !== strpos($haystack, $needle);
