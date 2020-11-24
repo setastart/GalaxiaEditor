@@ -65,6 +65,11 @@ return [
         'pt' => 'Redimensionar imagens',
         'es' => 'Redimensionar imágenes',
     ],
+    'Resize' => [
+        'en' => 'Resize',
+        'pt' => 'Redimensionar',
+        'es' => 'Redimensionar',
+    ],
     'Resize Image' => [
         'en' => 'Resize Image',
         'pt' => 'Redimensionar imagem',
@@ -75,6 +80,11 @@ return [
         'pt' => 'Apagar Dimensões',
         'es' => 'Borrar Dimensiones',
     ],
+    'Select' => [
+        'en' => 'Select',
+        'pt' => 'Selecionar',
+        'es' => 'Selecionar',
+    ],
     'Select Image' => [
         'en' => 'Select Image',
         'pt' => 'Selecionar Imagem',
@@ -83,12 +93,17 @@ return [
     'Replace Image' => [
         'en' => 'Replace Image',
         'pt' => 'Substituir Imagem',
-        'es' => 'Substituir Imagen',
+        'es' => 'Sustituir Imagen',
+    ],
+    'An image with the same slug already exists.' => [
+        'en' => 'An image with the same slug already exists.',
+        'pt' => 'Já existe uma imagem com o mesmo slug.',
+        'es' => 'Ya existe una imágen con el mismo slug.',
     ],
     'Replace existing images' => [
         'en' => 'Replace existing images',
         'pt' => 'Substituir imagens existentes que tenham o mesmo slug',
-        'es' => 'Substituir imágenes existentes que tengan el mismo slug',
+        'es' => 'Sustituir imágenes existentes que tengan el mismo slug',
     ],
     'imgSlug' => [
         'en' => 'Image',
@@ -110,15 +125,66 @@ return [
         'pt' => 'Reordenar Imagens',
         'es' => 'Reordenar Imágenes',
     ],
-    'Delete All' => [
-        'en' => 'Delete All',
-        'pt' => 'Apagar Todas',
-        'es' => 'Borrar Todas',
+    'Delete Images' => [
+        'en' => 'Delete Images',
+        'pt' => 'Eliminar Imagens',
+        'es' => 'Eliminar Imágenes',
     ],
-    'Delete None' => [
-        'en' => 'Delete None',
-        'pt' => 'Não Apagar Nenhuma',
-        'es' => 'No Borrar Ninguna',
+
+    'Images to Delete' => [
+        'en' => 'Images to Delete',
+        'pt' => 'Imagens para Eliminar',
+        'es' => 'Imágenes para eliminar',
+    ],
+    'Remove All' => [
+        'en' => 'Remove All',
+        'pt' => 'Remover Todas',
+        'es' => 'Quitar Todas',
+    ],
+    'Remove None' => [
+        'en' => 'Remove None',
+        'pt' => 'Não Remover Nenhuma',
+        'es' => 'No Quitar Ninguna',
+    ],
+    'Upload Images' => [
+        'en' => 'Upload Images',
+        'pt' => 'Carregar Imagens',
+        'es' => 'Subir Imágenes',
+    ],
+    'In Use' => [
+        'en' => 'In Use',
+        'pt' => 'Em Uso',
+        'es' => 'En Uso',
+    ],
+    'Filter In Use' => [
+        'en' => 'Filter In Use',
+        'pt' => 'Filtrar Em Uso',
+        'es' => 'Filtrar En Uso',
+    ],
+    'Select All' => [
+        'en' => 'Select All',
+        'pt' => 'Seleccionar Todas',
+        'es' => 'Selecionar Todas',
+    ],
+    'Deselect All' => [
+        'en' => 'Deselect All',
+        'pt' => 'Seleccionar Ninguna',
+        'es' => 'Selecionar Ninguna',
+    ],
+    'Add Images' => [
+        'en' => 'Add Images',
+        'pt' => 'Adicionar Imagens',
+        'es' => 'Añadir Imágenes',
+    ],
+    'Ignore' => [
+        'en' => 'Ignore',
+        'pt' => 'Ignorar',
+        'es' => 'Ignorar',
+    ],
+    'Rename' => [
+        'en' => 'Rename',
+        'pt' => 'Renomear',
+        'es' => 'Renombrar',
     ],
 
 
@@ -328,7 +394,7 @@ return [
     'Replace' => [
         'en' => 'Replace',
         'pt' => 'Substituir',
-        'es' => 'Substituir',
+        'es' => 'Sustituir',
     ],
     'Status' => [
         'en' => 'Status',
@@ -380,10 +446,45 @@ return [
         'pt' => 'Guardar e adicionar mais',
         'es' => 'Guardar y adicionar más',
     ],
+    'Send' => [
+        'en' => 'Send',
+        'pt' => 'Enviar',
+        'es' => 'Enviar',
+    ],
+    'Add and go back' => [
+        'en' => 'Add and go back',
+        'pt' => 'Adicionar e voltar atrás',
+        'es' => 'Añadir y volver atrás',
+    ],
+    'Add these and more' => [
+        'en' => 'Add these and more',
+        'pt' => 'Adicionar estas e mais',
+        'es' => 'Añadir estas y más',
+    ],
+    'Upload' => [
+        'en' => 'Upload',
+        'pt' => 'Carregar',
+        'es' => 'Subir',
+    ],
+    'Upload these and more' => [
+        'en' => 'Upload these and more',
+        'pt' => 'Carregar estas e mais',
+        'es' => 'Subir estas y más',
+    ],
+    'Upload and go back to %s' => [
+        'en' => 'Upload and go back to %s',
+        'pt' => 'Carregar e voltar a %s',
+        'es' => 'Subir y volver a %s',
+    ],
     'Save and go back to %s' => [
         'en' => 'Save and go back to %s',
         'pt' => 'Guardar e voltar a %s',
         'es' => 'Guardar y volver a %s',
+    ],
+    'Upload and go back to %s' => [
+        'en' => 'Upload and go back to %s',
+        'pt' => 'Carregar e voltar a %s',
+        'es' => 'Subir y volver a %s',
     ],
     'Go back' => [
         'en' => 'Go back',

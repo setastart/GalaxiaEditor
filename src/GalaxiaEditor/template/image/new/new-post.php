@@ -4,13 +4,11 @@ use Galaxia\Director;
 use Galaxia\File;
 use Galaxia\Flash;
 use Galaxia\Text;
+use GalaxiaEditor\config\Config;
 use GalaxiaEditor\input\Input;
 
 
 $editor->view = 'image/new/new';
-$type         = '';
-
-
 
 
 // item validation
@@ -29,7 +27,6 @@ foreach ($inputs as $inputKey => $input) {
     }
     $value = $_POST[$input['name']];
     $input = Input::validate($input, $value);
-    if ($inputKey == 'type' && !$input['errors']) $type = $value;
     $inputs[$inputKey] = $input;
 }
 
@@ -43,16 +40,28 @@ foreach ($inputs as $input) {
 }
 if (Flash::hasError()) return;
 
+$files = File::simplify($_FILES['images']);
+
+$types = Config::getImageTypes($geConf);
+
+foreach ($files as $i => $file) {
+    if (isset($_POST['imgType'][$i]) && isset($types[$_POST['imgType'][$i]])) {
+        $imgType = $_POST['imgType'][$i];
+        $files[$i]['imgType'] = $imgType;
+        $files[$i]['imgExisting'] = $_POST['imgExisting'][$i] ?? null;
+        $files[$i]['toFit'] = $types[$imgType];
+    }
+}
 
 
 
 // upload images
 
-$uploaded = $app->imageUpload(array_combine($_FILES['images']['tmp_name'], $_FILES['images']['name']), $_POST['replace'], $_POST['resize']);
+$uploaded = $app->imageUpload($files, false, 1920);
 foreach ($uploaded as $img) {
-    if ($type) {
+    if ($img['imgType'] ?? '') {
         $file = $app->dirImage . $img['slug'] . '/' . $img['slug'] . '_type.txt';
-        if (file_put_contents($file, $type) !== false) {
+        if (file_put_contents($file, $img['imgType']) !== false) {
             Flash::info('Updated: ' . Text::t('Image Type'));
         } else {
             Flash::error('Not updated: ' . Text::t('Image Type'));
@@ -81,7 +90,8 @@ if (Flash::hasError()) return;
 // finish
 
 $app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList-' . $pgSlug);
+$app->cacheDelete('editor', 'imageList-' . $pgSlug . '*');
+
 if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
 if (isset($_POST['submitAndAddMore'])) Director::redirect('edit/' . $pgSlug . '/new');
 if (count($uploaded) == 1) Director::redirect('edit/' . $pgSlug . '/' . $uploaded[0]['slug']);

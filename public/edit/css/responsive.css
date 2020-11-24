@@ -17,6 +17,9 @@
         grid-template-rows: min-content min-content min-content minmax(20px, 1fr) min-content;
         background-image: none;
     }
+    .menu-separator {
+        display: none;
+    }
     .pad {
         padding-left: 6px;
         padding-right: 6px;

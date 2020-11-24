@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.19.0';
+$editor->version = '4.20.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -289,6 +289,14 @@ if ($me->loggedIn) {
                     if ($confPage['gcImageList']) {
                         $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}', 'imageList/list');
                         $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}', 'imageList/list');
+
+                        if ($confPage['gcImage']['gcDelete'] ?? []) {
+                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/delete', 'imageList/deleteMulti');
+                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/delete', 'imageList/deleteMulti-post');
+                        }
+
+                        $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/verify', 'imageList/verify');
+
                         $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/resize/{imgW}/{imgH}', 'image/resize/resize-request');
                     }
 
@@ -432,7 +440,7 @@ Director::timerStart('layout');
 include $editor->dirLayout . $editor->layout . '.phtml';
 Director::timerStop('layout');
 
-if (Director::isDev()) {
+if (Director::isDev() && $editor->layout != 'none') {
     Director::timerPrint(true, true);
 }
 

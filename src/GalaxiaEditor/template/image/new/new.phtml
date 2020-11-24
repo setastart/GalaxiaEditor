@@ -32,9 +32,9 @@ InputRender::form('', 'image-new', 'image image-new paper pad'); ?>
 <?php   } ?>
         </div>
         <div class="paper-footer-actions">
-            <button class="btn btn-green active"><?=Text::t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=Text::t('Save and go back')?></button>
-            <button class="btn btn-blue active" name="submitAndAddMore"><?=Text::t('Save and add more')?></button>
+            <button class="btn btn-green active"><?=Text::t('Upload')?></button>
+            <button class="btn btn-aqua active" name="submitAndGoBack"><?=sprintf(Text::t('Upload and go back to %s'), Text::t($geConf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-aqua active" name="submitAndAddMore"><?=Text::t('Upload these and more')?></button>
         </div>
     </div>
 

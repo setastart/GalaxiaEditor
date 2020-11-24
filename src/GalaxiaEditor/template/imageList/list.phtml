@@ -8,13 +8,15 @@ InputRender::form('', 'image-list', 'paper pad');?>
     <div class="paper-header pad">
         <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t($pgTitle);?></h1>
 
-<?php   if (!empty($geConf[$pgSlug]['gcImageList']['gcLinks'])) { ?>
-        <div class="list-actions">
-<?php   foreach ($geConf[$pgSlug]['gcImageList']['gcLinks'] as $href => $link) { ?>
-            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($href)?>" class="btn btn-pad <?=Text::h($link['cssClass'])?>"><?=sprintf(Text::t('+ Add new %s'), Text::t('Image'))?></a>
+        <div class="list-links">
+<?php   if ($geConf[$pgSlug]['gcImage']['gcDelete'] ?? []) { ?>
+            <a href="/edit/<?=Text::h($pgSlug)?>/delete" class="btn btn-pad btn-red active"><?=Text::t('Delete Images')?></a>
+<?php   } ?>
+<?php   if ($geConf[$pgSlug]['gcImage']['gcInsert'] ?? []) { ?>
+            <a href="/edit/<?=Text::h($pgSlug)?>/new" class="btn btn-pad btn-blue active"><?=Text::t('Upload Images')?></a>
 <?php   } ?>
         </div>
-<?php   } ?>
+
 <?php   if ($me->hasPerm('dev')) { ?>
         <div class="paper-header-links">
             <a href="/edit/dev/imageListDeleteResizes" class="hide-perm-dev btn-a"><?=Text::t('Delete Resizes')?></a>
@@ -41,7 +43,7 @@ InputRender::form('', 'image-list', 'paper pad');?>
             </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map(array("\Galaxia\Text", "t"), array_filter($geConf[$pgSlug]['gcImageTypes'])))?></p>
+            <p class="small"><?=implode(', ', array_map(array("\Galaxia\Text", "t"), array_filter(array_keys($geConf[$pgSlug]['gcImageTypes']))))?></p>
 <?php           } ?>
         </div>
 <?php       } ?>

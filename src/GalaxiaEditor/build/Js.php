@@ -33,7 +33,8 @@ class Js {
         $editor = new Editor(dirname(dirname(dirname(__DIR__))));
 
         foreach (self::JS_FILENAMES as $buildName => $sources) {
-            $jsBuild = '\'use strict\';' . str_repeat(PHP_EOL, 2);
+            $jsBuild = '';
+            // $jsBuild .= '\'use strict\';' . str_repeat(PHP_EOL, 2);
 
             foreach ($sources as $sourcePath) {
                 $source = pathinfo($sourcePath, PATHINFO_BASENAME);

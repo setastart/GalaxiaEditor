@@ -5,6 +5,7 @@ use Galaxia\AppImage;
 use Galaxia\Director;
 use Galaxia\Flash;
 use Galaxia\Text;
+use GalaxiaEditor\render\Load;
 
 
 $pgTitle = Text::t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
@@ -29,7 +30,8 @@ if (!AppImage::valid($app->dirImage, $imgSlug)) {
 }
 
 
-
+$inUse = Load::imagesInUse($geConf, $pgSlug)[$imgSlug] ?? [];
+geD($inUse);
 
 // load image and build inputs
 
@@ -65,7 +67,7 @@ foreach ($app->locales as $lang => $locale) {
 
 if ($geConf[$pgSlug]['gcImageTypes']) {
     $options = [];
-    foreach ($geConf[$pgSlug]['gcImageTypes'] as $tag) {
+    foreach ($geConf[$pgSlug]['gcImageTypes'] as $tag => $bounds) {
         $options[$tag] = ['label' => $tag];
     }
     $inputs['type'] = [

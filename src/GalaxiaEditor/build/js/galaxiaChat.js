@@ -129,7 +129,7 @@ function gjcListen() {
                     gchat.rooms[room].datePrev = date;
                 }
 
-                entry += '<div style="order: ' + msg.timestamp + '" class="gchat-room-msg ' + msg.type + ' s0i s1i' + ((msg.user == gchat.myId) ? ' me' : '') + '" data-filter-text-0="' + removeDiacritics(json.users[msg.user].name) + '" data-filter-text-1="' + removeDiacritics(msg.content) + '">';
+                entry += '<div style="order: ' + msg.timestamp + '" class="gchat-room-msg ' + msg.type + ' s0i s1i' + ((msg.user == gchat.myId) ? ' me' : '') + '" data-filter-text-0="' + gjInput.removeDiacritics(json.users[msg.user].name) + '" data-filter-text-1="' + gjInput.removeDiacritics(msg.content) + '">';
                 entry += '    <span class="user brewer-dark-' + ((msg.user % 10) + 1) + '">' + json.users[msg.user].name + '</span>';
                 entry += '    <span class="msg">' + msg.content + '</span>';
                 entry += '    <small class="time grey">' + msgDate.toTimeString().slice(0, 5) + '</small>';

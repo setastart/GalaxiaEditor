@@ -35,7 +35,6 @@ class Sql {
 
 
 
-
     static function select(array $expression, array $langs = null) {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);

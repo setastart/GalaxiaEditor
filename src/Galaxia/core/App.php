@@ -25,10 +25,10 @@ class App {
      */
     public string $version = '2020';
 
-    public string $dir = '';
-    public string $dirLog = '';
-    public string $dirCache = '';
-    public string $dirImage = '';
+    public string $dir       = '';
+    public string $dirLog    = '';
+    public string $dirCache  = '';
+    public string $dirImage  = '';
     public string $urlImages = '/media/image/';
 
     public array $routes = [];
@@ -689,16 +689,38 @@ class App {
     }
 
 
-    public function imageUpload(array $files, $replace = false, int $toFit = 0, string $type = '') {
+    public function imageUpload(array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = '') {
         $uploaded = [];
 
-        arsort($files, SORT_NATURAL);
+        uasort($files, function($a, $b) {
+            return $a['tmp_name'] <=> $b['tmp_name'];
+        });
 
-        foreach ($files as $fileNameTemp => $fileNameProposed) {
+        foreach ($files as $file) {
 
-            $mtime = false;
+            $fileNameTemp     = $file['tmp_name'];
+            $fileNameProposed = $file['name'];
+
+            $mtime            = false;
             $fileNameProposed = Text::normalize($fileNameProposed, ' ', '.');
-            $shouldReplace = false;
+            $shouldReplace    = false;
+
+            $fileReplace = $replaceDefault;
+            if (isset($file['imgExisting'])) {
+                switch ($file['imgExisting']) {
+                    case 'ignore':
+                        Flash::warning('Ignored image: ' . Text::h($fileNameProposed));
+                        continue 2;
+
+                    case 'rename':
+                        $fileReplace = false;
+                        break;
+
+                    case 'replace':
+                        $fileReplace = true;
+                        break;
+                }
+            }
 
             // load image
             try {
@@ -715,8 +737,8 @@ class App {
             $fileDir    = $this->dirImage . $fileSlug . '/';
             $dirCreated = false;
             if (is_dir($this->dirImage . $fileSlug)) {
-                if ($replace) {
-                    $mtime = filemtime($this->dirImage . $fileSlug . '/');
+                if ($fileReplace) {
+                    $mtime         = filemtime($this->dirImage . $fileSlug . '/');
                     $shouldReplace = true;
                 } else {
                     for ($j = 0; $j < 3; $j++) {
@@ -741,7 +763,7 @@ class App {
             }
 
             try {
-                $imageVips->save($fileDir . $fileSlug, $replace, $toFit);
+                $imageVips->save($fileDir . $fileSlug, $fileReplace, $file['toFit'] ?? $toFitDefault);
             } catch (Exception $e) {
                 Flash::error($e->getMessage());
                 Flash::devlog($e->getTraceAsString());
@@ -762,16 +784,19 @@ class App {
 
             // dimensions
             file_put_contents($fileDir . $fileSlug . '_dim.txt', $imageVips->w . 'x' . $imageVips->h);
-            if ($type) {
-                file_put_contents($fileDir . $fileSlug . '_type.txt', Text::h($type));
+
+
+            // type
+            if ($file['imgType'] ?? $type) {
+                file_put_contents($fileDir . $fileSlug . '_type.txt', Text::h($file['imgType'] ?? $type));
             }
-            $fileNameStripped = pathinfo($fileNameProposed, PATHINFO_FILENAME);
 
 
             // finish
-            if ($replace) {
+            $fileNameStripped = pathinfo($fileNameProposed, PATHINFO_FILENAME);
+            if ($fileReplace) {
                 if ($imageVips->resized)
-                    Flash::info('Resized image: ' . Text::h($fileSlug . $imageVips->ext));
+                    Flash::info('Replaced and resized image: ' . Text::h($fileSlug . $imageVips->ext));
                 else
                     Flash::info('Replaced image: ' . Text::h($fileSlug . $imageVips->ext));
 
@@ -786,7 +811,8 @@ class App {
                 'slug'     => $fileSlug,
                 'fileName' => $fileNameStripped,
                 'ext'      => $imageVips->ext,
-                'replaced' => $replace,
+                'replaced' => $fileReplace,
+                'type'     => $file['imgType'] ?? $type,
             ];
         }
 

@@ -25,7 +25,7 @@ function gjLoad() {
     gjImage.init();
     gjTextareas     = document.getElementsByTagName('textarea');
 
-    gjResizeTextareas();
+    gjInput.textareaResize();
 
 
     // prepare form pagination
@@ -57,7 +57,7 @@ function gjLoad() {
 
         gjInput.trixCharWordCount(editorEl);
 
-        initialUndoClasses(editorEl);
+        gjInput.initialUndoClasses(editorEl);
     });
 
     document.addEventListener('trix-initialize', function (ev) {
@@ -69,7 +69,7 @@ function gjLoad() {
     // on window resize with debounce
     window.onresize = function () {
         if (gjResizeTimeout != null) clearTimeout(gjResizeTimeout);
-        gjResizeTimeout = setTimeout(gjResizeTextareas, 100);
+        gjResizeTimeout = setTimeout(gjInput.textareaResize, 100);
     }
 }
 
@@ -80,18 +80,18 @@ function handleEventInput(ev) {
         ev.target.matches('.input-file') ||
         ev.target.matches('.input-trix')
     ) {
-        gjInputChange(ev.target);
-        textareaAutoGrow(ev.target);
+        gjInput.change(ev.target);
+        gjInput.textareaAutoGrow(ev.target);
     }
 
     if (ev.target.matches('.input-slug')) {
-        gjInputFormat(ev.target, 'slug');
+        gjInput.format(ev.target, 'slug');
     }
     if (ev.target.matches('.input-date')) {
-        gjInputFormat(ev.target, 'date');
+        gjInput.format(ev.target, 'date');
     }
     if (ev.target.matches('.input-time')) {
-        gjInputFormat(ev.target, 'time');
+        gjInput.format(ev.target, 'time');
     }
 
     if (
@@ -121,18 +121,18 @@ function handleEventChange(ev) {
         ev.target.matches('.input-select') ||
         ev.target.matches('.input-trix')
     ) {
-        gjInputChange(ev.target);
+        gjInput.change(ev.target);
     }
 
     if (
         ev.target.matches('#switches input') ||
         ev.target.matches('.openbox input')
     ) {
-        gjSwitch(ev.target, ev);
+        gjInput.switch(ev.target);
     }
 
     if (ev.target.matches('.input-image')) {
-        gjImageValidate(ev.target);
+        gjInput.validate(ev.target);
     }
 
     if (ev.target.matches('.filterChange')) {
@@ -149,7 +149,7 @@ function handleEventChange(ev) {
 
 function handleEventBlur(ev) {
     if (ev.target.matches && ev.target.matches('.input-select')) {
-        gjInputChange(ev.target);
+        gjInput.change(ev.target);
     }
 }
 
@@ -213,6 +213,12 @@ function handleEventClick(ev) {
         let fieldId = ev.target.closest('.module-field')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
         if (!fieldId) return;
         gjImage.openGallery(fieldId, document.getElementById(fieldId).dataset.imgtype ?? '', pos)
+    }
+
+    if (ev.target.matches('.imageList-delete')) {
+        let fieldId = ev.target.closest('.module-field')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
+        if (!fieldId) return;
+        gjImage.openGallery(fieldId, '', 0)
     }
 
 
@@ -292,7 +298,7 @@ function handleEventKeydown(ev) {
     }
 
     if (ev.target.matches('.input-date') || ev.target.matches('.input-time')) {
-        gjInputMod(ev.target, ev);
+        gjInput.mod(ev.target, ev);
     }
 
     if (ev.target.matches('.gchat-room-text')) {

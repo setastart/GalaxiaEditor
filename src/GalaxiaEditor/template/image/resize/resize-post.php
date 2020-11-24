@@ -37,8 +37,11 @@ if (Flash::hasError()) return;
 
 // resize images
 
-$_FILES['images']['name'][0] = $imgSlug;
-$uploaded = $app->imageUpload([$app->dirImage . $imgSlug . '/' . $imgSlug . $img['ext'] => $imgSlug], true, $_POST['resize']);
+$files = [[
+    'tmp_name' => $app->dirImage . $imgSlug . '/' . $imgSlug . $img['ext'],
+    'name' => $imgSlug,
+]];
+$uploaded = $app->imageUpload($files, true, $_POST['resize']);
 
 
 
@@ -46,5 +49,5 @@ $uploaded = $app->imageUpload([$app->dirImage . $imgSlug . '/' . $imgSlug . $img
 // finish
 
 $app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList-' . $pgSlug);
+$app->cacheDelete('editor', 'imageList-' . $pgSlug . '*');
 Director::redirect('edit/' . $pgSlug . '/' . $imgSlug);

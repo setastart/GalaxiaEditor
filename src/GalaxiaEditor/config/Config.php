@@ -82,7 +82,7 @@ class Config {
             'gcTitleSingle' => 'string',
             'gcTitlePlural' => 'string',
             'gcMenuShow'    => 'boolean',
-            'gcImageTypes'  => 'stringArray',
+            'gcImageTypes'  => 'intArray',
             'gcImagesInUse' => 'gcpImagesInUse',
 
             'gcImageList' => [
@@ -245,6 +245,16 @@ class Config {
             case 'string':
                 if (!is_string($config))
                     Config::geConfigParseError($errorString . ' should be a string.', $schema, $config);
+                break;
+
+
+            case 'intArray':
+                if (!is_array($config))
+                    Config::geConfigParseError($errorString . ' should be an array of ints.', $schema, $config);
+
+                foreach ($config as $key => $val)
+                    if (!is_int($val))
+                        Config::geConfigParseError($errorString . '/' . $key . ' should be an int.', $schema, $config);
                 break;
 
 
@@ -503,6 +513,18 @@ class Config {
     private static function geConfigParseError() {
         geD(func_get_args());
         geErrorPage(500, 'config error');
+    }
+
+
+
+    static function getImageTypes(array $geConf): ?array {
+        foreach ($geConf as $key => $confPage) {
+            if ($confPage['gcPageType'] == 'gcpImages') {
+                return $confPage['gcImageTypes'];
+            }
+        }
+
+        return null;
     }
 
 }

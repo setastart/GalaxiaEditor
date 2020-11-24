@@ -317,7 +317,6 @@ $r .= ' ' . $optionName . '="' . $option . '"';
     }
 
     static function getImageInput($input) {
-
         $maxMemory   = Text::bytesAbbrToInt(ini_get('memory_limit'));
         $maxPostSize = Text::bytesAbbrToInt(ini_get('post_max_size'));
         $maxTotal    = min($maxMemory, $maxPostSize);
@@ -330,7 +329,28 @@ $r .= ' ' . $optionName . '="' . $option . '"';
         $multiple = ($input['options']['multiple'] ?? false) ? ' multiple' : '';
         $disabled = ($maxUploadSize < 1 || $input['disabled']) ? ' disabled' : '';
 
-$r = '';
+        if ($input['options']['type'] ?? []) {
+            $typeInput = array_merge(Input::PROTO_INPUT, [
+                'label'   => 'Type',
+                'name'    => 'type',
+                'type'    => 'radio',
+                'value'   => array_key_first($input['options']['type']),
+                'options' => $input['options']['type'],
+            ]);
+        }
+
+        if ($input['options']['existing'] ?? []) {
+            $existingInput = array_merge(Input::PROTO_INPUT, [
+                'label'   => 'Type',
+                'name'    => 'type',
+                'type'    => 'radio',
+                'value'   => array_key_first($input['options']['existing']),
+                'options' => $input['options']['existing'],
+            ]);
+        }
+
+
+        $r = '';
 $r .= '    <div>' . PHP_EOL;
 $r .= '        <input type="hidden" name="MAX_FILE_SIZE" value="' . $maxUploadSize . '"' . $disabled . '>' . PHP_EOL;
 $r .= '        <input name="' . $input['name'] . '" pattern="[a-z0-9\-]*" class="input-file input-image btn active" type="file" accept="image/jpeg,image/png"' . $dataSizes . $multiple . $disabled . '>' . PHP_EOL;
@@ -339,8 +359,23 @@ $r .= '            <div>' . sprintf(Text::unsafet('Total size: <span class="maxt
 $r .= '            <div>' . sprintf(Text::unsafet('Max file size: <span class="maxsize">0 B</span> / %s'), Text::bytesIntToAbbr($maxUploadSize)) . '</div>' . PHP_EOL;
 $r .= '            <div>' . sprintf(Text::unsafet('Number of files: <span class="maxcount">0</span> / %s'), $maxUploadFiles) . '</div>' . PHP_EOL;
 $r .= '        </div>' . PHP_EOL;
-$r .= '        <ul class="upload-files">' . PHP_EOL;
-$r .= '        </ul>' . PHP_EOL;
+$r .= '    </div>' . PHP_EOL;
+
+if ($input['options']['type'] ?? []) {
+$r .= '    <div id="upload-images-type-proto" class="type control hide">' . PHP_EOL;
+$r .= '        <div class="input-label">' . Text::T('Type') . '</div>' . PHP_EOL;
+$r .= self::getRadioInput($typeInput) . PHP_EOL;
+$r .= '    </div>' . PHP_EOL;
+}
+
+if ($input['options']['existing'] ?? []) {
+$r .= '    <div id="upload-images-existing-proto" class="existing control hide">' . PHP_EOL;
+$r .= '        <div class="input-label">' . Text::T('An image with the same slug already exists.') . '</div>' . PHP_EOL;
+$r .= self::getRadioInput($existingInput) . PHP_EOL;
+$r .= '    </div>' . PHP_EOL;
+}
+
+$r .= '    <div id="upload-images" class="list">' . PHP_EOL;
 $r .= '    </div>' . PHP_EOL;
 
         return $r;

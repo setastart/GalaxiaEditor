@@ -144,7 +144,7 @@ if (isset($itemChanges['imgSlug'])) {
 // finish
 
 $app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList-' . $pgSlug);
+$app->cacheDelete('editor', 'imageList-' . $pgSlug . '*');
 
 if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
 Director::redirect('edit/' . $pgSlug . '/' . $imgSlug);

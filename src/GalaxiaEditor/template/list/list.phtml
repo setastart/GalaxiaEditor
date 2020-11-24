@@ -9,7 +9,6 @@ InputRender::form('', 'item-list', 'paper pad');?>
         <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t($pgTitle);?></h1>
 
         <div class="list-links">
-            <div class="rgt">
 <?php   foreach ($list['gcLinks'] as $href => $link) { ?>
 <?php       if (!$link) continue; ?>
 <?php       switch ($href) { ?>
@@ -21,7 +20,6 @@ InputRender::form('', 'item-list', 'paper pad');?>
 <?php           break; ?>
 <?php       } ?>
 <?php   } ?>
-            </div>
         </div>
     </div>
 

@@ -26,9 +26,11 @@ if (preg_match('~ src="(https://\S*?s720x720\S*?)"~m', $html[Scrape::DATA], $mat
     if (AppImage::valid($app->dirImage, $imgSlug)) {
         $r[Scrape::INFO][$imgSlug] = Scrape::INFO_IMAGE_EXISTS;
     } else {
-        $imgUrl = html_entity_decode($matches[1], ENT_HTML5, 'UTF-8');
-
-        $uploadedImage = $app->imageUpload([$imgUrl => $imgSlug], true, 1920, 'jsonld')[0] ?? [];
+        $files = [[
+            'tmp_name' => html_entity_decode($matches[1], ENT_HTML5, 'UTF-8'),
+            'name' => $imgSlug,
+        ]];
+        $uploadedImage = $app->imageUpload($files, true, 1920, 'jsonld')[0] ?? [];
 
         if (empty($uploadedImage)) {
             $r[Scrape::INFO][$imgSlug] = Scrape::INFO_IMAGE_NOT_DOWNLOADED;

@@ -9,10 +9,15 @@ class File {
     static function uploadRemoveErrors(string $inputName) {
         if (!isset($_FILES[$inputName])) {
             Flash::error('Required.', 'form', $inputName);
+
+            return [[
+                'msg'  => 'Input file not found.',
+                'file' => 'Image',
+            ]];
         }
 
         $errors = [];
-        foreach ($_FILES[$inputName]['error'] as $i => $errorCode) {
+        foreach ($_FILES[$inputName]['error'] ?? [] as $i => $errorCode) {
             $msg = '';
             switch ($errorCode) {
                 case UPLOAD_ERR_OK:
@@ -53,6 +58,19 @@ class File {
                 unset($_FILES[$inputName][$propery][$i]);
 
         return $errors;
+    }
+
+
+
+    static function simplify(array $filesOriginal): array {
+        $files = [];
+        foreach ($filesOriginal ?? [] as $key => $all) {
+            foreach ($all as $i => $val) {
+                $files[$i][$key]   = $val;
+            }
+        }
+
+        return $files;
     }
 
 }

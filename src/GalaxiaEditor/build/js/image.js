@@ -17,6 +17,7 @@ let gjImage = {
         this.scrollOpen   = 0;
     },
 
+
     openSingle: function(inputEl, imgType) {
         this.activeInput  = inputEl.previousElementSibling;
         this.activeImages = [inputEl.value];
@@ -27,6 +28,7 @@ let gjImage = {
         });
         this.open(imgType);
     },
+
 
     openGallery: function(fieldId, imgType, pos) {
         this.activeFieldId = fieldId;
@@ -39,6 +41,7 @@ let gjImage = {
         });
         this.open(imgType);
     },
+
 
     open: function(imgType) {
         this.scrollClosed = window.scrollY;
@@ -64,7 +67,9 @@ let gjImage = {
         }
     },
 
+
     close: function() {
+        if (!this.el) return;
         if (this.el.classList.contains('hide')) return
         this.scrollOpen = window.scrollY;
 
@@ -79,6 +84,7 @@ let gjImage = {
 
         if (this.activeInput) this.activeInput.focus();
     },
+
 
     selectSingle: function(btnEl) {
         if (this.isGallery) {
@@ -100,6 +106,7 @@ let gjImage = {
         }
     },
 
+
     selectGallery: function() {
         this.close();
 
@@ -120,6 +127,7 @@ let gjImage = {
         gjField.countPos(document.getElementById(this.activeFieldId));
     },
 
+
     selectAll: function() {
         let images = this.el.querySelectorAll('.imageSelectItem:not(.active)');
         for (let i = 0; i < images.length; i++) {
@@ -127,6 +135,7 @@ let gjImage = {
             images[i].classList.add('selected');
         }
     },
+
 
     selectNone: function() {
         let images = this.el.querySelectorAll('.imageSelectItem.selected');
@@ -147,6 +156,7 @@ let gjImage = {
         }
     },
 
+
     setInputAndImage: function(inputEl, img) {
         inputEl.value   = img.slug;
         let selectorImg = inputEl.nextElementSibling.children[0];
@@ -154,10 +164,14 @@ let gjImage = {
         selectorImg.src = img.src;
         selectorImg.setAttribute('width', img.w);
         selectorImg.setAttribute('height', img.h);
-        textareaAutoGrow(inputEl)
+        gjInput.textareaAutoGrow(inputEl)
     },
 
+
     resizeRequest: function(el) {
+        if (el.parentNode.classList.contains('waiting')) return;
+        if (el.parentNode.classList.contains('loading')) return;
+
         el.parentNode.classList.add('waiting');
         let re    = /.*\/([0-9a-z-]+)_(\d+_\d+)\./;
         let match = re.exec(el.src);
@@ -197,6 +211,7 @@ let gjImage = {
             this.parentNode.classList.remove('waiting', 'loading')
         };
     },
+
 
     paintSelectedActivated: function() {
         if (!this.activeImages) return;

@@ -108,7 +108,7 @@ a#website-link > img {
     text-align: center;
     line-height: 1.3;
     /*max-height: 50px;*/
-    max-width: 100px;
+    /*max-width: 100px;*/
     word-wrap: break-word;
     overflow-wrap: break-word;
     -webkit-hyphens: auto;
@@ -264,6 +264,9 @@ a.paper {
 .paper-header h1 {
     font-size: 26px;
     grid-row: 1/3;
+}
+.paper-header .list-links > a + a {
+    margin-left: 10px;
 }
 .paper-header-status,
 .paper-header-actions,
@@ -456,7 +459,10 @@ a.paper {
     margin-left: 4px;
 }
 
-a.row {
+.row, a.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
     padding: 8px;
     background-color: #fff;
     border: 1px solid #dbc;
@@ -464,10 +470,12 @@ a.row {
     color: #222;
     text-overflow: ellipsis;
     text-decoration: none;
-    display: flex;
-    flex-wrap: wrap;
-    /*display: grid;*/
-    /*grid-template-columns: minmax(80px, 120px) 2fr 2fr 1fr;*/
+}
+.row.red {
+    background-color: #fcc;
+}
+.row.yellow {
+    background-color: #fe9;
 }
 .row-number {
     position: absolute;
@@ -482,14 +490,14 @@ a.row {
     line-height: 1;
     z-index: 1;
 }
-a.row > .col:not(.flexT):not(.tags) > div + div {
+.row > .col:not(.flexT):not(.tags) > div + div {
     border-top: 1px dotted #ccc;
 }
-a.row > .col + div {
+.row > .col + div {
     margin-left: 6px;
 }
 .row-head > .col:not(.flexT):first-child,
-a.row > .col:not(.flexT):first-child {
+.row > .col:not(.flexT):first-child {
     margin-left: 50px;
 }
 
@@ -520,46 +528,39 @@ a.row > .col:not(.flexT):first-child {
     text-align: right;
 }
 
-a.row > .tags > div  {
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    padding: 1px 3px 3px;
-    border-radius: 4px;
-    line-height: 1.2;
-    display: inline-block;
-}
-a.row > .tags > div + div {
+.row > .tags > div + div {
     margin-top: 3px;
 }
 a.row:hover, .row a:hover {
     background-color: #eef9ff !important;
 }
 
-a.row > .col.cat > div {
+.row > .col.cat > div {
     width: 100%;
     float: left;
 }
-a.row > .col.cat > div > div {
+.row > .col.cat > div > div {
     float: left;
     margin-right: 6px;
 }
-a.row > .title {
+.row > .title {
     float: left;
 }
 
-a.row > .title div:first-child {
+.row > .title div:first-child {
     font-weight: bold;
 }
 
-a.row .col-small,
-a.row .col-time {
+.row .col-small,
+.row .col-time {
     font-size: 13px;
     color: #666;
 }
 
-a.row > .col > div.col-time + div.col-time {
+.row > .col > div.col-time + div.col-time {
     border-top: none;
 }
-a.row .col-thumb {
+.row .col-thumb {
     position: relative;
     width: 4vw;
     min-width: 30px;
@@ -571,7 +572,11 @@ a.row .col-thumb {
     background-size: 15px;
     border-radius: 3px;
 }
-a.row .col-thumb.single {
+.row .col-thumb img {
+    width: 4vw;
+    height: 4vw;
+}
+.row .col-thumb.single {
     width: 8vw;
     min-width: 60px;
     max-width: 100px;
@@ -579,29 +584,38 @@ a.row .col-thumb.single {
     min-height: 60px;
     max-height: 100px;
 }
+.row .col-thumb.single img {
+    width: 8vw;
+    height: 8vw;
+}
 
-a.row .col-thumb.more {
+.row .col-thumb.more {
     background-color: transparent;
 }
-a.row .col-thumb:not(.waiting):not(.loading):hover {
+.row .col-thumb:not(.waiting):not(.loading):hover {
     align-self: stretch;
     justify-self: stretch;
     z-index: 12;
 }
-a.row .col-thumb:not(.waiting):not(.loading):hover > img {
+.row .col-thumb:not(.waiting):not(.loading):hover > img {
     position: absolute;
-    max-width: initial;
+    max-width: 300px;
+    width: initial;
     height: auto;
 }
-a.row .col-thumb:not(.single):not(:hover) > img {
+.row .col-thumb:not(.single):not(:hover) > img {
+    min-width: 30px;
     max-width: 50px;
+    min-height: 30px;
     max-height: 50px;
 }
-a.row .col-thumb.single:not(:hover) > img {
+.row .col-thumb.single:not(:hover) > img {
+    min-width: 60px;
     max-width: 100px;
+    min-height: 60px;
     max-height: 100px;
 }
-a.row .col-thumb > img {
+.row .col-thumb > img {
     font-size: 12px;
     top: 0;
     left: 0;
@@ -613,35 +627,51 @@ a.row .col-thumb > img {
 .imageSelectItem > figure {
     width: 244px;
     height: 165px;
+    background: url('/edit/gfx/bg-transparency.png') center;
+    background-size: 15px;
 }
 .imageSelectItem > .waiting img,
-a.row .col-thumb.waiting img {
+.row .col-thumb.waiting img {
     background-color: #fed;
     overflow: hidden;
 }
 .imageSelectItem > .loading img,
-a.row .col-thumb.loading img {
+.row .col-thumb.loading img {
     background-color: #dfa;
     overflow: hidden;
 }
 
-a.row .col-thumb.center > img {
+.row .col-thumb.center > img {
     right: 0;
     margin: 0 auto;
 }
-a.row > .col .empty {
+.row > .col .empty {
     color: #d00;
 }
 
-.tags .brewer-1 { background-color: #fbb4ae }
-.tags .brewer-2 { background-color: #b3cde3 }
-.tags .brewer-3 { background-color: #ccebc5 }
-.tags .brewer-4 { background-color: #decbe4 }
-.tags .brewer-5 { background-color: #fed9a6 }
-.tags .brewer-6 { background-color: #ffffcc }
-.tags .brewer-7 { background-color: #e5d8bd }
-.tags .brewer-8 { background-color: #fddaec }
-.tags .brewer-9 { background-color: #f2f2f2 }
+.tag, .col-tag  {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 2px 3px;
+    border-radius: 4px;
+    line-height: 1.2;
+    display: inline-block;
+}
+
+.tag.brewer-1, .col-tag.brewer-1 { background-color: #fbb4ae }
+.tag.brewer-2, .col-tag.brewer-2 { background-color: #b3cde3 }
+.tag.brewer-3, .col-tag.brewer-3 { background-color: #ccebc5 }
+.tag.brewer-4, .col-tag.brewer-4 { background-color: #decbe4 }
+.tag.brewer-5, .col-tag.brewer-5 { background-color: #fed9a6 }
+.tag.brewer-6, .col-tag.brewer-6 { background-color: #ffffcc }
+.tag.brewer-7, .col-tag.brewer-7 { background-color: #e5d8bd }
+.tag.brewer-8, .col-tag.brewer-8 { background-color: #fddaec }
+.tag.brewer-9, .col-tag.brewer-9 { background-color: #f2f2f2 }
+
+.tag.black {
+    background-color: #000;
+    color: #fff;
+    font-weight: bold;
+}
 
 
 
@@ -748,6 +778,8 @@ a.row > .col .empty {
 }
 .module-field-multi-header {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
     margin-top: 10px;
     margin-bottom: 10px;
     padding-top: 10px;
@@ -755,14 +787,18 @@ a.row > .col .empty {
     border-radius: 3px;
     background-color: #eee4e4;
 }
+.module-field-multi-header > * {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 .module-field-multi-header > .btn-group + .btn-group {
     margin-left: 20px;
 }
 .module-field-multi-header > h2 + .btn-group {
-    margin-left: auto;
 }
 .module-field-multi-header > h2 {
     align-self: center;
+    margin-right: auto;
 }
 .module-field-group {
     border-radius: 3px;
@@ -831,8 +867,9 @@ a.row > .col .empty {
 .module-field-gallery .input-wrap-textarea,
 .module-field-gallery .input-wrap-slugImage {
     flex-direction: column;
-    justify-content: center;
     flex-wrap: nowrap;
+    justify-content: center;
+    align-items: stretch;
 }
 .module-field-gallery .module-field-group-footer {
     margin-top: auto;
@@ -858,8 +895,6 @@ a.row > .col .empty {
     border: none;
     background: rgba(0, 0, 0, 0.1);
 }
-
-
 
 
 #image-select {
@@ -919,6 +954,8 @@ a.row > .col .empty {
 }
 
 .imageSelectItem {
+    display: flex;
+    flex-direction: column;
     background-color: rgba(70, 55, 55, 0.1);
     border: 2px solid transparent;
     padding: 5px;
@@ -952,6 +989,34 @@ a.row > .col .empty {
 .imageSelectItem p {
     padding: 0.2em 0.5em;
 }
+.imageSelectItem .meta {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: auto;
+}
+.imageSelectItem .inUse {
+    margin-left: auto;
+}
+
+#upload-images {
+    width: 100%;
+}
+#upload-images .controls .input-label {
+    width: 100%;
+    margin-bottom: 2px;
+    text-align: left;
+}
+#upload-images .control {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+}
+#upload-images .existing {
+    margin-top: 10px;
+    padding: 6px 10px 10px;
+    background-color: #fe9;
+}
 
 
 
@@ -960,8 +1025,12 @@ a.row > .col .empty {
 
 .pagination {
     justify-content: center;
+    align-items: baseline;
     padding-top: 20px;
     padding-bottom: 20px;
+}
+.pagination .btn-group {
+    align-self: flex-start;
 }
 .pagination:last-child {
     padding-bottom: 60px;

@@ -199,7 +199,7 @@ let gjField = {
             let pos = groups[i].querySelector('.module-position');
             if (pos) {
                 pos.value = j;
-                gjInputChange(pos);
+                gjInput.change(pos);
             }
 
             let posBefore = groups[i].querySelector('.ev-gallery-add.before');

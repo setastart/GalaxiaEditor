@@ -1,6 +1,10 @@
 <?php
 
-use Galaxia\{AppImage, Director, Pagination, Sql, Text};
+use Galaxia\AppImage;
+use Galaxia\Director;
+use Galaxia\Pagination;
+use Galaxia\Text;
+use GalaxiaEditor\render\Load;
 
 
 // ajax
@@ -36,77 +40,9 @@ $items = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-items', function
 
 
 
-
 // get in use items using cache
 
-$inUse = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-inUse', function() use ($db, $geConf, $pgSlug) {
-    $inUse = [];
-    foreach ($geConf[$pgSlug]['gcImagesInUse'] as $gcImageInUse) {
-
-        if (empty($gcImageInUse['gcSelect'])) return;
-        $firstTable = key($gcImageInUse['gcSelect']);
-        $firstColumn = $gcImageInUse['gcSelect'][$firstTable][0] ?? [];
-        $query = Sql::select($gcImageInUse['gcSelect']);
-        $query .= Sql::selectLeftJoinUsing($gcImageInUse['gcSelectLJoin'] ?? []);
-        $query .= Sql::selectOrderBy($gcImageInUse['gcSelectOrderBy'] ?? []);
-
-        $stmt = $db->prepare($query);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        while ($data = $result->fetch_assoc()) {
-            $data = array_map('strval', $data);
-
-            foreach($gcImageInUse['gcSelect'] as $table => $columns) {
-                if ($table == $firstTable) {
-
-                    $found = [];
-                    foreach ($columns as $column) {
-                        if ($column == $firstColumn) continue;
-
-                        if (substr($column, -3, 1) == '_') {
-                            $canonical = substr($column, 0, -2);
-                            if (empty($data[$column])) continue;
-                            if (in_array($canonical, $found)) continue;
-                            $found[] = substr($column, 0, -2);
-                        }
-
-                        if (empty($data[$column])) {
-                            $inUse[$data[$firstColumn]][$table] = '<span class="small red">' . Text::t('Empty') . '</span>';
-                        } else {
-                            $inUse[$data[$firstColumn]][$table] = Text::h($data[$column]);
-                        }
-                    }
-
-                } else {
-
-                    $found = [];
-                    foreach ($columns as $column) {
-                        if (isset($inUse[$data[$firstColumn]][$table]))
-                            if (isset($inUse[$data[$firstColumn]][$table]))
-                                if (in_array($data[$column], $inUse[$data[$firstColumn]][$table])) continue;
-
-                        if (substr($column, -3, 1) == '_') {
-                            $canonical = substr($column, 0, -2);
-                            if (empty($data[$column])) continue;
-                            if (in_array($canonical, $found)) continue;
-                            $found[] = substr($column, 0, -2);
-                        }
-
-                        if (empty($data[$column])) {
-                            $inUse[$data[$firstColumn]][$table][] = '<span class="small red">' . Text::t('Empty') . '</span>';
-                        } else {
-                            $inUse[$data[$firstColumn]][$table][] = Text::h($data[$column]);
-                        }
-                    }
-
-                }
-            }
-        }
-        $stmt->close();
-    }
-    return $inUse;
-});
+$inUse = Load::imagesInUse($geConf, $pgSlug);
 
 
 
@@ -115,16 +51,35 @@ $inUse = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-inUse', function
 
 switch ($_POST['imageListType'] ?? '') {
     case 'image-select':
-        $rows = $app->cacheGet('editor', 3, 'imageList-' . $pgSlug . '-rows-select', function() use ($app, $geConf, $pgSlug, $items) {
-        $rows = [];
+        $rows = $app->cacheGet('editor', 3, 'imageList-' . $pgSlug . '-rows-select', function() use ($app, $geConf, $pgSlug, $items, $inUse) {
+            $rows = [];
+            $imgTypes = [];
+            $currentColor = 0;
 
             foreach ($items as $imgSlug => $img) {
+                if (isset($img['extra']['type']))
+                    if (!isset($imgTypes[$img['extra']['type']])) $imgTypes[$img['extra']['type']] = $currentColor++;
+
+                $cssInUse = '';
+                if (isset($inUse[$imgSlug])) $cssInUse = ' inUse';
 $ht = '';
-$ht .= '<button type="button" id="' . Text::h($imgSlug) . '" class="imageSelectItem">' . PHP_EOL;
+$ht .= '<button type="button" id="' . Text::h($imgSlug) . '" class="imageSelectItem' . $cssInUse . '">' . PHP_EOL;
 $ht .= '    <figure>' . PHP_EOL;
 $ht .= '        ' . AppImage::render($img) . PHP_EOL;
 $ht .= '    </figure>' . PHP_EOL;
 $ht .= '    <p>' . Text::h($imgSlug) . '</p>' . PHP_EOL;
+
+$ht .= '    <div class="meta">'. PHP_EOL;
+                if (!empty($geConf[$pgSlug]['gcImageTypes'])) {
+                    if (isset($img['extra']['type'])) {
+$ht .= '        <div class="tag brewer-' . Text::h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . Text::h(Text::t($img['extra']['type'])) . '</div>' . PHP_EOL;
+                    }
+                }
+                if (isset($inUse[$imgSlug])) {
+$ht .= '        <div class="tag black inUse">' . Text::t('In Use') . '</div>' . PHP_EOL;
+                }
+$ht .= '    </div>' . PHP_EOL;
+
 $ht .= '</button>' . PHP_EOL;
                 $rows[$imgSlug] = $ht;
             }
@@ -139,9 +94,9 @@ $ht .= '</button>' . PHP_EOL;
             $currentColor = 0;
 
             foreach ($items as $imgSlug => $img) {
-$ht = '';
                 if (isset($img['extra']['type']))
                     if (!isset($imgTypes[$img['extra']['type']])) $imgTypes[$img['extra']['type']] = $currentColor++;
+$ht = '';
 $ht .= '<a class="row row-image" href="/edit/' . $editor->imageSlug .  '/' . $imgSlug . '">' . PHP_EOL;
 $ht .= '    <div class="col flexT">' . PHP_EOL;
 $ht .= '        <div class="col-thumb figure single">' . PHP_EOL;
@@ -185,7 +140,7 @@ $ht .= '    </div>' . PHP_EOL;
                 if (!empty($geConf[$pgSlug]['gcImageTypes'])) {
 $ht .= '    <div class="col flexD tags">' . PHP_EOL;
                     if (isset($img['extra']['type'])) {
-$ht .= '        <div class="col-tags brewer-' . Text::h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . Text::h(Text::t($img['extra']['type'])) . '</div>' . PHP_EOL;
+$ht .= '        <div class="tag brewer-' . Text::h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . Text::h(Text::t($img['extra']['type'])) . '</div>' . PHP_EOL;
                     } else {
 $ht .= '        <span class="small red">' . Text::t('Empty') . '</span>' . PHP_EOL;
                     }

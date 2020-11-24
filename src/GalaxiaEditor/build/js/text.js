@@ -6,7 +6,7 @@ function firstDiffInStrings(a, b) {
 }
 
 function slugifyString(text, separator = '-') {
-    var text = removeDiacritics(text);
+    var text = gjInput.removeDiacritics(text);
     text     = text.replace(/[^a-z0-9\-]+/g, separator);
     text     = text.replace(/-+/g, separator);
     text     = text.replace(/^-+/, '');
