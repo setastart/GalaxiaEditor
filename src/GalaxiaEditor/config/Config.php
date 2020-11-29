@@ -154,6 +154,8 @@ class Config {
             'gcSelectExtra'   => 'tableWithCols',
             'gcUpdate'        => 'tableWithCols',
 
+            '?gcFieldOrder' => 'stringArray',
+
             'gcInputs'            => 'inputs',
             'gcInputsWhereCol'    => 'inputsWhereCol',
             'gcInputsWhereParent' => 'inputsWhereParent',
@@ -369,6 +371,7 @@ class Config {
                         Config::geConfigParseError($errorString . '/' . $whereVal . ' should be an array.', $schema, $config);
 
                     foreach ($inputs as $inputCol => $input) {
+                        if ($inputCol == 'gcMulti') continue;
                         if (!isset($input['type']) ||
                             !is_string($input['type']) ||
                             !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)
@@ -422,6 +425,7 @@ class Config {
                                 Config::geConfigParseError($errorString . '/' . $parentKey . '/' . $parentVal . '/' . $whereVal . ' should be an array.', $schema, $config);
 
                             foreach ($inputs as $inputCol => $input) {
+                                if ($inputCol == 'gcMulti') continue;
                                 if (!isset($input['type']) ||
                                     !is_string($input['type']) ||
                                     !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)

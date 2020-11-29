@@ -20,6 +20,8 @@ class AppImage {
         'mtime'       => '',
         'fileSize'    => 0,
         'version'     => '',
+        'id'          => '',
+        'class'       => '',
         'src'         => '',
         'srcset'      => '',
         'alt'         => [],
@@ -250,6 +252,10 @@ class AppImage {
 
         $r .= ' src="' . Text::h($img['src'] ?? '') . '"';
         if ($img['srcset']) $r .= ' srcset="' . Text::h($img['srcset'] ?? '') . '"';
+
+        if ($img['id']) $r .= ' id="' . Text::h($img['id'] ?? '') . '"';
+
+        if ($img['class']) $r .= ' class="' . Text::h($img['class'] ?? '') . '"';
 
         if ($extra) $r .= ' ' . $extra;
 

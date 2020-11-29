@@ -65,7 +65,9 @@ foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
         if ($item['data'][$parentName] != $parentValue) continue;
         foreach ($inputsDefault as $fieldKey => $inputs) {
             foreach ($inputs as $inputKey => $input) {
+                if ($inputKey == 'gcMulti') continue;
                 if ($inputKey == $fieldCol) continue;
+
                 $module['inputs'][$fieldKey]['proto'][$inputKey] = [];
                 $module['inputs'][$fieldKey]['new-0'][$inputKey] = [];
             }
@@ -84,6 +86,11 @@ foreach ($module['gcInputs'] as $inputKey => $input) {
 
 foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
     foreach ($inputs as $inputKey => $inputOriginal) {
+        if ($inputKey == 'gcMulti') {
+            $module['gcModuleMultiple'][$fieldKey] = $module['gcModuleMultiple'][$fieldKey] ?? $inputOriginal;
+            continue;
+        }
+
         $input = array_replace_recursive($module['gcInputs'][$inputKey], $inputOriginal);
         $input = Input::prepare($input, $extras);
 
@@ -94,6 +101,7 @@ foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
         $module['inputs'][$fieldKey]['proto'][$inputKey] = $input;
         $module['inputs'][$fieldKey]['new-0'][$inputKey] = $input;
     }
+
     if (isset($module['gcModuleMultiple'][$fieldKey])) {
         $module['inputs'][$fieldKey]['proto']['delete'] = '';
         $module['inputs'][$fieldKey]['new-0']['delete'] = '';
@@ -121,6 +129,11 @@ foreach ($module['gcInputsWhereParent'] as $parentName => $parent) {
                 //     unset($module['inputs'][$fieldKey]);
                 //     continue 2;
                 // }
+                if ($inputKey == 'gcMulti') {
+                    $module['gcModuleMultiple'][$fieldKey] = $module['gcModuleMultiple'][$fieldKey] ?? $inputOriginal;
+                    continue;
+                }
+
                 $input = array_replace_recursive($module['gcInputsWhereCol'][$fieldKey][$inputKey] ?? $module['gcInputs'][$inputKey], $inputOriginal);
                 $input = Input::prepare($input, $extras);
 
@@ -166,6 +179,14 @@ foreach ($fieldsData as $fieldKey => $field) {
     foreach ($field as $fieldId => $data) {
 
         foreach ($module['gcInputs'] as $inputKey => $input) {
+            if ($inputKey == 'gcMulti') {
+                $module['inputs'][$fieldKey][$fieldId]['delete'] = '';
+                if ($input['reorder']) {
+                    $module['inputs'][$fieldKey][$fieldId]['position'] = $data['position'] ?? 1;
+                }
+                continue;
+            }
+
             $value = $data[$inputKey];
             // if (isset($input['nullable']) && $input['nullable'] && !$value) $value = null;
             if (substr($inputKey, 0, 9) == 'timestamp') $value = date('Y-m-d H:i:s', $data[$inputKey]);
@@ -185,7 +206,6 @@ foreach ($fieldsData as $fieldKey => $field) {
                 // $module['inputsUnused'][$fieldKey][$fieldId][$inputKey]['cssClass'] = $module['gcModuleShowUnused']['cssClass'] ?? '';
             }
 
-
             if (isset($input['lang']) && count($app->langs) > 1) $showSwitchesLang = true;
         }
 
@@ -203,4 +223,18 @@ foreach ($newFieldsToDelete as $fieldKey => $field) {
     if (!isset($module['gcModuleMultiple'][$fieldKey])) {
         unset($module['inputs'][$fieldKey]['new-0']);
     }
+}
+
+
+
+// reorder fields
+
+if ($module['gcFieldOrder'] ?? false) {
+    $order = array_flip($module['gcFieldOrder']);
+    uksort($module['inputs'], function($a, $b) use ($order) {
+        $aSearch = $order[$a] ?? $order['gcDefault'] ?? -1;
+        $bSearch = $order[$b] ?? $order['gcDefault'] ?? -1;
+
+        return $aSearch <=> $bSearch;
+    });
 }

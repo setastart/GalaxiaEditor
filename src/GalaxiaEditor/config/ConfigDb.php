@@ -10,6 +10,8 @@ use Galaxia\Flash;
 
 class ConfigDb {
 
+    const RESERVED_COLUMNS = ['gcMulti'];
+
     static function validate(array $geConf) {
         $db  = Director::getMysqli();
         $app = Director::getApp();
@@ -59,7 +61,11 @@ class ConfigDb {
 
         foreach ($dbSchema as $table => $columns) {
             foreach ($columns as $col => $colSchema) {
-
+                if (in_array($col, self::RESERVED_COLUMNS)) {
+                    Flash::error('schema: ' . $table . '/' . $col . ' - Reserved column name. Reserved names: [' . implode(', ', self::RESERVED_COLUMNS) . ']');
+                    geD($table);
+                    geErrorPage(500, 'config schema error');
+                }
                 if ($colSchema['DATA_TYPE'] == 'text' && $colSchema['IS_NULLABLE'] == 'NO') {
                     Flash::error('schema: ' . $table . '/' . $col . ' - TEXT column should have IS_NULLABLE set');
                     geD($table);
@@ -208,15 +214,19 @@ class ConfigDb {
                         ConfigDb::gcTableColumnInput($dbSchema, $errorStringPrefix . '/gcInputs', $module['gcTable'], $inputCol, $input);
 
                     foreach ($module['gcInputsWhereCol'] as $whereCol => $inputs)
-                        foreach ($inputs as $inputCol => $input)
+                        foreach ($inputs as $inputCol => $input) {
+                            if ($inputCol == 'gcMulti') continue;
                             ConfigDb::gcTableColumnInput($dbSchema, $errorStringPrefix . '/gcInputsWhereCol', $module['gcTable'], $inputCol, array_merge($module['gcInputs'][$inputCol] ?? [], $input));
+                        }
 
                     foreach ($module['gcInputsWhereParent'] as $parentCol => $parentVals) {
                         ConfigDb::gcTableColumnExists($dbSchema, $errorStringPrefix . '/gcInputsWhereParent', $item['gcTable'], $parentCol);
                         foreach ($parentVals as $fieldKeys)
                             foreach ($fieldKeys as $inputs)
-                                foreach ($inputs as $inputCol => $input)
+                                foreach ($inputs as $inputCol => $input) {
+                                    if ($inputCol == 'gcMulti') continue;
                                     ConfigDb::gcTableColumnInput($dbSchema, $errorStringPrefix . '/gcInputsWhereParent', $module['gcTable'], $inputCol, array_merge($module['gcInputs'][$inputCol] ?? [], $input));
+                                }
                     }
 
                     foreach ($module['gcModuleMultiple'] as $multi)
