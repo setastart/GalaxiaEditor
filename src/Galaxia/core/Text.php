@@ -216,6 +216,86 @@ HTML;
         return $text;
     }
 
+    static function trix(string $text, array $transforms = []): ?string {
+        // if (Director::$dev) $text = TEST_HTML;
+        $text = trim(strip_tags($text, self::ALLOWED_TAGS));
+        if (empty($text)) return null;
+        if (empty($transforms)) return $text;
+
+        // add target="_blank" rel="noopener" to outgoing links
+        $host = explode('.', $_SERVER['HTTP_HOST']);
+        $host = implode('\.', $host);
+        $re   = '~<a href="https?(?!://' . $host . '/)://([^:/\s">]+)~m';
+
+        $text = preg_replace_callback($re, function($matches) {
+            $inject = 'target="_blank" rel="noopener';
+            if (self::nofollowHost($matches[1])) $inject .= ' nofollow';
+
+            return '<a ' . $inject . '"' . substr($matches[0], 2);
+        }, $text);
+
+        foreach ($transforms as $tagOld => $transform) {
+            $tagNew = 'galaxiaTemp' . $transform[0];
+            $class = '';
+            if (isset($transform[1])) $class = ' class="' . $transform[1] . '"';
+            $id = '';
+            if (isset($transform[2])) $id = ' class="' . $transform[2] . '"';
+            $text = str_replace("<$tagOld>", "<$tagNew$class$id>", $text);
+            $text = str_replace("</$tagOld>", "</$tagNew>", $text);
+        }
+
+        foreach ($transforms as $transform) {
+            $tagOld = 'galaxiaTemp' . $transform[0];
+            $tagNew = $transform[0];
+            $text = str_replace($tagOld, $tagNew, $text);
+        }
+
+        return $text;
+    }
+
+    static function trixg(array $arr, string $key = null, array $transforms = [], string $lang = '') {
+        if (is_null($key)) {
+            $key = 'temp';
+            $arr = [$key => $arr];
+        }
+
+        if (!isset($arr[$key])) return null;
+        $text = '';
+
+        switch (gettype($arr[$key])) {
+            case 'integer':
+            case 'double':
+                $text = (string)$arr[$key];
+                break;
+
+            case 'string':
+                $text = self::trix($arr[$key], $transforms);
+                break;
+
+            case 'array':
+                $langs = Director::getApp()->langs;
+                if ($lang && in_array($lang, $langs)) {
+                    $langKey = array_search($lang, $langs);
+                    if ($langKey > 0) {
+                        unset($langs[$langKey]);
+                        array_unshift($langs, $lang);
+                    }
+                }
+                foreach ($langs as $lang) {
+                    if (!isset($arr[$key][$lang])) continue;
+                    if (!is_string($arr[$key][$lang])) continue;
+                    if (empty($arr[$key][$lang])) continue;
+                    $text = self::trix($arr[$key][$lang], $transforms);
+                    break;
+                }
+                break;
+        }
+
+        if ($text !== '0' && empty($text)) return null;
+
+        return $text;
+    }
+
     static function stp(string $text, int $f1 = 0, int $f2 = 0, int $fp = 0) {
         // if (Director::$dev) $text = TEST_HTML;
         if (empty($text)) return '';
@@ -449,6 +529,19 @@ HTML;
      */
     static function q(string $text) {
         return '`' . str_replace('`', '``', self::h($text)) . '`';
+    }
+
+
+
+
+    static function tagExtractFirst(string &$text, string $tag): string {
+        $extract = '';
+        if (preg_match("~<$tag>.+?</$tag>~", $text, $m)) {
+            $extract = $m[0];
+            $text      = preg_replace("~<$tag>.+?</$tag>~", '', $text, 1);
+        }
+
+        return $extract;
     }
 
 
