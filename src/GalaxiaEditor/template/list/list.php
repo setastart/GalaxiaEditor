@@ -180,7 +180,10 @@ foreach ($list['gcColumns'] as $columnKey => $column)
 
 $columns = $list['gcColumns'];
 foreach ($columns as $columnId => $column) {
-    if (!$column) continue;
+    if (!$column) {
+        unset($columns[$columnId]);
+        continue;
+    }
 
     if (is_array($column['label'] ?? '')) {
         $columns[$columnId]['label'] = substr($column['label'][0], 0, -3);

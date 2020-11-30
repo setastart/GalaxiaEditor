@@ -448,11 +448,11 @@ class Director {
             if (self::$me && self::$me->loggedIn) {
                 $errorCode = $code;
                 $error     = $errors[$code] . '<br><br>';
-                if (self::isDev()) {
+                // if (self::isDev()) {
                     $error .= 'Original error code: ' . $codeOriginal . '<br>';
                     $error .= nl2br($msg) . '<br><br>';
                     $error .= nl2br($debugText) . '<br>';
-                }
+                // }
 
                 include self::$editor->dirLayout . 'layout-error.phtml';
                 exit();

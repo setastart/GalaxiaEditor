@@ -145,6 +145,7 @@ foreach ($postModule as $fieldKey => $fields) {
                         uksort($modules[$moduleKey]['inputs'][$fieldKey], function($a, $b) {
                             if (is_numeric($a) && !is_numeric($b)) return 1;
                             else if (!is_numeric($a) && is_numeric($b)) return -1;
+                            return 0;
                         });
                     } else {
                         uasort($modules[$moduleKey]['inputs'][$fieldKey], function($a, $b) use ($colKey) {
@@ -153,6 +154,7 @@ foreach ($postModule as $fieldKey => $fields) {
                         uksort($modules[$moduleKey]['inputs'][$fieldKey], function($a, $b) {
                             if (is_numeric($b) && !is_numeric($a)) return 1;
                             else if (!is_numeric($b) && is_numeric($a)) return -1;
+                            return 0;
                         });
                     }
                 }

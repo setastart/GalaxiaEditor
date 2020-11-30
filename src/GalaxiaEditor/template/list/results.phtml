@@ -7,7 +7,7 @@ ViewPagination::renderHiddenData($pagination, $rowsFiltered, $rowsTotal) ?>
     <div class="list pad">
         <div class="row-head">
 <?php   foreach ($columns as $column) { ?>
-            <div class="col <?=Text::h($column['cssClass'])?>"><?=Text::t($column['label'])?></div>
+            <div class="col <?=Text::h($column['cssClass'] ?? '')?>"><?=Text::t($column['label'] ?? '')?></div>
 <?php   } ?>
         </div>
 
