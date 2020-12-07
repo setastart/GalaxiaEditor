@@ -10,6 +10,7 @@ use GalaxiaEditor\history\History;
 
 $itemColId = $item['gcTable'] . 'Id';
 
+
 foreach ($fieldsNew as $moduleKey => $fields) {
     $module   = $modules[$moduleKey];
     $fieldCol = 'fieldKey';
@@ -126,6 +127,26 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
 
                     foreach ($update as $inputName => $value) {
                         if ($inputName == 'position') continue;
+
+                        // if ($module['inputs'][$fieldKey][$fieldVal][$inputName]['dbReciprocal'] ?? '') {
+                        //     geD($fieldVal, $itemId, $fieldKey, $fieldCol);
+                        //     $queryUpdateWhere = [$module['gcTable'] => [$module['gcTable'] . 'Id', $inputName, $fieldCol]];
+                        //     $params           = array_values($update);
+                        //     array_push($params, $fieldVal, $itemId, $fieldKey);
+                        //
+                        //     $query = Sql::update($module['gcUpdate']);
+                        //     $query .= Sql::updateSet([$itemColId]);
+                        //     $query .= Sql::updateWhere($queryUpdateWhere);
+                        //     geD($query);
+                        //     // $stmt  = $db->prepare($query);
+                        //     // $types = str_repeat('s', count($update)) . 'dds';
+                        //     // $stmt->bind_param($types, ...$params);
+                        //     // $stmt->execute();
+                        //     // $affectedRows += $stmt->affected_rows;
+                        //     // $stmt->close();
+                        // }
+
+
                         $lang = isset($module['inputs'][$fieldKey][$fieldVal][$inputName]['lang']) ? $module['inputs'][$fieldKey][$fieldVal][$inputName]['lang'] . ' - ' : '';
                         if ($value) {
                             Flash::info(Text::t('Updated'), 'form', $module['inputs'][$fieldKey][$fieldVal][$inputName]['name']);
@@ -137,12 +158,14 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
                         History::insert($uniqueId, $item['gcTable'], $itemId, $inputName, $fieldKey, 2, $value, $me->id);
                     }
                 }
+
             } catch (Exception $e) {
                 Flash::error('fields-update - Unable to save changes to field.');
                 Flash::error($e->getMessage());
 
                 return;
             }
+
 
         }
     }

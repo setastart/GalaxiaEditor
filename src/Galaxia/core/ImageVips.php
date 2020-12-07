@@ -88,11 +88,28 @@ class ImageVips {
     /**
      * @throws Exception
      */
-    static function crop(string $dir, string $slug, string $ext, int $w, int $h, bool $overwite = false): bool {
+    static function crop(string $dir, string $slug, string $ext, int $w, int $h, bool $overwite = false, bool $debug = false): void {
+        if ($w <= 0) return;
+
         $in  = $dir . $slug . $ext;
+
+        if ($h >= 0) $options = ['height' => $h];
+        $options['crop'] = 'centre';
+
+        $vips = vips_call('thumbnail', null, $in, $w, $options)['out'] ?? false;
+
+        $w = vips_image_get($vips, 'width')['out'] ?? 0;
+        $h = vips_image_get($vips, 'height')['out'] ?? 0;
+
         $out = $dir . $slug . '_' . $w . '_' . $h . $ext;
 
-        $vips = vips_call('thumbnail', null, $in, $w, ['height' => $h, 'crop' => 'centre'])['out'] ?? false;
+        if ($debug) {
+            $textW = min($w, 120);
+            $textH = min($h, 60);
+            $text  = vips_call('text', null, $w . 'x' . $h, ['width' => $textW, 'height' => $textH])['out'];
+            $vips  = vips_call('composite', null, [$vips, $text], 2, ['x' => [$w/2-($textW/2)], 'y' => [$h/2]])['out'];
+        }
+
         if (!$vips) {
             throw new Exception('Could not vips thumbnail.');
         }
@@ -120,8 +137,6 @@ class ImageVips {
                 throw $e;
             }
         }
-
-        return true;
     }
 
 
@@ -186,7 +201,6 @@ class ImageVips {
 
         return $compressed;
     }
-
 
 }
 

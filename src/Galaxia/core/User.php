@@ -30,7 +30,7 @@ class User {
     public array $options = [];
 
 
-    function __construct(string $tableName) {
+    function __construct(string $tableName = '_geUser') {
         $this->tableName = $tableName;
     }
 

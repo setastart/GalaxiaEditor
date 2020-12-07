@@ -25,7 +25,7 @@ $items = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-items', function
     $imageList = AppImage::list($app->dirImage);
 
     foreach ($imageList as $imgSlug => $mtime) {
-        if (!$img = $app->imageGet($imgSlug, ['w' => 256, 'h' => 256, 'fit' => 'cover', 'extra' => ['type'], 'version' => 'mtime', 'fileSize' => true], false)) continue;
+        if (!$img = $app->imageGet($imgSlug, ['w' => 256, 'h' => 256, 'extra' => ['type'], 'version' => 'mtime', 'fileSize' => true], false)) continue;
         $items[$imgSlug] = $img;
     }
 

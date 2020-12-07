@@ -31,11 +31,11 @@ if (!AppImage::valid($app->dirImage, $imgSlug)) {
 
 
 $inUse = Load::imagesInUse($geConf, $pgSlug)[$imgSlug] ?? [];
-geD($inUse);
+// geD($inUse);
 
 // load image and build inputs
 
-$img = $app->imageGet($imgSlug, ['w' => 256, 'h' => 256, 'fit' => 'cover', 'version' => time(), 'extra' => ['type']]);
+$img = $app->imageGet($imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
 $img['resizes'] = AppImage::resizes($app->dirImage, $imgSlug) ?? [];
 
 

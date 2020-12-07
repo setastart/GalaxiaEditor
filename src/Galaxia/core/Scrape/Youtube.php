@@ -98,7 +98,6 @@ class Youtube {
 
         preg_match_all('~watch\?v=([a-zA-Z0-9_-]{11})~m', $html[Scrape::DATA], $matches);
         foreach ($matches[1] ?? [] as $match) {
-            // d($match);
             $r[Scrape::DATA][$match] = true;
         }
 

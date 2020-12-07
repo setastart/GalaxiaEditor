@@ -43,7 +43,7 @@ InputRender::form('', 'image-list', 'paper pad');?>
             </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map(array("\Galaxia\Text", "t"), array_filter(array_keys($geConf[$pgSlug]['gcImageTypes']))))?></p>
+            <p class="small"><?=implode(', ', array_map(array("\Galaxia\Text", "t"), array_filter(array_keys($geConf[$editor->imageSlug]['gcImageTypes']))))?></p>
 <?php           } ?>
         </div>
 <?php       } ?>

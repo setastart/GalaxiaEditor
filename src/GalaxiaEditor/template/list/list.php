@@ -127,7 +127,6 @@ $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() us
                     $query .= Sql::selectOrderBy([$orderTable => $orderCols]);
                 }
             }
-
             $done       = 0;
             $askForData = true;
             do {
@@ -174,8 +173,9 @@ foreach ($list['gcColumns'] as $columnKey => $column)
     foreach ($column['gcColContent'] ?? [] as $colContent)
         foreach ($colContent['dbCols'] as $dbCol)
             $list['gcColumns'][$columnKey]['tablesAndCols'][$colContent['dbTab']][] = [
-                'col'  => $dbCol,
-                'type' => $colContent['colType'],
+                'col'        => $dbCol,
+                'type'       => $colContent['colType'],
+                'parent'     => $colContent['gcParent'] ?? '',
             ];
 
 $columns = $list['gcColumns'];
@@ -189,8 +189,6 @@ foreach ($columns as $columnId => $column) {
         $columns[$columnId]['label'] = substr($column['label'][0], 0, -3);
     }
 }
-
-
 
 
 // make html for all rows, using cache
@@ -211,7 +209,7 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
             foreach ($column['tablesAndCols'] as $dbTable => $dbColumns) {
                 $countFound = false;
                 $i          = 0;
-                foreach ($item[$dbTable] as $data) {
+                foreach ($item[$dbTable] as $itemId2 => $data) {
                     if ($countFound) continue;
                     $tagFound = false;
 
@@ -232,13 +230,25 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
                         }
 
 
+                        if ($columnData['parent']) {
+                            foreach ($columnData['parent'] as $parent) {
+                                // $value = $item[$firstTable][$itemId][$parent] ?? false;
+                                // if ($value) break;
+                                $value = $item[$firstTable][$value][$parent] ?? false;
+                                geD($value);
+                                if ($value) break;
+                            }
+
+                        }
+
+
                         switch ($columnData['type']) {
                             case 'thumb':
                                 if ($i > $thumbsToShow) continue 2;
                                 if ($i == $thumbsToShow) {
                                     $r .= count($item[$dbTable]) . PHP_EOL;
                                 } else {
-                                    $img = $app->imageGet($value, ['w' => 256, 'h' => 256, 'fit' => 'cover', 'version' => 'mtime'], false);
+                                    $img = $app->imageGet($value, ['w' => 256, 'h' => 256, 'version' => 'mtime'], false);
                                     if ($img) {
                                         $r .= AppImage::render($img) . PHP_EOL;
                                     } else {
@@ -246,7 +256,6 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
                                     }
                                 }
                                 $colRowItemClass .= ' figure';
-
                                 break;
 
                             case 'count':
@@ -292,12 +301,13 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
 
                             default:
                                 if (is_string($value)) $r .= Text::firstLine($value);
+                                if (is_int($value)) $r .= $value;
                                 break;
                         }
 
                         if (empty($value) && $columnData['type'] != 'thumb' && !$isHomeSlug) {
                             $colRowItemClass .= ' empty';
-                            $r               .= Text::t('Empty');
+                            $r               .= $value . Text::t('Empty');
                         }
 
                         $ht .= '        <div class="' . $colRowItemClass . '">' . $r . '</div>' . PHP_EOL;

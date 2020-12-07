@@ -55,6 +55,16 @@ return [
         'pt' => 'Imagens',
         'es' => 'Imágenes',
     ],
+    'Dimension' => [
+        'en' => 'Dimension',
+        'pt' => 'Dimensão',
+        'es' => 'Dimensión',
+    ],
+    'Dimensions' => [
+        'en' => 'Dimensions',
+        'pt' => 'Dimensões',
+        'es' => 'Dimensiones',
+    ],
     'Resize image to fit' => [
         'en' => 'Resize image to fit',
         'pt' => 'Redimensionar imagem',
@@ -920,6 +930,16 @@ return [
         'en' => 'Open in new tab',
         'pt' => 'Abrir numa nova aba',
         'es' => 'Abrir en una nueva pestaña',
+    ],
+    'Open here' => [
+        'en' => 'Open here',
+        'pt' => 'Abrir aqui',
+        'es' => 'Abrir aquí',
+    ],
+    'in new tab' => [
+        'en' => 'in new tab',
+        'pt' => 'numa nova aba',
+        'es' => 'en una nueva pestaña',
     ],
     'Preview' => [
         'en' => 'Preview',

@@ -7,7 +7,7 @@ use Galaxia\Text;
 <div class="item-info">
     <div><?=Text::t('Original')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=Text::h($imgSlug . $img['ext'])?>"><?=Text::h($img['wOriginal'] . 'x' . $img['hOriginal'])?></a><?=Text::h($img['ext'])?>  (<?=Text::bytesIntToAbbr(filesize($app->dirImage . $imgSlug . '/' . $imgSlug . $img['ext']))?>)</div>
 <?php   foreach ($img['resizes'] as $resize => $fileName) { ?>
-    <div><?=Text::t('Resize')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=Text::h($fileName)?>"><?=Text::h($resize)?></a> (<?=Text::bytesIntToAbbr(filesize($app->dirImage . $imgSlug . '/' . $fileName))?>)</div>
+    <div><?=Text::t('Dimensions')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=Text::h($fileName)?>"><?=Text::h($resize)?></a> (<?=Text::bytesIntToAbbr(filesize($app->dirImage . $imgSlug . '/' . $fileName))?>)</div>
 <?php   } ?>
 
     <a class="<?=Text::h('active', $action == 'replace')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/replace"><?=Text::t('Replace Image')?></a>

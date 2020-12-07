@@ -10,26 +10,26 @@ use DirectoryIterator;
 class AppImage {
 
     public const PROTO_IMAGE = [
-        'fit'         => '',
-        'w'           => 0,
-        'h'           => 0,
-        'wOriginal'   => 0,
-        'hOriginal'   => 0,
-        'name'        => '',
-        'ext'         => '',
-        'mtime'       => '',
-        'fileSize'    => 0,
-        'version'     => '',
-        'id'          => '',
-        'class'       => '',
-        'src'         => '',
-        'srcset'      => '',
-        'alt'         => [],
-        'lang'        => '',
-        'extra'       => [],
-        'sizes'       => [1],
-        'sizeDivisor' => 1,
-        'loading'     => 'lazy',
+        'name'      => '',
+        'ext'       => '',
+        'mtime'     => '',
+        'fileSize'  => 0,
+        'w'         => 0,
+        'h'         => 0,
+        'wOriginal' => 0,
+        'hOriginal' => 0,
+        'fit'       => 'contain',
+        'version'   => '',
+        'id'        => '',
+        'class'     => '',
+        'src'       => '',
+        'set'       => [],
+        'srcset'    => '',
+        'alt'       => [],
+        'lang'      => '',
+        'extra'     => [],
+        'loading'   => 'lazy',
+        'debug'     => false,
     ];
 
 
@@ -91,40 +91,66 @@ class AppImage {
 
 
 
-    static function fit($img) {
-        $ratioOriginal = $img['wOriginal'] / $img['hOriginal'];
+    static function fit($img): array {
+        $img['wOriginal'] = (int)$img['wOriginal'];
+        $img['hOriginal'] = (int)$img['hOriginal'];
 
-        if ($img['fit'] && is_int($img['w']) && is_int($img['h']) && $img['w'] > 0 && $img['h'] > 0) {
-            if ($img['fit'] == 'cover') {
-                $ratioFit = $img['w'] / $img['h'];
-                if ($ratioFit >= $ratioOriginal) {
-                    $img['w'] = 0;
-                } else if ($ratioFit < $ratioOriginal) {
-                    $img['h'] = 0;
-                }
-            } else if ($img['fit'] == 'contain') {
-                $ratioFit = $img['w'] / $img['h'];
-                if ($ratioFit >= $ratioOriginal) {
-                    $img['h'] = 0;
-                } else if ($ratioFit < $ratioOriginal) {
-                    $img['w'] = 0;
-                }
-            }
+        if ($img['w'] == 0 && $img['h'] == 0) {
+            $img['w'] = $img['wOriginal'];
+            $img['h'] = $img['hOriginal'];
+
+            return $img;
         }
 
-        if ($img['w'] < 0 || $img['h'] < 0) return [];
+        $ratioOriginal = $img['wOriginal'] / $img['hOriginal'];
+
         if ($img['w'] == 0) {
-            if ($img['h'] == 0) {
-                $img['w'] = (int)$img['wOriginal'];
-                $img['h'] = (int)$img['hOriginal'];
+            if ($img['h'] > $img['hOriginal']) $img['h'] = $img['hOriginal'];
+            $img['w'] = (int)round($img['h'] * $ratioOriginal);
+
+            return $img;
+        }
+
+        if ($img['h'] == 0) {
+            if ($img['w'] > $img['wOriginal']) $img['w'] = $img['wOriginal'];
+            $img['h'] = (int)round($img['w'] / $ratioOriginal);
+
+            return $img;
+        }
+
+        if (!in_array($img['fit'], ['contain', 'cover', 'expand'])) $img['fit'] = 'contain';
+
+        $ratioFit = $img['w'] / $img['h'];
+
+        if ($img['fit'] == 'contain') {
+            if ($ratioFit > $ratioOriginal) {
+                if ($img['h'] > $img['hOriginal']) $img['h'] = $img['hOriginal'];
+                $img['w'] = (int)round($img['h'] * $ratioOriginal);
+            } else {
+                if ($img['w'] > $img['wOriginal']) $img['w'] = $img['wOriginal'];
+                $img['h'] = (int)round($img['w'] / $ratioOriginal);
+            }
+        } else if ($img['fit'] == 'cover') {
+            if ($img['w'] > $img['wOriginal']) {
+                $img['w'] = $img['wOriginal'];
+                $img['h'] = (int)round($img['w'] / $ratioFit);
+            }
+
+            if ($img['h'] > $img['hOriginal']) {
+                $img['h'] = $img['hOriginal'];
+                $img['w'] = (int)round($img['h'] * $ratioFit);
+            }
+        } else {
+            if ($ratioFit > $ratioOriginal) {
+                if ($img['w'] > $img['wOriginal']) $img['w'] = $img['wOriginal'];
+                $img['h'] = (int)round($img['w'] / $ratioOriginal);
             } else {
                 if ($img['h'] > $img['hOriginal']) $img['h'] = $img['hOriginal'];
                 $img['w'] = (int)round($img['h'] * $ratioOriginal);
             }
-        } else {
-            if ($img['w'] > $img['wOriginal']) $img['w'] = $img['wOriginal'];
-            if ($img['h'] == 0) $img['h'] = (int)round($img['w'] / $ratioOriginal);
         }
+
+
 
         return $img;
     }

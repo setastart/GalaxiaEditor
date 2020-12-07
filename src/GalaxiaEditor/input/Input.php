@@ -11,25 +11,27 @@ use Normalizer;
 
 class Input {
 
-    public const PROTO_INPUT         = [
-        'label'       => '',
-        'name'        => '',
-        'nameFromDb'  => '',
-        'type'        => 'textarea',
-        'value'       => '',
-        'valueFromDb' => '',
-        'valueToDb'   => '',
-        'options'     => [],
-        'lang'        => '',
-        'prefix'      => '',
-        'cssClass'    => '',
-        'dbUnique'    => false,
-        'disabled'    => false,
-        'errors'      => [],
-        'infos'       => [],
-        'translate'   => true,
-        'nullable'    => false,
+    public const PROTO_INPUT = [
+        'label'        => '',
+        'name'         => '',
+        'nameFromDb'   => '',
+        'type'         => 'textarea',
+        'value'        => '',
+        'valueFromDb'  => '',
+        'valueToDb'    => '',
+        'options'      => [],
+        'lang'         => '',
+        'prefix'       => '',
+        'cssClass'     => '',
+        'dbUnique'     => false,
+        'dbReciprocal' => false,
+        'disabled'     => false,
+        'errors'       => [],
+        'infos'        => [],
+        'translate'    => true,
+        'nullable'     => false,
     ];
+
     public const ALLOWED_INPUT_TYPES = [
         'none',
         'password',
@@ -58,7 +60,7 @@ class Input {
 
 
 
-    static function validate($input, $value) {
+    static function validate($input, $value, $itemId = null) {
         $input          = array_merge(self::PROTO_INPUT, $input);
         $input['value'] = Normalizer::normalize($value);
 
@@ -69,6 +71,13 @@ class Input {
             return $input;
         }
 
+        if ($input['dbReciprocal']) {
+            if (!is_null($itemId) && $value == $itemId) {
+                $input['errors'][] = 'Cannot select itemId in reciprocal input.';
+            }
+
+            if (isset($input['options'][$itemId])) unset($input['options'][$itemId]);
+        }
 
         switch ($input['type']) {
 
@@ -336,9 +345,6 @@ class Input {
 
         return $input;
     }
-
-
-
 
 
 

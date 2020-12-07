@@ -243,7 +243,7 @@ $ht .= '    <div class="input-label">' .
 
         if ($input['type'] == 'slugImage') {
             $imgType = Text::t($input['options']['imgType'] ?? '');
-            if ($img = $app->imageGet($input['value'] ?? '', ['w' => 256, 'h' => 256, 'fit' => 'cover', 'version' => 'mtime'], false)) {
+            if ($img = $app->imageGet($input['value'] ?? '', ['w' => 256, 'h' => 256, 'version' => 'mtime'], false)) {
 $ht .= '    <button type="button" class="slugImage figure" data-imgtype="' . Text::h($imgType) . '">' . PHP_EOL;
 $ht .= '        ' . AppImage::render($img) . PHP_EOL;
 $ht .= '    </button>' . PHP_EOL;

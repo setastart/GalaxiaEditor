@@ -231,7 +231,6 @@ class App {
         $query .= Sql::selectLeftJoinUsing(['pageRedirect' => ['pageId']]);
 
         $query .= 'WHERE pageStatus >= ' . $pageMinStatus . PHP_EOL;
-        // d($query);
 
         $stmt = $db->prepare($query);
         $stmt->execute();
@@ -397,7 +396,6 @@ class App {
         $result = $stmt->get_result();
 
         while ($data = $result->fetch_assoc()) {
-            // d($data);
             if ($data[$tableSlug . $langCur] == $matchSlug) {
                 $id = $data[$tableId];
                 break;
@@ -561,8 +559,10 @@ class App {
 
     // images
 
-    public function imageGet($imgSlug, $img = [], $resize = true) {
+    public function imageGet($imgSlug, $img = [], $resize = true): array {
         $img = array_merge(AppImage::PROTO_IMAGE, $img);
+
+        $img['name'] = $this->urlImages . $imgSlug . '/' . $imgSlug;
 
         if (!$img['ext'] = AppImage::valid($this->dirImage, $imgSlug)) return [];
         $imgDir     = $this->dirImage . $imgSlug . '/';
@@ -618,72 +618,71 @@ class App {
         $img['hOriginal'] = (int)$dim[1];
 
         $img = array_merge($img, AppImage::fit($img));
-        // dd($img);
 
-        $ratio       = $img['w'] / $img['h'];
-        $img['name'] = $this->urlImages . $imgSlug . '/' . $imgSlug;
+        if ($img['w'] == $img['wOriginal'] && $img['h'] == $img['hOriginal']) {
 
+            $img['src'] = $img['name'] . $img['ext'];
 
+        } else {
 
-        // sizes
-        if (!in_array(1, $img['sizes'])) $img['sizes'][] = 1;
-        arsort($img['sizes']);
-        foreach ($img['sizes'] as $key => $factor) {
-            if (!is_numeric($factor) || $factor <= 0) {
-                unset($img['sizes'][$key]);
-                continue;
-            }
-
-            $multiW = (int)round($img['w'] * $factor);
-            $multiH = (int)round(($img['w'] / $ratio) * $factor);
-            $size   = round($multiW / $img['sizeDivisor']);
-
-            if ($factor != 1 && ($multiW < 128 || $multiW > $img['wOriginal'])) {
-                unset($img['sizes'][$key]);
-                continue;
-            }
-
-
-            if ($multiW == $img['wOriginal'] && $multiH == $img['hOriginal']) {
-                $img['srcset'] .= $img['name'] . $img['ext'] . ' ' . $size . 'w, ';
-                if ($factor == 1) $img['src'] = $img['name'] . $img['ext'];
-            } else {
-                $file = $imgDirSlug . '_' . $multiW . '_' . $multiH . $img['ext'];
-                if ($resize && !file_exists($file)) {
-
-                    $lockFile = $this->dirCache . 'flock/_img_' . $imgSlug . '_' . $multiW . '_' . $multiH . $img['ext'] . '.lock';
-                    if (is_dir($this->dirCache . 'flock/') && $fp = fopen($lockFile, 'w')) {
-                        flock($fp, LOCK_EX | LOCK_NB, $wouldblock);
-                        if ($wouldblock) {
-                            flock($fp, LOCK_SH);
-                        } else {
-                            try {
-                                ImageVips::crop($imgDir, $imgSlug, $img['ext'], $multiW, $multiH);
-                            } catch (Exception $e) {
-                                geD($e->getMessage(), $e->getTraceAsString());
-                            }
-                            touch($imgDir, $img['mtime']);
-                            flock($fp, LOCK_UN);
-                        }
-                        fclose($fp);
-                    } else {
+            $file = $imgDirSlug . '_' . $img['w'] . '_' . $img['h'] . $img['ext'];
+            if ($resize && !file_exists($file)) {
+                File::lock(
+                    $this->dirCache . 'flock',
+                    '_img_' . $imgSlug . '_' . $img['w'] . '_' . $img['h'] . $img['ext'] . '.lock',
+                    function() use ($imgDir, $imgSlug, $img) {
                         try {
-                            ImageVips::crop($imgDir, $imgSlug, $img['ext'], $multiW, $multiH);
+                            ImageVips::crop($imgDir, $imgSlug, $img['ext'], $img['w'], $img['h'], false, $img['debug']);
                         } catch (Exception $e) {
                             geD($e->getMessage(), $e->getTraceAsString());
                         }
                         touch($imgDir, $img['mtime']);
                     }
-
-                }
-                $img['srcset'] .= $img['name'] . '_' . $multiW . '_' . $multiH . $img['ext'] . ' ' . $size . 'w, ';
-                if ($factor == 1) $img['src'] = $img['name'] . '_' . $multiW . '_' . $multiH . $img['ext'];
-
+                );
             }
+
+            $img['src'] = $img['name'] . '_' . $img['w'] . '_' . $img['h'] . $img['ext'];
         }
-        // touch($imgDir, $img['mtime']);
+
+
+        foreach ($img['set'] as $setDescriptor => $set) {
+            $imgResize = $img;
+
+            $imgResize['w'] = $set['w'] ?? 0;
+            $imgResize['h'] = $set['h'] ?? 0;
+
+            $imgResize = AppImage::fit($imgResize);
+            if ($imgResize['w'] > $img['wOriginal'] || !$set['w'] || !$set['h']) {
+                unset($img['set'][$setDescriptor]);
+                continue;
+            }
+
+            if ($imgResize['w'] == $img['wOriginal'] && $imgResize['h'] == $img['hOriginal']) {
+                unset($img['set'][$setDescriptor]);
+                continue;
+            }
+
+            $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'];
+
+            if ($resize && !file_exists($file)) {
+                File::lock(
+                    $this->dirCache . 'flock',
+                    '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . '.lock',
+                    function() use ($imgDir, $imgSlug, $imgResize) {
+                        try {
+                            ImageVips::crop($imgDir, $imgSlug, $imgResize['ext'], $imgResize['w'], $imgResize['h'], false, $imgResize['debug']);
+                        } catch (Exception $e) {
+                            geD($e->getMessage(), $e->getTraceAsString());
+                        }
+                        touch($imgDir, $imgResize['mtime']);
+                    }
+                );
+            }
+            $img['srcset'] .= $img['name'] . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . ' ' . $setDescriptor . ', ';
+        }
+
         $img['srcset'] = rtrim($img['srcset'], ', ');
-        if (count($img['sizes']) < 2) $img['srcset'] = '';
+        if (count($img['set']) == 0) $img['srcset'] = '';
 
         return $img;
     }
@@ -857,25 +856,19 @@ class App {
             $timerName = 'Cache ' . $cacheType . ': ' . $cacheName;
             Director::timerStart($timerName);
 
-            $lockFile = $this->dirCache . 'flock/' . $cacheName . '.lock';
-            if (!$bypass && is_dir($this->dirCache . 'flock/') && $fp = fopen($lockFile, 'w')) {
-                flock($fp, LOCK_EX | LOCK_NB, $wouldblock);
-                if ($wouldblock) {
-                    flock($fp, LOCK_SH);
-                    if (file_exists($cacheFile)) $result = include $cacheFile;
-                } else {
-                    $result = $f();
-                    if (is_array($result) && $write) {
-                        file_put_contents($cacheFile, '<?php return ' . var_export($result, true) . ';' . PHP_EOL);
-                    }
-                    flock($fp, LOCK_UN);
+            $fImageWrite = function() use ($f, $write, $cacheFile) {
+                $r = $f();
+                if ($write && is_array($r)) {
+                    file_put_contents($cacheFile, '<?php return ' . var_export($r, true) . ';' . PHP_EOL);
                 }
-                fclose($fp);
+
+                return $r;
+            };
+
+            if ($bypass) {
+                $result = $fImageWrite();
             } else {
-                $result = $f();
-                if (is_array($result) && $write) {
-                    file_put_contents($cacheFile, '<?php return ' . var_export($result, true) . ';' . PHP_EOL);
-                }
+                $result = File::lock($this->dirCache . 'flock', $cacheName . '.lock', $fImageWrite);
             }
 
         }

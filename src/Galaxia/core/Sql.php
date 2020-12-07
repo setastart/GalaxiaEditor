@@ -10,7 +10,7 @@ use mysqli;
 class Sql {
 
     public const ALLOWED_MODS        = ['COUNT', 'MIN', 'MAX', 'ANY_VALUE', 'DATE', 'TIME', 'YEAR', 'MONTH', 'DAY'];
-    public const ALLOWED_WHERE_LOGIC = ['=', '<', '>', '<=', '>=', 'BETWEEN', 'IS NOT NULL', 'IS NULL', 'NOT IN'];
+    public const ALLOWED_WHERE_LOGIC = ['=', '<', '>', '<=', '>=', '<=>', 'BETWEEN', 'IS NOT NULL', 'IS NULL', 'NOT IN'];
 
 
     static function queryInsert($expression, $changes, array $langs = null) {
@@ -127,6 +127,17 @@ class Sql {
         }
 
         return $r . PHP_EOL . PHP_EOL;
+    }
+
+
+
+
+    static function leftJoinOnAnd(string $tblSrc, string $tblDes, string $colOn, string $colAnd): string {
+        $r = 'LEFT JOIN ' . Text::q($tblSrc) .
+             ' ON ' . Text::q($tblDes) . '.' . Text::q($colOn) . ' = ' . Text::q($tblSrc) . '.' . Text::q($colOn) . PHP_EOL;
+        $r .= '    AND ' . Text::q($tblSrc) . '.' . Text::q($colAnd) . ' = ?' . PHP_EOL;
+
+        return $r;
     }
 
 

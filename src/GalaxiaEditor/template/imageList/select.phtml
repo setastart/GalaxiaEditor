@@ -62,7 +62,7 @@ if (!isset($filterTexts)) {
             </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map(array("\Galaxia\Text", "t"), array_filter(array_keys($geConf['images']['gcImageTypes'] ?? []))))?></p>
+            <p class="small"><?=implode(', ', array_map(array("\Galaxia\Text", "t"), array_filter(array_keys($geConf[$editor->imageSlug]['gcImageTypes']))))?></p>
 <?php           } ?>
         </div>
 <?php       } ?>

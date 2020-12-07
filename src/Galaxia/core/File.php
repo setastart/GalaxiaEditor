@@ -66,11 +66,34 @@ class File {
         $files = [];
         foreach ($filesOriginal ?? [] as $key => $all) {
             foreach ($all as $i => $val) {
-                $files[$i][$key]   = $val;
+                $files[$i][$key] = $val;
             }
         }
 
         return $files;
+    }
+
+
+
+
+    static function lock(string $dir, string $fileName, callable $f) {
+        $dir = rtrim($dir, '/');
+        $r   = null;
+
+        if (is_dir($dir) && $fp = fopen($dir . '/' . $fileName, 'w')) {
+            flock($fp, LOCK_EX | LOCK_NB, $wouldblock);
+            if ($wouldblock) {
+                flock($fp, LOCK_SH);
+            } else {
+                $r = $f();
+                flock($fp, LOCK_UN);
+            }
+            fclose($fp);
+        } else {
+            $r = $f();
+        }
+
+        return $r;
     }
 
 }

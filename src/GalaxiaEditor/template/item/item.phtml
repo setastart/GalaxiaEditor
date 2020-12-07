@@ -19,6 +19,29 @@ InputRender::form('', 'item-edit', 'item paper pad'); ?>
         <div class="paper-header-links">
             <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>" class="btn-a"><?=Text::t('Reload')?></a>
 <?php   if ($item['gcVisit']) { ?>
+            <?=Text::t('Open here')?>:
+<?php   } ?>
+
+<?php   if (is_int($item['gcVisit']) || (is_bool($item['gcVisit']) && $item['gcVisit'])) { ?>
+<?php       foreach ($app->langs as $lang) { ?>
+<?php           if (isset($item['inputs']['slug_' . $lang])) { ?>
+            <a rel="noreferrer" href="<?=$app->addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           } else if (isset($item['inputs'][$item['gcTable'] . 'Slug_' . $lang])) { ?>
+            <a rel="noreferrer" href="<?=$app->addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           } ?>
+<?php       } ?>
+<?php   } else if (is_array($item['gcVisit'])) { ?>
+<?php       foreach ($item['gcVisit'] as $link) { ?>
+<?php           if (!isset($link['id'])) continue ?>
+<?php           if (!isset($link['prefix'])) continue ?>
+<?php           $id = $item['inputs'][$link['id']]['value'] ?? ''; ?>
+<?php           $prefix = $link['prefix'] ?? ''; ?>
+<?php           $name = $prefix . $item['inputs'][$link['id']]['value']; ?>
+            <a rel="noreferrer" href="<?=Text::h($name)?>" class="btn-a"><?=Text::h($name)?></a>
+<?php       } ?>
+<?php   } ?>
+
+<?php   if ($item['gcVisit']) { ?>
             <?=Text::t('Open in new tab')?>:
 <?php   } ?>
 
