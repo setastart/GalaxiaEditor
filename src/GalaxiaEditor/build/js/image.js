@@ -6,6 +6,7 @@ let gjImage = {
         this.firstTime = true;
         this.el        = document.getElementById('image-select');
 
+        this.selectorOpen   = false;
         this.activeInput    = null;
         this.activeFieldId  = null;
         this.activePos      = 0;
@@ -47,7 +48,7 @@ let gjImage = {
         this.scrollClosed = window.scrollY;
 
         this.el.classList.remove('hide');
-
+        this.selectorOpen = true;
         this.selectedImages = {};
 
         let siblings = getSiblings(this.el);
@@ -71,6 +72,7 @@ let gjImage = {
     close: function() {
         if (!this.el) return;
         if (this.el.classList.contains('hide')) return
+        this.selectorOpen = false;
         this.scrollOpen = window.scrollY;
 
         this.el.classList.add('hide');

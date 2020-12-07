@@ -271,9 +271,9 @@ function handleEventKeydown(ev) {
     // [command + s] sends form
     if (['s', 'S'].contains(ev.key) && (navigator.platform.match('Mac') ? ev.metaKey : ev.ctrlKey)) {
         ev.preventDefault();
-        if (document.forms[0].id !== 'logout') {
-            document.forms[0].submit();
-        }
+        if (document.forms[0].id === 'logout') return;
+        if (gjImage.selectorOpen) return;
+        document.forms[0].submit();
     }
 
     // only use focus on keyboard

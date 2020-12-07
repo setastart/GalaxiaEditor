@@ -345,9 +345,9 @@ function handleEventKeydown(ev) {
     // [command + s] sends form
     if (['s', 'S'].contains(ev.key) && (navigator.platform.match('Mac') ? ev.metaKey : ev.ctrlKey)) {
         ev.preventDefault();
-        if (document.forms[0].id !== 'logout') {
-            document.forms[0].submit();
-        }
+        if (document.forms[0].id === 'logout') return;
+        if (gjImage.selectorOpen) return;
+        document.forms[0].submit();
     }
 
     // only use focus on keyboard
@@ -533,6 +533,7 @@ let gjImage = {
         this.firstTime = true;
         this.el        = document.getElementById('image-select');
 
+        this.selectorOpen   = false;
         this.activeInput    = null;
         this.activeFieldId  = null;
         this.activePos      = 0;
@@ -574,7 +575,7 @@ let gjImage = {
         this.scrollClosed = window.scrollY;
 
         this.el.classList.remove('hide');
-
+        this.selectorOpen = true;
         this.selectedImages = {};
 
         let siblings = getSiblings(this.el);
@@ -598,6 +599,7 @@ let gjImage = {
     close: function() {
         if (!this.el) return;
         if (this.el.classList.contains('hide')) return
+        this.selectorOpen = false;
         this.scrollOpen = window.scrollY;
 
         this.el.classList.add('hide');
