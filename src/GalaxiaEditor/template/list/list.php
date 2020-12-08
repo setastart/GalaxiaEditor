@@ -231,14 +231,16 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
 
 
                         if ($columnData['parent']) {
+                            $value = '';
                             foreach ($columnData['parent'] as $parent) {
-                                // $value = $item[$firstTable][$itemId][$parent] ?? false;
-                                // if ($value) break;
-                                $value = $item[$firstTable][$value][$parent] ?? false;
-                                geD($value);
-                                if ($value) break;
-                            }
+                                geD($parent);
+                                $text = $item[$firstTable][$itemId][$parent] ?? false;
+                                if (!$text) continue;
 
+                                $value .= Text::t($text) . ' / ';
+                                // if ($value) break;
+                            }
+                            $value = rtrim($value, ' / ');
                         }
 
 

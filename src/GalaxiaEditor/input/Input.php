@@ -24,7 +24,7 @@ class Input {
         'prefix'       => '',
         'cssClass'     => '',
         'dbUnique'     => false,
-        'dbReciprocal' => false,
+        // 'dbReciprocal' => false,
         'disabled'     => false,
         'errors'       => [],
         'infos'        => [],
@@ -71,13 +71,13 @@ class Input {
             return $input;
         }
 
-        if ($input['dbReciprocal']) {
-            if (!is_null($itemId) && $value == $itemId) {
-                $input['errors'][] = 'Cannot select itemId in reciprocal input.';
-            }
-
-            if (isset($input['options'][$itemId])) unset($input['options'][$itemId]);
-        }
+        // if ($input['dbReciprocal']) {
+        //     if (!is_null($itemId) && $value == $itemId) {
+        //         $input['errors'][] = 'Cannot select itemId in reciprocal input.';
+        //     }
+        //
+        //     if (isset($input['options'][$itemId])) unset($input['options'][$itemId]);
+        // }
 
         switch ($input['type']) {
 
