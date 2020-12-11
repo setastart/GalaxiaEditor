@@ -118,7 +118,7 @@ class AppImage {
             return $img;
         }
 
-        if (!in_array($img['fit'], ['contain', 'cover', 'expand'])) $img['fit'] = 'contain';
+        if (!in_array($img['fit'] ?? '', ['contain', 'cover', 'expand'])) $img['fit'] = 'contain';
 
         $ratioFit = $img['w'] / $img['h'];
 

@@ -63,7 +63,7 @@ class ImageVips {
      */
     function save(string $outWithoutExt, bool $overwite = false, int $toFit = 0) {
         if ($toFit > 0 && ($this->w > $toFit || $this->h > $toFit)) {
-            if ($img = AppImage::fit(['wOriginal' => $this->w, 'hOriginal' => $this->h, 'w' => $toFit, 'h' => $toFit, 'fit' => 'cover'])) {
+            if ($img = AppImage::fit(array_merge(AppImage::PROTO_IMAGE, ['wOriginal' => $this->w, 'hOriginal' => $this->h, 'w' => $toFit, 'h' => $toFit]))) {
                 $this->w = $img['w'];
                 $this->h = $img['h'];
 

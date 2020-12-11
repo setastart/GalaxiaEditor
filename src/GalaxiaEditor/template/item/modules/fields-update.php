@@ -124,8 +124,6 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
             $params           = array_values($update);
             array_push($params, $fieldVal, $itemId, $fieldKey);
 
-            !d($module['inputs'][$fieldKey][$fieldVal]);
-
             $affectedRows = 0;
             try {
                 $affectedRows = ModelField::update($module['gcUpdate'], $queryUpdateWhere, $params, $update);
