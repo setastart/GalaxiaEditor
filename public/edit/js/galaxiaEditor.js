@@ -286,7 +286,9 @@ function handleEventClick(ev) {
 
         let fieldId = ev.target.closest('.module-field')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
         if (!fieldId) return;
-        gjImage.openGallery(fieldId, document.getElementById(fieldId).dataset.imgtype ?? '', pos)
+        const imgType = document.querySelector('#' + fieldId + '-new .slugImage')?.dataset.imgtype ?? '';
+        console.log(imgType);
+        gjImage.openGallery(fieldId, imgType, pos)
     }
 
     if (ev.target.matches('.imageList-delete')) {
