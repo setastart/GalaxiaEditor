@@ -369,7 +369,6 @@ foreach ($filterInts as $filterId => $filter) {
             case 'tag':
                 foreach ($filter['options'] as $val => $option) {
                     if (!isset($tags[$table][$col][$val])) continue;
-                    geD($tags[$table][$col][$val]);
                     $filterInts[$filterId]['options'][$val]['cssClass'] .= ' brewer-' . Text::h(1 + ($tags[$table][$col][$val] % 9));
                 }
                 break;
