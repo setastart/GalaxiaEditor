@@ -247,6 +247,9 @@ class Director {
         if (self::$app && file_exists(self::$app->dir . 'resource/stringTranslations.php'))
             Text::$translations = array_merge(Text::$translations, include(self::$app->dir . 'resource/stringTranslations.php'));
 
+        if (self::$app && file_exists(self::$app->dir . 'resource/stringTranslationsAliases.php'))
+            Text::$translationsAliases = array_merge(Text::$translationsAliases, include(self::$app->dir . 'resource/stringTranslationsAliases.php'));
+
         self::timerStop('Translations');
     }
 

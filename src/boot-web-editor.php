@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.24.6';
+$editor->version = '4.24.8';
 Director::timerStop('editor');
 
 Director::loadTranslations();

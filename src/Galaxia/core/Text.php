@@ -21,12 +21,13 @@ class Text {
 Second Line.</pre><blockquote>This is a quotation or something. First line, a bit long so it wraps around, to see how it looks if it wraps. This first line ends in a newline after the dot.<br>Second Line.</blockquote>
 HTML;
 
-    public static array $translations       = [];
-    public static bool  $translationMissing = false;
+    public static array $translations        = [];
+    public static array $translationsAliases = [];
+    public static bool  $translationMissing  = false;
 
     private static ?Transliterator $transliterator      = null;
     private static ?Transliterator $transliteratorLower = null;
-    private static array $intlDateFormatters = [];
+    private static array           $intlDateFormatters  = [];
 
 
     static function unsafe(string $text, bool $condition = true) {
@@ -236,7 +237,7 @@ HTML;
 
         foreach ($transforms as $tagOld => $transform) {
             $tagNew = 'galaxiaTemp' . $transform[0];
-            $class = '';
+            $class  = '';
             if (isset($transform[1])) $class = ' class="' . $transform[1] . '"';
             $id = '';
             if (isset($transform[2])) $id = ' class="' . $transform[2] . '"';
@@ -247,7 +248,7 @@ HTML;
         foreach ($transforms as $transform) {
             $tagOld = 'galaxiaTemp' . $transform[0];
             $tagNew = $transform[0];
-            $text = str_replace($tagOld, $tagNew, $text);
+            $text   = str_replace($tagOld, $tagNew, $text);
         }
 
         return $text;
@@ -501,6 +502,11 @@ HTML;
         if (isset(self::$translations[$text][$lang])) {
             return self::$translations[$text][$lang];
         } else {
+            if (isset(self::$translationsAliases[$text][$lang]) &&
+                isset(self::$translations[self::$translationsAliases[$text]][$lang])
+            ) {
+                return self::$translations[self::$translationsAliases[$text]][$lang];
+            }
             self::$translationMissing = true;
         }
 
@@ -513,6 +519,12 @@ HTML;
         if ($lang == null) $lang = $app->lang;
         if (isset(self::$translations[$text][$lang])) {
             return htmlspecialchars(self::$translations[$text][$lang], self::HTMLSPECIALCHARS_FLAGS);
+        } else {
+            if (isset(self::$translationsAliases[$text][$lang]) &&
+                isset(self::$translations[self::$translationsAliases[$text]][$lang])
+            ) {
+                return htmlspecialchars(self::$translations[self::$translationsAliases[$text]][$lang]);
+            }
         }
 
         // if (Director::$debug) $text = '@' . $text;
@@ -538,7 +550,7 @@ HTML;
         $extract = '';
         if (preg_match("~<$tag>.+?</$tag>~", $text, $m)) {
             $extract = $m[0];
-            $text      = preg_replace("~<$tag>.+?</$tag>~", '', $text, 1);
+            $text    = preg_replace("~<$tag>.+?</$tag>~", '', $text, 1);
         }
 
         return $extract;
