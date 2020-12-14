@@ -248,6 +248,21 @@ function handleEventClick(ev) {
         gjImage.selectSingle(ev.target);
     }
 
+    // checkbox alk key
+    if (ev.target.matches('.btn-checkbox input')) {
+        if (ev.altKey) {
+            ev.target.closest('.input-wrap')?.querySelectorAll('.btn-checkbox input')?.forEach(function(el) {
+                if (ev.target.checked) {
+                    el.checked = true;
+                    el.parentElement.classList.add('active');
+                } else {
+                    el.checked = false;
+                    el.parentElement.classList.remove('active');
+                }
+            });
+        }
+    }
+
 
     if (ev.target.matches('.scrape-jsonld')) {
         gjScraper.jsonld(ev.target);
@@ -287,7 +302,6 @@ function handleEventClick(ev) {
         let fieldId = ev.target.closest('.module-field')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
         if (!fieldId) return;
         const imgType = document.querySelector('#' + fieldId + '-new .slugImage')?.dataset.imgtype ?? '';
-        console.log(imgType);
         gjImage.openGallery(fieldId, imgType, pos)
     }
 

@@ -174,6 +174,21 @@ function handleEventClick(ev) {
         gjImage.selectSingle(ev.target);
     }
 
+    // checkbox alk key
+    if (ev.target.matches('.btn-checkbox input')) {
+        if (ev.altKey) {
+            ev.target.closest('.input-wrap')?.querySelectorAll('.btn-checkbox input')?.forEach(function(el) {
+                if (ev.target.checked) {
+                    el.checked = true;
+                    el.parentElement.classList.add('active');
+                } else {
+                    el.checked = false;
+                    el.parentElement.classList.remove('active');
+                }
+            });
+        }
+    }
+
 
     if (ev.target.matches('.scrape-jsonld')) {
         gjScraper.jsonld(ev.target);
