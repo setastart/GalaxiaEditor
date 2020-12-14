@@ -21,9 +21,9 @@ class Text {
 Second Line.</pre><blockquote>This is a quotation or something. First line, a bit long so it wraps around, to see how it looks if it wraps. This first line ends in a newline after the dot.<br>Second Line.</blockquote>
 HTML;
 
-    public static array $translations        = [];
-    public static array $translationsAliases = [];
-    public static bool  $translationMissing  = false;
+    public static array $translation        = [];
+    public static array $translationAliase  = [];
+    public static bool  $translationMissing = false;
 
     private static ?Transliterator $transliterator      = null;
     private static ?Transliterator $transliteratorLower = null;
@@ -499,13 +499,13 @@ HTML;
     static function unsafet(string $text, string $lang = null) {
         $app = Director::getApp();
         if ($lang == null) $lang = $app->lang;
-        if (isset(self::$translations[$text][$lang])) {
-            return self::$translations[$text][$lang];
+        if (isset(self::$translation[$text][$lang])) {
+            return self::$translation[$text][$lang];
         } else {
-            if (isset(self::$translationsAliases[$text][$lang]) &&
-                isset(self::$translations[self::$translationsAliases[$text]][$lang])
+            if (isset(self::$translationAliase[$text][$lang]) &&
+                isset(self::$translation[self::$translationAliase[$text]][$lang])
             ) {
-                return self::$translations[self::$translationsAliases[$text]][$lang];
+                return self::$translation[self::$translationAliase[$text]][$lang];
             }
             self::$translationMissing = true;
         }
@@ -517,13 +517,13 @@ HTML;
     static function t(string $text, string $lang = null) {
         $app = Director::getApp();
         if ($lang == null) $lang = $app->lang;
-        if (isset(self::$translations[$text][$lang])) {
-            return htmlspecialchars(self::$translations[$text][$lang], self::HTMLSPECIALCHARS_FLAGS);
+        if (isset(self::$translation[$text][$lang])) {
+            return htmlspecialchars(self::$translation[$text][$lang], self::HTMLSPECIALCHARS_FLAGS);
         } else {
-            if (isset(self::$translationsAliases[$text][$lang]) &&
-                isset(self::$translations[self::$translationsAliases[$text]][$lang])
+            if (isset(self::$translationAliase[$text][$lang]) &&
+                isset(self::$translation[self::$translationAliase[$text]][$lang])
             ) {
-                return htmlspecialchars(self::$translations[self::$translationsAliases[$text]][$lang]);
+                return htmlspecialchars(self::$translation[self::$translationAliase[$text]][$lang]);
             }
         }
 

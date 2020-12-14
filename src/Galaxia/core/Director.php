@@ -21,9 +21,9 @@ use Throwable;
 
 class Director {
 
-    private static ?App $app    = null;
+    private static ?App    $app    = null;
     private static ?Editor $editor = null;
-    private static ?User $me     = null;
+    private static ?User   $me     = null;
     private static ?mysqli $mysqli = null;
 
     /**
@@ -33,8 +33,8 @@ class Director {
 
     public static array $nofollowHosts = ['facebook', 'google', 'instagram', 'twitter', 'linkedin', 'youtube']; // todo: refactor
 
-    private static array $timers = [];
-    private static int   $timerLevel = 0;
+    private static array $timers      = [];
+    private static int   $timerLevel  = 0;
     private static int   $timerMaxLen = 0;
     private static int   $timerMaxLev = 0;
 
@@ -241,14 +241,14 @@ class Director {
     static function loadTranslations() {
         self::timerStart('Translations');
 
-        if (self::$editor && file_exists(self::$editor->dir . 'resource/stringTranslations.php'))
-            Text::$translations = array_merge(Text::$translations, include(self::$editor->dir . 'resource/stringTranslations.php'));
+        if (self::$editor && file_exists(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'))
+            Text::$translation = array_merge(Text::$translation, include(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'));
 
-        if (self::$app && file_exists(self::$app->dir . 'resource/stringTranslations.php'))
-            Text::$translations = array_merge(Text::$translations, include(self::$app->dir . 'resource/stringTranslations.php'));
+        if (self::$app && file_exists(self::$app->dir . 'config/translation.php'))
+            Text::$translation = array_merge(Text::$translation, include(self::$app->dir . 'config/translation.php'));
 
-        if (self::$app && file_exists(self::$app->dir . 'resource/stringTranslationsAliases.php'))
-            Text::$translationsAliases = array_merge(Text::$translationsAliases, include(self::$app->dir . 'resource/stringTranslationsAliases.php'));
+        if (self::$app && file_exists(self::$app->dir . 'config/translationAlias.php'))
+            Text::$translationAliase = array_merge(Text::$translationAliase, include(self::$app->dir . 'config/translationAlias.php'));
 
         self::timerStop('Translations');
     }
@@ -452,9 +452,9 @@ class Director {
                 $errorCode = $code;
                 $error     = $errors[$code] . '<br><br>';
                 // if (self::isDev()) {
-                    $error .= 'Original error code: ' . $codeOriginal . '<br>';
-                    $error .= nl2br($msg) . '<br><br>';
-                    $error .= nl2br($debugText) . '<br>';
+                $error .= 'Original error code: ' . $codeOriginal . '<br>';
+                $error .= nl2br($msg) . '<br><br>';
+                $error .= nl2br($debugText) . '<br>';
                 // }
 
                 include self::$editor->dirLayout . 'layout-error.phtml';
