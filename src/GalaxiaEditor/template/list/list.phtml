@@ -46,7 +46,7 @@ InputRender::form('', 'item-list', 'paper pad');?>
         <div class="input-wrap input-filter-int pad">
             <div class="input-label"><?=Text::t($filter['label'])?></div>
 <?php       foreach ($filter['options'] as $key => $options) { ?>
-            <label for="<?=Text::h($filterId)?>-<?=Text::h($key)?>" class="btn btn-pill btn-checkbox <?=Text::h($options['cssClass'])?><?=($options['checked']) ? ' active' : ''?>">
+            <label for="<?=Text::h($filterId)?>-<?=Text::h($key)?>" class="btn btn-pill btn-checkbox <?=Text::h($options['cssClass'] ?? '')?><?=($options['checked']) ? ' active' : ''?>">
                 <?=Text::t($options['label'])?>
                 <input class="filterChange" name="filterInts[<?=$filterId?>][<?=Text::h($key)?>]" type="checkbox" value="1" id="<?=Text::h($filterId)?>-<?=Text::h($key)?>" title="<?=Text::t($options['label'])?>" <?=($options['checked']) ? ' checked' : ''?>>
             </label>

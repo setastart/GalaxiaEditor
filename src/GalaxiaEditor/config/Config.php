@@ -123,10 +123,10 @@ class Config {
         ],
 
         'gcpRowData' => [
-            'dbTab'         => 'string',
-            'dbCols'        => 'stringArray',
-            'colType'       => 'string',
-            '?gcParent'     => 'stringArray',
+            'dbTab'     => 'string',
+            'dbCols'    => 'stringArray',
+            'colType'   => 'string',
+            '?gcParent' => 'stringArray',
         ],
 
         'gcpFilterTexts' => [
@@ -136,9 +136,10 @@ class Config {
         ],
 
         'gcpFilterInts' => [
-            'label'      => 'string',
-            'filterWhat' => 'tableWithCols',
-            'options'    => 'options',
+            'label'       => 'string',
+            'filterWhat'  => 'tableWithCols',
+            'options'     => 'options',
+            '?filterType' => 'string',
         ],
 
         'gcpModules' => [

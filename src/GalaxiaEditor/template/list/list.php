@@ -47,6 +47,31 @@ while ($data = $result->fetch_assoc()) {
 }
 $stmt->close();
 
+
+
+
+// get tag colors from filters
+
+$tags = [];
+$currentColor = 0;
+foreach ($list['gcFilterInts'] as $filterId => $filter) {
+    if (!isset($filter['filterType'])) continue;
+    $table = array_key_first($filter['filterWhat']);
+    $col = $filter['filterWhat'][$table][0];
+
+    switch ($filter['filterType']) {
+        case 'tag':
+            $tags[$table] = [];
+            foreach ($filter['options'] as $val => $option) {
+                $tags[$table][$col][$val] = $currentColor++;
+            }
+            break;
+    }
+}
+// dd($tags);
+
+
+
 // get items from database using cache
 
 $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() use ($db, $list, $firstTable, $firstColumn, $dbSchema) {
@@ -173,9 +198,9 @@ foreach ($list['gcColumns'] as $columnKey => $column)
     foreach ($column['gcColContent'] ?? [] as $colContent)
         foreach ($colContent['dbCols'] as $dbCol)
             $list['gcColumns'][$columnKey]['tablesAndCols'][$colContent['dbTab']][] = [
-                'col'        => $dbCol,
-                'type'       => $colContent['colType'],
-                'parent'     => $colContent['gcParent'] ?? '',
+                'col'    => $dbCol,
+                'type'   => $colContent['colType'],
+                'parent' => $colContent['gcParent'] ?? '',
             ];
 
 $columns = $list['gcColumns'];
@@ -193,9 +218,8 @@ foreach ($columns as $columnId => $column) {
 
 // make html for all rows, using cache
 
-$rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns) {
+$rows = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns, $tags) {
     $rows         = [];
-    $tags         = [];
     $currentColor = 0;
     $thumbsToShow = 3;
     foreach ($items as $itemId => $item) {
@@ -233,7 +257,7 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
                         if ($columnData['parent']) {
                             $value = '';
                             foreach ($columnData['parent'] as $parent) {
-                                geD($parent);
+                                // geD($parent);
                                 $text = $item[$firstTable][$itemId][$parent] ?? false;
                                 if (!$text) continue;
 
@@ -268,8 +292,8 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
                             case 'tag':
                                 if (!$value) break;
                                 $tagFound = true;
-                                if (!isset($tags[$value])) $tags[$value] = $currentColor++;
-                                $colRowItemClass .= ' brewer-' . Text::h(1 + ($tags[$value] % 9));
+                                if (!isset($tags[$dbTable][$dbColumn][$value])) $tags[$dbTable][$dbColumn][$value] = $currentColor++;
+                                $colRowItemClass .= ' brewer-' . Text::h(1 + ($tags[$dbTable][$dbColumn][$value] % 9));
                                 $r               .= Text::t($value);
                                 break;
 
@@ -327,6 +351,7 @@ $rows      = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function()
 
     return $rows;
 });
+
 $rowsTotal = count($rows);
 
 
@@ -336,9 +361,24 @@ $rowsTotal = count($rows);
 
 $filterInts = $list['gcFilterInts'];
 foreach ($filterInts as $filterId => $filter) {
+    if (isset($filter['filterType'])) {
+        $table = array_key_first($filter['filterWhat']);
+        $col = $filter['filterWhat'][$table][0];
+
+        switch ($filter['filterType']) {
+            case 'tag':
+                foreach ($filter['options'] as $val => $option) {
+                    if (!isset($tags[$table][$col][$val])) continue;
+                    geD($tags[$table][$col][$val]);
+                    $filterInts[$filterId]['options'][$val]['cssClass'] .= ' brewer-' . Text::h(1 + ($tags[$table][$col][$val] % 9));
+                }
+                break;
+        }
+    }
     foreach ($filter['options'] as $int => $value) {
+
         $filterInts[$filterId]['options'][$int]['checked'] = false;
-        if (strpos($filterInts[$filterId]['options'][$int]['cssClass'], 'active') !== false) {
+        if (strpos($filterInts[$filterId]['options'][$int]['cssClass'] ?? '', 'active') !== false) {
             $filterInts[$filterId]['options'][$int]['checked']  = true;
             $filterInts[$filterId]['options'][$int]['cssClass'] = (str_replace('active', '', $filterInts[$filterId]['options'][$int]['cssClass']));
         }

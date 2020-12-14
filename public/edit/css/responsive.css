@@ -45,9 +45,6 @@
         content: '';
         height: initial;
     }
-    .menu-item {
-        min-height: 46px;
-    }
     a.menu-item:first-child {
         border-top-left-radius: 6px;
         border-top-right-radius: 0px;

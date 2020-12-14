@@ -452,8 +452,38 @@ button.btn {
     text-underline-offset: 0.2em;
 }
 
+.btn.brewer-1 { text-decoration: underline solid #e41a1c; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.btn.brewer-1.active, a.btn.brewer-1.active { background-color: #fbb4ae; }
+.btn.brewer-2 { text-decoration: underline solid #377eb8; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.btn.brewer-2.active, a.btn.brewer-2.active { background-color: #b3cde3; }
+.btn.brewer-3 { text-decoration: underline solid #4daf4a; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.btn.brewer-3.active, a.btn.brewer-3.active { background-color: #ccebc5; }
+.btn.brewer-4 { text-decoration: underline solid #984ea3; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.btn.brewer-4.active, a.btn.brewer-4.active { background-color: #decbe4; }
+.btn.brewer-5 { text-decoration: underline solid #ff7f00; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.btn.brewer-5.active, a.btn.brewer-5.active { background-color: #fed9a6; }
+.btn.brewer-6 { text-decoration: underline solid #ffff33; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.btn.brewer-6.active, a.btn.brewer-6.active { background-color: #ffffcc; }
+.btn.brewer-7 { text-decoration: underline solid #a65628; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.btn.brewer-7.active, a.btn.brewer-7.active { background-color: #e5d8bd; }
+.btn.brewer-8 { text-decoration: underline solid #f781bf; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.btn.brewer-8.active, a.btn.brewer-8.active { background-color: #fddaec; }
+.btn.brewer-9 { text-decoration: underline solid #999999; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.btn.brewer-9.active, a.btn.brewer-9.active { background-color: #f2f2f2; }
 
-
+.btn.brewer-1,
+.btn.brewer-2,
+.btn.brewer-3,
+.btn.brewer-4,
+.btn.brewer-5,
+.btn.brewer-6,
+.btn.brewer-7,
+.btn.brewer-8,
+.btn.brewer-9 {
+    color: #000;
+    text-shadow: none;
+    font-weight: normal;
+}
 
 
 .btn-pad,
@@ -718,7 +748,7 @@ button.fake:hover { color: #00a; }
 
 .btn-checkbox {
     position: relative;
-    padding: 13px 0.1em 0;
+    padding: 10px 0.1em 0;
     margin: 0;
     line-height: 1.3;
 
@@ -726,9 +756,9 @@ button.fake:hover { color: #00a; }
         180deg,
         rgba(255, 255, 255, 0.15) 0%,
         rgba(255, 255, 255, 0.05) 14%,
-        rgba(0, 0, 0, 0.15) 14%,
-        rgba(0, 0, 0, 0.05) 50%,
-        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, 0.12) 14%,
+        rgba(0, 0, 0, 0.06) 50%,
+        rgba(0, 0, 0, 0.06) 50%,
         rgba(255, 255, 255, 0.1) 86%,
         rgba(0, 0, 0, 0.3) 86%,
         rgba(0, 0, 0, 0.2) 100%
