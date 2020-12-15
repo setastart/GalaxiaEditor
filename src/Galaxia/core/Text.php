@@ -21,9 +21,8 @@ class Text {
 Second Line.</pre><blockquote>This is a quotation or something. First line, a bit long so it wraps around, to see how it looks if it wraps. This first line ends in a newline after the dot.<br>Second Line.</blockquote>
 HTML;
 
-    public static array $translation        = [];
-    public static array $translationAliase  = [];
-    public static bool  $translationMissing = false;
+    public static array $translation      = [];
+    public static array $translationAlias = [];
 
     private static ?Transliterator $transliterator      = null;
     private static ?Transliterator $transliteratorLower = null;
@@ -499,15 +498,21 @@ HTML;
     static function unsafet(string $text, string $lang = null) {
         $app = Director::getApp();
         if ($lang == null) $lang = $app->lang;
-        if (isset(self::$translation[$text][$lang])) {
+
+        if (isset(self::$translation[$text][$lang]) &&
+            self::$translation[$text][$lang]
+        ) {
             return self::$translation[$text][$lang];
-        } else {
-            if (isset(self::$translationAliase[$text][$lang]) &&
-                isset(self::$translation[self::$translationAliase[$text]][$lang])
+        }
+
+        if (isset(self::$translationAlias[$text])) {
+            if (isset(self::$translation[self::$translationAlias[$text]][$lang]) &&
+                self::$translation[self::$translationAlias[$text]][$lang]
             ) {
-                return self::$translation[self::$translationAliase[$text]][$lang];
+                return self::$translation[self::$translationAlias[$text]][$lang];
             }
-            self::$translationMissing = true;
+
+            return self::$translationAlias[$text];
         }
 
         // if (Director::$debug) $text = '@' . $text;
@@ -515,20 +520,7 @@ HTML;
     }
 
     static function t(string $text, string $lang = null) {
-        $app = Director::getApp();
-        if ($lang == null) $lang = $app->lang;
-        if (isset(self::$translation[$text][$lang])) {
-            return htmlspecialchars(self::$translation[$text][$lang], self::HTMLSPECIALCHARS_FLAGS);
-        } else {
-            if (isset(self::$translationAliase[$text][$lang]) &&
-                isset(self::$translation[self::$translationAliase[$text]][$lang])
-            ) {
-                return htmlspecialchars(self::$translation[self::$translationAliase[$text]][$lang]);
-            }
-        }
-
-        // if (Director::$debug) $text = '@' . $text;
-        return htmlspecialchars($text, self::HTMLSPECIALCHARS_FLAGS);
+        return htmlspecialchars(self::unsafet($text, $lang), self::HTMLSPECIALCHARS_FLAGS);
     }
 
 

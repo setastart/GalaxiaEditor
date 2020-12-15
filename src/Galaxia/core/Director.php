@@ -248,7 +248,7 @@ class Director {
             Text::$translation = array_merge(Text::$translation, include(self::$app->dir . 'config/translation.php'));
 
         if (self::$app && file_exists(self::$app->dir . 'config/translationAlias.php'))
-            Text::$translationAliase = array_merge(Text::$translationAliase, include(self::$app->dir . 'config/translationAlias.php'));
+            Text::$translationAlias = array_merge(Text::$translationAlias, include(self::$app->dir . 'config/translationAlias.php'));
 
         self::timerStop('Translations');
     }
