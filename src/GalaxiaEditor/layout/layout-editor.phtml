@@ -114,7 +114,7 @@ document.addEventListener('trix-file-accept', function(event) {
     <div id="openbox-<?=Text::h($box)?>" class="openbox">
         <label for="switch-hide-msgbox-<?=Text::h($box)?>" class="btn btn-pill btn-small btn-checkbox">
             <?=Text::t(ucfirst($box))?>
-            <input type="checkbox" value="hide-active-msgbox-<?=Text::h($box)?>" id="switch-hide-msgbox-<?=Text::h($box)?>" title="<?=Text::h($perm)?>">
+            <input type="checkbox" value="hide-active-msgbox-<?=Text::h($box)?>" id="switch-hide-msgbox-<?=Text::h($box)?>" title="<?=Text::h($box)?>">
         </label>
         <span><?=$msgs[0] . ((count($msgs) > 1) ? ' +' . (count($msgs) - 1) : '')?></span>
     </div>
@@ -126,7 +126,7 @@ document.addEventListener('trix-file-accept', function(event) {
     <div id="openbox-<?=Text::h($box)?>" class="openbox hide-perm-dev">
         <label for="switch-hide-msgbox-<?=Text::h($box)?>" class="btn btn-pill btn-small btn-checkbox">
             <?=Text::t(ucfirst($box))?>
-            <input type="checkbox" value="hide-active-msgbox-<?=Text::h($box)?>" id="switch-hide-msgbox-<?=Text::h($box)?>" title="<?=Text::h($perm)?>">
+            <input type="checkbox" value="hide-active-msgbox-<?=Text::h($box)?>" id="switch-hide-msgbox-<?=Text::h($box)?>" title="<?=Text::h($box)?>">
         </label>
         <span><?=Text::desc($msgs[0], 30, ' ') . ((count($msgs) > 1) ? ' +' . (count($msgs) - 1) : '')?></span>
     </div>
