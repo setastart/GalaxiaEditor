@@ -26,7 +26,9 @@ class ArrayShape {
     static function removePermsRecursive(array &$arr, array $perms = []) {
         foreach ($arr as $subKey => $subVal) {
             if (is_array($subVal)) {
-                if (isset($subVal['gcPerms']) && is_array($subVal['gcPerms'])) {
+                if (isset($subVal['gcPerms'])) {
+                    if (is_string($subVal['gcPerms']))$subVal['gcPerms'] = [$subVal['gcPerms']];
+
                     $foundPerms = array_intersect($subVal['gcPerms'], $perms);
                     if (!$foundPerms) {
                         $arr[$subKey] = [];

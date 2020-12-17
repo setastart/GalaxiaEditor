@@ -36,15 +36,15 @@ if (Director::isDevEnv()) {
     include_once __DIR__ . '/Galaxia/kint.phar';
     Kint\Renderer\RichRenderer::$folder = false;
     function dd(...$vars) {
-        d(...$vars);
+        !d(...$vars);
         exit;
     }
     function sd(...$vars) {
-        s(...$vars);
+        !s(...$vars);
         exit;
     }
     function db() {
-        Kint::trace();
+        !Kint::trace();
     }
 } else if (Director::isCli()) {
     function d(...$vars) {

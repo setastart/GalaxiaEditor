@@ -38,7 +38,7 @@ foreach ($fieldsNew as $moduleKey => $fields) {
             //         return;
             //     }
             // }
-            //
+
             $insertedId = null;
             try {
                 $insertedId = ModelField::insert(
@@ -55,6 +55,7 @@ foreach ($fieldsNew as $moduleKey => $fields) {
 
             if (is_null($insertedId)) {
                 Flash::error('fields-update - Unable to insert field.');
+                // geD($query);
 
                 return;
             } else {

@@ -112,8 +112,8 @@ class User {
                 name,
                 email,
                 perms,
-                UNIX_TIMESTAMP(timestampCreated),
-                UNIX_TIMESTAMP(timestampLastOnline)
+                UNIX_TIMESTAMP(timestampLastOnline),
+                UNIX_TIMESTAMP(timestampCreated)
             FROM $this->tableName
             WHERE _geUserId = ?
         ");
@@ -131,7 +131,7 @@ class User {
             $this->name           = $name;
             $this->email          = $email;
             $this->perms          = $permsArr;
-            $this->timeLastOnline = $timeLastOnline;
+            $this->timeLastOnline = $timeLastOnline ?? '';
             $this->timeCreated    = $timeCreated;
 
             $stmt = $db->prepare("

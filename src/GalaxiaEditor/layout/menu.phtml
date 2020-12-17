@@ -7,6 +7,7 @@ $menu = [];
 
 foreach ($geConf as $rootSlug => $confPage) {
     if (!isset($me)) continue;
+    if (empty($confPage)) continue;
 
     if ($confPage['gcPageType'] == 'gcpSeparator') {
         $menu[$rootSlug]['cssClass'] = 'menu-separator';

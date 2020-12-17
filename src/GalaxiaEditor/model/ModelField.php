@@ -37,6 +37,7 @@ class ModelField {
 
         $query = Sql::queryInsert($gcUpdate, $insert);
 
+        // geD($query, $values);
         $stmt  = $db->prepare($query);
         $types = str_repeat('s', count($values));
         $stmt->bind_param($types, ...$values);
