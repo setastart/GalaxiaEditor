@@ -1620,7 +1620,7 @@ let gjScraper = {
     vimeo: function(el) {
         let elMeta = gjScraper.setupEl(el);
 
-        let vimeoId = url.match(/vimeo\.com\/(\d+)$/i);
+        let vimeoId = elMeta.url.match(/vimeo\.com\/(\d+)$/i);
         if (vimeoId && vimeoId[1]) {
             vimeoId                  = vimeoId[1];
             elMeta.infosEl.innerHTML = '<li>' + vimeoId + '</li>';
