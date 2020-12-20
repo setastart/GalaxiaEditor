@@ -1,5 +1,16 @@
 <?php
+/* Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
 
+ - Licensed under the EUPL, Version 1.2 only (the "Licence");
+ - You may not use this work except in compliance with the Licence.
+
+ - You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
+
+ - Unless required by applicable law or agreed to in writing, software distributed
+   under the Licence is distributed on an "AS IS" basis,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ - See the Licence for the specific language governing permissions and limitations under the Licence.
+*/
 
 namespace Galaxia;
 
@@ -18,12 +29,12 @@ class ImageVips {
     public static int $qualityPngMin = 70;
     public static int $qualityPngMax = 90;
 
-    public $vips = null;
-    public bool $fromUrl = false;
-    public string $in;
+    public         $vips    = null;
+    public bool    $fromUrl = false;
+    public string  $in;
     public ?string $ext;
-    public int $w, $h;
-    public bool $resized;
+    public int     $w, $h;
+    public bool    $resized;
 
 
     /**
@@ -38,7 +49,7 @@ class ImageVips {
             file_put_contents($temp, file_get_contents($in));
             if (file_put_contents($temp, file_get_contents($in)) === false) throw new Exception('Could not write to temp file for image from URL.');
 
-            $in = $temp;
+            $in            = $temp;
             $this->fromUrl = true;
         }
 
@@ -91,7 +102,7 @@ class ImageVips {
     static function crop(string $dir, string $slug, string $ext, int $w, int $h, bool $overwite = false, bool $debug = false): void {
         if ($w <= 0) return;
 
-        $in  = $dir . $slug . $ext;
+        $in = $dir . $slug . $ext;
 
         if ($h >= 0) $options = ['height' => $h];
         $options['crop'] = 'centre';
@@ -107,7 +118,7 @@ class ImageVips {
             $textW = min($w, 120);
             $textH = min($h, 60);
             $text  = vips_call('text', null, $w . 'x' . $h, ['width' => $textW, 'height' => $textH])['out'];
-            $vips  = vips_call('composite', null, [$vips, $text], 2, ['x' => [$w/2-($textW/2)], 'y' => [$h/2]])['out'];
+            $vips  = vips_call('composite', null, [$vips, $text], 2, ['x' => [$w / 2 - ($textW / 2)], 'y' => [$h / 2]])['out'];
         }
 
         if (!$vips) {

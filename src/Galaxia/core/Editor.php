@@ -1,5 +1,5 @@
 <?php
-/* Copyright 2017-2020 Ino Detelić
+/* Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
 
  - Licensed under the EUPL, Version 1.2 only (the "Licence");
  - You may not use this work except in compliance with the Licence.
@@ -13,6 +13,7 @@
 */
 
 namespace Galaxia;
+
 
 class Editor {
 
@@ -40,7 +41,7 @@ class Editor {
 
 
     public function __construct(string $dir) {
-        $this->dir = rtrim($dir, '/') . '/';
+        $this->dir       = rtrim($dir, '/') . '/';
         $this->dirLayout = $this->dir . 'src/GalaxiaEditor/layout/';
         $this->dirLogic  = $this->dir . 'src/GalaxiaEditor/template/';
         $this->dirView   = $this->dir . 'src/GalaxiaEditor/template/';

@@ -44,7 +44,7 @@ Galaxia is a web publishing platform designed for:
     - Person who creates the functionality and design of the websites.
     - Has access to edit the Galaxia templates, css.
     - Has access to edit the database schema directly (to add languages, specialized fields)
-    - Has privileged access to the Galaxia editor, to setup special functionality to be used or not by editors.
+    - Has privileged access to GalaxiaEditor, to setup special functionality to be used or not by editors.
 
 
 # 3. Features

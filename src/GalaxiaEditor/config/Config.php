@@ -10,7 +10,7 @@ use GalaxiaEditor\input\Input;
 
 class Config {
 
-    // galaxia editor config proto array
+    // GalaxiaEditor config proto array
     // defines an array schema the website config must follow
     // gcExample:  galaxia config
     // gcpExample: galaxia config proto
