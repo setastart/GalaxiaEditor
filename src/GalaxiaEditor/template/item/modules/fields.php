@@ -231,9 +231,14 @@ foreach ($newFieldsToDelete as $fieldKey => $field) {
 
 if ($module['gcFieldOrder'] ?? false) {
     $order = array_flip($module['gcFieldOrder']);
-    uksort($module['inputs'], function($a, $b) use ($order) {
+    uksort($module['inputs'], function($a, $b) use ($order, $module) {
         $aSearch = $order[$a] ?? $order['gcDefault'] ?? -1;
         $bSearch = $order[$b] ?? $order['gcDefault'] ?? -1;
+
+        if ($aSearch === $bSearch) {
+            $aSearch = array_search($a, array_keys($module['inputs']));
+            $bSearch = array_search($b, array_keys($module['inputs']));
+        };
 
         return $aSearch <=> $bSearch;
     });
