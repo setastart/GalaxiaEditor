@@ -2,6 +2,7 @@
     "name": "setastart/galaxia-editor",
     "type": "project",
     "description": "GalaxiaEditor is a multilingual web content editor (CMS).",
+    "license": "EUPL Version 1.2",
     "keywords": ["galaxia", "editor", "cms"],
     "homepage": "https://setastart.com/",
 

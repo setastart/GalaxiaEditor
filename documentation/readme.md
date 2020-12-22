@@ -2,7 +2,7 @@
 
 
 
-# todo galaxiaEditor
+# todo GalaxiaEditor
 
 - reorder items in lists where position is set
 - check for missing and unused translations

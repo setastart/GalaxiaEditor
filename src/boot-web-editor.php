@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.25.6';
+$editor->version = '4.25.7';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -248,6 +248,8 @@ if ($me->loggedIn) {
         $r->get('/edit/importer/{pgSlug:jsonld}', 'importer/jsonld');
         $r->get('/edit/importer/{pgSlug:youtube}', 'importer/youtube');
         $r->get('/edit/importer/{pgSlug:vimeo}', 'importer/vimeo');
+
+        $r->get('/edit/stats', 'stats/list');
 
         foreach ($geConf as $rootSlug => $confPage) {
             if (!isset($confPage['gcPageType']) || !is_string($confPage['gcPageType'])) continue;
