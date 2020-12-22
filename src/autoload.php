@@ -46,7 +46,7 @@ if (Director::isDevEnv()) {
     function db() {
         !Kint::trace();
     }
-} else if (Director::isCli()) {
+} else if (Director::isCli() || Director::isDevDebug()) {
     function d(...$vars) {
         foreach ($vars as $var) {
             ob_start();

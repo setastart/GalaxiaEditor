@@ -486,7 +486,7 @@ class Director {
         }
 
 
-        if (self::isDevEnv()) {
+        if (self::isDevEnv() || self::isDevDebug()) {
             d($msg);
             d($debugText);
             db();
