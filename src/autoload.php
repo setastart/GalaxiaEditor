@@ -58,8 +58,8 @@ if (Director::isDevEnv()) {
         }
     }
     function s(...$vars) { d($vars); }
-    function dd(...$vars) {d($vars); exit; }
-    function sd(...$vars) {d($vars); exit; }
+    function dd(...$vars) { d($vars); exit; }
+    function sd(...$vars) { s($vars); exit; }
     function db() {
         $backtrace = array_reverse(debug_backtrace());
         $r = '';

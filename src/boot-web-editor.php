@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.25.7';
+$editor->version = '4.25.8';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -240,6 +240,7 @@ if ($me->loggedIn) {
             $r->get('/edit/dev/{pgSlug:sitemap}', 'dev/sitemap');
             $r->get('/edit/dev/{pgSlug:cacheDeleteApp}', 'dev/cache-delete-app');
             $r->get('/edit/dev/{pgSlug:cacheDeleteAll}', 'dev/cache-delete-all');
+            $r->get('/edit/dev/{pgSlug:info}', 'dev/info');
         }
         $r->get('/edit/dev/{pgSlug:cacheDeleteEditor}', 'dev/cache-delete-editor');
         $r->get('/edit/dev/{pgSlug:imageListDeleteResizes}', 'dev/image-list-delete-resizes');
