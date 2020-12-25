@@ -355,7 +355,7 @@ label.input-radio input {
     font-weight: 500;
     margin: 0;
     min-height: 38px;
-    padding: 6px;
+    padding: 6px 2px;
     text-align: center;
     border-radius: 4px;
     background: #ece6ef linear-gradient(160deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
@@ -373,6 +373,12 @@ label.input-radio input {
     transition: padding 65ms ease-in-out, background 65ms ease-in-out;
     box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.04), 0 0 2px rgba(187, 153, 170, 0.3);
     flex: 1 1 auto;
+}
+.btn > svg,
+.btn > img {
+    height: 24px;
+    display: block;
+    margin: 0 auto;
 }
 button.btn {
     padding: 4px 2px;

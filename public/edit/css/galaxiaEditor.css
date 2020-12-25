@@ -853,6 +853,9 @@ a.row:hover, .row a:hover {
     display: flex;
     flex-direction: column;
 }
+.module-field-gallery .module-field-group > :first-child {
+    margin-bottom: auto;
+}
 .module-field-gallery .ev-gallery-add {
     position: absolute;
 }
@@ -878,7 +881,6 @@ a.row:hover, .row a:hover {
     align-items: stretch;
 }
 .module-field-gallery .module-field-group-footer {
-    margin-top: auto;
     padding-bottom: 1px;
 }
 .module-field-gallery .input-wrap-slugImage {

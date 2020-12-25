@@ -417,6 +417,7 @@ $r = '';
         foreach ($input['options'] as $optionValue => $option) {
             $css  = 'btn input-radio btn-pill';
             $attr = '';
+            $icon = $option['icon'] ?? '';
 
             if (isset($option['cssClass'])) $css .= ' ' . $option['cssClass'];
             if ($optionValue == $input['value']) {
@@ -430,6 +431,7 @@ $r = '';
 
 $r .= '    <label class="' . Text::h($css) . '">' . PHP_EOL;
 $r .= '        <input type="radio" name="' . $input['name'] . '" value="' . $optionValue . '"' . Text::h($attr) . '>' . PHP_EOL;
+if ($icon) $r .= '        ' . Text::unsafe($icon) . PHP_EOL;
 $r .= '        ' . Text::t($option['label']) . PHP_EOL;
 $r .= '    </label>' . PHP_EOL;
         }
