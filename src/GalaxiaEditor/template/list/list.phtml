@@ -1,24 +1,50 @@
-<?php use Galaxia\Text;
+<?php
+
+use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
 use GalaxiaEditor\render\view\ViewPagination;
 
 
-InputRender::form('', 'item-list', 'paper pad');?>
+$links = [];
+foreach ($list['gcLinks'] ?? [] as $href => $link) {
+    if (!$link) continue;
+    $frags = explode('/', $href);
+    if (!$frags) continue;
+
+    $label = Text::t($link['label'] ?? '');
+    $href  = Text::h($pgSlug) . '/' . $href;
+    $css   = Text::h($link['cssClass'] ?? '');
+
+    switch ($frags[0]) {
+        case 'new':
+            $label = sprintf(Text::t('+ Add new %s'), Text::t($geConf[$pgSlug]['gcTitleSingle']));
+            break;
+
+        case 'order':
+            $label = sprintf(Text::t('Order %s'), Text::t($geConf[$pgSlug]['gcTitlePlural']));
+            break;
+
+        default:
+            break;
+    }
+    $links[] = [
+        'label' => $label,
+        'href'  => $href,
+        'css'   => $css,
+    ];
+}
+
+
+InputRender::form('', 'item-list', 'paper pad');
+
+// @formatter:off ?>
 
     <div class="paper-header pad">
         <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t($pgTitle);?></h1>
 
         <div class="list-links">
-<?php   foreach ($list['gcLinks'] as $href => $link) { ?>
-<?php       if (!$link) continue; ?>
-<?php       switch ($href) { ?>
-<?php           case 'new': ?>
-            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($href)?>" class="btn btn-pad <?=Text::h($link['cssClass'])?>"><?=sprintf(Text::t('+ Add new %s'), Text::t($geConf[$pgSlug]['gcTitleSingle']))?></a>
-<?php           break; ?>
-<?php           default: ?>
-            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($href)?>" class="btn btn-pad <?=Text::h($link['cssClass'])?>"><?=Text::t($link['label'])?></a>
-<?php           break; ?>
-<?php       } ?>
+<?php   foreach ($links as $link) { ?>
+            <a href="/edit/<?=Text::h($link['href'])?>" class="btn btn-pad <?=Text::h($link['css'])?>"><?=Text::t($link['label'])?></a>
 <?php   } ?>
         </div>
     </div>

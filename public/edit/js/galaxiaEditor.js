@@ -1008,7 +1008,8 @@ let gjField = {
                 // posAfter.innerHTML = posAfter.dataset.pos;
             }
         }
-        el.previousElementSibling.querySelector('.module-field-count').innerHTML = j;
+        let elCount = el.previousElementSibling.querySelector('.module-field-count');
+        if (elCount) elCount.innerHTML = j;
     },
 
 }

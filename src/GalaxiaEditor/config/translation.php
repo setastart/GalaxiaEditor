@@ -426,6 +426,11 @@ return [
         'pt' => '+ Adicionar',
         'es' => '+ Añadir',
     ],
+    'Order %s' => [
+        'en' => 'Order %s',
+        'pt' => 'Ordenar %s',
+        'es' => 'Ordenar %s',
+    ],
     'Page Type' => [
         'en' => 'Page Type',
         'pt' => 'Tipo de Página',

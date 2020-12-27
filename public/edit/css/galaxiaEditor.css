@@ -504,6 +504,17 @@ a.paper {
     margin-left: 50px;
 }
 
+.row > .btn-row {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0;
+    justify-content: center;
+}
+.row > .btn-row > .btn-group {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
 .col.flexT { flex: 1 1; }
 .col.flex1 { flex: 1 1; }
 .col.flex2 { flex: 2 1; }

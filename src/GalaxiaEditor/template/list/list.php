@@ -19,6 +19,15 @@ $list        = $geConf[$pgSlug]['gcList'];
 $firstTable  = key($list['gcSelect']);
 $firstColumn = $list['gcSelect'][$firstTable][0];
 
+$order = '';
+if ($itemId ?? '') {
+    $order                 = 'order-';
+    $list['gcFilterInts']  = [];
+    $list['gcFilterTexts'] = [];
+    $_POST['itemsPerPage'] = 10000;
+    $editor->view   = 'list/order';
+}
+
 
 $dbSchema = [];
 
@@ -52,12 +61,12 @@ $stmt->close();
 
 // get tag colors from filters
 
-$tags = [];
+$tags         = [];
 $currentColor = 0;
 foreach ($list['gcFilterInts'] as $filterId => $filter) {
     if (!isset($filter['filterType'])) continue;
     $table = array_key_first($filter['filterWhat']);
-    $col = $filter['filterWhat'][$table][0];
+    $col   = $filter['filterWhat'][$table][0];
 
     switch ($filter['filterType']) {
         case 'tag':
@@ -74,7 +83,7 @@ foreach ($list['gcFilterInts'] as $filterId => $filter) {
 
 // get items from database using cache
 
-$items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() use ($db, $list, $firstTable, $firstColumn, $dbSchema) {
+$items = $app->cacheGet('editor', 2, 'list-' . $order . $pgSlug . '-items', function() use ($db, $list, $firstTable, $firstColumn, $dbSchema, $order) {
     // // add key columns to joined tables (used to group joins in columns)
     // $selectQueryWithJoinKeys = $list['gcSelect'];
     // foreach ($selectQueryWithJoinKeys as $table => $columns) {
@@ -115,7 +124,11 @@ $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() us
 
             $queryMain = [$table => $selectQuery[$table]];
             $query     = Sql::select($queryMain);
-            if (isset($list['gcSelectOrderBy'][$table])) {
+
+
+            if ($order && isset($list['gcLinks']['order']['gcSelectOrderBy'][$table])) {
+                $query .= Sql::selectOrderBy([$table => $list['gcLinks']['order']['gcSelectOrderBy'][$table]]);
+            } else if (isset($list['gcSelectOrderBy'][$table])) {
                 $query .= Sql::selectOrderBy([$table => $list['gcSelectOrderBy'][$table]]);
             }
 
@@ -147,11 +160,22 @@ $items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() us
             }
             $query .= Sql::selectLeftJoinUsing($joins);
 
-            foreach ($list['gcSelectOrderBy'] ?? [] as $orderTable => $orderCols) {
-                if (isset($joins[$orderTable])) {
-                    $query .= Sql::selectOrderBy([$orderTable => $orderCols]);
+            if ($order && isset($list['gcLinks']['order']['gcSelectOrderBy'])) {
+                foreach ($list['gcLinks']['order']['gcSelectOrderBy'] ?? [] as $orderTable => $orderCols) {
+                    if (isset($joins[$orderTable])) {
+                        $query .= Sql::selectOrderBy([$orderTable => $orderCols]);
+                    }
+                }
+            } else if (isset($list['gcSelectOrderBy'])) {
+                foreach ($list['gcSelectOrderBy'] ?? [] as $orderTable => $orderCols) {
+                    if (isset($joins[$orderTable])) {
+                        $query .= Sql::selectOrderBy([$orderTable => $orderCols]);
+                    }
                 }
             }
+
+
+
             $done       = 0;
             $askForData = true;
             do {
@@ -218,14 +242,19 @@ foreach ($columns as $columnId => $column) {
 
 // make html for all rows, using cache
 
-$rows = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns, $tags) {
+$rows = $app->cacheGet('editor', 3, 'list-' . $order . $pgSlug . '-rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns, $tags, $order) {
     $rows         = [];
     $currentColor = 0;
     $thumbsToShow = 3;
     foreach ($items as $itemId => $item) {
         $statusClass = '';
         if (isset($item[$firstTable][$itemId][$firstTable . 'Status'])) $statusClass = ' status-' . (int)($item[$firstTable][$itemId][$firstTable . 'Status'] ?? 0);
-        $ht = '<a class="row' . $statusClass . '" href="/edit/' . $pgSlug . '/' . $itemId . '">' . PHP_EOL;
+
+        if ($order) {
+            $ht = '<div id="order-' . $itemId . '" class="row' . $statusClass . '">' . PHP_EOL;
+        } else {
+            $ht = '<a class="row' . $statusClass . '" href="/edit/' . $pgSlug . '/' . $itemId . '">' . PHP_EOL;
+        }
 
         foreach ($columns as $columnId => $column) {
             if (!$column) continue;
@@ -321,6 +350,7 @@ $rows = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use 
                                 $r  .= Text::h(ucfirst(Text::formatDate($dt, 'MMM')));
                                 break;
 
+                            case 'position':
                             case 'small':
                                 $r .= Text::h($value);
                                 break;
@@ -331,7 +361,7 @@ $rows = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use 
                                 break;
                         }
 
-                        if (empty($value) && $columnData['type'] != 'thumb' && !$isHomeSlug) {
+                        if ($value == '' && $columnData['type'] != 'thumb' && !$isHomeSlug) {
                             $colRowItemClass .= ' empty';
                             $r               .= $value . Text::t('Empty');
                         }
@@ -345,7 +375,34 @@ $rows = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use 
             $ht .= '    </div>' . PHP_EOL;
 
         }
-        $ht            .= '</a>' . PHP_EOL;
+        if ($order) {
+            ob_start();
+
+// @formatter:off ?>
+            <div class="btn-row pad">
+                <div class="btn-group">
+                    <button title="<?=Text::t("First")?>" type="button" class="ev-module-first btn-new reorder-first active" data-target="order-<?=$itemId?>"></button>
+                    <button title="<?=Text::t("Previous")?>" type="button" class="ev-module-up btn-new reorder-prev active" data-target="order-<?=$itemId?>"></button>
+                </div>
+                <div class="btn-group">
+                    <input class="module-position input-text" type="text" min="1" name="order[<?=$itemId?>]" value="<?=$item[$firstTable][$itemId]['position'] ?? '?'?>">
+                    <button type="button" class="ev-module-go btn-new active" data-target="order-<?=$itemId?>">go!</button>
+                </div>
+                <div class="btn-group">
+                    <button title="<?=Text::t("Next")?>" type="button" class="ev-module-down btn-new reorder-next active" data-target="order-<?=$itemId?>"></button>
+                    <button title="<?=Text::t("Last")?>" type="button" class="ev-module-last btn-new reorder-last active" data-target="order-<?=$itemId?>"></button>
+                </div>
+            </div>
+<?php // @formatter:on
+            $ht .= ob_get_clean();
+        }
+
+        if ($order) {
+            $ht .= '</div>' . PHP_EOL;
+        } else {
+            $ht .= '</a>' . PHP_EOL;
+        }
+
         $rows[$itemId] = $ht;
     }
 
@@ -363,7 +420,7 @@ $filterInts = $list['gcFilterInts'];
 foreach ($filterInts as $filterId => $filter) {
     if (isset($filter['filterType'])) {
         $table = array_key_first($filter['filterWhat']);
-        $col = $filter['filterWhat'][$table][0];
+        $col   = $filter['filterWhat'][$table][0];
 
         switch ($filter['filterType']) {
             case 'tag':
@@ -402,7 +459,7 @@ foreach ($filterInts as $filterId => $filter) {
 Director::timerStart('Filter Ints');
 foreach ($intFiltersActive as $filterId) {
 
-    $itemsByInt = $app->cacheGet('editor', 3, 'list- ' . $pgSlug . '-filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
+    $itemsByInt = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
         $itemsByInt = [];
         foreach ($items as $itemId => $item)
             foreach ($filterInts[$filterId]['filterWhat'] as $dbTable => $dbColumns)
@@ -516,3 +573,7 @@ $rows = array_slice($rows, $offset, $length);
 $hdTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']) . ' - ' . $hdTitle;
 $pgTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']);
 
+if ($order) {
+    $hdTitle = sprintf(Text::t('Order %s'), $hdTitle);
+    $pgTitle = sprintf(Text::t('Order %s'), $pgTitle);
+}

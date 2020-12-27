@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.25.9';
+$editor->version = '4.26.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -265,6 +265,10 @@ if ($me->loggedIn) {
                     if ($confPage['gcList']) {
                         $r->get('/edit/{pgSlug:' . $rootSlug . '}', 'list/list');
                         $r->post('/edit/{pgSlug:' . $rootSlug . '}', 'list/list');
+                    }
+                    if ($confPage['gcList']['gcLinks']['order'] ?? []) {
+                        $r->get('/edit/{pgSlug:' . $rootSlug . '}/{itemId:order}', 'list/list');
+                        $r->post('/edit/{pgSlug:' . $rootSlug . '}/{itemId:order}', 'list/order-post');
                     }
 
                     if ($confPage['gcItem']) {

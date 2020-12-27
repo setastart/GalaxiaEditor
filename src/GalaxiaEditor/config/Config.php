@@ -112,8 +112,9 @@ class Config {
         ],
 
         'gcpLinks' => [
-            'label'    => 'string',
-            'cssClass' => 'string',
+            '?label'           => 'string',
+            '?cssClass'        => 'string',
+            '?gcSelectOrderBy' => 'tableWithColsOrder',
         ],
 
         'gcpColumns' => [

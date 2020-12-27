@@ -1,0 +1,49 @@
+<?php
+/*
+ Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
+
+  - Licensed under the EUPL, Version 1.2 only (the "Licence");
+  - You may not use this work except in compliance with the Licence.
+
+  - You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
+
+  - Unless required by applicable law or agreed to in writing, software distributed
+    under the Licence is distributed on an "AS IS" basis,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the Licence for the specific language governing permissions and limitations under the Licence.
+ */
+
+use Galaxia\Text;
+use GalaxiaEditor\input\InputRender;
+use GalaxiaEditor\render\view\ViewPagination;
+
+
+
+InputRender::form('', 'item-order', 'paper pad');
+
+// @formatter:off ?>
+
+    <div class="paper-header pad">
+        <h1><?=Text::t($pgTitle)?></h1>
+        <div class="list-links">
+        </div>
+        <div class="paper-header-actions">
+            <button type="submit" class="btn btn-green active"><?=Text::t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=Text::t('Save and go back')?></button>
+        </div>
+
+    </div>
+
+
+    <div class="load">
+<?php   include $editor->dirView . 'list/results.phtml'; ?>
+    </div>
+
+    <div class="paper-footer pad">
+        <div class="paper-footer-actions">
+            <button type="submit" class="btn btn-green active"><?=Text::t('Save')?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t($geConf[$pgSlug]['gcTitlePlural']))?></button>
+        </div>
+    </div>
+
+<?php   InputRender::renderFormEnd(); ?>

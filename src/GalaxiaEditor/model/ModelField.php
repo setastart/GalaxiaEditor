@@ -67,14 +67,13 @@ class ModelField {
         $query .= Sql::updateSet(array_keys($update));
         $query .= Sql::updateWhere($queryUpdateWhere);
 
-        // !d(
+        // dd(
         //     $gcUpdate,
         //     $queryUpdateWhere,
         //     $params,
         //     $update,
         //     $query
         // );
-        // exit();
 
         $stmt  = $db->prepare($query);
         $types = str_repeat('s', count($update)) . 'dds';
