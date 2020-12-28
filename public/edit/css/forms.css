@@ -523,7 +523,7 @@ a.btn-small {
     border-radius: 0px;
 }
 .btn-pill + .btn-pill {
-    border-left: none;
+    border-left: none !important;
 }
 .btn-pill:only-of-type {
     border-radius: 4px;
