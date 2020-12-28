@@ -80,7 +80,8 @@ class ArrayShape {
                     $subItemNew = [];
                     foreach ($langs as $lang) {
                         $subItemNew[$subKey . $lang] = $subVal;
-                        $length                      = ($i == $j) ? 1 : 0;
+
+                        $length = ($i == $j) ? 1 : 0;
                         ArrayShape::splicePreserveKeys($arr, $j, $length, $subItemNew);
                         $j++;
                     }

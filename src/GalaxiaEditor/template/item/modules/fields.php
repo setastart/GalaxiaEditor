@@ -94,7 +94,12 @@ foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
         $input = array_replace_recursive($module['gcInputs'][$inputKey], $inputOriginal);
         $input = Input::prepare($input, $extras);
 
-        $input['label']      = $inputOriginal['label'] ?? $module['gcInputs'][$inputKey]['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey;
+        if (isset($module['gcModuleMultiple'][$fieldKey])) {
+            $input['label'] = $inputOriginal['label'] ?? $module['gcInputs'][$inputKey]['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey;
+        } else {
+            $input['label'] = $inputOriginal['label'] ?? $module['gcInputs'][$inputKey]['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $fieldKey ?? $inputKey;
+        }
+
         $input['nameFromDb'] = $inputKey;
         $input['name']       = 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputKey . ']';
 

@@ -303,7 +303,7 @@ $rows = $app->cacheGet('editor', 3, 'list-' . $order . $pgSlug . '-rows', functi
                                 if ($i == $thumbsToShow) {
                                     $r .= count($item[$dbTable]) . PHP_EOL;
                                 } else {
-                                    $img = $app->imageGet($value, ['w' => 256, 'h' => 256, 'version' => 'mtime'], false);
+                                    $img = $app->imageGet($value, ['w' => 256, 'h' => 256, 'version' => 'mtime', 'loading' => false], false);
                                     if ($img) {
                                         $r .= AppImage::render($img) . PHP_EOL;
                                     } else {

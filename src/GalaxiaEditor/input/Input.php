@@ -257,7 +257,7 @@ class Input {
                 $minLength = max($input['options']['minlength'] ?? 0, 0);
                 if ($minLength > 0)
                     if (!filter_var($input['value'], FILTER_VALIDATE_URL))
-                        $input['errors'][] = 'Invalid email address.';
+                        $input['errors'][] = 'Invalid url.';
 
                 if (mb_strlen($input['value']) > 255)
                     $input['errors'][] = sprintf('Too long. Max %d characters.', 255);

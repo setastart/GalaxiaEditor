@@ -120,7 +120,7 @@ a#website-link > img {
 a.menu-item {
     color: #102;
     text-decoration: none;
-    box-shadow: 0 0 0 1px #a78, 2px 2px 3px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.4), 0 0 0 1px #a78, 2px 2px 3px rgba(0, 0, 0, 0.075);
 }
 a.menu-item.active {
     background-image: linear-gradient(-135deg, #98b, #98b 8px, #eb1 8px, #eb1 12px, transparent 12px);
@@ -912,7 +912,8 @@ a.row:hover, .row a:hover {
     height: 165px;
     max-height: 165px;
     border: none;
-    background: rgba(0, 0, 0, 0.1);
+    background: url('/edit/gfx/bg-transparency.png') center;
+    background-size: 15px;
 }
 
 

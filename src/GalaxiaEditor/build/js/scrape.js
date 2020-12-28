@@ -160,7 +160,7 @@ let gjScraper = {
                         let img = {slug: content, src: '/media/image/' + content + '/' + content + '.jpg'}
 
                         if (inputEl.classList.contains('input-slugImg')) {
-                            gjImage.setInputAndImage(inputEl, img);
+                            gjImage.setInputAndImage(inputEl, img, true);
                         }
 
                         switch (inputEl.type) {

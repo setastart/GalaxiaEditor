@@ -647,7 +647,7 @@ let gjImage = {
 
             this.close();
 
-            this.setInputAndImage(this.activeInput, img);
+            this.setInputAndImage(this.activeInput, img, true);
         }
     },
 
@@ -665,9 +665,10 @@ let gjImage = {
         for (let imgSlug in ordered) {
             let cloned     = gjField.cloneNew(this.activeFieldId, this.activePos);
             let imageInput = cloned.querySelector('.input-wrap-slugImage .input-slug');
-
-            this.setInputAndImage(imageInput, ordered[imgSlug]);
+            this.setInputAndImage(imageInput, ordered[imgSlug], false);
         }
+
+        gjInput.textareaResize();
 
         gjField.countPos(document.getElementById(this.activeFieldId));
     },
@@ -702,14 +703,14 @@ let gjImage = {
     },
 
 
-    setInputAndImage: function(inputEl, img) {
+    setInputAndImage: function(inputEl, img, autogrow) {
         inputEl.value   = img.slug;
         let selectorImg = inputEl.nextElementSibling.children[0];
         selectorImg.parentNode.classList.remove('empty');
         selectorImg.src = img.src;
         selectorImg.setAttribute('width', img.w);
         selectorImg.setAttribute('height', img.h);
-        gjInput.textareaAutoGrow(inputEl)
+        if (autogrow) gjInput.textareaAutoGrow(inputEl)
     },
 
 
@@ -1747,7 +1748,7 @@ let gjScraper = {
                         let img = {slug: content, src: '/media/image/' + content + '/' + content + '.jpg'}
 
                         if (inputEl.classList.contains('input-slugImg')) {
-                            gjImage.setInputAndImage(inputEl, img);
+                            gjImage.setInputAndImage(inputEl, img, true);
                         }
 
                         switch (inputEl.type) {

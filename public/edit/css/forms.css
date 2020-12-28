@@ -91,7 +91,8 @@
     cursor: pointer;
     border: 1px solid #b9a;
     padding: 0;
-    background: transparent;
+    background: transparent url('/edit/gfx/bg-transparency.png') center;
+    background-size: 15px;
 }
 .input-wrap-slugImage .slugImage img {
     object-fit: contain;
@@ -109,7 +110,6 @@
     grid-column: 3/4;
 }
 .slugImage.empty {
-    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .input-label {
@@ -208,6 +208,8 @@
     text-transform: none;
     font-size: 14px;
     line-height: 20px;
+}
+.input-textarea {
     overflow-y: hidden;
 }
 
@@ -360,9 +362,9 @@ label.input-radio input {
     border-radius: 4px;
     background: #ece6ef linear-gradient(160deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
 
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-right-color: rgba(0, 0, 0, 0.2);
-    border-bottom-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-right-color: rgba(0, 0, 0, 0.3);
+    border-bottom-color: rgba(0, 0, 0, 0.3);
 
     float: left;
     text-decoration: none;
@@ -371,7 +373,7 @@ label.input-radio input {
     -webkit-hyphens: auto;
             hyphens: auto;
     transition: padding 65ms ease-in-out, background 65ms ease-in-out;
-    box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.04), 0 0 2px rgba(187, 153, 170, 0.3);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5), inset -1px -1px 0 rgba(0, 0, 0, 0.03), 1px 1px 3px rgba(0, 0, 0, 0.02);
     flex: 1 1 auto;
 }
 .btn > svg,
@@ -384,10 +386,10 @@ button.btn {
     padding: 4px 2px;
 }
 .btn:hover {
-    box-shadow: inset 2px 2px 32px rgba(255, 255, 255, 0.5), 0 0 2px rgba(187, 153, 170, 0.3);
+    box-shadow: inset 2px 2px 32px rgba(255, 255, 255, 0.5), 1px 1px 3px rgba(0, 0, 0, 0.02);
 }
 .btn.active:hover {
-    box-shadow: inset 2px 2px 32px rgba(255, 255, 255, 0.3), 0 0 2px rgba(187, 153, 170, 0.3);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.7), inset 2px 2px 32px rgba(255, 255, 255, 0.3), 1px 1px 3px rgba(0, 0, 0, 0.02);
 }
 .btn:active {
     box-shadow: inset 2px 2px 32px rgba(0, 0, 0, 0.1);
@@ -398,11 +400,11 @@ button.btn {
 
 .btn.input-radio.active {
     border: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), 0 0 2px rgba(187, 153, 170, 0.3);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), 1px 1px 3px rgba(0, 0, 0, 0.02);
 }
 .btn.input-radio.active:hover {
     border: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset 2px 2px 32px rgba(255, 255, 255, 0.3), 0 0 2px rgba(187, 153, 170, 0.3);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset 2px 2px 32px rgba(255, 255, 255, 0.3), 1px 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .btn-group-radio {
@@ -520,7 +522,9 @@ a.btn-small {
 .btn-pill {
     border-radius: 0px;
 }
-
+.btn-pill + .btn-pill {
+    border-left: none;
+}
 .btn-pill:only-of-type {
     border-radius: 4px;
 }
@@ -771,6 +775,7 @@ button.fake:hover { color: #00a; }
     );
     background-size: 100% 130%;
     background-position: center top;
+    background-repeat: no-repeat;
 }
 .btn-checkbox.active {
     padding: 4px 0.1em 0;

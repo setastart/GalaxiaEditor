@@ -159,16 +159,17 @@ foreach ($item['gcInfo'] as $inputKey => $input) {
 
 
 $titleTemp = 'Item';
-
 if (is_array($item['gcColKey'])) {
     foreach ($item['gcColKey'] as $i => $val) {
         if (empty($item['data'][$val] ?? '')) continue;
         $item['gcColKey'] = $item['gcColKey'][$i];
         break;
     }
+    if (is_array($item['gcColKey'])) $item['gcColKey'] = $item['gcColKey'][array_key_first($item['gcColKey'])];
 }
 
 $titleTemp = $item['data'][$item['gcColKey']];
+if (empty($titleTemp)) $titleTemp = $itemId;
 if (substr($item['gcColKey'], 0, 9) == 'timestamp') $titleTemp = Text::formatDate($titleTemp, 'd MMM y - HH:mm');
 $pgTitle = Text::t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $titleTemp;
 $hdTitle = Text::t('Editing') . ': ' . $pgTitle;
@@ -179,7 +180,8 @@ $hdTitle = Text::t('Editing') . ': ' . $pgTitle;
 // add redirect module
 
 if ($item['gcRedirect']) {
-    $table                                    = $geConf[$pgSlug]['gcItem']['gcTable'];
+    $table = $geConf[$pgSlug]['gcItem']['gcTable'];
+
     $geConf[$pgSlug]['gcItem']['gcModules'][] = [
         'gcTable'               => $table . 'Redirect',
         'gcModuleType'          => 'fields',
@@ -194,10 +196,12 @@ if ($item['gcRedirect']) {
         'gcSelectExtra'   => [],
         'gcUpdate'        => [$table . 'Redirect' => [$table . 'RedirectSlug']],
 
-        'gcInputs'            => [$table . 'RedirectSlug' => ['label' => 'Slug', 'type' => 'slug', 'dbUnique' => true]],
-        'gcInputsWhereCol'    => [
+        'gcInputs' => [$table . 'RedirectSlug' => ['label' => 'Slug', 'type' => 'slug', 'dbUnique' => true]],
+
+        'gcInputsWhereCol' => [
             'Redirect' => [$table . 'RedirectSlug' => ['type' => 'text']],
         ],
+
         'gcInputsWhereParent' => [],
     ];
 }
