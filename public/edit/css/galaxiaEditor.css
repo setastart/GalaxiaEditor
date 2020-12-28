@@ -126,7 +126,6 @@ a.menu-item.active {
     background-image: linear-gradient(-135deg, #98b, #98b 8px, #eb1 8px, #eb1 12px, transparent 12px);
     background-color: #fffaf8;
     font-weight: bold;
-    text-decoration: underline;
 }
 a.menu-item:hover {
     cursor: pointer !important;
