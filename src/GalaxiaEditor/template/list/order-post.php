@@ -31,6 +31,7 @@ if ($changes) {
     Flash::warning(Text::t('No changes were made.'));
 }
 
+$app->cacheDelete(['app', 'fastroute']);
 $app->cacheDelete('editor');
 
 Flash::info('editor caches deleted');
