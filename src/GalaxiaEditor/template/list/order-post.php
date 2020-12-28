@@ -31,6 +31,10 @@ if ($changes) {
     Flash::warning(Text::t('No changes were made.'));
 }
 
+$app->cacheDelete('editor');
+
+Flash::info('editor caches deleted');
+
 if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
 
 include __DIR__ . '/list.php';
