@@ -149,6 +149,7 @@ trix-toolbar .trix-button-group {
     border: 1px solid #999;
     border-radius: 4px;
     overflow: hidden;
+    background: #fff8e7;
 }
 trix-toolbar .trix-button {
     flex-grow: 1;
@@ -182,6 +183,7 @@ trix-toolbar .trix-button:active {
 }
 trix-toolbar .trix-button.trix-active {
     background-color: #fe8;
+    background-image: none;
 }
 trix-toolbar .trix-button.trix-active:active:hover {
     background-color: #fe3;
@@ -228,9 +230,9 @@ trix-toolbar .trix-button--icon::before {
 
 trix-toolbar .trix-button--icon:active::before,
 trix-toolbar .trix-button--icon.trix-active::before {
-    opacity: 1;
+    /*opacity: 1;*/
 }
-trix-toolbar .trix-button--icon:disabled::before { opacity: 0.5; background-color: rgba(0, 0, 0, 0.2); }
+trix-toolbar .trix-button--icon:disabled::before { opacity: 0.5; }
 trix-toolbar .trix-button--icon-bold::before                   { background-image: url(/edit/gfx/buttons/gtrix-bold.png); }
 trix-toolbar .trix-button--icon-italic::before                 { background-image: url(/edit/gfx/buttons/gtrix-italic.png); }
 trix-toolbar .trix-button--icon-link::before                   { background-image: url(/edit/gfx/buttons/gtrix-link.png); }

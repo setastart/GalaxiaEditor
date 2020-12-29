@@ -15,7 +15,7 @@
 }
 .input-wrap .input-label {
     width: 30%;
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     flex-direction: column;
     flex-wrap: wrap;
     align-items: flex-end;
@@ -576,7 +576,7 @@ button.active:disabled {
     -ms-user-select: none;
     user-select: none;
     cursor: default;
-    opacity: 0.5;
+    /*opacity: 0.5;*/
 }
 button.fake {
     background :none;
