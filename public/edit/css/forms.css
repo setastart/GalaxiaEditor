@@ -310,7 +310,7 @@ select:-moz-focusring {
 }
 
 .input-text:read-only {
-    background: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 
@@ -410,6 +410,10 @@ button.btn {
 .btn-group-radio {
     display: flex;
     flex-wrap: wrap;
+}
+
+.input-text + .btn {
+    border-left: 0 !important;
 }
 
 
@@ -562,7 +566,7 @@ body:not(.show-focus-outlines) *:focus {
 button:disabled,
 button.active:disabled {
     /*border-color: #ccc !important;*/
-    background-color: #eee !important;
+    background-color: rgba(0, 0, 0, 0.1) !important;
     box-shadow: none !important;
     color: #888 !important;
     text-shadow: none;
