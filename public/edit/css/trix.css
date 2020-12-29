@@ -115,6 +115,7 @@ trix-toolbar {
     width: 100%;
     min-height: 36px;
     background: linear-gradient(180deg, rgba(251, 244, 236, 1.0) 50%, rgba(251, 244, 236, 0.0));
+    background: linear-gradient(180deg, rgba(251, 244, 236, 1.0) 50%, rgba(251, 244, 236, 0.0)); /* cosmic latte */
     position: -webkit-sticky;
     position: sticky;
     top: -1px;
@@ -158,7 +159,7 @@ trix-toolbar .trix-button {
     margin: 0;
     outline: none;
     background: linear-gradient(160deg, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.1) 90%);
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid #999;
     border-bottom: none;
     border-right: none;
@@ -229,7 +230,7 @@ trix-toolbar .trix-button--icon:active::before,
 trix-toolbar .trix-button--icon.trix-active::before {
     opacity: 1;
 }
-trix-toolbar .trix-button--icon:disabled::before { opacity: 0.25; }
+trix-toolbar .trix-button--icon:disabled::before { opacity: 0.5; background-color: rgba(0, 0, 0, 0.2); }
 trix-toolbar .trix-button--icon-bold::before                   { background-image: url(/edit/gfx/buttons/gtrix-bold.png); }
 trix-toolbar .trix-button--icon-italic::before                 { background-image: url(/edit/gfx/buttons/gtrix-italic.png); }
 trix-toolbar .trix-button--icon-link::before                   { background-image: url(/edit/gfx/buttons/gtrix-link.png); }

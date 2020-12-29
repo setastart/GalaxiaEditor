@@ -373,7 +373,7 @@ label.input-radio input {
     -webkit-hyphens: auto;
             hyphens: auto;
     transition: padding 65ms ease-in-out, background 65ms ease-in-out;
-    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5), inset -1px -1px 0 rgba(0, 0, 0, 0.03), 1px 1px 3px rgba(0, 0, 0, 0.02);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.4), inset -1px -1px 0 rgba(0, 0, 0, 0.03), 1px 1px 3px rgba(0, 0, 0, 0.02);
     flex: 1 1 auto;
 }
 .btn > svg,
@@ -644,7 +644,7 @@ button.fake:hover { color: #00a; }
     padding: 0;
     margin: 0;
     background-image: url(/edit/gfx/buttons/overlay.png);
-    background-color: #eee;
+    background-color: #ece6ef;
     background-size: 100% 100%, 16px 16px;
     background-position: center center;
     background-repeat: no-repeat;

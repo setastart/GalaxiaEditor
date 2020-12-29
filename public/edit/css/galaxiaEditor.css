@@ -231,6 +231,7 @@ a.menu-item:focus {
 .paper,
 a.paper {
     background-color: #fbf4ec;
+    background-color: #fff8e7; /* cosmic latte */
 
     border-top: 1px solid #fff;
     border-bottom: 1px solid #aaa;
