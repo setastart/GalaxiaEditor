@@ -115,7 +115,7 @@ trix-toolbar {
     width: 100%;
     min-height: 36px;
     background: linear-gradient(180deg, rgba(251, 244, 236, 1.0) 50%, rgba(251, 244, 236, 0.0));
-    background: linear-gradient(180deg, rgba(251, 244, 236, 1.0) 50%, rgba(251, 244, 236, 0.0)); /* cosmic latte */
+    background: linear-gradient(180deg, rgba(255, 248, 231, 1.0) 50%, rgba(255, 248, 231, 0.0)); /* cosmic latte */
     position: -webkit-sticky;
     position: sticky;
     top: -1px;
