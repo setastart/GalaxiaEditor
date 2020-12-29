@@ -5,7 +5,6 @@ body {
     padding: 10px;
     background: url(/edit/gfx/bg-stars-transparent.png), linear-gradient(180deg, #09092d 0%, #09092d 50%, #112177 100%);
     background-position: center center;
-    background-size: initial, cover;
     display: grid;
     grid-auto-flow: row;
     grid-template-rows: 2fr auto 5fr;

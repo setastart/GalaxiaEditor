@@ -15,7 +15,7 @@
 }
 .input-wrap .input-label {
     width: 30%;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     flex-direction: column;
     flex-wrap: wrap;
     align-items: flex-end;
