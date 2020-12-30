@@ -36,6 +36,7 @@ class AppImage {
         'src'       => '',
         'set'       => [],
         'srcset'    => '',
+        'sizes'     => '',
         'alt'       => [],
         'lang'      => '',
         'extra'     => [],
@@ -46,7 +47,7 @@ class AppImage {
 
 
 
-    static function list($dirImage) {
+    static function list($dirImage): array {
         $images = [];
         $glob   = glob($dirImage . '*', GLOB_NOSORT);
         if ($glob === false) return $images;
@@ -91,7 +92,7 @@ class AppImage {
 
 
 
-    static function dimensions(string $dirImage, string $imgSlug) {
+    static function dimensions(string $dirImage, string $imgSlug): array {
         $file = $dirImage . $imgSlug . '/' . $imgSlug . '_dim.txt';
         if (!file_exists($file)) return [];
         $dim = explode('x', file_get_contents($file));
@@ -179,7 +180,7 @@ class AppImage {
 
 
 
-    static function resizes(string $dirImage, string $imgSlug) {
+    static function resizes(string $dirImage, string $imgSlug): array {
         $files    = [];
         $dirImage .= $imgSlug;
         $glob     = glob($dirImage . '/*');
@@ -200,7 +201,7 @@ class AppImage {
 
 
 
-    static function slugRename(string $dirImage, string $imgSlugOld, $imgSlugNew) {
+    static function slugRename(string $dirImage, string $imgSlugOld, $imgSlugNew): bool {
         if (!AppImage::valid($dirImage, $imgSlugOld)) return false;
 
         $dirOld = $dirImage . $imgSlugOld . '/';
@@ -238,7 +239,7 @@ class AppImage {
 
 
 
-    static function delete(string $dirImage, string $imgSlug) {
+    static function delete(string $dirImage, string $imgSlug): bool {
         if (!AppImage::valid($dirImage, $imgSlug)) return false;
 
         foreach (new DirectoryIterator($dirImage . $imgSlug) as $fileInfo) {
@@ -253,7 +254,7 @@ class AppImage {
 
 
 
-    static function deleteResizes(string $dirImage, string $imgSlug) {
+    static function deleteResizes(string $dirImage, string $imgSlug): int {
         $resizes = AppImage::resizes($dirImage, $imgSlug);
         $mtime   = filemtime($dirImage . $imgSlug . '/');
 
@@ -271,7 +272,7 @@ class AppImage {
 
 
 
-    static function render($img, $extra = '') {
+    static function render($img, $extra = ''): string {
         if (!$img || !isset($img['src'])) return '';
         if ($img['version']) $img['src'] .= '?v=' . Text::h($img['version']);
         $r = '<img';
@@ -288,7 +289,10 @@ class AppImage {
         }
 
         $r .= ' src="' . Text::h($img['src'] ?? '') . '"';
+
         if ($img['srcset']) $r .= ' srcset="' . Text::h($img['srcset'] ?? '') . '"';
+
+        if ($img['sizes']) $r .= ' sizes="' . Text::h($img['sizes'] ?? '') . '"';
 
         if ($img['id']) $r .= ' id="' . Text::h($img['id'] ?? '') . '"';
 

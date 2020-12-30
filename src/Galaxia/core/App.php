@@ -657,28 +657,30 @@ class App {
                 continue;
             }
 
+            if (is_int($setDescriptor)) $setDescriptor = $imgResize['w'] . 'w';
+
             if ($imgResize['w'] == $img['wOriginal'] && $imgResize['h'] == $img['hOriginal']) {
-                unset($img['set'][$setDescriptor]);
-                continue;
-            }
+                $img['srcset'] .= $img['name'] . $img['ext'] . ' ' . $setDescriptor . ', ';
+            } else {
 
-            $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'];
+                $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'];
 
-            if ($resize && !file_exists($file)) {
-                File::lock(
-                    $this->dirCache . 'flock',
-                    '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . '.lock',
-                    function() use ($imgDir, $imgSlug, $imgResize) {
-                        try {
-                            ImageVips::crop($imgDir, $imgSlug, $imgResize['ext'], $imgResize['w'], $imgResize['h'], false, $imgResize['debug']);
-                        } catch (Exception $e) {
-                            geD($e->getMessage(), $e->getTraceAsString());
+                if ($resize && !file_exists($file)) {
+                    File::lock(
+                        $this->dirCache . 'flock',
+                        '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . '.lock',
+                        function() use ($imgDir, $imgSlug, $imgResize) {
+                            try {
+                                ImageVips::crop($imgDir, $imgSlug, $imgResize['ext'], $imgResize['w'], $imgResize['h'], false, $imgResize['debug']);
+                            } catch (Exception $e) {
+                                geD($e->getMessage(), $e->getTraceAsString());
+                            }
+                            touch($imgDir, $imgResize['mtime']);
                         }
-                        touch($imgDir, $imgResize['mtime']);
-                    }
-                );
+                    );
+                }
+                $img['srcset'] .= $img['name'] . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . ' ' . $setDescriptor . ', ';
             }
-            $img['srcset'] .= $img['name'] . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . ' ' . $setDescriptor . ', ';
         }
 
         $img['srcset'] = rtrim($img['srcset'], ', ');
