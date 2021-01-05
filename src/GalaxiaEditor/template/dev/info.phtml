@@ -13,16 +13,20 @@
   - See the Licence for the specific language governing permissions and limitations under the Licence.
  */
 
+ob_start();
+phpinfo();
+preg_match('~.*?<body>(.*)</body>~s', ob_get_clean(), $matches);
+
 ?>
 
 <div id="dev" class="paper pad">
 
     <div class="paper-header pad">
-        <h1>info</h1>
+        <h1>PHP Information</h1>
     </div>
 
-    <div class="pad">
-        <?php phpinfo(); ?>
+    <div class="pad phpinfo">
+        <?=$matches[1] ?? ''?>
     </div>
 
 </div>

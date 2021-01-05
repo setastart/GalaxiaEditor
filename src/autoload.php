@@ -13,6 +13,10 @@ spl_autoload_register(function($className) {
                 $fileName = __DIR__ . '/Galaxia/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php';
                 break;
 
+            case 'PHPMailer':
+                $fileName = __DIR__ . '/Galaxia/mailer/' . implode('/', array_slice($classes, 2)) . '.php';
+                break;
+
             case 'RedisCli':
                 $fileName = __DIR__ . '/Galaxia/redis/src/RedisCli.php';
                 break;
