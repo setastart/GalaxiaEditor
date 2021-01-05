@@ -427,8 +427,11 @@ class App {
     // sitemap
 
     function generateSitemap($db) {
+        $activeLocales = array_diff_key($this->locales, $this->localesInactive);
+        $activeLangs = array_keys($activeLocales);
+
         $pages = [];
-        $query = Sql::select(['page' => ['pageSlug_', 'pageType', 'timestampModified']], $this->langs);
+        $query = Sql::select(['page' => ['pageSlug_', 'pageType', 'timestampModified']], $activeLangs);
         $query .= 'WHERE pageStatus > 1' . PHP_EOL;
         $stmt  = $db->prepare($query);
         $stmt->execute();
@@ -457,7 +460,7 @@ class App {
                         if ($method != 'GET') continue;
                         if (empty($route['sitemap'])) continue;
                         $sm = $route['sitemap'];
-                        ArrayShape::languify($sm, $this->langs);
+                        ArrayShape::languify($sm, $activeLangs);
                         if (!isset($sm['priority'])) continue;
 
                         if (isset($sm['gcSelect'])) {
@@ -465,14 +468,14 @@ class App {
                             foreach ($sm['gcSelect'][key($sm['gcSelect'])] as $fieldName) {
                                 if (is_string($fieldName) && substr($fieldName, -6) == 'Status') $statusFound = $fieldName;
                             }
-                            $query = Sql::select($sm['gcSelect'], $this->langs);
-                            $query .= Sql::selectLeftJoinUsing($sm['gcSelectLJoin'], $this->langs);
+                            $query = Sql::select($sm['gcSelect'], $activeLangs);
+                            $query .= Sql::selectLeftJoinUsing($sm['gcSelectLJoin'], $activeLangs);
                             if ($statusFound) $query .= 'WHERE ' . $statusFound . ' > 1' . PHP_EOL;
                             if (isset($sm['gcSelectWhere'])) {
                                 if ($statusFound) $query .= 'AND' . PHP_EOL;
                                 $query .= Sql::selectWhereRaw($sm['gcSelectWhere']);
                             }
-                            $query .= Sql::selectGroupBy($sm['gcSelectGroupBy'], $this->langs);
+                            $query .= Sql::selectGroupBy($sm['gcSelectGroupBy'], $activeLangs);
 
                             $stmt = $db->prepare($query);
                             $stmt->execute();
@@ -485,7 +488,7 @@ class App {
                                     if (substr($col, -5) == 'MONTH' || substr($col, -3) == 'DAY') {
                                         $subs[$col] = str_pad($data[$col], 2, '0', STR_PAD_LEFT);
                                     } else if (substr($col, -1) == '_') {
-                                        foreach ($this->locales as $lang => $locale) {
+                                        foreach ($activeLocales as $lang => $locale) {
                                             $subs[$col][$lang] = $data[$col . $lang];
                                         }
                                     } else {
@@ -494,7 +497,7 @@ class App {
                                 }
 
                                 $subLang = [];
-                                foreach ($this->locales as $lang => $locale) {
+                                foreach ($activeLocales as $lang => $locale) {
                                     $subLang[$lang] = '';
                                     foreach ($subs as $col => $data) {
                                         $subLang[$lang] .= '/' . Text::hg($subs, $col, $lang);
@@ -503,9 +506,9 @@ class App {
 
                                 $r .= '<url>' . PHP_EOL;
                                 $r .= '  <priority>' . $sm['priority'] . '</priority>' . PHP_EOL;
-                                $r .= '  <loc>' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . key($this->locales)] . $subLang[key($this->locales)], key($this->locales)) . '</loc>' . PHP_EOL;
-                                if (count($this->locales) > 1) {
-                                    foreach ($this->locales as $lang => $locale) {
+                                $r .= '  <loc>' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . key($activeLocales)] . $subLang[key($activeLocales)], key($activeLocales)) . '</loc>' . PHP_EOL;
+                                if (count($activeLocales) > 1) {
+                                    foreach ($activeLocales as $lang => $locale) {
                                         $r .= '  <xhtml:link hreflang="' . $lang . '" href="' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . $lang] . $subLang[$lang], $lang) . '" rel="alternate"/>' . PHP_EOL;
                                     }
                                 }
@@ -518,9 +521,9 @@ class App {
                         if ($pattern == '') {
                             $r .= '<url>' . PHP_EOL;
                             $r .= '  <priority>' . $sm['priority'] . '</priority>' . PHP_EOL;
-                            $r .= '  <loc>' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . key($this->locales)], key($this->locales)) . '</loc>' . PHP_EOL;
-                            if (count($this->locales) > 1) {
-                                foreach ($this->locales as $lang => $locale) {
+                            $r .= '  <loc>' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . key($activeLocales)], key($activeLocales)) . '</loc>' . PHP_EOL;
+                            if (count($activeLocales) > 1) {
+                                foreach ($activeLocales as $lang => $locale) {
                                     $r .= '  <xhtml:link hreflang="' . $lang . '" href="' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . $lang], $lang) . '" rel="alternate"/>' . PHP_EOL;
                                 }
                             }
