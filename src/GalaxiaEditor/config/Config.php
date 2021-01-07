@@ -111,6 +111,12 @@ class Config {
             '?geLinkToItem' => 'stringArray',
         ],
 
+        'gcpGoaccessStats' => [
+            'gcPageType'    => 'string',
+            'gcMenuTitle'   => 'string',
+            'gcMenuShow'    => 'boolean',
+        ],
+
         'gcpLinks' => [
             '?label'           => 'string',
             '?cssClass'        => 'string',
@@ -180,7 +186,7 @@ class Config {
             if (!isset($confPage['gcPageType']))
                 Config::geConfigParseError($key . '/gcPageType missing.');
 
-            if (!in_array($confPage['gcPageType'], ['gcpListItem', 'gcpHistory', 'gcpChat', 'gcpImages', 'gcpLinkToItem', 'gcpSeparator']))
+            if (!in_array($confPage['gcPageType'], ['gcpListItem', 'gcpHistory', 'gcpChat', 'gcpImages', 'gcpLinkToItem', 'gcpGoaccessStats', 'gcpSeparator']))
                 Config::geConfigParseError($key . '/gcPageType missing.');
 
             Config::geConfigParse($key, Config::PROTO_GC[$confPage['gcPageType']], $confPage, '');

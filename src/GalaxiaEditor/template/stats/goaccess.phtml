@@ -1,0 +1,50 @@
+<?php
+/*
+ Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
+
+  - Licensed under the EUPL, Version 1.2 only (the "Licence");
+  - You may not use this work except in compliance with the Licence.
+
+  - You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
+
+  - Unless required by applicable law or agreed to in writing, software distributed
+    under the Licence is distributed on an "AS IS" basis,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the Licence for the specific language governing permissions and limitations under the Licence.
+ */
+
+
+use Galaxia\Text;
+
+
+// @formatter:off ?>
+<div class="paper pad">
+
+    <div class="paper-header pad">
+        <h1>Basic Stats</h1>
+    </div>
+
+    <div class="stats-goaccess pad" data-room="/edit/chat">
+
+        <div class="pad">
+            <div class="row-head">
+                <div class="col flex1">Tipo</div>
+            </div>
+        </div>
+
+        <div class="list pad">
+<?php   foreach ($stats as $date) { ?>
+<?php       $dt = date_create($date); ?>
+            <a class="row status-3" target="_blank" href="/edit/<?=$pgSlug?>/<?=$date?>">
+                <div class="col flex1">
+                    <div class="col-text"><?=Text::h($dt->format('l'))?></div>
+                </div>
+                <div class="col flex1">
+                    <div class="col-text"><?=Text::h($date)?></div>
+                </div>
+            </a>
+<?php   } ?>
+        </div>
+
+    </div>
+</div>

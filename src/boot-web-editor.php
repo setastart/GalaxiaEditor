@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.30.0';
+$editor->version = '4.31.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -250,8 +250,6 @@ if ($me->loggedIn) {
         $r->get('/edit/importer/{pgSlug:youtube}', 'importer/youtube');
         $r->get('/edit/importer/{pgSlug:vimeo}', 'importer/vimeo');
 
-        $r->get('/edit/stats', 'stats/list');
-
         foreach ($geConf as $rootSlug => $confPage) {
             if (!isset($confPage['gcPageType']) || !is_string($confPage['gcPageType'])) continue;
             switch ($confPage['gcPageType']) {
@@ -332,6 +330,11 @@ if ($me->loggedIn) {
 
                 case 'gcpChat':
                     $r->get('/edit/{pgSlug:' . $rootSlug . '}', 'chat/room');
+                    break;
+
+                case 'gcpGoaccessStats':
+                    $r->get('/edit/{pgSlug:' . $rootSlug . '}', 'stats/goaccess');
+                    $r->get('/edit/{pgSlug:' . $rootSlug . '}/{itemDate}', 'stats/goaccessDate');
                     break;
 
                 default:
