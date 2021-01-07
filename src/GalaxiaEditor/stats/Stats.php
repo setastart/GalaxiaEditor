@@ -58,15 +58,16 @@ class Stats {
     }
 
     static function getGoaccessTemp(string $log, string $dir): ?string {
-        $log = escapeshellarg($log);
-        if (!file_exists($log)) return null;
+        $stats = null;
 
-        $dir = rtrim(escapeshellarg($dir), '/') . '/';
-        if (!is_dir($dir)) return null;
+        if (!file_exists($log)) { echo('1'); return null; };
+
+        if (!is_dir($dir)) { echo('2'); return null; };
+        $dir = rtrim($dir, '/') . '/';
 
         $temp = $dir . 'temp.html';
 
-        shell_exec('goaccess ' . $log . ' --output ' . $dir . 'temp.html');
+        shell_exec('goaccess ' . escapeshellarg($log) . ' --output ' . escapeshellarg($dir) . 'temp.html');
 
 
         if (!file_exists($temp)) return null;

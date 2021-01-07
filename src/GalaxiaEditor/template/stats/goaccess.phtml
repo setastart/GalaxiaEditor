@@ -33,6 +33,14 @@ use Galaxia\Text;
         </div>
 
         <div class="list pad">
+            <a class="row status-3" target="_blank" href="/edit/<?=$pgSlug?>/<?=date('Y-m-d')?>">
+                <div class="col flex1">
+                    <div class="col-text"><?=Text::t('Today')?></div>
+                </div>
+                <div class="col flex1">
+                    <div class="col-text"><?=date('Y-m-d')?></div>
+                </div>
+            </a>
 <?php   foreach ($stats as $date) { ?>
 <?php       $dt = date_create($date); ?>
             <a class="row status-3" target="_blank" href="/edit/<?=$pgSlug?>/<?=$date?>">
