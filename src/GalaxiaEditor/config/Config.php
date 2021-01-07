@@ -115,6 +115,8 @@ class Config {
             'gcPageType'    => 'string',
             'gcMenuTitle'   => 'string',
             'gcMenuShow'    => 'boolean',
+            '?gcGoaccessLog' => 'string',
+            '?gcGoaccessDir' => 'string',
         ],
 
         'gcpLinks' => [

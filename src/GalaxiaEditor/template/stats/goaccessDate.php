@@ -20,6 +20,12 @@ use GalaxiaEditor\stats\Stats;
 
 $stats = Stats::getGoaccessDate($itemDate);
 
+$curDate = date('Y-m-d');
+if ($curDate == $itemDate) {
+    $stats = Stats::getGoaccessTemp($geConf[$pgSlug]['gcGoaccessLog'] ?? '', $geConf[$pgSlug]['gcGoaccessDir'] ?? '');
+}
+
 if (is_null($stats)) Director::errorPage(404, 'Could not load Stats file');
+
 
 exit($stats);
