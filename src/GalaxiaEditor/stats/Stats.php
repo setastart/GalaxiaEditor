@@ -60,9 +60,9 @@ class Stats {
     static function getGoaccessTemp(string $log, string $dir): ?string {
         $stats = null;
 
-        if (!file_exists($log)) { echo('1'); return null; };
+        if (!file_exists($log)) return null;
 
-        if (!is_dir($dir)) { echo('2'); return null; };
+        if (!is_dir($dir)) return null;
         $dir = rtrim($dir, '/') . '/';
 
         $temp = $dir . 'temp.html';
