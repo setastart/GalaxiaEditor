@@ -118,6 +118,13 @@ class Request {
     }
 
 
+    function redirectRemoveQuery() {
+        if ($this->query) {
+            Director::redirect($this->path, 301);
+        }
+    }
+
+
     function redirectTransliterated() {
         if ($this->path != $this->pathOriginal) {
             Director::redirect($this->path, 301);
