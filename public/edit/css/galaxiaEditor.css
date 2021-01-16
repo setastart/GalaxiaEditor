@@ -854,8 +854,8 @@ a.row:hover, .row a:hover {
 
 .module-field-gallery {
     justify-content: center;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 268px);
+    display: flex;
+    flex-wrap: wrap;
 }
 .module-field-gallery .module-field-group {
     position: relative;
