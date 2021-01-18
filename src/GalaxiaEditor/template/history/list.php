@@ -7,7 +7,7 @@ use Galaxia\{Director, Pagination, Sql, Text};
 
 if (Director::$ajax) {
     $editor->layout = 'none';
-    $editor->view = 'list/results';
+    $editor->view = 'history/results';
 }
 
 
