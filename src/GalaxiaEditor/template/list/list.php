@@ -563,7 +563,7 @@ $offset = $pagination->itemFirst - 1;
 $length = $pagination->itemsPerPage;
 if ($length >= $pagination->itemsTotal) $length = null;
 
-$rows = array_slice($rows, $offset, $length);
+$rows = array_slice($rows, $offset, $length, true);
 
 
 

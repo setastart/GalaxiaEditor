@@ -22,9 +22,9 @@ class ArrayShape {
             return array_splice($input, $offset, $length);
         }
 
-        $part_before  = array_slice($input, 0, $offset, $preserve_keys = true);
-        $part_removed = array_slice($input, $offset, $length, $preserve_keys = true);
-        $part_after   = array_slice($input, $offset + $length, null, $preserve_keys = true);
+        $part_before  = array_slice($input, 0, $offset, true);
+        $part_removed = array_slice($input, $offset, $length, true);
+        $part_after   = array_slice($input, $offset + $length, null, true);
 
         $input = $part_before + $replacement + $part_after;
 
