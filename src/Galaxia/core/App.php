@@ -428,7 +428,7 @@ class App {
 
     function generateSitemap($db) {
         $activeLocales = array_diff_key($this->locales, $this->localesInactive);
-        $activeLangs = array_keys($activeLocales);
+        $activeLangs   = array_keys($activeLocales);
 
         $pages = [];
         $query = Sql::select(['page' => ['pageSlug_', 'pageType', 'timestampModified']], $activeLangs);
@@ -624,6 +624,22 @@ class App {
 
         if ($img['w'] == $img['wOriginal'] && $img['h'] == $img['hOriginal']) {
 
+            $file = $imgDirSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp';
+            if ($img['webp'] && !file_exists($file)) {
+                File::lock(
+                    $this->dirCache . 'flock',
+                    '_img_' . $imgSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp' . '.lock',
+                    function() use ($imgDir, $imgSlug, $img) {
+                        try {
+                            ImageVips::crop($imgDir, $imgSlug, $img['ext'], $img['w'], $img['h'], false, $img['debug'], true);
+                        } catch (Exception $e) {
+                            d($e->getMessage(), $e->getTraceAsString());
+                        }
+                        touch($imgDir, $img['mtime']);
+                    }
+                );
+            }
+
             $img['src'] = $img['name'] . $img['ext'];
 
         } else {
@@ -637,7 +653,23 @@ class App {
                         try {
                             ImageVips::crop($imgDir, $imgSlug, $img['ext'], $img['w'], $img['h'], false, $img['debug']);
                         } catch (Exception $e) {
-                            geD($e->getMessage(), $e->getTraceAsString());
+                            d($e->getMessage(), $e->getTraceAsString());
+                        }
+                        touch($imgDir, $img['mtime']);
+                    }
+                );
+            }
+
+            $file = $imgDirSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp';
+            if ($img['webp'] && $resize && !file_exists($file)) {
+                File::lock(
+                    $this->dirCache . 'flock',
+                    '_img_' . $imgSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp' . '.lock',
+                    function() use ($imgDir, $imgSlug, $img) {
+                        try {
+                            ImageVips::crop($imgDir, $imgSlug, $img['ext'], $img['w'], $img['h'], false, $img['debug'], true);
+                        } catch (Exception $e) {
+                            d($e->getMessage(), $e->getTraceAsString());
                         }
                         touch($imgDir, $img['mtime']);
                     }
@@ -663,20 +695,52 @@ class App {
             if (is_int($setDescriptor)) $setDescriptor = $imgResize['w'] . 'w';
 
             if ($imgResize['w'] == $img['wOriginal'] && $imgResize['h'] == $img['hOriginal']) {
+
+                $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp';
+                if ($img['webp'] && $resize && !file_exists($file)) {
+                    File::lock(
+                        $this->dirCache . 'flock',
+                        '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp' . '.lock',
+                        function() use ($imgDir, $imgSlug, $imgResize, $img) {
+                            try {
+                                if ($img['webp']) ImageVips::crop($imgDir, $imgSlug, $imgResize['ext'], $imgResize['w'], $imgResize['h'], false, $imgResize['debug'], true);
+                            } catch (Exception $e) {
+                                d($e->getMessage(), $e->getTraceAsString());
+                            }
+                            touch($imgDir, $imgResize['mtime']);
+                        }
+                    );
+                }
+
                 $img['srcset'] .= $img['name'] . $img['ext'] . ' ' . $setDescriptor . ', ';
             } else {
 
                 $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'];
-
                 if ($resize && !file_exists($file)) {
                     File::lock(
                         $this->dirCache . 'flock',
                         '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . '.lock',
-                        function() use ($imgDir, $imgSlug, $imgResize) {
+                        function() use ($imgDir, $imgSlug, $imgResize, $img) {
                             try {
                                 ImageVips::crop($imgDir, $imgSlug, $imgResize['ext'], $imgResize['w'], $imgResize['h'], false, $imgResize['debug']);
                             } catch (Exception $e) {
-                                geD($e->getMessage(), $e->getTraceAsString());
+                                d($e->getMessage(), $e->getTraceAsString());
+                            }
+                            touch($imgDir, $imgResize['mtime']);
+                        }
+                    );
+                }
+
+                $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp';
+                if ($img['webp'] && $resize && !file_exists($file)) {
+                    File::lock(
+                        $this->dirCache . 'flock',
+                        '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp' . '.lock',
+                        function() use ($imgDir, $imgSlug, $imgResize, $img) {
+                            try {
+                                ImageVips::crop($imgDir, $imgSlug, $imgResize['ext'], $imgResize['w'], $imgResize['h'], false, $imgResize['debug'], true);
+                            } catch (Exception $e) {
+                                d($e->getMessage(), $e->getTraceAsString());
                             }
                             touch($imgDir, $imgResize['mtime']);
                         }

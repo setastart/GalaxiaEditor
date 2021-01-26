@@ -48,7 +48,7 @@ Director::timerStart('editor');
 $editor = Director::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.32.4';
+$editor->version = '4.33.0';
 Director::timerStop('editor');
 
 Director::loadTranslations();
@@ -244,6 +244,7 @@ if ($me->loggedIn) {
         }
         $r->get('/edit/dev/{pgSlug:cacheDeleteEditor}', 'dev/cache-delete-editor');
         $r->get('/edit/dev/{pgSlug:imageListDeleteResizes}', 'dev/image-list-delete-resizes');
+        $r->get('/edit/dev/{pgSlug:imageListDeleteWebp}', 'dev/image-list-delete-webp');
         $r->get('/edit/dev/{pgSlug:imageListReorder}', 'dev/image-list-reorder');
 
         $r->get('/edit/importer/{pgSlug:jsonld}', 'importer/jsonld');
@@ -316,6 +317,7 @@ if ($me->loggedIn) {
                         if ($confPage['gcImage']['gcUpdate']) {
                             $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}', 'image/image-post');
                             $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:deleteResizes}', 'image/image-delete-resizes-post');
+                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:deleteWebp}', 'image/image-delete-webp-post');
                             $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace');
                             $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace-post');
                             $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:resize}', 'image/resize/resize');

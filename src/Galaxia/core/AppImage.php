@@ -23,6 +23,7 @@ class AppImage {
     public const PROTO_IMAGE = [
         'name'      => '',
         'ext'       => '',
+        'webp'      => false,
         'mtime'     => '',
         'fileSize'  => 0,
         'w'         => 0,
@@ -188,12 +189,13 @@ class AppImage {
         foreach ($glob as $filename) {
             if (!is_file($filename)) continue;
             if (preg_match('/_[0-9_]+\w/', basename($filename), $matches)) {
-                $size         = trim($matches[0], '_');
-                $size         = str_replace('_', 'x', $size);
-                $files[$size] = basename($filename);
+                $size = trim($matches[0], '_');
+                $size = str_replace('_', 'x', $size);
+
+                $files[basename($filename)] = $size;
             }
         }
-        krsort($files, SORT_NUMERIC);
+        arsort($files, SORT_NUMERIC);
 
         return $files;
     }
@@ -258,7 +260,26 @@ class AppImage {
         $resizes = AppImage::resizes($dirImage, $imgSlug);
         $mtime   = filemtime($dirImage . $imgSlug . '/');
 
-        foreach ($resizes as $file) {
+        foreach ($resizes as $file => $size) {
+            if (!unlink($dirImage . $imgSlug . '/' . $file)) {
+                Flash::error('Error removing resized image: ' . Text::h($imgSlug));
+            }
+        }
+
+        if ($mtime !== false) touch($dirImage . $imgSlug . '/', $mtime);
+
+        return count($resizes);
+    }
+
+
+
+
+    static function deleteWebp(string $dirImage, string $imgSlug): int {
+        $resizes = AppImage::resizes($dirImage, $imgSlug);
+        $resizes = array_filter($resizes, fn($a) => str_ends_with($a, '.webp'), ARRAY_FILTER_USE_KEY);
+        $mtime   = filemtime($dirImage . $imgSlug . '/');
+
+        foreach ($resizes as $file => $size) {
             if (!unlink($dirImage . $imgSlug . '/' . $file)) {
                 Flash::error('Error removing resized image: ' . Text::h($imgSlug));
             }
@@ -275,7 +296,17 @@ class AppImage {
     static function render($img, $extra = ''): string {
         if (!$img || !isset($img['src'])) return '';
         if ($img['version']) $img['src'] .= '?v=' . Text::h($img['version']);
-        $r = '<img';
+
+        $r = '';
+
+        if ($img['webp'] && $img['ext'] == '.jpg') {
+            $r .= '<source';
+            if ($img['srcset']) $r .= ' srcset="' . str_replace($img['ext'], '.webp', $img['srcset'] ?? '') . '"';
+            if ($img['sizes']) $r .= ' sizes="' . Text::h($img['sizes'] ?? '') . '"';
+            $r .= '>';
+        }
+
+        $r .= '<img';
 
         if ($img['lang']) {
             $r .= ' alt="' . Text::h($img['alt'][$img['lang']] ?? '') . '"';
