@@ -116,6 +116,7 @@ $items = $app->cacheGet('editor', 2, 'list-' . $order . $pgSlug . '-items', func
     $items       = [];
     $i           = 0;
     foreach ($selectQuery as $table => $columns) {
+
         Director::timerStart('list ' . $table);
         $keyCol = $table . 'Id';
         if (!in_array($keyCol, $columns)) array_unshift($selectQuery[$table], $keyCol);
@@ -208,7 +209,6 @@ $items = $app->cacheGet('editor', 2, 'list-' . $order . $pgSlug . '-items', func
         Director::timerStop('list ' . $table);
         $i++;
     }
-
     return $items;
 });
 

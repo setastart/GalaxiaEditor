@@ -99,6 +99,9 @@ trix-editor li {
 trix-editor em {
     color: #427;
 }
+trix-editor small {
+    font-size: 0.875em;
+}
 trix-editor:focus {
     border-color: #51A7E8 !important;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 5px rgba(81, 167, 232, 0.5) !important;
@@ -232,20 +235,24 @@ trix-toolbar .trix-button--icon.trix-active::before {
     /*opacity: 1;*/
 }
 trix-toolbar .trix-button--icon:disabled::before { opacity: 0.5; }
-trix-toolbar .trix-button--icon-bold::before                   { background-image: url(/edit/gfx/buttons/gtrix-bold.png); }
-trix-toolbar .trix-button--icon-italic::before                 { background-image: url(/edit/gfx/buttons/gtrix-italic.png); }
-trix-toolbar .trix-button--icon-link::before                   { background-image: url(/edit/gfx/buttons/gtrix-link.png); }
-trix-toolbar .trix-button--icon-strike::before                 { background-image: url(/edit/gfx/buttons/gtrix-strike.png); }
-trix-toolbar .trix-button--icon-quote::before                  { background-image: url(/edit/gfx/buttons/gtrix-quote.png); }
-trix-toolbar .trix-button--icon-heading-1::before              { background-image: url(/edit/gfx/buttons/gtrix-heading-1.png); }
-trix-toolbar .trix-button--icon-heading-2::before              { background-image: url(/edit/gfx/buttons/gtrix-heading-2.png); }
-trix-toolbar .trix-button--icon-code::before                   { background-image: url(/edit/gfx/buttons/gtrix-code.png); }
-trix-toolbar .trix-button--icon-bullet-list::before            { background-image: url(/edit/gfx/buttons/gtrix-bullet-list.png); }
-trix-toolbar .trix-button--icon-number-list::before            { background-image: url(/edit/gfx/buttons/gtrix-number-list.png); }
-trix-toolbar .trix-button--icon-undo::before                   { background-image: url(/edit/gfx/buttons/gtrix-undo.png); }
-trix-toolbar .trix-button--icon-redo::before                   { background-image: url(/edit/gfx/buttons/gtrix-redo.png); }
-trix-toolbar .trix-button--icon-decrease-nesting-level::before { background-image: url(/edit/gfx/buttons/gtrix-decrease-nesting-level.png); }
-trix-toolbar .trix-button--icon-increase-nesting-level::before { background-image: url(/edit/gfx/buttons/gtrix-increase-nesting-level.png); }
+
+trix-toolbar .trix-button--icon-bold::before                   { background-image: url(/edit/gfx/gtrix/gtrix-bold.png); }
+trix-toolbar .trix-button--icon-italic::before                 { background-image: url(/edit/gfx/gtrix/gtrix-italic.png); }
+trix-toolbar .trix-button--icon-small::before                  { background-image: url(/edit/gfx/gtrix/gtrix-small.png); }
+trix-toolbar .trix-button--icon-strike::before                 { background-image: url(/edit/gfx/gtrix/gtrix-strike.png); }
+trix-toolbar .trix-button--icon-link::before                   { background-image: url(/edit/gfx/gtrix/gtrix-link.png); }
+
+trix-toolbar .trix-button--icon-undo::before                   { background-image: url(/edit/gfx/gtrix/gtrix-undo.png); }
+trix-toolbar .trix-button--icon-redo::before                   { background-image: url(/edit/gfx/gtrix/gtrix-redo.png); }
+
+trix-toolbar .trix-button--icon-heading-1::before              { background-image: url(/edit/gfx/gtrix/gtrix-h1.png); }
+trix-toolbar .trix-button--icon-heading-2::before              { background-image: url(/edit/gfx/gtrix/gtrix-h2.png); }
+trix-toolbar .trix-button--icon-quote::before                  { background-image: url(/edit/gfx/gtrix/gtrix-quote.png); }
+trix-toolbar .trix-button--icon-code::before                   { background-image: url(/edit/gfx/gtrix/gtrix-code.png); }
+trix-toolbar .trix-button--icon-bullet-list::before            { background-image: url(/edit/gfx/gtrix/gtrix-list-bullet.png); }
+trix-toolbar .trix-button--icon-number-list::before            { background-image: url(/edit/gfx/gtrix/gtrix-list-number.png); }
+trix-toolbar .trix-button--icon-decrease-nesting-level::before { background-image: url(/edit/gfx/gtrix/gtrix-nesting-inc.png); }
+trix-toolbar .trix-button--icon-increase-nesting-level::before { background-image: url(/edit/gfx/gtrix/gtrix-nesting-dec.png); }
 
 
 
