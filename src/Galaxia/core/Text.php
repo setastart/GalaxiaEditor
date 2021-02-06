@@ -24,7 +24,7 @@ use Transliterator;
 
 class Text {
 
-    public const ALLOWED_TAGS           = '<a><h1><h2><strong><p><br><em><del><blockquote><pre><ul><ol><li>';
+    public const ALLOWED_TAGS           = '<a><h1><h2><strong><small><p><br><em><del><blockquote><pre><ul><ol><li>';
     public const HTMLSPECIALCHARS_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5;
 
     public const TEST_HTML = <<<HTML
