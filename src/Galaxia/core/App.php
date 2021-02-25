@@ -391,7 +391,7 @@ class App {
         // dd($query);
         $db   = Director::getMysqli();
         $stmt = $db->prepare($query);
-        $stmt->bind_param(implode(array_map('key', $params)), ...array_map('reset', $params));
+        $stmt->bind_param(implode(array_map('key', $params)), ...array_map(fn($a) => $a[key($a)], $params));
         $stmt->execute();
         $result = $stmt->get_result();
 
