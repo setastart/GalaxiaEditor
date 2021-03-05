@@ -486,10 +486,14 @@ class Director {
         }
 
 
-        if ($code != 404 && self::isDevEnv() || self::isDevDebug()) {
-            d($msg);
-            d($debugText);
-            db();
+        if ($code != 404) {
+            if (self::isDevEnv()) {
+                d($msg);
+                d($debugText);
+                db();
+            } else {
+                error_log($msg . ' - ' . $debugText);
+            }
         }
 
         exit();

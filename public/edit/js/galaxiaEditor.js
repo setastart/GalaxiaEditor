@@ -1062,12 +1062,13 @@ let gjInput = {
 
 
     textareaAutoGrow: function(el) {
-        if (el.scrollHeight > 38) {
+        if (el.scrollHeight > 34) {
             el.style.height = '';
-            el.style.height = (el.scrollHeight + 2) + 'px';
+            el.style.height = (el.scrollHeight + 9) + 'px';
         } else {
             el.style.height = '';
         }
+        console.log(el.style.height);
     },
 
 

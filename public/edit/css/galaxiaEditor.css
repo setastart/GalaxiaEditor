@@ -104,13 +104,11 @@ a#website-link > img {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    min-height: 38px;
+    min-height: 34px;
     background: #f6e1e6 linear-gradient(160deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.0) 100%);
     padding: 0 3px;
     text-align: center;
-    line-height: 1.3;
-    /*max-height: 50px;*/
-    /*max-width: 100px;*/
+    line-height: 1;
     word-wrap: break-word;
     overflow-wrap: break-word;
     -webkit-hyphens: auto;
@@ -239,7 +237,7 @@ a.paper {
     border-right: 1px solid #ccc;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.10);
     border-radius: 3px;
-    padding-top: 24px;
+    padding-top: 16px;
     padding-bottom: 24px;
     margin-bottom: 20px;
     display: flex;
@@ -255,7 +253,7 @@ a.paper {
 .paper-footer {
     display: grid;
     grid-template-columns: 1fr max-content;
-    grid-gap: 10px;
+    grid-gap: 8px;
     align-items: start;
 }
 .paper-header {
@@ -264,8 +262,9 @@ a.paper {
     border-bottom: 1px solid #cab;
 }
 .paper-header h1 {
-    font-size: 26px;
+    font-size: 22px;
     grid-row: 1/3;
+    margin-top: 0.1em;
 }
 .paper-header .list-links > a + a {
     margin-left: 10px;
@@ -446,17 +445,18 @@ a.paper {
     align-items: start;
 }
 .filters-list > .input-wrap {
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 .row-head {
     margin-top: 10px;
     border: none;
-    border-bottom: 1px solid #dbc;
-    padding: 8px;
+    border-bottom: 1px solid #b9a;
+    padding: 6px 6px 4px;
     font-weight: bold;
     display: flex;
     align-items: end;
+    font-size: 14px;
 }
 .row-head > div + div {
     margin-left: 4px;
@@ -466,13 +466,14 @@ a.paper {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    padding: 8px;
+    padding: 7px;
     background-color: #fff;
-    border: 1px solid #dbc;
+    border: 1px solid #b9a;
     border-top: none;
     color: #222;
     text-overflow: ellipsis;
     text-decoration: none;
+    min-height: 38px;
 }
 .row.red {
     background-color: #fcc;
@@ -543,8 +544,14 @@ a.paper {
     text-align: right;
 }
 
+.row > .col {
+    font-size: 14px;
+}
+.row > .tags {
+    font-size: 13px;
+}
 .row > .tags > div + div {
-    margin-top: 3px;
+    margin-top: 2px;
 }
 a.row:hover, .row a:hover {
     background-color: #eef9ff !important;
@@ -566,14 +573,39 @@ a.row:hover, .row a:hover {
     font-weight: bold;
 }
 
+.row .col-slug {
+    font-size: 13px;
+    color: #333;
+}
 .row .col-small,
 .row .col-time {
     font-size: 13px;
     color: #666;
+    display: inline-block;
+}
+.col-date, .col-time {
+    float: left;
 }
 
-.row > .col > div.col-time + div.col-time {
-    border-top: none;
+.col.dateTimes > * + * {
+
+}
+.col-date {
+    float: left;
+    clear: both;
+}
+.dateTimes .col-time {
+    margin-top: 2px;
+    margin-left: 8px;
+    border: none !important;
+}
+
+.row > .col > .col-time + .col-time {
+    border: none;
+}
+.row > .col > .col-time + .col-time::before {
+    content: '- ';
+    margin-right: 2px;
 }
 .row .col-thumb {
     position: relative;
@@ -617,6 +649,8 @@ a.row:hover, .row a:hover {
     max-width: 300px;
     width: initial;
     height: auto;
+    background: #fff url('/edit/gfx/bg-transparency.png') center;
+    background-size: 15px;
 }
 .row .col-thumb:not(.single):not(:hover) > img {
     min-width: 30px;
@@ -665,8 +699,8 @@ a.row:hover, .row a:hover {
 }
 
 .tag, .col-tag  {
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    padding: 2px 3px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1px 3px;
     border-radius: 4px;
     line-height: 1.2;
     display: inline-block;
@@ -783,7 +817,7 @@ a.row:hover, .row a:hover {
     margin-top: 20px;
     padding-top: 20px;
 }
-.paper-header + .module {
+.paper-header + .modu2e {
     border-top: none;
     margin-top: 0;
     padding-top: 0;
@@ -797,8 +831,8 @@ a.row:hover, .row a:hover {
     justify-content: flex-end;
     margin-top: 10px;
     margin-bottom: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     border-radius: 3px;
     background-color: #eee4e4;
 }
@@ -819,7 +853,6 @@ a.row:hover, .row a:hover {
     border-radius: 3px;
     margin-bottom: 10px;
     background-color: #eee4e4;
-    border: 2px solid transparent;
 }
 .module-field-group:focus-within {
     border-color: rgba(0, 0, 0, 0.5);
@@ -835,14 +868,14 @@ a.row:hover, .row a:hover {
     background-color: #fbb;
 }
 .module-field-group .input-wrap {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 .module-field-group .item-row + .item-row .input-wrap {
     padding-top: 0;
 }
 .module-field-group-footer {
-    padding-bottom: 5px;
+    padding-bottom: 3px;
     justify-content: flex-end;
 }
 .module-field-group-footer > .btn-group:first-child {
@@ -877,7 +910,7 @@ a.row:hover, .row a:hover {
 }
 .module-field-gallery .ev-gallery-add.after {
     top: 38px;
-    right: -21px;
+    right: -19px;
     min-width: 26px;
 }
 .module-field-gallery .module-field-group + .module-field-group .ev-gallery-add.before {
@@ -900,8 +933,8 @@ a.row:hover, .row a:hover {
     padding-top: 6px;
 }
 .module-field-gallery .pad {
-    padding-left: 6px;
-    padding-right: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 .module-field-gallery .input-wrap-slugImage .input-title {
     display: none;
