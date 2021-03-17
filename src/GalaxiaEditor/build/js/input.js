@@ -38,7 +38,7 @@ let gjInput = {
     textareaAutoGrow: function(el) {
         if (el.scrollHeight > 34) {
             el.style.height = '';
-            el.style.height = (el.scrollHeight + 9) + 'px';
+            el.style.height = (el.scrollHeight + 8) + 'px';
         } else {
             el.style.height = '';
         }
