@@ -5,7 +5,7 @@ use GalaxiaEditor\input\InputRender;
 InputRender::form('', 'item-edit', 'item paper pad'); ?>
 
     <div class="paper-header pad">
-        <h1><?=Text::h($pgTitle)?></h1>
+        <h1><?=Text::st($pgTitle)?></h1>
 
 <?php   if ($firstStatus) { ?>
 <?php       echo InputRender::status($item['inputs'][$firstStatus]); ?>

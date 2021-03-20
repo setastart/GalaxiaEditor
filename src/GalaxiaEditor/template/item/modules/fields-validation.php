@@ -2,7 +2,6 @@
 
 
 use Galaxia\Flash;
-use Galaxia\Sql;
 use Galaxia\Text;
 use GalaxiaEditor\input\Input;
 
@@ -22,7 +21,8 @@ foreach ($postModule as $fieldKey => $fields) {
         // sort fields so new fields come last, so that unique constraint errors appear on newer items
         uksort($fields, function($a, $b) {
             if (is_numeric($b) && !is_numeric($a)) return 1;
-            else if (!is_numeric($b) && is_numeric($a)) return -1;
+            if (!is_numeric($b) && is_numeric($a)) return -1;
+            return 0;
         });
     }
 
@@ -202,55 +202,55 @@ foreach ($postModule as $fieldKey => $fields) {
 
 
 
-return;
-
-foreach ($postModule as $fieldName => $fieldValue) {
-    foreach ($fieldValue as $name => $value) {
-        if (isset($modules[$moduleKey]['inputs'][$fieldName][$name])) {
-            $input = Input::validate($modules[$moduleKey]['inputs'][$fieldName][$name], $value, $itemId);
-
-            $modules[$moduleKey]['inputs'][$fieldName][$name] = $input;
-        } else if (isset($modules[$moduleKey]['inputsUnused'][$fieldName][$name])) {
-            $input = Input::validate($modules[$moduleKey]['inputsUnused'][$fieldName][$name], $value, $itemId);
-
-            $modules[$moduleKey]['inputsUnused'][$fieldName][$name] = $input;
-        } else {
-            $input['errors'][] = 'Non existant input.';
-        }
-
-        if (empty($input['errors']) && $input['dbUnique']) {
-            $query = Sql::selectFirst($module['gcSelect']);
-            $query .= Sql::selectWhere([$input['nameFromDb'] => '=']);
-            $query .= Sql::selectLimit(0, 1);
-
-            $stmt = $db->prepare($query);
-            $stmt->bind_param('s', $input['value']);
-            $stmt->bind_result($rowId);
-            $stmt->execute();
-            $stmt->fetch();
-            $stmt->close();
-
-            if ($rowId && (string)$rowId != $input['value']) {
-                $input['errors'][] = 'Must be unique. An item with that value already exists.';
-            }
-
-        }
-
-        foreach ($input['errors'] as $msg) {
-            Flash::error($msg, 'form', $input['name']);
-            if ($input['lang']) {
-                $langSelectClass[$input['lang']] = 'btn-red';
-            }
-        }
-
-
-        $nameFromDb = $input['nameFromDb'];
-        $valueToDb =  $input['valueToDb'];
-
-        if ($input['value'] !== $input['valueFromDb']) {
-            $modules[$moduleKey]['inputs'][$fieldName][$name] = $input;
-        }
-
-    }
-}
-
+// return;
+//
+// foreach ($postModule as $fieldName => $fieldValue) {
+//     foreach ($fieldValue as $name => $value) {
+//         if (isset($modules[$moduleKey]['inputs'][$fieldName][$name])) {
+//             $input = Input::validate($modules[$moduleKey]['inputs'][$fieldName][$name], $value, $itemId);
+//
+//             $modules[$moduleKey]['inputs'][$fieldName][$name] = $input;
+//         } else if (isset($modules[$moduleKey]['inputsUnused'][$fieldName][$name])) {
+//             $input = Input::validate($modules[$moduleKey]['inputsUnused'][$fieldName][$name], $value, $itemId);
+//
+//             $modules[$moduleKey]['inputsUnused'][$fieldName][$name] = $input;
+//         } else {
+//             $input['errors'][] = 'Non existant input.';
+//         }
+//
+//         if (empty($input['errors']) && $input['dbUnique']) {
+//             $query = Sql::selectFirst($module['gcSelect']);
+//             $query .= Sql::selectWhere([$input['nameFromDb'] => '=']);
+//             $query .= Sql::selectLimit(0, 1);
+//
+//             $stmt = $db->prepare($query);
+//             $stmt->bind_param('s', $input['value']);
+//             $stmt->bind_result($rowId);
+//             $stmt->execute();
+//             $stmt->fetch();
+//             $stmt->close();
+//
+//             if ($rowId && (string)$rowId != $input['value']) {
+//                 $input['errors'][] = 'Must be unique. An item with that value already exists.';
+//             }
+//
+//         }
+//
+//         foreach ($input['errors'] as $msg) {
+//             Flash::error($msg, 'form', $input['name']);
+//             if ($input['lang']) {
+//                 $langSelectClass[$input['lang']] = 'btn-red';
+//             }
+//         }
+//
+//
+//         $nameFromDb = $input['nameFromDb'];
+//         $valueToDb =  $input['valueToDb'];
+//
+//         if ($input['value'] !== $input['valueFromDb']) {
+//             $modules[$moduleKey]['inputs'][$fieldName][$name] = $input;
+//         }
+//
+//     }
+// }
+//

@@ -38,7 +38,7 @@ trait Style {
 
     static function calc(array $size): string {
         $m = self::slope($size[2] ?? self::$viewportMinDefault, $size[0], $size[3] ?? self::$viewportMaxDefault, $size[1]);
-        $b = self::yIntersect($size[0], $size[1], $size[2] ?? self::$viewportMinDefault, $size[3] ?? self::$viewportMaxDefault, 3);
+        $b = self::yIntersect($size[0], $size[1], $size[2] ?? self::$viewportMinDefault, $size[3] ?? self::$viewportMaxDefault);
 
         return 'calc(' . round($m * 100, 3, PHP_ROUND_HALF_UP) . 'vw + ' . round($b, 3, PHP_ROUND_HALF_UP) . 'px)';
     }

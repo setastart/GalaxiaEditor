@@ -419,15 +419,10 @@ HTML;
         $i     = 0;
         foreach ($pTags as $pTag) {
             if ($i > 0) {
-                switch (substr($text, -1)) {
-                    case '.':
-                    case ':':
-                        $text .= ' ';
-                        break;
-                    default:
-                        $text .= PHP_EOL;
-                        break;
-                }
+                $text .= match (substr($text, -1)) {
+                    '.', ':' => ' ',
+                    default => PHP_EOL,
+                };
             }
             $line = $pTag->nodeValue;
             $line = trim($line, " \t\n\r\0\x0B\xC2\xA0");
@@ -684,7 +679,7 @@ HTML;
      *
      * @param mixed $value a timestamp, a DateTime or a string that creates a DateTime
      */
-    static function formatDate($value, string $pattern = '', string $lang = ''): string {
+    static function formatDate(mixed $value, string $pattern = '', string $lang = ''): string {
         if (is_string($value) && !ctype_digit($value)) {
             $value = date_create($value);
             if (!$value instanceof DateTimeInterface) return '';

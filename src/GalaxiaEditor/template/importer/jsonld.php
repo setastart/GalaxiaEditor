@@ -42,7 +42,7 @@ if (preg_match('~ src="(https://\S*?s720x720\S*?)"~m', $html[Scrape::DATA], $mat
 
     }
 
-};
+}
 
 
 Scrape::printJsonAndExit($r);

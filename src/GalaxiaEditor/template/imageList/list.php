@@ -106,7 +106,7 @@ $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
 $ht .= '        <div><span class="input-label-lang">' . Text::t('Slug') . ':</span> ' . Text::h($imgSlug) . '</div>' . PHP_EOL;
 $ht .= '        <div><span class="input-label-lang">' . Text::t('Dimensions') . ':</span> <small class="grey">' . Text::h($img['wOriginal'] . 'x' . $img['hOriginal']) . '</small></div>' . PHP_EOL;
-$ht .= '        <div><span class="input-label-lang">' . Text::t('Size') . ':</span> <small class="grey">' . Text::h(number_format($img['fileSize'], 0, '', ',') . ' B') . '</small></div>' . PHP_EOL;
+$ht .= '        <div><span class="input-label-lang">' . Text::t('Size') . ':</span> <small class="grey">' . Text::h(number_format($img['fileSize'], 0, '') . ' B') . '</small></div>' . PHP_EOL;
 $ht .= '        <div><span class="input-label-lang">' . Text::t('Created') . ':</span> <small class="grey">' . Text::formatDate($img['mtime'], 'd MMM y - HH:mm') . '</small></div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
@@ -261,7 +261,7 @@ if ($textFiltersActive) {
                 foreach ($filterInput as $word) {
                     $word = Text::formatSearch($word);
                     $word = str_replace(' ', '-', $word);
-                    if (strpos($itemId, $word) === false) {
+                    if (!str_contains($itemId, $word)) {
                         $filterFound = false;
                     }
                 }
@@ -275,7 +275,7 @@ if ($textFiltersActive) {
             $filterFound = true;
             foreach ($filterInput as $word) {
                 $word = Text::formatSearch($word);
-                if (strpos($text, $word) === false) {
+                if (!str_contains($text, $word)) {
                     $filterFound = false;
                 }
             }

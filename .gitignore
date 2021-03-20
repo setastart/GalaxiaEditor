@@ -2,9 +2,6 @@
 .DS_Store
 Icon
 
-# Sublime Text #
-*.sublime-workspace
-
 # Composer
 vendor/
 

@@ -58,7 +58,7 @@ class Authentication {
     }
 
 
-    function userAuthenticateEmailPassword($email, $password) {
+    function userAuthenticateEmailPassword($email, $password): bool {
         if (!$email || !$password) return false;
         $passwordHash = '';
 
@@ -78,7 +78,7 @@ class Authentication {
     }
 
 
-    function userAuthenticateIdPassword($userId, $password) {
+    function userAuthenticateIdPassword($userId, $password): bool {
         if (!$userId || !$password) return false;
         $passwordHash = '';
 
@@ -140,7 +140,7 @@ class Authentication {
 
     // create account and email verification
 
-    function registerRequest($name, $email, $password) {
+    function registerRequest($name, $email, $password): string {
         // first, delete all previous verifications but leave the last 5
         $db   = Director::getMysqli();
         $stmt = $db->prepare("
@@ -254,7 +254,7 @@ class Authentication {
 
     // recover account / password reset
 
-    function passwordResetRequest($email) {
+    function passwordResetRequest($email): string {
         $db   = Director::getMysqli();
         $stmt = $db->prepare("
             DELETE FROM $this->tblUserPasswordResetRequest
@@ -339,7 +339,7 @@ class Authentication {
 
     // change email and verification
 
-    function emailChangeRequest($userId, $emailNew) {
+    function emailChangeRequest($userId, $emailNew): string {
 
         // first, delete all previous verifications
         $db   = Director::getMysqli();
@@ -416,7 +416,7 @@ class Authentication {
 
 
     function emailChangeFinish($userId, $oldEmail, $token) {
-        if (!$userId || !$oldEmail || !$token) return false;
+        if (!$userId || !$oldEmail || !$token) return;
         $emailNew = '';
         $db       = Director::getMysqli();
         $stmt     = $db->prepare("
@@ -468,7 +468,7 @@ class Authentication {
     }
 
 
-    function passwordChange($userId, $password) {
+    function passwordChange($userId, $password): bool {
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
         $db   = Director::getMysqli();

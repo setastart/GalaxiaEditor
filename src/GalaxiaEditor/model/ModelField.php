@@ -88,16 +88,4 @@ class ModelField {
 
 
 
-    static function deleteIn(
-        array $gcUpdate
-    ): int {
-
-        $db = Director::getMysqli();
-
-        $affectedRows = null;
-
-        return $affectedRows;
-    }
-
-
 }

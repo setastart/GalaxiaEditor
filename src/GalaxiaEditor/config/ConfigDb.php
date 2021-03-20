@@ -119,8 +119,8 @@ class ConfigDb {
                             ConfigDb::gcTableColumnExists($dbSchema, $areaKey . '/gcList/gcFilterInts', $table, $col);
                     }
 
-                foreach ($area['gcList']['gcLinks'] as $key => $link)
-                    if ($key == 'order') ConfigDb::gcTableColumnExists($dbSchema, $areaKey . '/gcList/gcLinks', $table, 'position');
+                // foreach ($area['gcList']['gcLinks'] as $key => $link)
+                //     if ($key == 'order') ConfigDb::gcTableColumnExists($dbSchema, $areaKey . '/gcList/gcLinks', $table, 'position');
             }
 
 

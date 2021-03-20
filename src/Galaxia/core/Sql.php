@@ -24,7 +24,7 @@ class Sql {
     public const ALLOWED_WHERE_LOGIC = ['=', '<', '>', '<=', '>=', '<=>', 'BETWEEN', 'IS NOT NULL', 'IS NULL', 'NOT IN'];
 
 
-    static function queryInsert($expression, $changes, array $langs = null) {
+    static function queryInsert($expression, $changes, array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -46,7 +46,7 @@ class Sql {
 
 
 
-    static function select(array $expression, array $langs = null) {
+    static function select(array $expression, array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -90,7 +90,7 @@ class Sql {
 
 
 
-    static function selectOne(array $expression, array $langs = null) {
+    static function selectOne(array $expression, array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -103,7 +103,7 @@ class Sql {
 
 
 
-    static function selectFirst(array $expression, array $langs = null) {
+    static function selectFirst(array $expression, array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
         $firstColumn = $expression[$firstTable][0];
@@ -117,14 +117,14 @@ class Sql {
 
 
 
-    static function selectCount(string $param) {
+    static function selectCount(string $param): string {
         return 'SELECT COUNT(' . Text::q($param) . ')' . PHP_EOL . PHP_EOL;
     }
 
 
 
 
-    static function selectLeftJoinUsing(array $expression, array $langs = null) {
+    static function selectLeftJoinUsing(array $expression, array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -154,7 +154,7 @@ class Sql {
 
 
 
-    static function selectWhere(array $expression, array $langs = null) {
+    static function selectWhere(array $expression, array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -162,17 +162,11 @@ class Sql {
         foreach ($expression as $table => $columns) {
             foreach ($columns as $column => $logic) {
                 if (!in_array($logic, Sql::ALLOWED_WHERE_LOGIC)) $logic = '=';
-                switch ($logic) {
-                    case 'BETWEEN':
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ?' . PHP_EOL;
-                        break;
-                    case 'IS NOT NULL':
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL AND' . PHP_EOL;
-                        break;
-                    default:
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? AND' . PHP_EOL;
-                        break;
-                }
+                $r .= match ($logic) {
+                    'BETWEEN' => Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ?' . PHP_EOL,
+                    'IS NOT NULL' => Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL AND' . PHP_EOL,
+                    default => Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? AND' . PHP_EOL,
+                };
             }
         }
 
@@ -182,7 +176,7 @@ class Sql {
 
 
 
-    static function selectWherePrefix(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null) {
+    static function selectWherePrefix(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -192,23 +186,13 @@ class Sql {
                 if (is_string($logics)) $logics = [$logics];
                 foreach ($logics as $logic) {
                     if (!in_array($logics, Sql::ALLOWED_WHERE_LOGIC)) $logics = '=';
-                    switch ($logic) {
-                        case 'BETWEEN':
-                            $r .= Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ? ' . $operation . PHP_EOL;
-                            break;
-                        case 'IS NULL':
-                            $r .= Text::q($table) . '.' . Text::q($column) . ' IS NULL ' . $operation . PHP_EOL;
-                            break;
-                        case 'IS NOT NULL':
-                            $r .= Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL ' . $operation . PHP_EOL;
-                            break;
-                        case 'NOT IN':
-                            $r .= Text::q($column) . ' NOT IN (SELECT ' . Text::q($column) . ' FROM ' . Text::q($table) . ') ' . $operation . PHP_EOL;
-                            break;
-                        default:
-                            $r .= Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? ' . $operation . PHP_EOL;
-                            break;
-                    }
+                    $r .= match ($logic) {
+                        'BETWEEN' => Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ? ' . $operation . PHP_EOL,
+                        'IS NULL' => Text::q($table) . '.' . Text::q($column) . ' IS NULL ' . $operation . PHP_EOL,
+                        'IS NOT NULL' => Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL ' . $operation . PHP_EOL,
+                        'NOT IN' => Text::q($column) . ' NOT IN (SELECT ' . Text::q($column) . ' FROM ' . Text::q($table) . ') ' . $operation . PHP_EOL,
+                        default => Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? ' . $operation . PHP_EOL,
+                    };
                 }
             }
         }
@@ -216,7 +200,7 @@ class Sql {
         return rtrim($r, ' ' . $operation . PHP_EOL) . PHP_EOL . ')' . PHP_EOL . PHP_EOL;
     }
 
-    static function selectWhereRaw(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null) {
+    static function selectWhereRaw(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -233,7 +217,7 @@ class Sql {
 
 
 
-    static function selectWhereOr(array $expression, string $prefix = 'WHERE', array $langs = null) {
+    static function selectWhereOr(array $expression, string $prefix = 'WHERE', array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -241,17 +225,11 @@ class Sql {
         foreach ($expression as $table => $columns) {
             foreach ($columns as $column => $logic) {
                 if (!in_array($logic, Sql::ALLOWED_WHERE_LOGIC)) $logic = '=';
-                switch ($logic) {
-                    case 'BETWEEN':
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ?' . PHP_EOL;
-                        break;
-                    case 'IS NOT NULL':
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL OR' . PHP_EOL;
-                        break;
-                    default:
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? OR' . PHP_EOL;
-                        break;
-                }
+                $r .= match ($logic) {
+                    'BETWEEN' => Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ?' . PHP_EOL,
+                    'IS NOT NULL' => Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL OR' . PHP_EOL,
+                    default => Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? OR' . PHP_EOL,
+                };
             }
         }
 
@@ -261,7 +239,7 @@ class Sql {
 
 
 
-    static function selectWhereIn(array $expression, array $langs = null) {
+    static function selectWhereIn(array $expression, array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -279,7 +257,7 @@ class Sql {
 
 
 
-    static function selectWhereAndIn(array $expression, array $langs = null) {
+    static function selectWhereAndIn(array $expression, array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -297,7 +275,7 @@ class Sql {
 
 
 
-    static function selectGroupBy(array $expression, array $langs = null) {
+    static function selectGroupBy(array $expression, array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -330,7 +308,7 @@ class Sql {
 
 
 
-    static function selectOrderBy(array $expression, array $langs = null) {
+    static function selectOrderBy(array $expression, array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -360,7 +338,7 @@ class Sql {
 
 
 
-    static function selectLimit($offset, $count) {
+    static function selectLimit($offset, $count): string {
         $offset = (string)$offset;
         $count  = (string)$count;
         $offset = ctype_digit($offset) ? (int)$offset : 0;
@@ -372,7 +350,7 @@ class Sql {
 
 
 
-    static function update(array $expression, array $langs = null) {
+    static function update(array $expression, array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -382,7 +360,7 @@ class Sql {
 
 
 
-    static function updateSet(array $params) {
+    static function updateSet(array $params): string {
         $r = 'SET ' . PHP_EOL;
 
         foreach ($params as $param) {
@@ -395,7 +373,7 @@ class Sql {
 
 
 
-    static function updateWhere(array $expression, array $langs = null) {
+    static function updateWhere(array $expression, array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -412,7 +390,7 @@ class Sql {
 
 
 
-    static function delete($expression, array $langs = null) {
+    static function delete($expression, array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -430,7 +408,7 @@ class Sql {
 
 
 
-    static function deleteIn($table, $whereCols, $inCol, $ids) {
+    static function deleteIn($table, $whereCols, $inCol, $ids): string {
         $r = 'DELETE FROM ' . Text::q($table) . PHP_EOL . PHP_EOL;
 
         $r .= 'WHERE ' . PHP_EOL;
@@ -439,8 +417,7 @@ class Sql {
 
         $r .= '    ' . Text::q($inCol) . ' IN' . PHP_EOL;
         $r .= '    (';
-        foreach ($ids as $id)
-            $r .= '?, ';
+        $r .= str_repeat('?, ', count($ids));
 
         return rtrim($r, ', ') . ')' . PHP_EOL;
     }
@@ -448,7 +425,7 @@ class Sql {
 
 
 
-    static function deleteOrNull($expression, array $langs = null) {
+    static function deleteOrNull($expression, array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -489,7 +466,6 @@ class Sql {
 
         } while ($askForData);
 
-        return $items;
     }
 
 }

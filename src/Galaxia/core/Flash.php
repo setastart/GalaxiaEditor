@@ -36,7 +36,7 @@ class Flash {
         }
     }
 
-    static function hasError($domain = null, $arrayIndex = false) {
+    static function hasError($domain = null, $arrayIndex = false): bool {
         if (isset($domain)) {
             if ($arrayIndex !== false) return (isset($_SESSION['errors'][$domain][$arrayIndex]));
 
@@ -67,7 +67,7 @@ class Flash {
         }
     }
 
-    static function hasWarning($domain = null, $arrayIndex = false) {
+    static function hasWarning($domain = null, $arrayIndex = false): bool {
         if (isset($domain)) {
             if ($arrayIndex !== false) return (isset($_SESSION['warnings'][$domain][$arrayIndex]));
 
@@ -98,7 +98,7 @@ class Flash {
         }
     }
 
-    static function hasInfo($domain = null, $arrayIndex = false) {
+    static function hasInfo($domain = null, $arrayIndex = false): bool {
         if (isset($domain)) {
             if ($arrayIndex !== false) return (isset($_SESSION['infos'][$domain][$arrayIndex]));
 
@@ -129,7 +129,7 @@ class Flash {
         }
     }
 
-    static function hasDevlog($domain = null, $arrayIndex = false) {
+    static function hasDevlog($domain = null, $arrayIndex = false): bool {
         if (isset($domain)) {
             if ($arrayIndex !== false) return (isset($_SESSION['devlogs'][$domain][$arrayIndex]));
 
@@ -164,25 +164,25 @@ class Flash {
 
 
     static function printCli() {
-        if (Flash::haserror()) {
+        if (Flash::hasError()) {
             echo '🍎 errors: ' . PHP_EOL;
             foreach (Flash::errors() as $key => $msgs) {
                 d($key, $msgs);
             }
         }
-        if (Flash::haswarning()) {
+        if (Flash::hasWarning()) {
             echo '🍋 warnings: ' . PHP_EOL;
             foreach (Flash::warnings() as $key => $msgs) {
                 d($key, $msgs);
             }
         }
-        if (Flash::hasinfo()) {
+        if (Flash::hasInfo()) {
             echo '🍐 infos: ' . PHP_EOL;
             foreach (Flash::infos() as $key => $msgs) {
                 d($key, $msgs);
             }
         }
-        if (Flash::hasdevlog()) {
+        if (Flash::hasDevlog()) {
             echo '🥔 devlogs: ' . PHP_EOL;
             foreach (Flash::devlogs() as $key => $msgs) {
                 d($key, $msgs);

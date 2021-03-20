@@ -216,7 +216,7 @@ class App {
     }
 
 
-    function defaultRoutes(int $pageMinStatus, $pageSlug = 'pgSlug') {
+    function defaultRoutes(int $pageMinStatus, $pageSlug = 'pgSlug'): array {
         $routes                  = [];
         $routesVisited           = [];
         $slugsAndRedirectsByType = [];
@@ -757,7 +757,7 @@ class App {
     }
 
 
-    public function imageUpload(array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = '') {
+    public function imageUpload(array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = ''): array {
         $uploaded = [];
 
         uasort($files, function($a, $b) {

@@ -89,7 +89,7 @@ class Request {
     }
 
 
-    function schemeHost() {
+    function schemeHost(): string {
         return $this->scheme . '://' . $this->host;
     }
 

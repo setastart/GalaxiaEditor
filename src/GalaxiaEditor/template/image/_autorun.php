@@ -91,7 +91,7 @@ $inputs['timestampM'] = [
 ];
 
 
-$showSwitchesLang = count($app->langs) > 1 ? true : false;
+$showSwitchesLang = count($app->langs) > 1;
 $langSelectClass = [];
 foreach ($app->langs as $lang) {
     $langSelectClass[$lang] = '';

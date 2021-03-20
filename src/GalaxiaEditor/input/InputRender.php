@@ -29,7 +29,7 @@ class InputRender {
 
 
 
-    static function status($input) {
+    static function status($input): string {
         $input = array_merge(Input::PROTO_INPUT, $input);
 
         if (isset($input['gcPerms']))
@@ -58,7 +58,7 @@ $ht .= '</div>' . PHP_EOL;
 
 
 
-    static function renderInputText($input) {
+    static function renderInputText($input): string {
         $input = array_merge(Input::PROTO_INPUT, $input);
         if (isset($input['gcPerms']))
             foreach ($input['gcPerms'] as $perm)
@@ -77,11 +77,6 @@ $ht .= '    <div class="input-label">' . Text::t($input['label']) . '<span class
 $ht .= '    <div class="content">' . Text::h(strip_tags($input['valueFromDb'], Text::ALLOWED_TAGS)) . '</div>' . PHP_EOL;
                 break;
 
-            case 'timestamp':
-$ht .= '    <div class="input-label">' . Text::t($input['label']) . ' <span class="input-label-lang">' . $input['lang'] . '</span></div>' . PHP_EOL;
-$ht .= '    <div class="content">' . Text::h($input['valueFromDb']) . '</div>' . PHP_EOL;
-                break;
-
             case 'status':
             case 'radio':
             case 'select':
@@ -93,6 +88,7 @@ $ht .= '    <div class="content">' . Text::h($input['options'][$input['valueFrom
             case 'none':
                 break;
 
+            case 'timestamp':
             default:
 $ht .= '    <div class="input-label">' . Text::t($input['label']) . ' <span class="input-label-lang">' . $input['lang'] . '</span></div>' . PHP_EOL;
 $ht .= '    <div class="content">' . Text::h($input['valueFromDb']) . '</div>' . PHP_EOL;
@@ -107,9 +103,9 @@ $ht .= '</div>' . PHP_EOL;
 
 
 
-    static function renderInput(App $app, $input) {
+    static function renderInput(App $app, $input): string {
         $input = array_merge(Input::PROTO_INPUT, $input);
-        if ($input['type'] == 'none') return;
+        if ($input['type'] == 'none') return '';
 
         $input['infos'] = Flash::infos('form', $input['name']);
 
@@ -274,7 +270,7 @@ $ht .= '</div>' . PHP_EOL;
 
 
 
-    static function getRawInput($input) {
+    static function getRawInput($input): string {
 $r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . htmlspecialchars($input['value'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5) . '"';
 
         foreach ($input['options'] as $optionName => $optionValue) {
@@ -289,7 +285,7 @@ $r .= ' ' . $optionName . '="' . $optionValue . '"';
 
 
 
-    static function getBasicInput($input) {
+    static function getBasicInput($input): string {
 $r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . $input['value'] . '"';
 
         foreach ($input['options'] as $optionName => $optionValue) {
@@ -304,7 +300,7 @@ $r .= ' ' . $optionName . '="' . $optionValue . '"';
 
 
 
-    static function getTextInput($input) {
+    static function getTextInput($input): string {
 $r = '    <textarea class="input-text" name="' . $input['name'] . '" rows="1" wrap="soft"';
 
         foreach ($input['options'] as $optionName => $option) {
@@ -316,7 +312,7 @@ $r .= ' ' . $optionName . '="' . $option . '"';
         return $r . '>' . $input['value'] . '</textarea>';
     }
 
-    static function getImageInput($input) {
+    static function getImageInput($input): string {
         $maxMemory   = Text::bytesAbbrToInt(ini_get('memory_limit'));
         $maxPostSize = Text::bytesAbbrToInt(ini_get('post_max_size'));
         $maxTotal    = min($maxMemory, $maxPostSize);
@@ -363,14 +359,14 @@ $r .= '    </div>' . PHP_EOL;
 
 if ($input['options']['type'] ?? []) {
 $r .= '    <div id="upload-images-type-proto" class="type control hide">' . PHP_EOL;
-$r .= '        <div class="input-label">' . Text::T('Type') . '</div>' . PHP_EOL;
+$r .= '        <div class="input-label">' . Text::t('Type') . '</div>' . PHP_EOL;
 $r .= self::getRadioInput($typeInput) . PHP_EOL;
 $r .= '    </div>' . PHP_EOL;
 }
 
 if ($input['options']['existing'] ?? []) {
 $r .= '    <div id="upload-images-existing-proto" class="existing control hide">' . PHP_EOL;
-$r .= '        <div class="input-label">' . Text::T('An image with the same slug already exists.') . '</div>' . PHP_EOL;
+$r .= '        <div class="input-label">' . Text::t('An image with the same slug already exists.') . '</div>' . PHP_EOL;
 $r .= self::getRadioInput($existingInput) . PHP_EOL;
 $r .= '    </div>' . PHP_EOL;
 }
@@ -384,7 +380,7 @@ $r .= '    </div>' . PHP_EOL;
 
 
 
-    static function getSlugInput($input) {
+    static function getSlugInput($input): string {
 $r = '    <textarea pattern="[a-z0-9\-]*" class="input-text input-slug" name="' . $input['name'] . '" rows="1" wrap="soft"';
 
         foreach ($input['options'] as $optionName => $optionValue)
@@ -398,7 +394,7 @@ $r .= ' ' . $optionName . '="' . $optionValue . '"';
 
 
 
-    static function getSlugImageInput($input) {
+    static function getSlugImageInput($input): string {
 $r = '    <textarea pattern="[a-z0-9\-]*" class="input-text input-slug input-slugImg" name="' . $input['name'] . '" rows="1" wrap="soft"';
 
         foreach ($input['options'] as $optionName => $optionValue)
@@ -412,7 +408,7 @@ $r .= ' ' . $optionName . '="' . $optionValue . '"';
 
 
 
-    static function getRadioInput($input) {
+    static function getRadioInput($input): string {
 $r = '';
         foreach ($input['options'] as $optionValue => $option) {
             $css  = 'btn input-radio btn-pill';
@@ -442,7 +438,7 @@ $r .= '    </label>' . PHP_EOL;
 
 
 
-    static function getSelectInput($input) {
+    static function getSelectInput($input): string {
 $r = '    <select class="input-select" name="' . $input['name'] . '"' . ($input['disabled'] ? ' disabled' : '') . '>' . PHP_EOL;
 
         $selectedFound = false;
@@ -474,7 +470,7 @@ $r .= '    </select>';
 
 
 
-    static function getTextareaInput($input) {
+    static function getTextareaInput($input): string {
 $r = '    <textarea class="input-text input-textarea" name="' . $input['name'] . '" rows="1" wrap="soft"';
 
         foreach ($input['options'] as $optionName => $option) {
@@ -489,7 +485,7 @@ $r .= ' ' . $optionName . '="' . $option . '"';
 
 
 
-    static function getTrixInput($input) {
+    static function getTrixInput($input): string {
 $r = '    <input type="hidden" class="input-trix" name="' . $input['name'] . '" id="' . $input['name'] . '" value="' . Text::h($input['value']) . '"';
 
         if ($input['disabled']) $r .= ' disabled';
@@ -502,7 +498,7 @@ $r .= '>';
 
 
 
-    static function getTimestampInput($input) {
+    static function getTimestampInput($input): string {
         if (substr($input['value'], 16) == ':00') $input['value'] = substr($input['value'], 0, 16);
 $r = '    <input class="input-text input-timestamp" type="text" name="' . $input['name'] . '" value="' . Text::h($input['value']) . '"';
 
@@ -518,7 +514,7 @@ $r .= ' ' . $optionName . '="' . $option . '"';
 
 
 
-    static function getDateInput($input) {
+    static function getDateInput($input): string {
 $r = '    <input class="input-text input-date" type="text" name="' . $input['name'] . '" value="' . Text::h($input['value']) . '"';
 
         foreach ($input['options'] as $optionName => $option) {
@@ -533,7 +529,7 @@ $r .= ' ' . $optionName . '="' . $option . '"';
 
 
 
-    static function getTimeInput($input) {
+    static function getTimeInput($input): string {
         if (substr($input['value'], 5) == ':00') $input['value'] = substr($input['value'], 0, 5);
 $r = '    <input class="input-text input-time" type="text" name="' . $input['name'] . '" value="' . Text::h($input['value']) . '"';
 
@@ -549,7 +545,7 @@ $r .= ' ' . $optionName . '="' . $option . '"';
 
 
 
-    static function getImporterJsonldInput($input) {
+    static function getImporterJsonldInput($input): string {
 $r = '    <textarea class="input-text" rows="1" wrap="soft"></textarea>' . PHP_EOL;
 $r .= '    <button type="button" class="btn btn-blue btn-pill rr scrape-jsonld">' . Text::t('Import') . '</button>' . PHP_EOL;
 $r .= '    <script type="text/javascript">var importRelationsJsonld = ' . json_encode($input['options']) . '</script>' . PHP_EOL;
@@ -560,7 +556,7 @@ $r .= '    <script type="text/javascript">var importRelationsJsonld = ' . json_e
 
 
 
-    static function getImporterYoutubeInput($input) {
+    static function getImporterYoutubeInput($input): string {
 $r = '    <textarea class="input-text" rows="1" wrap="soft">' . $input['value'] . '</textarea>' . PHP_EOL;
 $r .= '    <button type="button" class="btn btn-blue btn-pill rr scrape-youtube">' . Text::t('Import') . '</button>' . PHP_EOL;
 $r .= '    <script type="text/javascript">var importRelationsYoutube = ' . json_encode($input['options']) . '</script>' . PHP_EOL;
@@ -571,7 +567,7 @@ $r .= '    <script type="text/javascript">var importRelationsYoutube = ' . json_
 
 
 
-    static function getImporterVimeoInput($input) {
+    static function getImporterVimeoInput($input): string {
 $r = '    <textarea class="input-text" rows="1" wrap="soft">' . $input['value'] . '</textarea>' . PHP_EOL;
 $r .= '    <button type="button" class="btn btn-blue btn-pill rr scrape-vimeo">' . Text::t('Import') . '</button>' . PHP_EOL;
 $r .= '    <script type="text/javascript">var importRelationsVimeo = ' . json_encode($input['options']) . '</script>' . PHP_EOL;

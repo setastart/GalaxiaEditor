@@ -8,23 +8,12 @@ spl_autoload_register(function($className) {
     $classes   = explode('\\', $className);
 
     if ($classes[0] == 'Galaxia') {
-        switch ($classes[1]) {
-            case 'FastRoute':
-                $fileName = __DIR__ . '/Galaxia/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php';
-                break;
-
-            case 'PHPMailer':
-                $fileName = __DIR__ . '/Galaxia/mailer/' . implode('/', array_slice($classes, 2)) . '.php';
-                break;
-
-            case 'RedisCli':
-                $fileName = __DIR__ . '/Galaxia/redis/src/RedisCli.php';
-                break;
-
-            default:
-                $fileName = __DIR__ . '/Galaxia/core/' . implode('/', array_slice($classes, 1)) . '.php';
-                break;
-        }
+        $fileName = match ($classes[1]) {
+            'FastRoute' => __DIR__ . '/Galaxia/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php',
+            'PHPMailer' => __DIR__ . '/Galaxia/mailer/' . implode('/', array_slice($classes, 2)) . '.php',
+            'RedisCli' => __DIR__ . '/Galaxia/redis/src/RedisCli.php',
+            default => __DIR__ . '/Galaxia/core/' . implode('/', array_slice($classes, 1)) . '.php',
+        };
         require_once $fileName;
     }
 });
@@ -40,15 +29,11 @@ if (Director::isDevEnv()) {
     include_once __DIR__ . '/Galaxia/kint.phar';
     Kint\Renderer\RichRenderer::$folder = false;
     function dd(...$vars) {
-        !d(...$vars);
-        exit;
-    }
-    function sd(...$vars) {
-        !s(...$vars);
+        +!Kint::dump(...$vars);
         exit;
     }
     function db() {
-        !Kint::trace();
+        +!Kint::trace();
     }
 } else if (Director::isCli() || Director::isDevDebug()) {
     function d(...$vars) {
@@ -63,7 +48,6 @@ if (Director::isDevEnv()) {
     }
     function s(...$vars) { d($vars); }
     function dd(...$vars) { d($vars); exit; }
-    function sd(...$vars) { s($vars); exit; }
     function db() {
         $backtrace = array_reverse(debug_backtrace());
         $r = '';
@@ -78,7 +62,6 @@ if (Director::isDevEnv()) {
     function d() {}
     function s() {}
     function dd() {}
-    function sd() {}
     function db() {}
 }
 // @formatter:on

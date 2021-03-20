@@ -223,7 +223,8 @@ class Director {
             if (self::$mysqli->connect_errno) {
                 self::errorPage(500, 'Director db Connection Failed' . __METHOD__ . ':' . __LINE__ . ' ' . self::$mysqli->connect_errno);
             }
-            if (self::isDev()) mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+            if (self::isDevEnv() || self::isDev()) mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
             self::$mysqli->set_charset('utf8mb4');
             self::$mysqli->query('SET time_zone = ' . Text::q(self::$app->timeZone) . ';');
@@ -337,21 +338,21 @@ class Director {
                 $divisor = $levelTotals[$time['level'] - 1];
                 if ($divisor == 0) $divisor = 1;
                 $percentOfParent = (($time['total'] * 100) / $divisor);
-                $percentOfParent = number_format($percentOfParent, 0, '.', ',');
+                $percentOfParent = number_format($percentOfParent);
             }
 
             // if ($percentOfParent > 99) $percentOfParent = 99;
 
-            $cols[$timerLabel]['start'] = number_format(($time['start'] - $_SERVER['REQUEST_TIME_FLOAT']) * 1000, 3, '.', ',');
+            $cols[$timerLabel]['start'] = number_format(($time['start'] - $_SERVER['REQUEST_TIME_FLOAT']) * 1000, 3);
             $cols[$timerLabel]['#']     = $time['count'];
             if ($time['running']) {
-                $cols[$timerLabel]['time'] = number_format(($timeEnd - $time['start']) * 1000, 2, '.', ',');
+                $cols[$timerLabel]['time'] = number_format(($timeEnd - $time['start']) * 1000, 2);
             } else {
-                $cols[$timerLabel]['time'] = number_format($time['total'] * 1000, 2, '.', ',');
+                $cols[$timerLabel]['time'] = number_format($time['total'] * 1000, 2);
             }
 
             $cols[$timerLabel]['mem'] = Text::bytesIntToAbbr($time['mem'], 2, '.');
-            $cols[$timerLabel]['%']   = number_format((($time['total'] * 100) / $timeTotal), 2, '.', ',');
+            $cols[$timerLabel]['%']   = number_format((($time['total'] * 100) / $timeTotal), 2);
 
             $cols[$timerLabel][$time['level']] = $percentOfParent;
             $cols[$timerLabel]['label']        = str_repeat($pad . $pad, max(0, $time['level'] - 2)) . $timerLabel;

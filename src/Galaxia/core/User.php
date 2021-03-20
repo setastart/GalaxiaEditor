@@ -66,7 +66,7 @@ class User {
     }
 
 
-    public function loginFromSessionId() {
+    public function loginFromSessionId(): bool {
         if (!isset($_SESSION['id'])) return false;
 
         $this->id = $_SESSION['id'];
@@ -81,7 +81,7 @@ class User {
     }
 
 
-    public function loadWithId(int $userId) {
+    public function loadWithId(int $userId): bool {
         if (!$userId) return false;
 
         $this->id = $userId;
@@ -151,7 +151,7 @@ class User {
 
 
     public function setName($name) {
-        if (!$this->loggedIn) return false;
+        if (!$this->loggedIn) return;
 
         $db   = Director::getMysqli();
         $stmt = $db->prepare("
@@ -166,7 +166,7 @@ class User {
 
 
     public function loadOptions() {
-        if (!$this->loggedIn) return false;
+        if (!$this->loggedIn) return;
 
         $optionName       = '';
         $optionValue      = '';
@@ -192,7 +192,7 @@ class User {
 
 
     public function setOptions($name, $value) {
-        if (!$this->loggedIn) return false;
+        if (!$this->loggedIn) return;
 
         if (!array_key_exists($name, $this->options)) {
             echo 'error: setOptions(name)';
@@ -217,7 +217,7 @@ class User {
     }
 
 
-    public function hasPerm(string $perm) {
+    public function hasPerm(string $perm): bool {
         return in_array($perm, $this->perms);
     }
 

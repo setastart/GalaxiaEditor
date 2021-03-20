@@ -17,7 +17,7 @@ namespace Galaxia;
 
 class ArrayShape {
 
-    static function splicePreserveKeys(&$input, $offset, $length = null, $replacement = []) {
+    static function splicePreserveKeys(&$input, $offset, $length = null, $replacement = []): array {
         if (empty($replacement)) {
             return array_splice($input, $offset, $length);
         }

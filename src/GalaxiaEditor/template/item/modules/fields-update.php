@@ -176,7 +176,7 @@ foreach ($modules as $module) {
 
         $params = [$itemId];
         foreach ($module['gcModuleDeleteIfEmpty'] as $col)
-            $params[] = '';
+            $params[] = substr($col, -2) == 'Id' ? 0 : '';
 
         try {
             $stmt  = $db->prepare($query);
@@ -192,7 +192,7 @@ foreach ($modules as $module) {
 
         } catch (Exception $e) {
             Flash::error('fields-update - Unable to delete empty fields.');
-            geD($query);
+            geD($query, $params);
             Flash::error($e->getMessage());
 
             return;

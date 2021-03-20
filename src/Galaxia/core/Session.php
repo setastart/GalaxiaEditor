@@ -1,4 +1,6 @@
-<?php
+<?php /** @noinspection PhpParameterNameChangedDuringInheritanceInspection */
+
+
 /* Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
 
  - Licensed under the EUPL, Version 1.2 only (the "Licence");
@@ -57,15 +59,15 @@ class Session implements SessionHandlerInterface {
         $this->tableName = $tableName . 'Session';
     }
 
-    public function open($savePath, $sessionName) {
+    public function open($savePath, $sessionName): bool {
         return true;
     }
 
-    public function close() {
+    public function close(): bool {
         return true;
     }
 
-    public function read($sessionId) {
+    public function read($sessionId): string {
         $sessionData = '';
 
         $db = Director::getMysqli();
@@ -88,7 +90,7 @@ class Session implements SessionHandlerInterface {
         return $sessionData ?? '';
     }
 
-    public function write($sessionId, $sessionData) {
+    public function write($sessionId, $sessionData): bool {
         $sessionId = filter_var($sessionId, FILTER_SANITIZE_STRING);
 
         $db = Director::getMysqli();
@@ -126,7 +128,7 @@ class Session implements SessionHandlerInterface {
         return $success;
     }
 
-    public function destroy($sessionId) {
+    public function destroy($sessionId): bool {
         $db = Director::getMysqli();
 
         $stmt = $db->prepare("
@@ -141,7 +143,7 @@ class Session implements SessionHandlerInterface {
         return $success;
     }
 
-    public function gc($maxlifetime) {
+    public function gc($maxlifetime): bool {
         $db = Director::getMysqli();
 
         $stmt = $db->prepare("

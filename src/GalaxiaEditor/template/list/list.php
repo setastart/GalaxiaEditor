@@ -142,7 +142,7 @@ $items = $app->cacheGet('editor', 2, 'list-' . $order . $pgSlug . '-items', func
                 }
             };
 
-            $items = Sql::chunkSelect($db, $query, $f, $items);
+            Sql::chunkSelect($db, $query, $f, $items);
 
         } else {
 
@@ -434,7 +434,7 @@ foreach ($filterInts as $filterId => $filter) {
     foreach ($filter['options'] as $int => $value) {
 
         $filterInts[$filterId]['options'][$int]['checked'] = false;
-        if (strpos($filterInts[$filterId]['options'][$int]['cssClass'] ?? '', 'active') !== false) {
+        if (str_contains($filterInts[$filterId]['options'][$int]['cssClass'] ?? '', 'active')) {
             $filterInts[$filterId]['options'][$int]['checked']  = true;
             $filterInts[$filterId]['options'][$int]['cssClass'] = (str_replace('active', '', $filterInts[$filterId]['options'][$int]['cssClass']));
         }
@@ -541,7 +541,7 @@ foreach ($textFiltersActive as $filterId) {
         $filterFound = true;
         foreach ($filterInput as $word) {
             $word = Text::formatSearch($word);
-            if (strpos($text, $word) === false) {
+            if (!str_contains($text, $word)) {
                 $filterFound = false;
             }
         }

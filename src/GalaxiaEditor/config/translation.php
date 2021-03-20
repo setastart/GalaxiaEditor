@@ -496,11 +496,6 @@ return [
         'pt' => 'Guardar e voltar a %s',
         'es' => 'Guardar y volver a %s',
     ],
-    'Upload and go back to %s' => [
-        'en' => 'Upload and go back to %s',
-        'pt' => 'Carregar e voltar a %s',
-        'es' => 'Subir y volver a %s',
-    ],
     'Go back' => [
         'en' => 'Go back',
         'pt' => 'Voltar atrás',
@@ -587,7 +582,7 @@ return [
         'es' => 'Empieza',
     ],
     'Ends' => [
-        'en' => 'Location',
+        'en' => 'Ends',
         'pt' => 'Termina',
         'es' => 'Termina',
     ],
@@ -1076,11 +1071,6 @@ return [
         'pt' => 'Legenda',
         'es' => 'Leyenda',
     ],
-    'Registration' => [
-        'en' => 'Registration',
-        'pt' => 'Inscrição',
-        'es' => 'Inscripción',
-    ],
     'Organizations' => [
         'en' => 'Organizations',
         'pt' => 'Organizações',
@@ -1135,11 +1125,6 @@ return [
         'en' => 'Events',
         'pt' => 'Eventos',
         'es' => 'Eventos',
-    ],
-    'Location' => [
-        'en' => 'Location',
-        'pt' => 'Lugar',
-        'es' => 'Lugar',
     ],
     'Activity' => [
         'en' => 'Activity',

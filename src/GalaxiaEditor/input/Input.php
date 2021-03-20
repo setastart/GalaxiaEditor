@@ -4,6 +4,7 @@
 namespace GalaxiaEditor\input;
 
 
+use DateTime;
 use Galaxia\Flash;
 use Galaxia\Text;
 use Normalizer;
@@ -60,7 +61,7 @@ class Input {
 
 
 
-    static function validate($input, $value, $itemId = null) {
+    static function validate($input, $value, $itemId = null): array {
         $input          = array_merge(self::PROTO_INPUT, $input);
         $input['value'] = Normalizer::normalize($value);
 
@@ -180,7 +181,7 @@ class Input {
 
             case 'raw':
                 $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
-                $input['value'] = trim($input['value'], " \t\n\r\0\x0B");
+                $input['value'] = trim($input['value']);
                 $input['value'] = preg_replace('/\s\s+/', ' ', $input['value']);
 
                 if (isset($input['options']['minlength']))
@@ -194,7 +195,7 @@ class Input {
 
             case 'text':
                 // $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
-                $input['value'] = trim($input['value'], " \t\n\r\0\x0B");
+                $input['value'] = trim($input['value']);
                 $input['value'] = preg_replace('/\s\s+/', ' ', $input['value']);
 
                 if (isset($input['options']['minlength']))
@@ -221,7 +222,7 @@ class Input {
 
 
             case 'number':
-                $input['value'] = trim($input['value'], " \t\n\r\0\x0B");
+                $input['value'] = trim($input['value']);
                 $input['value'] = filter_var($input['value'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
                 if (!is_numeric($input['value'])) $input['errors'][] = 'Must be a number.';
@@ -238,7 +239,7 @@ class Input {
 
             case 'email':
                 $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
-                $input['value'] = trim($input['value'], " \t\n\r\0\x0B");
+                $input['value'] = trim($input['value']);
 
                 $minLength = max($input['options']['minlength'] ?? 0, 0);
                 if ($minLength > 0)
@@ -252,7 +253,7 @@ class Input {
 
             case 'url':
                 $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
-                $input['value'] = trim($input['value'], " \t\n\r\0\x0B");
+                $input['value'] = trim($input['value']);
 
                 $minLength = max($input['options']['minlength'] ?? 0, 0);
                 if ($minLength > 0)
@@ -317,7 +318,7 @@ class Input {
 
             case 'link':
                 $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
-                $input['value'] = trim($input['value'], " \t\n\r\0\x0B");
+                $input['value'] = trim($input['value']);
 
                 if (!filter_var($input['value'], FILTER_VALIDATE_URL))
                     $input['errors'][] = 'Invalid url.';
@@ -392,8 +393,8 @@ class Input {
         if (isset($input['options']['prefill'])) {
             switch ($input['options']['prefill']) {
                 case 'week':
-                    $todayDt = new \DateTime();
-                    $afterDt = new \DateTime();
+                    $todayDt = new DateTime();
+                    $afterDt = new DateTime();
                     $afterDt->modify('+1 week');
                     $today          = $todayDt->format('Y-m-d');
                     $after          = $afterDt->format('Y-m-d');
@@ -401,7 +402,7 @@ class Input {
                     break;
 
                 case 'day':
-                    $todayDt        = new \DateTime();
+                    $todayDt        = new DateTime();
                     $input['value'] = $todayDt->format('Y-m-d');
                     break;
 

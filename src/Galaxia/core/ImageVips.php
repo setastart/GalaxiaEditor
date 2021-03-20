@@ -217,7 +217,7 @@ class ImageVips {
      * @return string - content of PNG file after conversion
      * @throws Exception
      */
-    static function compressPng($path_to_png_file) {
+    static function compressPng(string $path_to_png_file): string {
         if (!file_exists($path_to_png_file)) {
             throw new Exception('File does not exist: ' . $path_to_png_file);
         }
@@ -225,7 +225,7 @@ class ImageVips {
         // '-' makes it use stdout, required to save to $compressed variable
         // '<' makes it read from the given file path
         // escapeshellarg() makes this safe to use with any path
-        $compressed = shell_exec('pngquant --quality=' . self::$qualityPngMin . '-' . self::$qualityPngMax . ' - < ' . escapeshellarg($path_to_png_file));
+        $compressed = shell_exec('pngquant --quality=' . self::$qualityPngMin . '-' . self::$qualityPngMax . ' - < ' . escapeshellarg($path_to_png_file)) ?? '';
 
         if (!$compressed) {
             throw new Exception('Conversion to compressed PNG failed. Is pngquant 1.8+ installed on the server?');

@@ -243,7 +243,7 @@ if ($module['gcFieldOrder'] ?? false) {
         if ($aSearch === $bSearch) {
             $aSearch = array_search($a, array_keys($module['inputs']));
             $bSearch = array_search($b, array_keys($module['inputs']));
-        };
+        }
 
         return $aSearch <=> $bSearch;
     });
