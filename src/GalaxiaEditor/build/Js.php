@@ -13,19 +13,6 @@ class Js {
     const FILE_EXT_JS_BUILD = '.js';
 
     const JS_FILENAMES = [
-        'galaxiaEditor' => [
-            __DIR__ . '/js/polyfill.js',
-            __DIR__ . '/js/main.js',
-            __DIR__ . '/js/filter.js',
-            __DIR__ . '/js/image.js',
-            __DIR__ . '/js/field.js',
-            __DIR__ . '/js/input.js',
-            __DIR__ . '/js/scrape.js',
-            __DIR__ . '/js/text.js',
-        ],
-        'galaxiaChat'   => [
-            __DIR__ . '/js/galaxiaChat.js',
-        ],
     ];
 
 

@@ -37,35 +37,6 @@ function gjLoad() {
     }
 
 
-    document.addEventListener('trix-before-initialize', function (ev) {
-        ev.target.addEventListener('keydown', function (ev) {
-            if (ev.shiftKey && ev.key === 'Enter') {
-                ev.target.editor.recordUndoEntry('Shift+Enter');
-                ev.target.editor.insertHTML('<br><br>');
-                ev.preventDefault();
-            }
-        });
-    });
-
-
-    document.addEventListener('trix-change', function (ev) {
-        let editorEl = ev.target;
-        if (!editorEl.gInputLoaded) {
-            editorEl.gInput       = editorEl.parentNode;
-            editorEl.gInputLoaded = true;
-        }
-
-        gjInput.trixCharWordCount(editorEl);
-
-        gjInput.initialUndoClasses(editorEl);
-    });
-
-    document.addEventListener('trix-initialize', function (ev) {
-        let editorEl = ev.target;
-        gjInput.trixCharWordCount(editorEl);
-    });
-
-
     // on window resize with debounce
     window.onresize = function () {
         if (gjResizeTimeout != null) clearTimeout(gjResizeTimeout);

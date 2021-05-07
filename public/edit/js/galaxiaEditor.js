@@ -86,14 +86,14 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
 function gjLoad() {
-    document.addEventListener('input', handleEventInput, true);
-    document.addEventListener('change', handleEventChange, true);
-    document.addEventListener('blur', handleEventBlur, true);
-    document.addEventListener('click', handleEventClick, true);
-    document.addEventListener('mousedown', handleEventMousedown, true);
-    window.addEventListener('keydown', handleEventKeydown, true);
-    window.addEventListener('error', handleEventError, true);
-    window.addEventListener('beforeunload', handleEventBeforeunload, true);
+    // document.addEventListener('input', handleEventInput, true);
+    // document.addEventListener('change', handleEventChange, true);
+    // document.addEventListener('blur', handleEventBlur, true);
+    // document.addEventListener('click', handleEventClick, true);
+    // document.addEventListener('mousedown', handleEventMousedown, true);
+    // window.addEventListener('keydown', handleEventKeydown, true);
+    // window.addEventListener('error', handleEventError, true);
+    // window.addEventListener('beforeunload', handleEventBeforeunload, true);
 
 
     gjImage.init();
@@ -115,7 +115,7 @@ function gjLoad() {
         ev.target.addEventListener('keydown', function (ev) {
             if (ev.shiftKey && ev.key === 'Enter') {
                 ev.target.editor.recordUndoEntry('Shift+Enter');
-                ev.target.editor.insertHTML('<br><br>');
+                ev.target.editor.insertHTML('<br>');
                 ev.preventDefault();
             }
         });
