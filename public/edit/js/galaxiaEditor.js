@@ -72,12 +72,12 @@ function getSiblings(n) {
 /******  main.js  ******/
 /***********************/
 
-let gjTextareas                    = [];
-let gjResizeTimeout                = null;
-let filterData                     = ['pageCurrent', 'pageFirst', 'pagePrev', 'pageNext', 'pageLast', 'itemsPerPage', 'rowsFiltered', 'rowsTotal'];
+let gjTextareas     = [];
+let gjResizeTimeout = null;
+let filterData      = ['pageCurrent', 'pageFirst', 'pagePrev', 'pageNext', 'pageLast', 'itemsPerPage', 'rowsFiltered', 'rowsTotal'];
 
 
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', function() {
     const iOS    = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
     const safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     if (iOS && safari) document.querySelector('meta[name=viewport]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
@@ -86,18 +86,18 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
 function gjLoad() {
-    // document.addEventListener('input', handleEventInput, true);
-    // document.addEventListener('change', handleEventChange, true);
-    // document.addEventListener('blur', handleEventBlur, true);
-    // document.addEventListener('click', handleEventClick, true);
-    // document.addEventListener('mousedown', handleEventMousedown, true);
-    // window.addEventListener('keydown', handleEventKeydown, true);
-    // window.addEventListener('error', handleEventError, true);
-    // window.addEventListener('beforeunload', handleEventBeforeunload, true);
+    document.addEventListener('input', handleEventInput, true);
+    document.addEventListener('change', handleEventChange, true);
+    document.addEventListener('blur', handleEventBlur, true);
+    document.addEventListener('click', handleEventClick, true);
+    document.addEventListener('mousedown', handleEventMousedown, true);
+    window.addEventListener('keydown', handleEventKeydown, true);
+    window.addEventListener('error', handleEventError, true);
+    window.addEventListener('beforeunload', handleEventBeforeunload, true);
 
 
     gjImage.init();
-    gjTextareas     = document.getElementsByTagName('textarea');
+    gjTextareas = document.getElementsByTagName('textarea');
 
     gjInput.textareaResize();
 
@@ -105,43 +105,15 @@ function gjLoad() {
     // prepare form pagination
     for (let i = 0; i < document.forms.length; i++) {
         document.forms[i].pagination = [];
-        filterData.forEach(function (el) {
+        filterData.forEach(function(el) {
             document.forms[i].pagination[el] = document.forms[i].querySelectorAll('.' + el);
         });
     }
 
-
-    document.addEventListener('trix-before-initialize', function (ev) {
-        ev.target.addEventListener('keydown', function (ev) {
-            if (ev.shiftKey && ev.key === 'Enter') {
-                ev.target.editor.recordUndoEntry('Shift+Enter');
-                ev.target.editor.insertHTML('<br>');
-                ev.preventDefault();
-            }
-        });
-    });
-
-
-    document.addEventListener('trix-change', function (ev) {
-        let editorEl = ev.target;
-        if (!editorEl.gInputLoaded) {
-            editorEl.gInput       = editorEl.parentNode;
-            editorEl.gInputLoaded = true;
-        }
-
-        gjInput.trixCharWordCount(editorEl);
-
-        gjInput.initialUndoClasses(editorEl);
-    });
-
-    document.addEventListener('trix-initialize', function (ev) {
-        let editorEl = ev.target;
-        gjInput.trixCharWordCount(editorEl);
-    });
-
+    gjLoadTrix();
 
     // on window resize with debounce
-    window.onresize = function () {
+    window.onresize = function() {
         if (gjResizeTimeout != null) clearTimeout(gjResizeTimeout);
         gjResizeTimeout = setTimeout(gjInput.textareaResize, 100);
     }
@@ -313,7 +285,7 @@ function handleEventClick(ev) {
 
 
     if (ev.target.matches('.ev-module-add')) {
-        let pos = ev.target.closest('.module-field-group')?.querySelector('.module-position') ?? 0;
+        let pos     = ev.target.closest('.module-field-group')?.querySelector('.module-position') ?? 0;
         let fieldId = ev.target.closest('.module-field-group')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
 
         gjField.cloneNew(fieldId, 0);
@@ -410,6 +382,38 @@ function handleEventError(ev) {
     )) {
         gjImage.resizeRequest(ev.target);
     }
+}
+
+function gjLoadTrix() {
+    document.addEventListener('trix-before-initialize', function(ev) {
+        ev.target.addEventListener('keydown', function(ev) {
+            if (ev.shiftKey && ev.key === 'Enter') {
+                ev.target.editor.recordUndoEntry('Shift+Enter');
+                ev.target.editor.insertHTML('<br>');
+                ev.preventDefault();
+            }
+        });
+    });
+
+    document.addEventListener('trix-change', function(ev) {
+        let editorEl = ev.target;
+        if (!editorEl.gInputLoaded) {
+            editorEl.gInput       = editorEl.parentNode;
+            editorEl.gInputLoaded = true;
+        }
+
+        gjInput.trixCharWordCount(editorEl);
+        gjInput.initialUndoClasses(editorEl);
+    });
+
+    document.addEventListener('trix-initialize', function(ev) {
+        let editorEl = ev.target;
+        gjInput.trixCharWordCount(editorEl);
+    });
+
+    document.addEventListener('trix-file-accept', function(event) {
+        event.preventDefault(); // disable trix image attachment pasting
+    });
 }
 
 
@@ -1068,7 +1072,6 @@ let gjInput = {
         } else {
             el.style.height = '';
         }
-        console.log(el.style.height);
     },
 
 

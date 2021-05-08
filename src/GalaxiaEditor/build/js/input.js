@@ -42,7 +42,6 @@ let gjInput = {
         } else {
             el.style.height = '';
         }
-        console.log(el.style.height);
     },
 
 
