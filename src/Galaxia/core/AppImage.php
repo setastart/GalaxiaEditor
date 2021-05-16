@@ -22,6 +22,7 @@ class AppImage {
 
     public const PROTO_IMAGE = [
         'name'      => '',
+        'slug'      => '',
         'ext'       => '',
         'webp'      => false,
         'mtime'     => '',

@@ -566,6 +566,7 @@ class App {
         $img = array_merge(AppImage::PROTO_IMAGE, $img);
 
         $img['name'] = $this->urlImages . $imgSlug . '/' . $imgSlug;
+        $img['slug'] = $imgSlug;
 
         if (!$img['ext'] = AppImage::valid($this->dirImage, $imgSlug)) return [];
         $imgDir     = $this->dirImage . $imgSlug . '/';
