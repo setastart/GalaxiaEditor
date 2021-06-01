@@ -429,6 +429,7 @@ class App {
     function generateSitemap($db) {
         $activeLocales = array_diff_key($this->locales, $this->localesInactive);
         $activeLangs   = array_keys($activeLocales);
+        $keyLang       = key($activeLocales);
 
         $pages = [];
         $query = Sql::select(['page' => ['pageSlug_', 'pageType', 'timestampModified']], $activeLangs);
@@ -449,9 +450,7 @@ class App {
             return;
         }
 
-        $r = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-        $r .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . PHP_EOL;
-
+        $urls  = [];
         $found = 0;
         foreach ($this->routes as $pageType => $patterns) {
             foreach ($patterns as $pattern => $methods) {
@@ -504,30 +503,34 @@ class App {
                                     }
                                 }
 
-                                $r .= '<url>' . PHP_EOL;
-                                $r .= '  <priority>' . $sm['priority'] . '</priority>' . PHP_EOL;
-                                $r .= '  <loc>' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . key($activeLocales)] . $subLang[key($activeLocales)], key($activeLocales)) . '</loc>' . PHP_EOL;
+                                $urls[$found] = [
+                                    $keyLang => $this->addLangPrefix($page['pageSlug_' . $keyLang] . $subLang[$keyLang], $keyLang),
+
+                                    'pri' => $sm['priority'],
+                                ];
+
                                 if (count($activeLocales) > 1) {
                                     foreach ($activeLocales as $lang => $locale) {
-                                        $r .= '  <xhtml:link hreflang="' . $lang . '" href="' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . $lang] . $subLang[$lang], $lang) . '" rel="alternate"/>' . PHP_EOL;
+                                        $urls[$found][$lang] = $this->addLangPrefix($page['pageSlug_' . $lang] . $subLang[$lang], $lang);
                                     }
                                 }
-                                $r .= '</url>' . PHP_EOL;
                                 $found++;
                             }
                             $stmt->close();
                         }
 
                         if ($pattern == '') {
-                            $r .= '<url>' . PHP_EOL;
-                            $r .= '  <priority>' . $sm['priority'] . '</priority>' . PHP_EOL;
-                            $r .= '  <loc>' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . key($activeLocales)], key($activeLocales)) . '</loc>' . PHP_EOL;
+                            $urls[$found] = [
+                                $keyLang => $this->addLangPrefix($page['pageSlug_' . $keyLang], $keyLang),
+
+                                'pri' => $sm['priority'],
+                            ];
+
                             if (count($activeLocales) > 1) {
                                 foreach ($activeLocales as $lang => $locale) {
-                                    $r .= '  <xhtml:link hreflang="' . $lang . '" href="' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->addLangPrefix($page['pageSlug_' . $lang], $lang) . '" rel="alternate"/>' . PHP_EOL;
+                                    $urls[$found][$lang] = $this->addLangPrefix($page['pageSlug_' . $lang], $lang);
                                 }
                             }
-                            $r .= '</url>' . PHP_EOL;
                             $found++;
                         }
 
@@ -536,22 +539,43 @@ class App {
             }
         }
 
-        $r .= '</urlset>' . PHP_EOL;
 
         if ($found > 0) {
-            $result = file_put_contents($this->dir . 'public/sitemap.xml', $r);
-            if ($result === false) {
-                Flash::devlog('Sitemap could not be written to file.');
+            foreach ($activeLocales as $lang => $locale) {
+                $fileName = 'sitemap_' . $lang . '.xml';
+                if ($lang == $keyLang) $fileName = 'sitemap.xml';
 
-                return;
+
+                $rl = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+                $rl .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . PHP_EOL;
+
+                foreach ($urls as $url) {
+                    $rl .= '<url>' . PHP_EOL;
+                    $rl .= '  <priority>' . $url['pri'] . '</priority>' . PHP_EOL;
+                    $rl .= '  <loc>' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $url[$lang] . '</loc>' . PHP_EOL;
+                    if (count($activeLocales) > 1) {
+                        foreach ($activeLocales as $lang2 => $locale) {
+                            $rl .= '  <xhtml:link hreflang="' . $lang2 . '" href="' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $url[$lang2] . '" rel="alternate"/>' . PHP_EOL;
+                        }
+                    }
+                    $rl .= '</url>' . PHP_EOL;
+                }
+                $rl .= '</urlset>' . PHP_EOL;
+
+                $result = file_put_contents($this->dir . 'public/' . $fileName, $rl);
+                if ($result === false) {
+                    Flash::devlog('Sitemap could not be written to file.');
+
+                    return;
+                }
+                if ($result == 0) {
+                    Flash::devlog(sprintf('Sitemap written with 0 bytes - %s.', $fileName));
+
+                    return;
+                }
+
+                Flash::devlog(sprintf('Sitemap generated: %d items - %s', $found, $fileName) . ' <a target="blank" href="/' . $fileName . '">' . Text::t('Open in new tab') . '</a>');
             }
-            if ($result == 0) {
-                Flash::devlog('Sitemap written with 0 bytes.');
-
-                return;
-            }
-
-            Flash::devlog(sprintf('Sitemap generated: %d items', $found) . ' <a target="blank" href="/sitemap.xml">' . Text::t('Open in new tab') . '</a>');
         } else {
             Flash::devlog('Sitemap not generated, no items found.');
         }
