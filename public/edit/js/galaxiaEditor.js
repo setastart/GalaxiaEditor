@@ -348,7 +348,7 @@ function handleEventKeydown(ev) {
     }
 
     if (ev.key === 'Enter') {
-        if (ev.target.matches('.input-text')) {
+        if (ev.target.matches('.input-text:not(.input-textarea)')) {
             ev.preventDefault();
             return false;
         }
@@ -1068,7 +1068,7 @@ let gjInput = {
     textareaAutoGrow: function(el) {
         if (el.scrollHeight > 34) {
             el.style.height = '';
-            el.style.height = (el.scrollHeight + 8) + 'px';
+            el.style.height = (el.scrollHeight + 2) + 'px';
         } else {
             el.style.height = '';
         }
