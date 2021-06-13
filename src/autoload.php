@@ -8,12 +8,23 @@ spl_autoload_register(function($className) {
     $classes   = explode('\\', $className);
 
     if ($classes[0] == 'Galaxia') {
-        $fileName = match ($classes[1]) {
-            'FastRoute' => __DIR__ . '/Galaxia/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php',
-            'PHPMailer' => __DIR__ . '/Galaxia/mailer/' . implode('/', array_slice($classes, 2)) . '.php',
-            'RedisCli' => __DIR__ . '/Galaxia/redis/src/RedisCli.php',
-            default => __DIR__ . '/Galaxia/core/' . implode('/', array_slice($classes, 1)) . '.php',
-        };
+        switch ($classes[1]) {
+            case 'FastRoute':
+                $fileName = __DIR__ . '/Galaxia/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php';
+                break;
+
+            case 'PHPMailer':
+                $fileName = __DIR__ . '/Galaxia/mailer/' . implode('/', array_slice($classes, 2)) . '.php';
+                break;
+
+            case 'RedisCli':
+                $fileName = __DIR__ . '/Galaxia/redis/src/RedisCli.php';
+                break;
+
+            default:
+                $fileName = __DIR__ . '/Galaxia/core/' . implode('/', array_slice($classes, 1)) . '.php';
+                break;
+        }
         require_once $fileName;
     }
 });

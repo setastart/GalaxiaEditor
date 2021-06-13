@@ -419,10 +419,15 @@ HTML;
         $i     = 0;
         foreach ($pTags as $pTag) {
             if ($i > 0) {
-                $text .= match (substr($text, -1)) {
-                    '.', ':' => ' ',
-                    default => PHP_EOL,
-                };
+                switch (substr($text, -1)) {
+                    case '.':
+                    case ':':
+                        $text .= ' ';
+                        break;
+                    default:
+                        $text .= PHP_EOL;
+                        break;
+                }
             }
             $line = $pTag->nodeValue;
             $line = trim($line, " \t\n\r\0\x0B\xC2\xA0");
@@ -756,6 +761,13 @@ HTML;
         $r .= '/********' . str_repeat('*', strlen($text)) . '********/' . PHP_EOL;
 
         return $r;
+    }
+
+
+
+
+    static function br2nl(string $text) {
+        return preg_replace('~<br(\s*)?/?>~i', PHP_EOL, $text) ?? '';
     }
 
 

@@ -274,7 +274,7 @@ function handleEventKeydown(ev) {
     }
 
     if (ev.key === 'Enter') {
-        if (ev.target.matches('.input-text')) {
+        if (ev.target.matches('.input-text:not(.input-textarea)')) {
             ev.preventDefault();
             return false;
         }

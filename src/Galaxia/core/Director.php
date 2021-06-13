@@ -501,6 +501,7 @@ class Director {
     }
 
 
+    #[NoReturn]
     static function redirect($location = '', int $code = 302) {
         $location = trim($location, "/ \t\n\r\0\x0B");
         if (headers_sent()) {
