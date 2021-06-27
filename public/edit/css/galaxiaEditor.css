@@ -853,6 +853,7 @@ a.row:hover, .row a:hover {
     border-radius: 3px;
     margin-bottom: 10px;
     background-color: #eee4e4;
+    z-index: 1;
 }
 .module-field-group:focus-within {
     border-color: rgba(0, 0, 0, 0.5);
@@ -913,8 +914,8 @@ a.row:hover, .row a:hover {
     right: -19px;
     min-width: 26px;
 }
-.module-field-gallery .module-field-group + .module-field-group .ev-gallery-add.before {
-    display: none;
+.module-field-gallery .module-field-group:not(:last-child):not(:only-child) .ev-gallery-add.after {
+    /*display: none;*/
 }
 
 .module-field-gallery .input-wrap-textarea,

@@ -1,27 +1,79 @@
 let gjField = {
 
+    animatePrepare: function(el) {
+        let els = el.parentNode.children;
+        for (let i = 0; i < els.length; i++) {
+            els[i].posAbs = {x: els[i].offsetLeft, y: els[i].offsetTop};
+        }
+    },
+
+    animatePerform: function(el) {
+        let els = el.parentNode.children;
+        for (let i = 0; i < els.length; i++) {
+            gjField.animateTransform(els[i], els[i].posAbs);
+        }
+        gjField.animateZIndex(el);
+    },
+
+    animateTransform: function(el, posAbs) {
+        let posdif = {x: (posAbs.x - el.offsetLeft), y: (posAbs.y - el.offsetTop)};
+        if (posdif.x == 0 && posdif.y == 0) return;
+
+        el.style.transform  = 'translate(' + posdif.x + 'px, ' + posdif.y + 'px)';
+        el.style.transition = '';
+
+        window.requestAnimationFrame(function() {
+            el.style.transition = 'transform 352ms cubic-bezier(0.65,0.05,0.36,1)';
+            el.style.transform = 'translate(0px, 0px)';
+        });
+    },
+
+    animateZIndex: function(el) {
+        el.style.zIndex = '2';
+        el.style.position = 'relative';
+        console.log(el.style.zIndex, el);
+
+        if (!el.ontransitionend) {
+            el.ontransitionend = function(ev) {
+                ev.target.style.zIndex = '1';
+                ev.target.style.position = '';
+                // ev.target.scrollIntoView({block: "nearest", inline: "nearest"});
+                console.log(ev.target.style.zIndex, ev.target);
+            };
+        }
+    },
+
     moveUp: function(el) {
         let target = document.getElementById(el.dataset.target);
-        let groups = target.parentNode;
+        let parent = target.parentNode;
+        gjField.animatePrepare(target);
+
         if (target.previousElementSibling)
-            groups.insertBefore(target, target.previousElementSibling);
-        gjField.countPos(groups);
+            parent.insertBefore(target, target.previousElementSibling);
+        gjField.countPos(parent);
         target.querySelector('.module-position').focus();
+
+        gjField.animatePerform(target);
     },
 
 
     moveDown: function(el) {
         let target = document.getElementById(el.dataset.target);
-        let groups = target.parentNode;
+        let parent = target.parentNode;
+        gjField.animatePrepare(target);
+
         if (target.nextElementSibling)
-            groups.insertBefore(target.nextElementSibling, target);
-        gjField.countPos(groups);
+            parent.insertBefore(target.nextElementSibling, target);
+        gjField.countPos(parent);
         target.querySelector('.module-position').focus();
+
+        gjField.animatePerform(target);
     },
 
     moveTo: function(el, pos = null) {
         let target     = document.getElementById(el.dataset.target);
         let positionEl = target.querySelector('.module-position');
+        gjField.animatePrepare(target);
 
         if (pos) {
             positionEl.value = pos;
@@ -45,9 +97,10 @@ let gjField = {
                 j++;
             }
         }
-        target.querySelector('.module-position').focus();
 
+        target.querySelector('.module-position').focus();
         gjField.countPos(target.parentNode);
+        gjField.animatePerform(target);
     },
 
     sortNatural: function(fieldId) {
@@ -74,8 +127,8 @@ let gjField = {
 
     cloneNew: function(fieldId, pos) {
         const groupId = gjUnique();
-        let newGroup   = document.getElementById(fieldId + '-new').cloneNode(true);
-        let where      = document.getElementById(fieldId);
+        let newGroup  = document.getElementById(fieldId + '-new').cloneNode(true);
+        let where     = document.getElementById(fieldId);
 
         newGroup.classList.remove('hide');
         newGroup.classList.add('module-field-group-new');
