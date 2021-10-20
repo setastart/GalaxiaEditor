@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
 
@@ -115,7 +115,7 @@ var gchat = {
     </div>
 <?php       } ?>
 <?php   } ?>
-<?php   if (Director::isDev()) { ?>
+<?php   if (G::isDev()) { ?>
 <?php       $box = 'devlog'; ?>
 <?php       if ($msgs = Flash::msgBoxes($box)) { ?>
     <div id="openbox-<?=Text::h($box)?>" class="openbox hide-perm-dev">
@@ -133,9 +133,9 @@ var gchat = {
 
 <div id="page">
 <?php   include 'messageBoxes.phtml'; ?>
-<?php   Director::timerStart('View: ' . $editor->view . '.phtml'); ?>
+<?php   G::timerStart('View: ' . $editor->view . '.phtml'); ?>
 <?php   include $editor->dirView . $editor->view . '.phtml'; ?>
-<?php   Director::timerStop('View: ' . $editor->view . '.phtml'); ?>
+<?php   G::timerStop('View: ' . $editor->view . '.phtml'); ?>
 </div>
 
 <?php   if ($menuRight) include 'menu.phtml'; ?>

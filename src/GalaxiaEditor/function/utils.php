@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 
 
@@ -29,7 +29,7 @@ function geD() {
 
 
 function geErrorPage($code, $msg = '') {
-    Director::errorPage($code, $msg);
+    G::errorPage($code, $msg);
 }
 
 

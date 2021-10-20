@@ -1,7 +1,7 @@
 <?php
 
 use Galaxia\AppImage;
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Pagination;
 use Galaxia\Text;
 use GalaxiaEditor\render\Load;
@@ -9,7 +9,7 @@ use GalaxiaEditor\render\Load;
 
 // ajax
 
-if (Director::$ajax) {
+if (G::$ajax) {
     $editor->layout = 'none';
     $editor->view = 'imageList/results';
     if (($_POST['imageListType'] ?? '') == 'image-select') $editor->view = 'imageList/selectResults';

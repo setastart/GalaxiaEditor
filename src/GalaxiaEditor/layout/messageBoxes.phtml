@@ -1,4 +1,4 @@
-<?php use Galaxia\Director;
+<?php use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
 
@@ -32,7 +32,7 @@ use Galaxia\Text;
 <?php       } ?>
     </ul>
 <?php   } ?>
-<?php   if (Flash::hasDevlog('devlogBox') && Director::isDev()) { ?>
+<?php   if (Flash::hasDevlog('devlogBox') && G::isDev()) { ?>
     <ul id="msgbox-devlog" class="msgbox pad">
         <div class="msgbox-title"><?=Text::t('Devlog')?>:</div>
 <?php       foreach (Flash::devlogs('devlogBox') as $log) { ?>

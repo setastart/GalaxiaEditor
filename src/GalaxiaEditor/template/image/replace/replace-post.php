@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\File;
 use Galaxia\Flash;
 use GalaxiaEditor\input\Input;
@@ -58,4 +58,4 @@ $uploaded = $app->imageUpload($files, true, $_POST['resize']);
 
 $app->cacheDelete(['app', 'fastroute']);
 $app->cacheDelete('editor', 'imageList-' . $pgSlug . '*');
-Director::redirect('edit/' . $pgSlug . '/' . $imgSlug);
+G::redirect('edit/' . $pgSlug . '/' . $imgSlug);

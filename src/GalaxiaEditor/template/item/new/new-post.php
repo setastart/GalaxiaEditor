@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Sql;
 use Galaxia\Text;
@@ -50,7 +50,7 @@ foreach ($_POST['item'] ?? [] as $name => $value) {
 if (Flash::hasError()) return;
 if (!$itemChanges) {
     Flash::warning('Item not added.');
-    if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
+    if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
     return;
 }
 
@@ -104,6 +104,6 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
         include $app->dir .'src/script/_editor-item-update-hard.php';
 }
 
-if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
-if (isset($_POST['submitAndAddMore'])) Director::redirect('edit/' . $pgSlug . '/new');
-Director::redirect('edit/' . $pgSlug . '/' . $itemIdNew);
+if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
+if (isset($_POST['submitAndAddMore'])) G::redirect('edit/' . $pgSlug . '/new');
+G::redirect('edit/' . $pgSlug . '/' . $itemIdNew);

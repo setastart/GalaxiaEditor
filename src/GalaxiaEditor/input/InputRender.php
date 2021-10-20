@@ -6,7 +6,7 @@ namespace GalaxiaEditor\input;
 
 use Galaxia\App;
 use Galaxia\AppImage;
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
 
@@ -140,7 +140,7 @@ $ht .= '</div>' . PHP_EOL;
             $br  = '<br>';
         }
 
-        $titleTitle = (Director::isDev()) ? (Text::h($input['prefix']) ?? Text::h($input['name'])) : '';
+        $titleTitle = (G::isDev()) ? (Text::h($input['prefix']) ?? Text::h($input['name'])) : '';
 
 $ht = '<div class="' . Text::h($css) . '">' . PHP_EOL;
 $ht .= '    <div class="input-label">' .

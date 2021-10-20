@@ -3,7 +3,7 @@
 
 // variables
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Sql;
 use Galaxia\Text;
@@ -37,7 +37,7 @@ if ($itemId == 'new') return;
 if ($item['gcUpdateOnlyOwn'] ?? false) {
     if (!$me->hasPerm('dev') && $me->id != $itemId) {
         Flash::error(Text::t('Redirected. You don\'t have access to that page.'));
-        Director::redirect('/edit/' . $editor->homeSlug);
+        G::redirect('/edit/' . $editor->homeSlug);
     }
 }
 
@@ -59,7 +59,7 @@ $stmt->close();
 
 if (!$itemExists) {
     Flash::error(sprintf(Text::t('%s with id %s does not exist.'), Text::t($geConf[$pgSlug]['gcTitleSingle']), Text::h($itemId)));
-    Director::redirect('edit/' . $pgSlug);
+    G::redirect('edit/' . $pgSlug);
 }
 
 

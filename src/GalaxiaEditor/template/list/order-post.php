@@ -13,7 +13,7 @@
   - See the Licence for the specific language governing permissions and limitations under the Licence.
  */
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
 use GalaxiaEditor\model\ModelList;
@@ -36,6 +36,6 @@ $app->cacheDelete('editor');
 
 Flash::info('editor caches deleted');
 
-if (isset($_POST['submitAndGoBack'])) Director::redirect('edit/' . $pgSlug);
+if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
 
 include __DIR__ . '/list.php';

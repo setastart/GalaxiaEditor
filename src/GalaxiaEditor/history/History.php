@@ -5,7 +5,7 @@ namespace GalaxiaEditor\history;
 
 
 use Exception;
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Sql;
 
 
@@ -37,7 +37,7 @@ class History {
         $values  = array_values($changes);
         $query   = Sql::queryInsert(['_geHistory' => ['_geUserId', 'uniqueId', 'action', 'tabName', 'tabId', 'fieldKey', 'inputKey', 'content']], $changes);
         try {
-            $db    = Director::getMysqli();
+            $db    = G::getMysqli();
             $stmt  = $db->prepare($query);
             $types = str_repeat('s', count($values));
             $stmt->bind_param($types, ...$values);

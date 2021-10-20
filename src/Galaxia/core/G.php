@@ -19,7 +19,7 @@ use mysqli;
 use Throwable;
 
 
-class Director {
+class G {
 
     private static ?App    $app    = null;
     private static ?Editor $editor = null;
@@ -45,10 +45,10 @@ class Director {
         header('Content-Type: text/html; charset=utf-8');
         header_remove("X-Powered-By");
 
-        if (self::$app) self::errorPage(500, 'Director app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
-        if (!$dir) self::errorPage(500, 'Director app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is empty');
-        if (!is_dir($dir)) self::errorPage(500, 'Director app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
-        if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'Director app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
+        if (self::$app) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
+        if (!$dir) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is empty');
+        if (!is_dir($dir)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
+        if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
 
         libxml_use_internal_errors(true);
 
@@ -71,9 +71,9 @@ class Director {
     static function initCLI(string $dir): App {
         self::initEnv();
 
-        if (self::$app) self::errorPage(500, 'Director app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
-        if (!$dir || !is_dir($dir)) self::errorPage(500, 'Director app CLI initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
-        if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'Director app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App config not found');
+        if (self::$app) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
+        if (!$dir || !is_dir($dir)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
+        if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App config not found');
 
         libxml_use_internal_errors(true);
 
@@ -123,9 +123,9 @@ class Director {
 
 
     static function initEditor(string $dir): Editor {
-        if (!self::$app) self::errorPage(500, 'Director editor initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (self::$editor) self::errorPage(500, 'Director editor initialization', __METHOD__ . ':' . __LINE__ . ' Editor was already initialized');
-        if (!$dir || !is_dir($dir)) self::errorPage(500, 'Director editor initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
+        if (!self::$app) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (self::$editor) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' Editor was already initialized');
+        if (!$dir || !is_dir($dir)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
 
         self::$editor = new Editor($dir);
 
@@ -136,8 +136,8 @@ class Director {
 
 
     static function initMe(string $userTable = '_geUser'): User {
-        if (!self::$app) self::errorPage(500, 'Director user initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (self::$me) self::errorPage(500, 'Director user initialization', __METHOD__ . ':' . __LINE__ . ' User was already initialized');
+        if (!self::$app) self::errorPage(500, 'G user initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (self::$me) self::errorPage(500, 'G user initialization', __METHOD__ . ':' . __LINE__ . ' User was already initialized');
         self::$me = new User($userTable);
 
         return self::$me;
@@ -186,7 +186,7 @@ class Director {
 
 
     static function getApp(): App {
-        if (!self::$app) self::errorPage(500, 'Director error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!self::$app) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
 
         return self::$app;
     }
@@ -195,8 +195,8 @@ class Director {
 
 
     static function getEditor(): Editor {
-        if (!self::$app) self::errorPage(500, 'Director error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (!self::$editor) self::errorPage(500, 'Director error', __METHOD__ . ':' . __LINE__ . ' Editor was not initialized');
+        if (!self::$app) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!self::$editor) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' Editor was not initialized');
 
         return self::$editor;
     }
@@ -205,8 +205,8 @@ class Director {
 
 
     static function getMe(): User {
-        if (!self::$app) self::errorPage(500, 'Director error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (!self::$me) self::errorPage(500, 'Director error', __METHOD__ . ':' . __LINE__ . ' User was not initialized');
+        if (!self::$app) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!self::$me) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' User was not initialized');
 
         return self::$me;
     }
@@ -215,13 +215,13 @@ class Director {
 
 
     static function getMysqli(): mysqli {
-        if (!self::$app) self::errorPage(500, 'Director db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!self::$app) self::errorPage(500, 'G db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
         if (!self::$mysqli) {
             self::timerStart('DB Connection');
 
             self::$mysqli = new mysqli(self::$app->mysqlHost, self::$app->mysqlUser, self::$app->mysqlPass, self::$app->mysqlDb);
             if (self::$mysqli->connect_errno) {
-                self::errorPage(500, 'Director db Connection Failed' . __METHOD__ . ':' . __LINE__ . ' ' . self::$mysqli->connect_errno);
+                self::errorPage(500, 'G db Connection Failed' . __METHOD__ . ':' . __LINE__ . ' ' . self::$mysqli->connect_errno);
             }
 
             if (self::isDevEnv() || self::isDev()) mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);

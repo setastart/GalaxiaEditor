@@ -4,7 +4,7 @@
 namespace GalaxiaEditor\config;
 
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 
 
@@ -13,8 +13,8 @@ class ConfigDb {
     const RESERVED_COLUMNS = ['gcMulti'];
 
     static function validate(array $geConf) {
-        $db  = Director::getMysqli();
-        $app = Director::getApp();
+        $db  = G::getMysqli();
+        $app = G::getApp();
 
         $dbSchema = [];
 

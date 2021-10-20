@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\Director;
+use Galaxia\G;
 
 
 spl_autoload_register(function($className) {
@@ -36,7 +36,7 @@ require_once __DIR__ . '/Galaxia/fastroute/src/functions.php';
 
 
 // @formatter:off
-if (Director::isDevEnv()) {
+if (G::isDevEnv()) {
     include_once __DIR__ . '/Galaxia/kint.phar';
     Kint\Renderer\RichRenderer::$folder = false;
     function dd(...$vars) {
@@ -46,7 +46,7 @@ if (Director::isDevEnv()) {
     function db() {
         +!Kint::trace();
     }
-} else if (Director::isCli() || Director::isDevDebug()) {
+} else if (G::isCli() || G::isDevDebug()) {
     function d(...$vars) {
         foreach ($vars as $var) {
             ob_start();

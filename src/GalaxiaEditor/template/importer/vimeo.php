@@ -2,7 +2,7 @@
 
 
 use Galaxia\AppImage;
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Scrape\Scrape;
 use Galaxia\Scrape\Vimeo;
 use Galaxia\Text;
@@ -14,7 +14,7 @@ $id = Text::h($_GET['id']) ?? '';
 $r = Vimeo::getVideoFromId($id);
 
 if ($r[Scrape::DATA][Vimeo::IMG_SLUG] ?? '') {
-    $app     = Director::getApp();
+    $app     = G::getApp();
     $imgSlug = $r[Scrape::DATA][Vimeo::IMG_SLUG];
 
     if (AppImage::valid($app->dirImage, $imgSlug)) {

@@ -37,7 +37,7 @@ class User {
 
     public function logInFromCookieSessionId($cookieName) {
         if (!isset($_COOKIE[$cookieName])) return;
-        Director::timerStart('Session');
+        G::timerStart('Session');
 
         session_name($cookieName);
         if (ip2long($_SERVER['HTTP_HOST'])) {
@@ -62,7 +62,7 @@ class User {
 
         if (session_start()) $this->loginFromSessionId();
 
-        Director::timerStop('Session');
+        G::timerStop('Session');
     }
 
 
@@ -105,7 +105,7 @@ class User {
         $timeLastOnline = '';
         $timeCreated    = '';
 
-        $db   = Director::getMysqli();
+        $db   = G::getMysqli();
         $stmt = $db->prepare("
             SELECT
                 _geUserId,
@@ -153,7 +153,7 @@ class User {
     public function setName($name) {
         if (!$this->loggedIn) return;
 
-        $db   = Director::getMysqli();
+        $db   = G::getMysqli();
         $stmt = $db->prepare("
             UPDATE $this->tableName
             SET name = ?
@@ -172,7 +172,7 @@ class User {
         $optionValue      = '';
         $optionsTableName = $this->tableName . 'Option';
 
-        $db   = Director::getMysqli();
+        $db   = G::getMysqli();
         $stmt = $db->prepare("
             SELECT
                 fieldKey,
@@ -201,7 +201,7 @@ class User {
 
         $optionsTableName = $this->tableName . 'Option';
 
-        $db   = Director::getMysqli();
+        $db   = G::getMysqli();
         $stmt = $db->prepare("
             INSERT INTO $optionsTableName (
                 _geUserId,

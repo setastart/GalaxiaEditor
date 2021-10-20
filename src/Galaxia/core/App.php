@@ -145,8 +145,8 @@ class App {
     ) {
         if ($this->pagesById != null) return;
         $this->pagesById = $this->cacheGet('app', 1, $cacheKey, function() use ($id, $status, $type, $slug, $title, $url) {
-            $app       = Director::getApp();
-            $db        = Director::getMysqli();
+            $app       = G::getApp();
+            $db        = G::getMysqli();
             $pagesById = [];
             $query     = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
             $query     .= 'WHERE pageStatus > 1' . PHP_EOL;
@@ -184,8 +184,8 @@ class App {
         string $cacheKey = 'loadPagesByIdDraft'
     ) {
         $pagesByIdDraft  = $this->cacheGet('app', 1, $cacheKey, function() use ($id, $status, $type, $slug, $title, $url) {
-            $app = Director::getApp();
-            $db  = Director::getMysqli();
+            $app = G::getApp();
+            $db  = G::getMysqli();
 
             $pagesByIdDraft = [];
             $query          = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
@@ -221,7 +221,7 @@ class App {
         $routesVisited           = [];
         $slugsAndRedirectsByType = [];
 
-        $db = Director::getMysqli();
+        $db = G::getMysqli();
 
         $query = Sql::select([
             'page'         => ['pageId', 'pageStatus', 'pageSlug_', 'pageType'],
@@ -389,7 +389,7 @@ class App {
         $query .= Sql::selectWhereOr($arraySelectWhereOr, $statusGlue, $langs);
 
         // dd($query);
-        $db   = Director::getMysqli();
+        $db   = G::getMysqli();
         $stmt = $db->prepare($query);
         $stmt->bind_param(implode(array_map('key', $params)), ...array_map(fn($a) => $a[key($a)], $params));
         $stmt->execute();
@@ -939,7 +939,7 @@ class App {
         if (!$bypass && file_exists($cacheFile)) {
 
             $timerName = 'Cache HIT: ' . $cacheName;
-            Director::timerStart($timerName);
+            G::timerStart($timerName);
 
             $result = include $cacheFile;
 
@@ -948,7 +948,7 @@ class App {
             $result    = null;
             $cacheType = $bypass ? 'BYPASS' : 'MISS';
             $timerName = 'Cache ' . $cacheType . ': ' . $cacheName;
-            Director::timerStart($timerName);
+            G::timerStart($timerName);
 
             $fImageWrite = function() use ($f, $write, $cacheFile) {
                 $r = $f();
@@ -971,7 +971,7 @@ class App {
             Flash::error('Cache: invalid result');
         }
 
-        Director::timerStop($timerName);
+        G::timerStop($timerName);
 
         return $result ?? [];
     }

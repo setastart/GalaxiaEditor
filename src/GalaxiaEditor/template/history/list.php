@@ -1,11 +1,11 @@
 <?php
 
-use Galaxia\{Director, Pagination, Sql, Text};
+use Galaxia\{G, Pagination, Sql, Text};
 
 
 // ajax
 
-if (Director::$ajax) {
+if (G::$ajax) {
     $editor->layout = 'none';
     $editor->view = 'history/results';
 }

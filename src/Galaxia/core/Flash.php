@@ -188,7 +188,7 @@ class Flash {
                 d($key, $msgs);
             }
         }
-        Director::timerPrint();
+        G::timerPrint();
     }
 
 }

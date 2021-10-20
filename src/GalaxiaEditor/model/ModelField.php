@@ -4,7 +4,7 @@
 namespace GalaxiaEditor\model;
 
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Sql;
 
 
@@ -24,7 +24,7 @@ class ModelField {
         //     $insert
         // );
 
-        $db = Director::getMysqli();
+        $db = G::getMysqli();
 
         $insertedId = null;
         $values     = [];
@@ -59,7 +59,7 @@ class ModelField {
     ): int {
 
 
-        $db = Director::getMysqli();
+        $db = G::getMysqli();
 
         $affectedRows = null;
 

@@ -1,7 +1,7 @@
 <?php
 
 use Galaxia\AppImage;
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
 
@@ -27,4 +27,4 @@ if (Flash::hasInfo()) {
     $app->cacheDelete('editor', 'imageList-' . $pgSlug . '*');
 }
 
-Director::redirect('edit/' . $pgSlug);
+G::redirect('edit/' . $pgSlug);

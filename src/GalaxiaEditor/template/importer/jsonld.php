@@ -1,7 +1,7 @@
 <?php
 
 use Galaxia\AppImage;
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Scrape\Scrape;
 
 
@@ -20,7 +20,7 @@ Scrape::exitJsonOnError($r);
 
 
 if (preg_match('~ src="(https://\S*?s720x720\S*?)"~m', $html[Scrape::DATA], $matches)) {
-    $app     = Director::getApp();
+    $app     = G::getApp();
     $imgSlug = 'jsonld-' . hash('fnv164', serialize($r));
 
     if (AppImage::valid($app->dirImage, $imgSlug)) {

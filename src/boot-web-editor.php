@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{ArrayShape, Authentication, Director, FastRoute, Flash, Text};
+use Galaxia\{ArrayShape, Authentication, G, FastRoute, Flash, Text};
 use GalaxiaEditor\config\Config;
 use GalaxiaEditor\config\ConfigDb;
 
@@ -27,43 +27,43 @@ require_once __DIR__ . '/autoload-editor.php';
 
 // init app
 
-$app = Director::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '')));
+$app = G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '')));
 
 
-Director::timerStart('locales');
+G::timerStart('locales');
 foreach ($app->localesInactive as $lang => $locale) {
     if (isset($app->locales[$lang])) continue;
     $app->locales[$lang] = $locale;
     $app->langs          = array_keys($app->locales);
 }
 $app->setLang();
-Director::timerStop('locales');
+G::timerStop('locales');
 
 
 
 
 // init editor
 
-Director::timerStart('editor');
-$editor = Director::initEditor(dirname(__DIR__));
+G::timerStart('editor');
+$editor = G::initEditor(dirname(__DIR__));
 $geConf = [];
 require $app->dir . 'config/editor.php';
-$editor->version = '4.37.2';
-Director::timerStop('editor');
+$editor->version = '5.0.0-alpha';
+G::timerStop('editor');
 
-Director::loadTranslations();
+G::loadTranslations();
 
 
 
 
 // init me
 
-$me = Director::initMe();
+$me = G::initMe();
 $me->logInFromCookieSessionId($app->cookieEditorKey);
 
-$db = Director::getMysqli();
+$db = G::getMysqli();
 
-if (Director::isDevDebug()) {
+if (G::isDevDebug()) {
     $app->cacheBypass = true;
 }
 
@@ -105,7 +105,7 @@ if ($me->loggedIn) {
 
     // CSRF
     if (!isset($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(32));
-    if (!Director::isDevDebug())
+    if (!G::isDevDebug())
         if ($_SERVER['REQUEST_METHOD'] == 'POST')
             if (!isset($_POST['csrf']) || $_POST['csrf'] !== $_SESSION['csrf'])
                 geErrorPage(500, 'invalid csrf token.');
@@ -119,11 +119,11 @@ if ($me->loggedIn) {
 
 
     // parse editor configuration
-    Director::timerStart('editor configuration');
+    G::timerStart('editor configuration');
 
-    Director::timerStart('gecValidateArray');
+    G::timerStart('gecValidateArray');
     Config::validate($geConf);
-    Director::timerStop('gecValidateArray');
+    G::timerStop('gecValidateArray');
 
 
     // get editor slugs from config
@@ -173,13 +173,13 @@ if ($me->loggedIn) {
     }
 
 
-    Director::timerStart('arrayRemovePermsRecursive()');
+    G::timerStart('arrayRemovePermsRecursive()');
     ArrayShape::removePermsRecursive($geConf, $me->perms);
-    Director::timerStop('arrayRemovePermsRecursive()');
+    G::timerStop('arrayRemovePermsRecursive()');
 
-    Director::timerStart('gecLanguify');
+    G::timerStart('gecLanguify');
     ArrayShape::languify($geConf, array_keys($app->locales), $me->perms);
-    Director::timerStop('gecLanguify');
+    G::timerStop('gecLanguify');
 
 
     // remove inputs without type
@@ -217,17 +217,17 @@ if ($me->loggedIn) {
     }
 
 
-    if (Director::isDev()) {
-        Director::timerStart('gecValidateDatabase');
+    if (G::isDev()) {
+        G::timerStart('gecValidateDatabase');
         ConfigDb::validate($geConf);
-        Director::timerStop('gecValidateDatabase');
+        G::timerStop('gecValidateDatabase');
     }
 
-    Director::timerStop('editor configuration');
+    G::timerStop('editor configuration');
 
 
     // routes
-    Director::timerStart('routing');
+    G::timerStart('routing');
     $editor->layout = 'layout-editor';
     $dispatcher     = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($geConf, $me, $editor) {
 
@@ -346,7 +346,7 @@ if ($me->loggedIn) {
         }
 
     });
-    Director::timerStop('routing');
+    G::timerStop('routing');
 
     $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
@@ -378,10 +378,10 @@ if ($me->loggedIn) {
 
     switch ($routeInfo[0]) {
         case FastRoute\Dispatcher::NOT_FOUND:
-            Director::errorPage(404, __FILE__ . ':' . __LINE__);
+            G::errorPage(404, __FILE__ . ':' . __LINE__);
             break;
         case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-            Director::errorPage(403, __FILE__ . ':' . __LINE__);
+            G::errorPage(403, __FILE__ . ':' . __LINE__);
             break;
         case FastRoute\Dispatcher::FOUND:
             extract($routeInfo[2]); // make php $variables with names and values defined in the routing above.
@@ -397,7 +397,7 @@ if ($me->loggedIn) {
 
 // custom redirects
 
-if ($routeInfo[1] == 'redirect-home') Director::redirect('edit/' . $editor->homeSlug, 303);
+if ($routeInfo[1] == 'redirect-home') G::redirect('edit/' . $editor->homeSlug, 303);
 
 
 
@@ -405,7 +405,7 @@ if ($routeInfo[1] == 'redirect-home') Director::redirect('edit/' . $editor->home
 // Include the logic part of the template.
 // - logic can modify which layout and template are going to be used
 
-Director::timerStart('logic');
+G::timerStart('logic');
 $logicExploded  = explode('/', $editor->logic);
 $logicPathCount = count($logicExploded);
 $logicPath      = '';
@@ -421,7 +421,7 @@ for ($i = 0; $i < $logicPathCount - 1; $i++) {
 if (file_exists($editor->dirLogic . $editor->logic . '.php')) {
     include $editor->dirLogic . $editor->logic . '.php';
 }
-Director::timerStop('logic');
+G::timerStop('logic');
 
 
 
@@ -438,22 +438,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && Flash::hasError()) {
 // Exit on missing layouts or template view
 
 if (!file_exists($editor->dirLayout . $editor->layout . '.phtml')) {
-    Director::errorPage(500, 'missing layout: ' . Text::h($editor->layout));
+    G::errorPage(500, 'missing layout: ' . Text::h($editor->layout));
 }
 if (!file_exists($editor->dirView . $editor->view . '.phtml')) {
-    Director::errorPage(500, 'missing template view: ' . $editor->dir . 'src/templates/' . $editor->view);
+    G::errorPage(500, 'missing template view: ' . $editor->dir . 'src/templates/' . $editor->view);
 }
 
 
 
 
 // Include (run) the current layout. the layout includes the template (dynamic part of webpage)
-Director::timerStart('layout');
+G::timerStart('layout');
 include $editor->dirLayout . $editor->layout . '.phtml';
-Director::timerStop('layout');
+G::timerStop('layout');
 
-if (Director::isDev() && $editor->layout != 'none') {
-    Director::timerPrint(true, true);
+if (G::isDev() && $editor->layout != 'none') {
+    G::timerPrint(true, true);
 }
 
 

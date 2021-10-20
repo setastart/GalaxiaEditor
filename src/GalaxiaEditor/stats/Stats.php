@@ -16,14 +16,14 @@
 namespace GalaxiaEditor\stats;
 
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Text;
 
 
 class Stats {
 
     static function getStats(int $trim = 0) {
-        $app = Director::getApp();
+        $app = G::getApp();
 
         $files = glob($app->dir . 'var/stats/????-??-??.stats.php.gz');
         arsort($files);
@@ -35,7 +35,7 @@ class Stats {
     }
 
     static function getGoaccessStats(int $trim = 0) {
-        $app = Director::getApp();
+        $app = G::getApp();
 
         $files = glob($app->dir . 'var/goaccess/????-??-??.html');
         arsort($files);
@@ -46,7 +46,7 @@ class Stats {
     }
 
     static function getGoaccessDate(string $date): ?string {
-        $app  = Director::getApp();
+        $app  = G::getApp();
         $file = $app->dir . 'var/goaccess/' . Text::h($date) . '.html';
 
         if (!file_exists($file)) return null;

@@ -14,7 +14,7 @@
  */
 
 
-use Galaxia\Director;
+use Galaxia\G;
 use GalaxiaEditor\stats\Stats;
 
 
@@ -25,7 +25,7 @@ if ($curDate == $itemDate) {
     $stats = Stats::getGoaccessTemp($geConf[$pgSlug]['gcGoaccessLog'] ?? '', $geConf[$pgSlug]['gcGoaccessDir'] ?? '');
 }
 
-if (is_null($stats)) Director::errorPage(404, 'Could not load Stats file');
+if (is_null($stats)) G::errorPage(404, 'Could not load Stats file');
 
 
 exit($stats);

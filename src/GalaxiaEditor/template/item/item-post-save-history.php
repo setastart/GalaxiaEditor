@@ -1,7 +1,7 @@
 <?php
 
 // insert item history
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 use GalaxiaEditor\history\History;
 
@@ -28,4 +28,4 @@ foreach ($modules as $moduleKey => $module) {
 }
 Flash::info('Saved in History: ' . $geConf[$pgSlug]['gcTitleSingle']);
 
-Director::redirect('edit/' . $pgSlug);
+G::redirect('edit/' . $pgSlug);

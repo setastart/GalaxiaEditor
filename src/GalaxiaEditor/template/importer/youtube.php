@@ -1,7 +1,7 @@
 <?php
 
 use Galaxia\AppImage;
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Scrape\Scrape;
 use Galaxia\Scrape\Youtube;
 use Galaxia\Text;
@@ -17,7 +17,7 @@ $id = Text::h($_GET['id']) ?? '';
 $r = Youtube::getVideoFromId($id);
 
 if ($r[Scrape::DATA][Youtube::IMG_SLUG] ?? '') {
-    $app     = Director::getApp();
+    $app     = G::getApp();
     $imgSlug = $r[Scrape::DATA][Youtube::IMG_SLUG];
 
     if (AppImage::valid($app->dirImage, $imgSlug)) {

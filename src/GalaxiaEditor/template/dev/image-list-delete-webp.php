@@ -2,7 +2,7 @@
 
 
 use Galaxia\AppImage;
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
 
@@ -21,4 +21,4 @@ foreach ($images as $imgSlug => $mtime) {
 $app->cacheDelete('editor');
 Flash::info(sprintf(Text::t('Deleted %d Webp Images'), $count));
 
-Director::redirect('edit/dev');
+G::redirect('edit/dev');

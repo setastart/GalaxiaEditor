@@ -2,7 +2,7 @@
 
 
 use Galaxia\AppImage;
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
 use GalaxiaEditor\render\Load;
@@ -26,7 +26,7 @@ if ($imgSlug == 'new') return;
 
 if (!AppImage::valid($app->dirImage, $imgSlug)) {
     Flash::error(sprintf(Text::t('Image \'%s\' does not exist.'), Text::h($imgSlug)));
-    Director::redirect('edit/' . $pgSlug);
+    G::redirect('edit/' . $pgSlug);
 }
 
 

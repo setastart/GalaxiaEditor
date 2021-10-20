@@ -16,14 +16,14 @@
 namespace GalaxiaEditor\model;
 
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Text;
 
 
 class ModelList {
 
     static function order(string $table, array $order): int {
-        $db = Director::getMysqli();
+        $db = G::getMysqli();
 
         $affected = 0;
         foreach ($order as $old => $new) {

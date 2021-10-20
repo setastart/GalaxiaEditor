@@ -1,6 +1,6 @@
 <?php
 
-use Galaxia\{Director, Session};
+use Galaxia\{G, Session};
 use GalaxiaEditor\input\Input;
 
 
@@ -53,6 +53,6 @@ if ($userId) {
     }
     $_SESSION['id'] = $userId;
 
-    Director::redirect('edit', 303);
+    G::redirect('edit', 303);
 }
-Director::redirect('edit', 303);
+G::redirect('edit', 303);

@@ -113,21 +113,21 @@ class Request {
 
     function redirectRemoveSlashes() {
         if ($this->path != '/' && substr($this->path, -1, 1) == '/') {
-            Director::redirect($this->path, 301);
+            G::redirect($this->path, 301);
         }
     }
 
 
     function redirectRemoveQuery() {
         if ($this->query) {
-            Director::redirect($this->path, 301);
+            G::redirect($this->path, 301);
         }
     }
 
 
     function redirectTransliterated() {
         if ($this->path != $this->pathOriginal) {
-            Director::redirect($this->path, 301);
+            G::redirect($this->path, 301);
         }
     }
 

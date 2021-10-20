@@ -67,7 +67,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = Director::getApp()->langs;
+                $langs = G::getApp()->langs;
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -119,7 +119,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = Director::getApp()->langs;
+                $langs = G::getApp()->langs;
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -146,7 +146,7 @@ HTML;
 
 
     static function st(string $text, int $h1 = 0, int $f1 = 0, int $f2 = 0) {
-        // if (Director::$dev) $text = TEST_HTML;
+        // if (G::$dev) $text = TEST_HTML;
         if (empty($text)) return '';
         $text = trim(strip_tags($text, self::ALLOWED_TAGS));
         if (empty($text)) return '';
@@ -204,7 +204,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = Director::getApp()->langs;
+                $langs = G::getApp()->langs;
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -228,7 +228,7 @@ HTML;
     }
 
     static function trix(string $text, array $transforms = []): ?string {
-        // if (Director::$dev) $text = TEST_HTML;
+        // if (G::$dev) $text = TEST_HTML;
         $text = trim(strip_tags($text, self::ALLOWED_TAGS));
         if (empty($text)) return null;
         if (empty($transforms)) return $text;
@@ -284,7 +284,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = Director::getApp()->langs;
+                $langs = G::getApp()->langs;
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -308,7 +308,7 @@ HTML;
     }
 
     static function stp(string $text, int $f1 = 0, int $f2 = 0, int $fp = 0) {
-        // if (Director::$dev) $text = TEST_HTML;
+        // if (G::$dev) $text = TEST_HTML;
         if (empty($text)) return '';
         $text = trim(strip_tags($text, self::ALLOWED_TAGS));
         if (empty($text)) return '';
@@ -377,7 +377,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = Director::getApp()->langs;
+                $langs = G::getApp()->langs;
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -481,7 +481,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = Director::getApp()->langs;
+                $langs = G::getApp()->langs;
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -507,7 +507,7 @@ HTML;
 
 
     static function unsafet(string $text, string $lang = null) {
-        $app = Director::getApp();
+        $app = G::getApp();
         if ($lang == null) $lang = $app->lang;
 
         if (isset(self::$translation[$text][$lang]) &&
@@ -526,7 +526,7 @@ HTML;
             return self::$translationAlias[$text];
         }
 
-        // if (Director::$debug) $text = '@' . $text;
+        // if (G::$debug) $text = '@' . $text;
         return $text;
     }
 
@@ -614,7 +614,7 @@ HTML;
 
 
     static function nofollowHost(string $host) {
-        foreach (Director::$nofollowHosts as $nofollowHost)
+        foreach (G::$nofollowHosts as $nofollowHost)
             if (strpos($host, $nofollowHost))
                 return $nofollowHost;
 
@@ -690,7 +690,7 @@ HTML;
             if (!$value instanceof DateTimeInterface) return '';
         }
 
-        $app = Director::getApp();
+        $app = G::getApp();
 
         if (empty($lang) || !isset($app->langs[$lang]))
             $lang = $app->lang;

@@ -1,11 +1,11 @@
 <?php
 
-use Galaxia\{AppImage, Director, Pagination, Sql, Text};
+use Galaxia\{AppImage, G, Pagination, Sql, Text};
 
 
 // ajax
 
-if (Director::$ajax) {
+if (G::$ajax) {
     $editor->layout = 'none';
     $editor->view   = 'list/results';
 }
@@ -117,7 +117,7 @@ $items = $app->cacheGet('editor', 2, 'list-' . $order . $pgSlug . '-items', func
     $i           = 0;
     foreach ($selectQuery as $table => $columns) {
 
-        Director::timerStart('list ' . $table);
+        G::timerStart('list ' . $table);
         $keyCol = $table . 'Id';
         if (!in_array($keyCol, $columns)) array_unshift($selectQuery[$table], $keyCol);
 
@@ -206,7 +206,7 @@ $items = $app->cacheGet('editor', 2, 'list-' . $order . $pgSlug . '-items', func
 
         }
 
-        Director::timerStop('list ' . $table);
+        G::timerStop('list ' . $table);
         $i++;
     }
     return $items;
@@ -456,7 +456,7 @@ foreach ($filterInts as $filterId => $filter) {
     }
 }
 
-Director::timerStart('Filter Ints');
+G::timerStart('Filter Ints');
 foreach ($intFiltersActive as $filterId) {
 
     $itemsByInt = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
@@ -485,7 +485,7 @@ foreach ($intFiltersActive as $filterId) {
     $rows = array_intersect_key($rows, $filteredInts);
 
 }
-Director::timerStop('Filter Ints');
+G::timerStop('Filter Ints');
 
 
 
@@ -499,7 +499,7 @@ foreach ($_POST['filterTexts'] ?? [] as $filterId => $ints) {
     if ($ints !== '') $textFiltersActive[] = $filterId;
 }
 
-Director::timerStart('Filter Texts');
+G::timerStart('Filter Texts');
 foreach ($textFiltersActive as $filterId) {
     $filterInput = trim($_POST['filterTexts'][$filterId] ?? '', '+ ');
     if (!$filterInput) continue;
@@ -549,7 +549,7 @@ foreach ($textFiltersActive as $filterId) {
     }
     if ($itemsFiltered) $rows = array_diff_key($rows, $itemsFiltered);
 }
-Director::timerStop('Filter Texts');
+G::timerStop('Filter Texts');
 
 
 

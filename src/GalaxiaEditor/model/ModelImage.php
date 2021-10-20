@@ -3,7 +3,7 @@
 
 namespace GalaxiaEditor\model;
 
-use Galaxia\Director;
+use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
 
@@ -11,7 +11,7 @@ use Galaxia\Text;
 class ModelImage {
 
     static function inUse(array $geConf, string $pgSlug): array {
-        $db = Director::getMysqli();
+        $db = G::getMysqli();
 
         $inUse = [];
         foreach ($geConf[$pgSlug]['gcImagesInUse'] as $gcImageInUse) {
