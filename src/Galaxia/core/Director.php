@@ -317,15 +317,18 @@ class Director {
         $r       = '';
         $prefix  = '';
         $postfix = '' . PHP_EOL;
+        $padHead = ' ';
+        $pad     = ' ';
 
         if ($comments) {
             $prefix  = '<!-- ';
             $postfix = ' -->' . PHP_EOL;
+            $pad     = '`';
+            $padHead = '.';
         }
 
         $timeTotal   = self::$timers['Total']['total'];
         $levelTotals = [$timeTotal];
-        $pad         = '`';
 
         $cols   = [];
         $colLen = [];
@@ -377,7 +380,7 @@ class Director {
                     if ($col < 2) continue;
                     $col -= 1;
                 }
-                $r .= str_pad($col ?? '', $len, '.', STR_PAD_LEFT) . ' ';
+                $r .= str_pad($col ?? '', $len, $padHead, STR_PAD_LEFT) . ' ';
             }
         }
         $r .= $postfix;
@@ -398,17 +401,17 @@ class Director {
             $r .= $postfix;
         }
 
-        $memEnd      = ' ' . Text::bytesIntToAbbr(memory_get_usage(false), 2, '.');
-        $memPeak     = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(false), 2, '.');
-        $memEndReal  = ' ' . Text::bytesIntToAbbr(memory_get_usage(true), 2, '.');
-        $memPeakReal = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(true), 2, '.');
+        $memEnd      = ' ' . Text::bytesIntToAbbr(memory_get_usage(false), 2, $padHead);
+        $memPeak     = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(false), 2, $padHead);
+        $memEndReal  = ' ' . Text::bytesIntToAbbr(memory_get_usage(true), 2, $padHead);
+        $memPeakReal = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(true), 2, $padHead);
         $memLenMax   = ' ' . max(strlen($memEnd), strlen($memPeak), strlen($memEndReal), strlen($memPeakReal));
 
         if ($memory) {
-            $r .= $prefix . 'mem at end .' . str_pad($memPeak, $memLenMax, '.', STR_PAD_LEFT) . $postfix;
-            $r .= $prefix . 'mem peak ...' . str_pad($memPeak, $memLenMax, '.', STR_PAD_LEFT) . $postfix;
-            $r .= $prefix . 'mem real at end .' . str_pad($memEndReal, $memLenMax, '.', STR_PAD_LEFT) . $postfix;
-            $r .= $prefix . 'mem real peak ...' . str_pad($memPeakReal, $memLenMax, '.', STR_PAD_LEFT) . ' / ' . ini_get('memory_limit') . $postfix;
+            $r .= $prefix . 'mem at end .' . str_pad($memPeak, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
+            $r .= $prefix . 'mem peak ...' . str_pad($memPeak, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
+            $r .= $prefix . 'mem real at end .' . str_pad($memEndReal, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
+            $r .= $prefix . 'mem real peak ...' . str_pad($memPeakReal, $memLenMax, $padHead, STR_PAD_LEFT) . ' / ' . ini_get('memory_limit') . $postfix;
         }
 
         echo $r;

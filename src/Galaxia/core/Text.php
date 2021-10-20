@@ -684,7 +684,7 @@ HTML;
      *
      * @param mixed $value a timestamp, a DateTime or a string that creates a DateTime
      */
-    static function formatDate(mixed $value, string $pattern = '', string $lang = ''): string {
+    static function formatDate($value, string $pattern = '', string $lang = ''): string {
         if (is_string($value) && !ctype_digit($value)) {
             $value = date_create($value);
             if (!$value instanceof DateTimeInterface) return '';

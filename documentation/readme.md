@@ -4,7 +4,6 @@
 
 # todo GalaxiaEditor
 
-- reorder items in lists where position is set
 - check for missing and unused translations
 - gcVisit for sub sub pages
 - ajax - slug on input check if unique constrain exists (existing image or page)
