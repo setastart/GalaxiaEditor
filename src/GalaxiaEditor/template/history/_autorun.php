@@ -1,6 +1,7 @@
 <?php
 
 
+use Galaxia\G;
 use Galaxia\Sql;
 
 
@@ -30,7 +31,7 @@ foreach ($geConf as $rootSlug => $confPage) {
 $userNames = [];
 $query = Sql::select(['_geUser' => ['_geUserId', 'name']]);
 
-$stmt = $db->prepare($query);
+$stmt = G::prepare($query);
 $stmt->execute();
 $result = $stmt->get_result();
 

@@ -1,4 +1,6 @@
-<?php use Galaxia\AppImage;
+<?php
+
+use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
 
@@ -29,7 +31,7 @@ InputRender::form('', 'image-replace', 'image image-new paper pad'); ?>
 
     <div class="image-preview pad">
         <figure>
-            <?=AppImage::render($img), PHP_EOL?>
+            <?=G::image($img), PHP_EOL?>
         </figure>
     </div>
 

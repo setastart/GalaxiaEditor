@@ -21,10 +21,10 @@ use Throwable;
 
 class G {
 
-    private static ?App    $app    = null;
-    private static ?Editor $editor = null;
-    private static ?User   $me     = null;
-    private static ?mysqli $mysqli = null;
+    private static App    $app;
+    private static Editor $editor;
+    private static User   $me;
+    private static mysqli $mysqli;
 
     /**
      * @deprecated
@@ -45,7 +45,7 @@ class G {
         header('Content-Type: text/html; charset=utf-8');
         header_remove("X-Powered-By");
 
-        if (self::$app) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
+        if (isset(self::$app)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
         if (!$dir) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is empty');
         if (!is_dir($dir)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
         if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
@@ -71,7 +71,7 @@ class G {
     static function initCLI(string $dir): App {
         self::initEnv();
 
-        if (self::$app) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
+        if (isset(self::$app)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
         if (!$dir || !is_dir($dir)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
         if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App config not found');
 
@@ -123,8 +123,8 @@ class G {
 
 
     static function initEditor(string $dir): Editor {
-        if (!self::$app) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (self::$editor) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' Editor was already initialized');
+        if (!isset(self::$app)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (isset(self::$editor)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' Editor was already initialized');
         if (!$dir || !is_dir($dir)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
 
         self::$editor = new Editor($dir);
@@ -136,8 +136,8 @@ class G {
 
 
     static function initMe(string $userTable = '_geUser'): User {
-        if (!self::$app) self::errorPage(500, 'G user initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (self::$me) self::errorPage(500, 'G user initialization', __METHOD__ . ':' . __LINE__ . ' User was already initialized');
+        if (!isset(self::$app)) self::errorPage(500, 'G user initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (isset(self::$me)) self::errorPage(500, 'G user initialization', __METHOD__ . ':' . __LINE__ . ' User was already initialized');
         self::$me = new User($userTable);
 
         return self::$me;
@@ -154,7 +154,7 @@ class G {
 
 
     static function isDev(): bool {
-        if (!self::$me) return false;
+        if (!isset(self::$me)) return false;
         if (!self::$me->loggedIn) return false;
 
         return self::$me->hasPerm('dev');
@@ -163,7 +163,7 @@ class G {
 
     static function isDevDebug(): bool {
         if (!self::isDev()) return false;
-        if (!self::$app || !self::$app->cookieDebugVal || !self::$app->cookieDebugKey || !isset($_COOKIE)) return false;
+        if (!isset(self::$app) || !self::$app->cookieDebugVal || !self::$app->cookieDebugKey || !isset($_COOKIE)) return false;
 
         return ($_COOKIE[self::$app->cookieDebugKey] ?? null) === self::$app->cookieDebugVal;
     }
@@ -177,7 +177,7 @@ class G {
 
 
     static function insideEditor(): bool {
-        if (!self::$editor) return false;
+        if (!isset(self::$editor)) return false;
 
         return ($_SERVER['DOCUMENT_ROOT'] ?? null) === self::$editor->dir . 'public';
     }
@@ -186,7 +186,7 @@ class G {
 
 
     static function getApp(): App {
-        if (!self::$app) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!isset(self::$app)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
 
         return self::$app;
     }
@@ -195,8 +195,8 @@ class G {
 
 
     static function getEditor(): Editor {
-        if (!self::$app) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (!self::$editor) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' Editor was not initialized');
+        if (!isset(self::$app)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!isset(self::$editor)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' Editor was not initialized');
 
         return self::$editor;
     }
@@ -205,8 +205,8 @@ class G {
 
 
     static function getMe(): User {
-        if (!self::$app) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (!self::$me) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' User was not initialized');
+        if (!isset(self::$app)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!isset(self::$me)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' User was not initialized');
 
         return self::$me;
     }
@@ -215,8 +215,8 @@ class G {
 
 
     static function getMysqli(): mysqli {
-        if (!self::$app) self::errorPage(500, 'G db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (!self::$mysqli) {
+        if (!isset(self::$app)) self::errorPage(500, 'G db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!isset(self::$mysqli)) {
             self::timerStart('DB Connection');
 
             self::$mysqli = new mysqli(self::$app->mysqlHost, self::$app->mysqlUser, self::$app->mysqlPass, self::$app->mysqlDb);
@@ -242,13 +242,13 @@ class G {
     static function loadTranslations() {
         self::timerStart('Translations');
 
-        if (self::$editor && file_exists(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'))
+        if (isset(self::$editor) && file_exists(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'))
             Text::$translation = array_merge(Text::$translation, include(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'));
 
-        if (self::$app && file_exists(self::$app->dir . 'config/translation.php'))
+        if (isset(self::$app) && file_exists(self::$app->dir . 'config/translation.php'))
             Text::$translation = array_merge(Text::$translation, include(self::$app->dir . 'config/translation.php'));
 
-        if (self::$app && file_exists(self::$app->dir . 'config/translationAlias.php'))
+        if (isset(self::$app) && file_exists(self::$app->dir . 'config/translationAlias.php'))
             Text::$translationAlias = array_merge(Text::$translationAlias, include(self::$app->dir . 'config/translationAlias.php'));
 
         self::timerStop('Translations');
@@ -260,7 +260,7 @@ class G {
     // timing
 
     static function timerStart(string $timerLabel, $timeFloat = null) {
-        // if (self::$me && !self::isDev()) return;
+        // if (isset(self::$me) && !self::isDev()) return;
 
         if (isset(self::$timers[$timerLabel])) {
             if (self::$timers[$timerLabel]['running']) return;
@@ -287,7 +287,7 @@ class G {
 
 
     static function timerStop(string $timerLabel) {
-        // if (self::$me && !self::isDev()) return;
+        // if (isset(self::$me) && !self::isDev()) return;
 
         if (!isset(self::$timers[$timerLabel])) return;
         // if (!self::$timers[$timerLabel]['running']) return;
@@ -452,7 +452,7 @@ class G {
         }
 
         if (self::insideEditor()) {
-            if (self::$me && self::$me->loggedIn) {
+            if (isset(self::$me) && self::$me->loggedIn) {
                 $errorCode = $code;
                 $error     = $errors[$code] . '<br><br>';
                 // if (self::isDev()) {
@@ -467,7 +467,7 @@ class G {
         }
 
         $errorFile = '';
-        if (self::$app) {
+        if (isset(self::$app)) {
             $errorFilesToCheck = [];
             foreach (self::$app->langs as $lang) {
                 $errorFilesToCheck[] = self::$app->dir . 'public/error/' . $code . '-' . $lang . '.html';
@@ -513,6 +513,83 @@ class G {
         }
         header('Location: /' . $location, true, $code);
         exit();
+    }
+
+
+    static function dir(): string {
+        return self::$app->dir;
+    }
+
+    static function dirLog(): string {
+        return self::$app->dirLog;
+    }
+
+    static function dirCache(): string {
+        return self::$app->dirCache;
+    }
+
+    static function dirImage(): string {
+        return self::$app->dirImage;
+    }
+
+
+    static function lang(): string {
+        return self::$app->lang;
+    }
+
+    static function langs(): array {
+        return self::$app->langs;
+    }
+
+    static function locale(): array {
+        return self::$app->locale;
+    }
+
+    static function locales(): array {
+        return self::$app->locales;
+    }
+
+    static function addLangPrefix(string $url, string $lang = '') {
+        $url = trim($url, '/');
+        if (!isset(self::$app->locales[$lang])) $lang = self::$app->lang;
+        if ($url == '') return self::$app->locales[$lang]['url'];
+
+        return Text::h(rtrim(self::$app->locales[$lang]['url'], '/') . '/' . $url);
+    }
+
+    static function cache(
+        string $scope, int $level, string $key,
+        callable $f, bool $bypass = null, bool $write = null
+    ): array {
+        return self::$app->cacheGet($scope, $level, $key, $f, $bypass, $write);
+    }
+
+    static function cacheDelete($scopes, $key = '*') {
+        self::$app->cacheDelete($scopes, $key);
+    }
+
+    static function cacheDeleteAll() {
+        self::$app->cacheDeleteAll();
+    }
+
+    static function cacheDeleteOld() {
+        self::$app->cacheDeleteOld();
+    }
+
+    static function image($img, $extra = ''): string {
+        return AppImage::render($img, $extra);
+    }
+
+    static function imageGet($imgSlug, $img = [], $resize = true): array {
+        return self::$app->imageGet($imgSlug, $img, $resize);
+    }
+
+    static function imageUpload(array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = ''): array {
+        return self::$app->imageUpload($files, $replaceDefault, $toFitDefault, $type);
+    }
+
+    static function prepare(string $query) {
+        return self::getMysqli()->prepare($query);
     }
 
 }

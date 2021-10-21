@@ -5,12 +5,12 @@ use Galaxia\Text;
 
 ?>
 <div class="item-info">
-    <div><?=Text::t('Original')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=Text::h($imgSlug . $img['ext'])?>"><?=Text::h($img['wOriginal'] . 'x' . $img['hOriginal'])?></a><?=Text::h($img['ext'])?>  (<?=Text::bytesIntToAbbr(filesize($app->dirImage . $imgSlug . '/' . $imgSlug . $img['ext']))?>)</div>
+    <div><?=Text::t('Original')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=Text::h($imgSlug . $img['ext'])?>"><?=Text::h($img['wOriginal'] . 'x' . $img['hOriginal'])?></a><?=Text::h($img['ext'])?>  (<?=Text::bytesIntToAbbr(filesize(G::dirImage() . $imgSlug . '/' . $imgSlug . $img['ext']))?>)</div>
 <?php   foreach ($img['resizes'] as $fileName => $resize) { ?>
     <div>
         <?=Text::t('Dimensions')?>:
         <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=Text::h($fileName)?>"><?=Text::h($resize)?></a>
-        (<?=Text::bytesIntToAbbr(filesize($app->dirImage . $imgSlug . '/' . $fileName))?>) <?=Text::h($fileName)?>
+        (<?=Text::bytesIntToAbbr(filesize(G::dirImage() . $imgSlug . '/' . $fileName))?>) <?=Text::h($fileName)?>
     </div>
 <?php   } ?>
 

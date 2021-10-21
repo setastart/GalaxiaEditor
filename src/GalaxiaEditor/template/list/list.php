@@ -37,7 +37,7 @@ $query = '
     WHERE TABLE_SCHEMA = ?
 ';
 
-$stmt = $db->prepare($query);
+$stmt = G::prepare($query);
 $stmt->bind_param('s', $app->mysqlDb);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -83,7 +83,7 @@ foreach ($list['gcFilterInts'] as $filterId => $filter) {
 
 // get items from database using cache
 
-$items = $app->cacheGet('editor', 2, 'list-' . $order . $pgSlug . '-items', function() use ($db, $list, $firstTable, $firstColumn, $dbSchema, $order) {
+$items = G::cache('editor', 2, 'list-' . $order . $pgSlug . '-items', function() use ($db, $list, $firstTable, $firstColumn, $dbSchema, $order) {
     // // add key columns to joined tables (used to group joins in columns)
     // $selectQueryWithJoinKeys = $list['gcSelect'];
     // foreach ($selectQueryWithJoinKeys as $table => $columns) {
@@ -182,7 +182,7 @@ $items = $app->cacheGet('editor', 2, 'list-' . $order . $pgSlug . '-items', func
             do {
                 $chunk = $query . PHP_EOL . 'LIMIT ' . $done . ', ' . 5000 . PHP_EOL;
 
-                $stmt = $db->prepare($chunk);
+                $stmt = G::prepare($chunk);
                 $stmt->execute();
                 $result   = $stmt->get_result();
                 $rowCount = $stmt->affected_rows;
@@ -242,7 +242,7 @@ foreach ($columns as $columnId => $column) {
 
 // make html for all rows, using cache
 
-$rows = $app->cacheGet('editor', 3, 'list-' . $order . $pgSlug . '-rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns, $tags, $order) {
+$rows = G::cache('editor', 3, 'list-' . $order . $pgSlug . '-rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns, $tags, $order) {
     $rows         = [];
     $currentColor = 0;
     $thumbsToShow = 3;
@@ -278,7 +278,7 @@ $rows = $app->cacheGet('editor', 3, 'list-' . $order . $pgSlug . '-rows', functi
 
                         $isHomeSlug = ($pgSlug == $editor->homeSlug && $value == '' && substr($dbColumn, 0, 9) == 'pageSlug_');
 
-                        if (count($app->langs) > 1 && substr($dbColumn, -3, 1) == '_' && in_array(substr($dbColumn, -2), $app->langs)) {
+                        if (count(G::langs()) > 1 && substr($dbColumn, -3, 1) == '_' && in_array(substr($dbColumn, -2), G::langs())) {
                             $r .= '<span class="input-label-lang">' . substr($dbColumn, -2) . '</span> ';
                         }
 
@@ -303,9 +303,9 @@ $rows = $app->cacheGet('editor', 3, 'list-' . $order . $pgSlug . '-rows', functi
                                 if ($i == $thumbsToShow) {
                                     $r .= count($item[$dbTable]) . PHP_EOL;
                                 } else {
-                                    $img = $app->imageGet($value, ['w' => 256, 'h' => 256, 'version' => 'mtime', 'loading' => false], false);
+                                    $img = G::imageGet($value, ['w' => 256, 'h' => 256, 'version' => 'mtime', 'loading' => false], false);
                                     if ($img) {
-                                        $r .= AppImage::render($img) . PHP_EOL;
+                                        $r .= G::image($img) . PHP_EOL;
                                     } else {
                                         $r .= '<div class="nophoto" style="background-image:url(/edit/gfx/no-photo.png);"></div>' . PHP_EOL;
                                     }
@@ -459,7 +459,7 @@ foreach ($filterInts as $filterId => $filter) {
 G::timerStart('Filter Ints');
 foreach ($intFiltersActive as $filterId) {
 
-    $itemsByInt = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
+    $itemsByInt = G::cache('editor', 3, 'list-' . $pgSlug . '-filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
         $itemsByInt = [];
         foreach ($items as $itemId => $item)
             foreach ($filterInts[$filterId]['filterWhat'] as $dbTable => $dbColumns)
@@ -505,7 +505,7 @@ foreach ($textFiltersActive as $filterId) {
     if (!$filterInput) continue;
     $filterInput = explode('+', $filterInput);
 
-    $textFilterItems = $app->cacheGet('editor', 4, 'list-' . $pgSlug . '-filterText-' . $filterId, function() use ($app, $rows, $items, $filterTexts, $filterId) {
+    $textFilterItems = G::cache('editor', 4, 'list-' . $pgSlug . '-filterText-' . $filterId, function() use ($app, $rows, $items, $filterTexts, $filterId) {
         foreach ($rows as $itemId => $row) {
             $textFilterItems[$itemId] = '';
             $emptyFound               = false;

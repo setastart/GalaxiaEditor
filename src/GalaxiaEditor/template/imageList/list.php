@@ -20,12 +20,12 @@ if (G::$ajax) {
 
 // get images using cache
 
-$items = $app->cacheGet('editor', 2, 'imageList-' . $pgSlug . '-items', function() use ($app) {
+$items = G::cache('editor', 2, 'imageList-' . $pgSlug . '-items', function() use ($app) {
     $items = [];
-    $imageList = AppImage::list($app->dirImage);
+    $imageList = AppImage::list(G::dirImage());
 
     foreach ($imageList as $imgSlug => $mtime) {
-        if (!$img = $app->imageGet($imgSlug, ['w' => 256, 'h' => 256, 'extra' => ['type'], 'version' => 'mtime', 'fileSize' => true, 'loading' => false], false)) continue;
+        if (!$img = G::imageGet($imgSlug, ['w' => 256, 'h' => 256, 'extra' => ['type'], 'version' => 'mtime', 'fileSize' => true, 'loading' => false], false)) continue;
         $items[$imgSlug] = $img;
     }
 
@@ -51,7 +51,7 @@ $inUse = Load::imagesInUse($geConf, $pgSlug);
 
 switch ($_POST['imageListType'] ?? '') {
     case 'image-select':
-        $rows = $app->cacheGet('editor', 3, 'imageList-' . $pgSlug . '-rows-select', function() use ($app, $geConf, $pgSlug, $items, $inUse) {
+        $rows = G::cache('editor', 3, 'imageList-' . $pgSlug . '-rows-select', function() use ($app, $geConf, $pgSlug, $items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -65,7 +65,7 @@ switch ($_POST['imageListType'] ?? '') {
 $ht = '';
 $ht .= '<button type="button" id="' . Text::h($imgSlug) . '" class="imageSelectItem' . $cssInUse . '">' . PHP_EOL;
 $ht .= '    <figure>' . PHP_EOL;
-$ht .= '        ' . AppImage::render($img) . PHP_EOL;
+$ht .= '        ' . G::image($img) . PHP_EOL;
 $ht .= '    </figure>' . PHP_EOL;
 $ht .= '    <p>' . Text::h($imgSlug) . '</p>' . PHP_EOL;
 
@@ -88,7 +88,7 @@ $ht .= '</button>' . PHP_EOL;
         break;
 
     default:
-        $rows = $app->cacheGet('editor', 3, 'imageList-' . $pgSlug . '-rows', function() use ($editor, $geConf, $pgSlug, $items, $inUse) {
+        $rows = G::cache('editor', 3, 'imageList-' . $pgSlug . '-rows', function() use ($editor, $geConf, $pgSlug, $items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -100,7 +100,7 @@ $ht = '';
 $ht .= '<a class="row row-image" href="/edit/' . $editor->imageSlug .  '/' . $imgSlug . '">' . PHP_EOL;
 $ht .= '    <div class="col flexT">' . PHP_EOL;
 $ht .= '        <div class="col-thumb figure single">' . PHP_EOL;
-$ht .= '            ' . AppImage::render($img) . PHP_EOL;
+$ht .= '            ' . G::image($img) . PHP_EOL;
 $ht .= '        </div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
@@ -194,7 +194,7 @@ if ($textFiltersActive) {
         if (!$filterInput) continue;
         $filterInput = explode('+', $filterInput);
 
-        $itemsToFilter = $app->cacheGet('editor', 3, 'imageList-' . $pgSlug . '-filterTexts-' . $filterId, function() use ($app, $items, $inUse, $filterId) {
+        $itemsToFilter = G::cache('editor', 3, 'imageList-' . $pgSlug . '-filterTexts-' . $filterId, function() use ($app, $items, $inUse, $filterId) {
             switch ($filterId) {
                 case 'slug':
                     foreach ($items as $imgSlug => $img)

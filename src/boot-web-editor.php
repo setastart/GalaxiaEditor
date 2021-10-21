@@ -1,6 +1,11 @@
 <?php
 
-use Galaxia\{ArrayShape, Authentication, G, FastRoute, Flash, Text};
+use Galaxia\ArrayShape;
+use Galaxia\Authentication;
+use Galaxia\FastRoute;
+use Galaxia\Flash;
+use Galaxia\G;
+use Galaxia\Text;
 use GalaxiaEditor\config\Config;
 use GalaxiaEditor\config\ConfigDb;
 

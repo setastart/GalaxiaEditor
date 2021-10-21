@@ -1,6 +1,7 @@
 <?php
 
 
+use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
 use GalaxiaEditor\input\Input;
@@ -17,7 +18,7 @@ foreach ($item['gcSelectExtra'] as $table => $cols) {
     $query = Sql::select([$table => $cols]);
     $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
 
-    $stmt = $db->prepare($query);
+    $stmt = G::prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
 

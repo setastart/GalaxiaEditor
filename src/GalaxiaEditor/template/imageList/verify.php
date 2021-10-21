@@ -14,7 +14,7 @@ $fileName = Text::normalize($fileName, ' ', '.+');
 $fileSlug = Text::formatSlug($fileSlug);
 
 
-if (AppImage::valid($app->dirImage, $fileSlug) === false) {
+if (AppImage::valid(G::dirImage(), $fileSlug) === false) {
     exit(json_encode([
         'status' => 'ok',
         'slug' => $fileSlug,

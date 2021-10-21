@@ -2,6 +2,7 @@
 
 
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
 use GalaxiaEditor\history\History;
@@ -91,7 +92,7 @@ foreach ($fieldsDel as $moduleKey => $fields) {
         );
 
         try {
-            $stmt = $db->prepare($query);
+            $stmt = G::prepare($query);
             $stmt->bind_param('ss' . str_repeat('d', count($deleteIds)), $itemId, $fieldKey, ...$deleteIds);
             $success    = $stmt->execute();
             $insertedId = $stmt->insert_id;
@@ -179,7 +180,7 @@ foreach ($modules as $module) {
             $params[] = substr($col, -2) == 'Id' ? 0 : '';
 
         try {
-            $stmt  = $db->prepare($query);
+            $stmt  = G::prepare($query);
             $types = str_repeat('s', count($params));
             $stmt->bind_param($types, ...$params);
             $stmt->execute();

@@ -12,7 +12,7 @@ $editor->view = 'image/delete/delete';
 
 // item validation
 
-if (!AppImage::delete($app->dirImage, $imgSlug)) {
+if (!AppImage::delete(G::dirImage(), $imgSlug)) {
     Flash::error('image-delete-post - Unable to delete image: ' . Text::h($imgSlug));
 
     return;

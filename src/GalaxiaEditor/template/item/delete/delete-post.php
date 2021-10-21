@@ -17,7 +17,7 @@ $editor->view = 'item/delete/delete';
 try {
     $query = Sql::delete($item['gcDelete']);
 
-    $stmt = $db->prepare($query);
+    $stmt = G::prepare($query);
     $stmt->bind_param('s', $itemId);
     $stmt->execute();
     $affectedRows = $stmt->affected_rows;
@@ -69,8 +69,8 @@ Flash::info(sprintf(Text::t('Deleted: %s.'), Text::t($geConf[$pgSlug]['gcTitleSi
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     $app->cacheDelete(['app', 'fastroute']);
     $app->generateSitemap($db);
-    if (file_exists($app->dir .'src/script/_editor-item-update-hard.php'))
-        include $app->dir .'src/script/_editor-item-update-hard.php';
+    if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php'))
+        include G::dir() .'src/script/_editor-item-update-hard.php';
 }
 
 G::redirect('edit/' . $pgSlug);

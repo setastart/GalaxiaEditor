@@ -122,15 +122,6 @@ class App {
     }
 
 
-    public function addLangPrefix(string $url, string $lang = '') {
-        $url = trim($url, '/');
-        if (!isset($this->locales[$lang])) $lang = $this->lang;
-        if ($url == '') return $this->locales[$lang]['url'];
-
-        return Text::h(rtrim($this->locales[$lang]['url'], '/') . '/' . $url);
-    }
-
-
 
 
     // default page, slug, route loading
@@ -145,27 +136,25 @@ class App {
     ) {
         if ($this->pagesById != null) return;
         $this->pagesById = $this->cacheGet('app', 1, $cacheKey, function() use ($id, $status, $type, $slug, $title, $url) {
-            $app       = G::getApp();
-            $db        = G::getMysqli();
             $pagesById = [];
-            $query     = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
+            $query     = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $this->langs);
             $query     .= 'WHERE pageStatus > 1' . PHP_EOL;
             // dd($query);
-            $stmt = $db->prepare($query);
+            $stmt = G::prepare($query);
             $stmt->execute();
             $result = $stmt->get_result();
 
             while ($data = $result->fetch_assoc()) {
-                if (!isset($app->routes[$data['pageType']])) continue;
+                if (!isset($this->routes[$data['pageType']])) continue;
 
                 $pagesById[$data['pageId']][$id]     = $data['pageId'];
                 $pagesById[$data['pageId']][$status] = $data['pageStatus'];
                 $pagesById[$data['pageId']][$type]   = $data['pageType'];
 
-                foreach ($app->langs as $lang) {
+                foreach ($this->langs as $lang) {
                     $pagesById[$data['pageId']][$slug][$lang]  = $data['pageSlug_' . $lang];
                     $pagesById[$data['pageId']][$title][$lang] = $data['pageTitle_' . $lang];
-                    $pagesById[$data['pageId']][$url][$lang]   = $app->addLangPrefix($data['pageSlug_' . $lang], $lang);
+                    $pagesById[$data['pageId']][$url][$lang]   = G::addLangPrefix($data['pageSlug_' . $lang], $lang);
                 }
             }
             $stmt->close();
@@ -184,28 +173,26 @@ class App {
         string $cacheKey = 'loadPagesByIdDraft'
     ) {
         $pagesByIdDraft  = $this->cacheGet('app', 1, $cacheKey, function() use ($id, $status, $type, $slug, $title, $url) {
-            $app = G::getApp();
-            $db  = G::getMysqli();
 
             $pagesByIdDraft = [];
-            $query          = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $app->langs);
+            $query          = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_', 'pageType']], $this->langs);
             $query          .= 'WHERE pageStatus = 1' . PHP_EOL;
             // dd($query);
-            $stmt = $db->prepare($query);
+            $stmt = G::prepare($query);
             $stmt->execute();
             $result = $stmt->get_result();
 
             while ($data = $result->fetch_assoc()) {
-                if (!isset($app->routes[$data['pageType']])) continue;
+                if (!isset($this->routes[$data['pageType']])) continue;
 
                 $pagesByIdDraft[$data['pageId']][$id]     = $data['pageId'];
                 $pagesByIdDraft[$data['pageId']][$status] = $data['pageStatus'];
                 $pagesByIdDraft[$data['pageId']][$type]   = $data['pageType'];
 
-                foreach ($app->langs as $lang) {
+                foreach ($this->langs as $lang) {
                     $pagesByIdDraft[$data['pageId']][$slug][$lang]  = $data['pageSlug_' . $lang];
                     $pagesByIdDraft[$data['pageId']][$title][$lang] = $data['pageTitle_' . $lang];
-                    $pagesByIdDraft[$data['pageId']][$url][$lang]   = $app->addLangPrefix($data['pageSlug_' . $lang], $lang);
+                    $pagesByIdDraft[$data['pageId']][$url][$lang]   = G::addLangPrefix($data['pageSlug_' . $lang], $lang);
                 }
             }
             $stmt->close();
@@ -221,7 +208,6 @@ class App {
         $routesVisited           = [];
         $slugsAndRedirectsByType = [];
 
-        $db = G::getMysqli();
 
         $query = Sql::select([
             'page'         => ['pageId', 'pageStatus', 'pageSlug_', 'pageType'],
@@ -232,7 +218,7 @@ class App {
 
         $query .= 'WHERE pageStatus >= ' . $pageMinStatus . PHP_EOL;
 
-        $stmt = $db->prepare($query);
+        $stmt = G::prepare($query);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -389,8 +375,7 @@ class App {
         $query .= Sql::selectWhereOr($arraySelectWhereOr, $statusGlue, $langs);
 
         // dd($query);
-        $db   = G::getMysqli();
-        $stmt = $db->prepare($query);
+        $stmt = G::prepare($query);
         $stmt->bind_param(implode(array_map('key', $params)), ...array_map(fn($a) => $a[key($a)], $params));
         $stmt->execute();
         $result = $stmt->get_result();
@@ -434,7 +419,7 @@ class App {
         $pages = [];
         $query = Sql::select(['page' => ['pageSlug_', 'pageType', 'timestampModified']], $activeLangs);
         $query .= 'WHERE pageStatus > 1' . PHP_EOL;
-        $stmt  = $db->prepare($query);
+        $stmt  = G::prepare($query);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -476,7 +461,7 @@ class App {
                             }
                             $query .= Sql::selectGroupBy($sm['gcSelectGroupBy'], $activeLangs);
 
-                            $stmt = $db->prepare($query);
+                            $stmt = G::prepare($query);
                             $stmt->execute();
                             $result = $stmt->get_result();
 
@@ -504,14 +489,14 @@ class App {
                                 }
 
                                 $urls[$found] = [
-                                    $keyLang => $this->addLangPrefix($page['pageSlug_' . $keyLang] . $subLang[$keyLang], $keyLang),
+                                    $keyLang => G::addLangPrefix($page['pageSlug_' . $keyLang] . $subLang[$keyLang], $keyLang),
 
                                     'pri' => $sm['priority'],
                                 ];
 
                                 if (count($activeLocales) > 1) {
                                     foreach ($activeLocales as $lang => $locale) {
-                                        $urls[$found][$lang] = $this->addLangPrefix($page['pageSlug_' . $lang] . $subLang[$lang], $lang);
+                                        $urls[$found][$lang] = G::addLangPrefix($page['pageSlug_' . $lang] . $subLang[$lang], $lang);
                                     }
                                 }
                                 $found++;
@@ -521,14 +506,14 @@ class App {
 
                         if ($pattern == '') {
                             $urls[$found] = [
-                                $keyLang => $this->addLangPrefix($page['pageSlug_' . $keyLang], $keyLang),
+                                $keyLang => G::addLangPrefix($page['pageSlug_' . $keyLang], $keyLang),
 
                                 'pri' => $sm['priority'],
                             ];
 
                             if (count($activeLocales) > 1) {
                                 foreach ($activeLocales as $lang => $locale) {
-                                    $urls[$found][$lang] = $this->addLangPrefix($page['pageSlug_' . $lang], $lang);
+                                    $urls[$found][$lang] = G::addLangPrefix($page['pageSlug_' . $lang], $lang);
                                 }
                             }
                             $found++;

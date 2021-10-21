@@ -23,7 +23,7 @@ foreach ($_POST['item'] ?? [] as $name => $value) {
         $query .= Sql::selectWhere([$item['gcTable'] => [$input['nameFromDb'] => '=']]);
         $query .= Sql::selectLimit(0, 1);
 
-        $stmt = $db->prepare($query);
+        $stmt = G::prepare($query);
         $stmt->bind_param('s', $input['value']);
         $stmt->bind_result($rowId);
         $stmt->execute();
@@ -63,7 +63,7 @@ $values = array_values($itemChanges);
 try {
     $query = Sql::queryInsert($item['gcInsert'], $itemChanges);
 
-    $stmt = $db->prepare($query);
+    $stmt = G::prepare($query);
     $types = str_repeat('s', count($values));
     $stmt->bind_param($types, ...$values);
     $success = $stmt->execute();
@@ -100,8 +100,8 @@ Flash::info(sprintf(Text::t('Added: %s.'), Text::t($geConf[$pgSlug]['gcTitleSing
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     $app->cacheDelete(['app', 'fastroute']);
     $app->generateSitemap($db);
-    if (file_exists($app->dir .'src/script/_editor-item-update-hard.php'))
-        include $app->dir .'src/script/_editor-item-update-hard.php';
+    if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php'))
+        include G::dir() .'src/script/_editor-item-update-hard.php';
 }
 
 if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);

@@ -38,10 +38,10 @@ if (Flash::hasError()) return;
 // resize images
 
 $files = [[
-    'tmp_name' => $app->dirImage . $imgSlug . '/' . $imgSlug . $img['ext'],
+    'tmp_name' => G::dirImage() . $imgSlug . '/' . $imgSlug . $img['ext'],
     'name' => $imgSlug,
 ]];
-$uploaded = $app->imageUpload($files, true, $_POST['resize']);
+$uploaded = G::imageUpload($files, true, $_POST['resize']);
 
 
 

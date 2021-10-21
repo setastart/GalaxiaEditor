@@ -23,9 +23,7 @@ use Galaxia\Text;
 class Stats {
 
     static function getStats(int $trim = 0) {
-        $app = G::getApp();
-
-        $files = glob($app->dir . 'var/stats/????-??-??.stats.php.gz');
+        $files = glob(G::dir() . 'var/stats/????-??-??.stats.php.gz');
         arsort($files);
 
         if ($trim > 0) $files = array_slice($files, 0, $trim);
@@ -35,9 +33,7 @@ class Stats {
     }
 
     static function getGoaccessStats(int $trim = 0) {
-        $app = G::getApp();
-
-        $files = glob($app->dir . 'var/goaccess/????-??-??.html');
+        $files = glob(G::dir() . 'var/goaccess/????-??-??.html');
         arsort($files);
 
         if ($trim > 0) $files = array_slice($files, 0, $trim);
@@ -46,8 +42,7 @@ class Stats {
     }
 
     static function getGoaccessDate(string $date): ?string {
-        $app  = G::getApp();
-        $file = $app->dir . 'var/goaccess/' . Text::h($date) . '.html';
+        $file = G::dir() . 'var/goaccess/' . Text::h($date) . '.html';
 
         if (!file_exists($file)) return null;
 

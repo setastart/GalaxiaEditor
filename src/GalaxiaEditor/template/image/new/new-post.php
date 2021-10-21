@@ -57,10 +57,10 @@ foreach ($files as $i => $file) {
 
 // upload images
 
-$uploaded = $app->imageUpload($files, false, 1920);
+$uploaded = G::imageUpload($files, false, 1920);
 foreach ($uploaded as $img) {
     if ($img['imgType'] ?? '') {
-        $file = $app->dirImage . $img['slug'] . '/' . $img['slug'] . '_type.txt';
+        $file = G::dirImage() . $img['slug'] . '/' . $img['slug'] . '_type.txt';
         if (file_put_contents($file, $img['imgType']) !== false) {
             Flash::info('Updated: ' . Text::t('Image Type'));
         } else {
@@ -69,7 +69,7 @@ foreach ($uploaded as $img) {
     }
 
     if (!$img['replaced'] && $img['fileName']) {
-        $file = $app->dirImage . $img['slug'] . '/' . $img['slug'] . '_alt_' . $app->lang . '.txt';
+        $file = G::dirImage() . $img['slug'] . '/' . $img['slug'] . '_alt_' . G::lang() . '.txt';
         if (file_put_contents($file, $img['fileName']) !== false) {
             Flash::info('Updated: ' . Text::t('Image Alt'));
         } else {

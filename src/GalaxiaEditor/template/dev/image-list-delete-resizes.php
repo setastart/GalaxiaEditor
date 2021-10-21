@@ -10,12 +10,12 @@ use Galaxia\Text;
 $editor->view = 'dev/dev';
 
 
-$images = AppImage::list($app->dirImage);
+$images = AppImage::list(G::dirImage());
 
 $count = 0;
 foreach ($images as $imgSlug => $mtime) {
-    $count += AppImage::deleteResizes($app->dirImage, $imgSlug);
-    touch($app->dirImage . $imgSlug . '/', $mtime);
+    $count += AppImage::deleteResizes(G::dirImage(), $imgSlug);
+    touch(G::dirImage() . $imgSlug . '/', $mtime);
 }
 
 $app->cacheDelete('editor');

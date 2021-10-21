@@ -10,12 +10,12 @@ use Galaxia\Text;
 $editor->view = 'dev/dev';
 
 
-$images = AppImage::list($app->dirImage);
+$images = AppImage::list(G::dirImage());
 
 foreach ($images as $imgSlug => $mtimeDir) {
-    if (!$ext = AppImage::valid($app->dirImage, $imgSlug)) continue;
-    $mtime = filemtime($app->dirImage . $imgSlug . '/' . $imgSlug . $ext);
-    touch($app->dirImage . $imgSlug . '/', $mtime);
+    if (!$ext = AppImage::valid(G::dirImage(), $imgSlug)) continue;
+    $mtime = filemtime(G::dirImage() . $imgSlug . '/' . $imgSlug . $ext);
+    touch(G::dirImage() . $imgSlug . '/', $mtime);
 }
 
 $app->cacheDelete('editor');

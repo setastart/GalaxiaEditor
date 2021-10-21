@@ -24,7 +24,7 @@ if ($imgSlug == 'new') return;
 
 // item validation
 
-if (!AppImage::valid($app->dirImage, $imgSlug)) {
+if (!AppImage::valid(G::dirImage(), $imgSlug)) {
     Flash::error(sprintf(Text::t('Image \'%s\' does not exist.'), Text::h($imgSlug)));
     G::redirect('edit/' . $pgSlug);
 }
@@ -35,8 +35,8 @@ $inUse = Load::imagesInUse($geConf, $pgSlug)[$imgSlug] ?? [];
 
 // load image and build inputs
 
-$img = $app->imageGet($imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
-$img['resizes'] = AppImage::resizes($app->dirImage, $imgSlug) ?? [];
+$img = G::imageGet($imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
+$img['resizes'] = AppImage::resizes(G::dirImage(), $imgSlug) ?? [];
 
 
 $inputs = [
@@ -51,7 +51,7 @@ $inputs = [
 ];
 
 
-foreach ($app->locales as $lang => $locale) {
+foreach (G::locales() as $lang => $locale) {
     $inputs['alt_' . $lang] = [
         'label'       => 'Alt',
         'name'        => 'alt_' . $lang,
@@ -91,9 +91,9 @@ $inputs['timestampM'] = [
 ];
 
 
-$showSwitchesLang = count($app->langs) > 1;
+$showSwitchesLang = count(G::langs()) > 1;
 $langSelectClass = [];
-foreach ($app->langs as $lang) {
+foreach (G::langs() as $lang) {
     $langSelectClass[$lang] = '';
 }
 

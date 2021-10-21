@@ -23,14 +23,12 @@ use Galaxia\Text;
 class ModelList {
 
     static function order(string $table, array $order): int {
-        $db = G::getMysqli();
-
         $affected = 0;
         foreach ($order as $old => $new) {
             $q = 'UPDATE ' . Text::q($table) .
                   ' SET position = ' . (int)$new .
                   ' WHERE ' . Text::q($table . 'Id') . ' = ' . (int)$old . ';' . PHP_EOL;
-            $stmt = $db->prepare($q);
+            $stmt = G::prepare($q);
             $stmt->execute();
             $affected += $stmt->affected_rows;
         }

@@ -1,6 +1,7 @@
 <?php
 
 
+use Galaxia\G;
 use Galaxia\Sql;
 
 
@@ -33,17 +34,17 @@ $itemChanges        = [];
 
 $pageById = [];
 
-$query = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_']], $app->langs);
+$query = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_']], G::langs());
 
-$stmt = $db->prepare($query);
+$stmt = G::prepare($query);
 $stmt->execute();
 $result = $stmt->get_result();
 while ($data = $result->fetch_assoc()) {
     $pageById[$data['pageId']]['pageStatus'] = $data['pageStatus'];
-    foreach ($app->langs as $lang) {
+    foreach (G::langs() as $lang) {
         $pageById[$data['pageId']]['slug'][$lang]  = $data['pageSlug_' . $lang];
         $pageById[$data['pageId']]['title'][$lang] = $data['pageTitle_' . $lang];
-        $pageById[$data['pageId']]['url'][$lang]   = $app->addLangPrefix($data['pageSlug_' . $lang], $lang);
+        $pageById[$data['pageId']]['url'][$lang]   = G::addLangPrefix($data['pageSlug_' . $lang], $lang);
     }
 }
 $stmt->close();

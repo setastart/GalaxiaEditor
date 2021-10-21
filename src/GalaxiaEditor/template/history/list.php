@@ -13,11 +13,11 @@ if (G::$ajax) {
 
 
 
-$items = $app->cacheGet('editor', 2, 'list-' . $pgSlug . '-items', function() use ($db, $userNames) {
+$items = G::cache('editor', 2, 'list-' . $pgSlug . '-items', function() use ($db, $userNames) {
     $query = Sql::select(['_geHistory' => ['_geHistoryId', '_geUserId', 'uniqueId', 'tabName', 'tabId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
     $query .= Sql::selectOrderBy(['_geHistory' => ['uniqueId' => 'DESC']]);
 
-    $stmt = $db->prepare($query);
+    $stmt = G::prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -67,7 +67,7 @@ $rowsTotal = count($items);
 
 // make html for all rows, using cache
 
-$rows = $app->cacheGet('editor', 3, 'list-' . $pgSlug . '-rows', function() use ($pgSlug, $items, $pageNames) {
+$rows = G::cache('editor', 3, 'list-' . $pgSlug . '-rows', function() use ($pgSlug, $items, $pageNames) {
     foreach ($items as $itemId => $item) {
 $ht = '<a class="row ' . $item['action'] . '" href="/edit/' . Text::h($pgSlug) . '/' . Text::h($item['tabName']) . '/' . Text::h($item['tabId']) . '#' . Text::h($itemId) . '">' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;

@@ -65,7 +65,7 @@ $params = [date('Y-m-d G:i:s'), $itemId];
 $query = Sql::update($item['gcUpdate']);
 $query .= Sql::updateSet(['timestampModified']);
 $query .= Sql::updateWhere([$item['gcTable'] => [$item['gcTable'] . 'Id']]);
-$stmt = $db->prepare($query);
+$stmt = G::prepare($query);
 $stmt->bind_param('sd', ...$params);
 $stmt->execute();
 $affectedRows = $stmt->affected_rows;
@@ -78,7 +78,7 @@ $stmt->close();
 
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     $slugs = [$item['gcTable'] . 'Slug'];
-    foreach ($app->langs as $lang) $slugs[] = $item['gcTable'] . 'Slug_' . $lang;
+    foreach (G::langs() as $lang) $slugs[] = $item['gcTable'] . 'Slug_' . $lang;
 
     if ($item['gcRedirect']) {
         $redirectTable     = $item["gcTable"] . 'Redirect';
@@ -97,7 +97,7 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
                 $values = [null, '', $oldSlug, $newSlug];
                 $query = Sql::deleteIn($redirectTable, [], $redirectTableSlug, $values);
 
-                $stmt = $db->prepare($query);
+                $stmt = G::prepare($query);
                 $stmt->bind_param('ssss', ...$values);
                 $stmt->execute();
                 $affectedRows = $stmt->affected_rows;
@@ -113,7 +113,7 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
                     [$redirectTable => [$redirectTableSlug]],
                     [$redirectTableId => $itemId, $redirectTableSlug => $oldSlug, 'fieldKey' => $redirectFieldKey]
                 );
-                $stmt = $db->prepare($query);
+                $stmt = G::prepare($query);
                 $stmt->bind_param('dss', $itemId, $oldSlug, $redirectFieldKey);
                 $success = $stmt->execute();
                 $itemIdNew = $stmt->insert_id;
@@ -138,12 +138,12 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
             count(array_intersect(array_keys($itemChanges), $slugs)) > 0
         ) {
             $app->generateSitemap($db);
-            if (file_exists($app->dir .'src/script/_editor-item-update-hard.php')) {
-                include $app->dir .'src/script/_editor-item-update-hard.php';
+            if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php')) {
+                include G::dir() .'src/script/_editor-item-update-hard.php';
             }
         } else {
-            if (file_exists($app->dir .'src/script/_editor-item-update-soft.php')) {
-                include $app->dir .'src/script/_editor-item-update-soft.php';
+            if (file_exists(G::dir() .'src/script/_editor-item-update-soft.php')) {
+                include G::dir() .'src/script/_editor-item-update-soft.php';
             }
         }
 

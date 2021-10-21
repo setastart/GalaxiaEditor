@@ -10,7 +10,7 @@ use GalaxiaEditor\input\Input;
 
 
 $editor->view = 'image/image';
-$mtime        = filemtime($app->dirImage . $imgSlug . '/');
+$mtime        = filemtime(G::dirImage() . $imgSlug . '/');
 
 
 
@@ -23,7 +23,7 @@ foreach ($inputs as $name => $input) {
     $input = Input::validate($input, $value);
 
     if ($name == 'imgSlug' && $value != $imgSlug) {
-        if ($value && is_dir($app->dirImage . $value)) {
+        if ($value && is_dir(G::dirImage() . $value)) {
             $msg               = 'Must be unique. An item with that value already exists.';
             $input['errors'][] = $msg;
             Flash::error($msg, 'form', $input['name']);
@@ -56,12 +56,12 @@ if (!$itemChanges) {
 // update alt and type
 
 $altsAndType = ['alt_', 'type'];
-ArrayShape::languify($altsAndType, array_keys($app->locales));
+ArrayShape::languify($altsAndType, array_keys(G::locales()));
 foreach ($itemChanges as $name => $value) {
 
     if (!in_array($name, $altsAndType)) continue;
 
-    $file = $app->dirImage . $imgSlug . '/' . $imgSlug . '_' . $name . '.txt';
+    $file = G::dirImage() . $imgSlug . '/' . $imgSlug . '_' . $name . '.txt';
 
     if (empty($value)) {
         unlink($file);
@@ -84,10 +84,10 @@ foreach ($itemChanges as $name => $value) {
 
 // update mtime
 
-touch($app->dirImage . $imgSlug . '/', $mtime);
+touch(G::dirImage() . $imgSlug . '/', $mtime);
 foreach ($itemChanges as $name => $value) {
     if ($name != 'timestampM') continue;
-    if (touch($app->dirImage . $imgSlug . '/', strtotime($value))) {
+    if (touch(G::dirImage() . $imgSlug . '/', strtotime($value))) {
         Flash::info(Text::t('Updated') . ': ' . $name);
         Flash::info(Text::t('Updated'), 'form', $name);
     } else {
@@ -102,7 +102,7 @@ foreach ($itemChanges as $name => $value) {
 // rename
 
 if (isset($itemChanges['imgSlug'])) {
-    if (AppImage::slugRename($app->dirImage, $imgSlug, $itemChanges['imgSlug'])) {
+    if (AppImage::slugRename(G::dirImage(), $imgSlug, $itemChanges['imgSlug'])) {
         Flash::info(Text::t('Updated') . ': ' . 'Slug');
         Flash::info(Text::t('Updated'), 'form', 'imgSlug');
 
@@ -118,7 +118,7 @@ if (isset($itemChanges['imgSlug'])) {
 
             $affectedRows = 0;
             try {
-                $stmt  = $db->prepare($query);
+                $stmt  = G::prepare($query);
                 $types = str_repeat('s', count($params));
                 $stmt->bind_param($types, ...$params);
                 $stmt->execute();

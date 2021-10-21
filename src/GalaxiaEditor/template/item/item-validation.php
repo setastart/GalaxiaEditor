@@ -2,6 +2,7 @@
 
 
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
 use GalaxiaEditor\input\Input;
@@ -55,7 +56,7 @@ foreach ($_POST['item'] as $name => $value) {
         $query .= Sql::selectWhere([key($item['gcUpdate']) => [$input['nameFromDb'] => '=']]);
         $query .= Sql::selectLimit(0, 1);
 
-        $stmt = $db->prepare($query);
+        $stmt = G::prepare($query);
         $stmt->bind_param('s', $input['value']);
         $stmt->bind_result($rowId);
         $stmt->execute();

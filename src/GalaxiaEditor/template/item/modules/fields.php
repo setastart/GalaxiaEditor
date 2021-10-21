@@ -1,6 +1,7 @@
 <?php
 
 
+use Galaxia\G;
 use Galaxia\Sql;
 use GalaxiaEditor\input\Input;
 
@@ -15,7 +16,7 @@ $extras = [];
 foreach ($module['gcSelectExtra'] as $table => $cols) {
     $query = Sql::select([$table => $cols]);
     $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
-    $stmt  = $db->prepare($query);
+    $stmt  = G::prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -42,7 +43,7 @@ $query .= Sql::selectLeftJoinUsing($module['gcSelectLJoin']);
 $query .= Sql::selectWhere($where);
 $query .= Sql::selectOrderBy($module['gcSelectOrderBy']);
 
-$stmt = $db->prepare($query);
+$stmt = G::prepare($query);
 $stmt->bind_param('s', $itemId);
 $stmt->execute();
 $result = $stmt->get_result();

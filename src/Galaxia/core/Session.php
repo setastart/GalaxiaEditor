@@ -70,9 +70,7 @@ class Session implements SessionHandlerInterface {
     public function read($sessionId): string {
         $sessionData = '';
 
-        $db = G::getMysqli();
-
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT sessionData
             FROM $this->tableName
             WHERE
@@ -93,9 +91,7 @@ class Session implements SessionHandlerInterface {
     public function write($sessionId, $sessionData): bool {
         $sessionId = filter_var($sessionId, FILTER_SANITIZE_STRING);
 
-        $db = G::getMysqli();
-
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             INSERT INTO $this->tableName (
                 _geUserSessionId,
                 sessionData,
@@ -115,7 +111,7 @@ class Session implements SessionHandlerInterface {
         $stmt->close();
 
         if (isset($_SESSION['id'])) {
-            $stmt = $db->prepare("
+            $stmt = G::prepare("
                 UPDATE $this->tableName
                 SET _geUserId = ?
                 WHERE _geUserSessionId = ?
@@ -129,9 +125,7 @@ class Session implements SessionHandlerInterface {
     }
 
     public function destroy($sessionId): bool {
-        $db = G::getMysqli();
-
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tableName
             WHERE _geUserSessionId = ?
         ");
@@ -144,9 +138,7 @@ class Session implements SessionHandlerInterface {
     }
 
     public function gc($maxlifetime): bool {
-        $db = G::getMysqli();
-
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tableName
             WHERE
                 timestampModified < NOW() - INTERVAL 6 MONTH OR

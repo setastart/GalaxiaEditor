@@ -11,8 +11,6 @@ use Galaxia\Text;
 class ModelImage {
 
     static function inUse(array $geConf, string $pgSlug): array {
-        $db = G::getMysqli();
-
         $inUse = [];
         foreach ($geConf[$pgSlug]['gcImagesInUse'] as $gcImageInUse) {
 
@@ -24,7 +22,7 @@ class ModelImage {
             $query .= Sql::selectLeftJoinUsing($gcImageInUse['gcSelectLJoin'] ?? []);
             $query .= Sql::selectOrderBy($gcImageInUse['gcSelectOrderBy'] ?? []);
 
-            $stmt = $db->prepare($query);
+            $stmt = G::prepare($query);
             $stmt->execute();
             $result = $stmt->get_result();
 

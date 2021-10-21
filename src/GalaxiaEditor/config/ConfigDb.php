@@ -13,9 +13,6 @@ class ConfigDb {
     const RESERVED_COLUMNS = ['gcMulti'];
 
     static function validate(array $geConf) {
-        $db  = G::getMysqli();
-        $app = G::getApp();
-
         $dbSchema = [];
 
         $query = '
@@ -24,8 +21,8 @@ class ConfigDb {
             WHERE TABLE_SCHEMA = ?
         ';
 
-        $stmt = $db->prepare($query);
-        $stmt->bind_param('s', $app->mysqlDb);
+        $stmt = G::prepare($query);
+        $stmt->bind_param('s', G::getApp()->mysqlDb);
         $stmt->execute();
         $result = $stmt->get_result();
         while ($data = $result->fetch_assoc()) {
@@ -52,7 +49,7 @@ class ConfigDb {
         ConfigDb::gcTableColumnExists($dbSchema, '', 'page', 'pageStatus');
         ConfigDb::gcTableColumnExists($dbSchema, '', 'page', 'pageType');
         ConfigDb::gcTableColumnExists($dbSchema, '', 'page', 'position');
-        foreach ($app->langs as $lang) {
+        foreach (G::langs() as $lang) {
             ConfigDb::gcTableColumnExists($dbSchema, '', 'page', 'pageSlug_' . $lang);
             ConfigDb::gcTableColumnExists($dbSchema, '', 'page', 'pageTitle_' . $lang);
         }

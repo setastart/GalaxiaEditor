@@ -13,7 +13,7 @@ use GalaxiaEditor\input\Input;
 $uniqueId        = uniqid(true);
 $item            = &$geConf[$pgSlug]['gcItem'];
 $langSelectClass = [];
-foreach ($app->locales as $lang => $locale) {
+foreach (G::locales() as $lang => $locale) {
     $langSelectClass[$lang] = '';
 }
 $includeTrix      = true;
@@ -50,7 +50,7 @@ $query = Sql::selectOne($item['gcSelect']);
 $query .= Sql::selectWhere($querySelectWhere);
 $query .= Sql::selectLimit(0, 1);
 
-$stmt = $db->prepare($query);
+$stmt = G::prepare($query);
 $stmt->bind_param('d', $itemId);
 $stmt->bind_result($itemExists);
 $stmt->execute();
@@ -71,7 +71,7 @@ $query = Sql::select($item['gcSelect']);
 $query .= Sql::selectLeftJoinUsing($item['gcSelectLJoin'] ?? []);
 $query .= Sql::selectWhere($querySelectWhere);
 
-$stmt = $db->prepare($query);
+$stmt = G::prepare($query);
 $stmt->bind_param('d', $itemId);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -91,7 +91,7 @@ $extras = [];
 foreach ($item['gcSelectExtra'] as $table => $cols) {
     $query = Sql::select([$table => $cols]);
     $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
-    $stmt  = $db->prepare($query);
+    $stmt  = G::prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -124,7 +124,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
     $input = Input::prepare($input, $extras);
 
     if ($input['type'] == 'password' || substr($inputKey, 0, 8) == 'password') $passwordColsFound = true;
-    if (isset($input['lang']) && count($app->langs) > 1) $showSwitchesLang = true;
+    if (isset($input['lang']) && count(G::langs()) > 1) $showSwitchesLang = true;
 
     $inputNew = [
         'label'      => $input['label'] ?? $geConf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,

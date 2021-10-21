@@ -5,7 +5,6 @@ namespace GalaxiaEditor\input;
 
 
 use Galaxia\App;
-use Galaxia\AppImage;
 use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
@@ -239,9 +238,9 @@ $ht .= '    <div class="input-label">' .
 
         if ($input['type'] == 'slugImage') {
             $imgType = Text::t($input['options']['imgType'] ?? '');
-            if ($img = $app->imageGet($input['value'] ?? '', ['w' => 256, 'h' => 256, 'version' => 'mtime', 'loading' => false], false)) {
+            if ($img = G::imageGet($input['value'] ?? '', ['w' => 256, 'h' => 256, 'version' => 'mtime', 'loading' => false], false)) {
 $ht .= '    <button type="button" class="slugImage figure" data-imgtype="' . Text::h($imgType) . '">' . PHP_EOL;
-$ht .= '        ' . AppImage::render($img) . PHP_EOL;
+$ht .= '        ' . G::image($img) . PHP_EOL;
 $ht .= '    </button>' . PHP_EOL;
             } else {
 $ht .= '    <button type="button" class="slugImage figure empty" data-imgtype="' . Text::h($imgType) . '">' . PHP_EOL;

@@ -223,7 +223,7 @@ foreach ($postModule as $fieldKey => $fields) {
 //             $query .= Sql::selectWhere([$input['nameFromDb'] => '=']);
 //             $query .= Sql::selectLimit(0, 1);
 //
-//             $stmt = $db->prepare($query);
+//             $stmt = G::prepare($query);
 //             $stmt->bind_param('s', $input['value']);
 //             $stmt->bind_result($rowId);
 //             $stmt->execute();

@@ -15,7 +15,7 @@ $menuRight = (($me->options['menuPosition'] ?? '') == 'right');
 
 ?>
 <!DOCTYPE html>
-<html lang="<?=Text::h($app->lang)?>">
+<html lang="<?=Text::h(G::lang())?>">
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -67,7 +67,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     <link rel="stylesheet" href="/edit/css/trix.css?version=<?=Text::h($editor->version)?>">
 <?php   } ?>
     <style>
-<?php   foreach ($app->langs as $lang) { ?>
+<?php   foreach (G::langs() as $lang) { ?>
 .hide-active-lang-<?=Text::h($lang)?> .hide-lang-<?=Text::h($lang)?> { display: none; }
 <?php   } ?>
 <?php   foreach ($me->perms as $perm) { ?>

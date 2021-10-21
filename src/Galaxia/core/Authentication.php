@@ -40,8 +40,7 @@ class Authentication {
 
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             INSERT INTO $this->tblUser (
                 name,
                 email,
@@ -62,8 +61,7 @@ class Authentication {
         if (!$email || !$password) return false;
         $passwordHash = '';
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT passwordHash
             FROM $this->tblUser
             WHERE email = ?
@@ -82,8 +80,7 @@ class Authentication {
         if (!$userId || !$password) return false;
         $passwordHash = '';
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT passwordHash
             FROM $this->tblUser
             WHERE _geUserId = ?
@@ -102,8 +99,7 @@ class Authentication {
         if (!$email) return false;
         $userId = 0;
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT _geUserId
             FROM $this->tblUser
             WHERE email = ?
@@ -122,8 +118,7 @@ class Authentication {
         if (!$email) return false;
         $userId = 0;
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT _geUserId
             FROM $this->tblUser
             WHERE email = ?
@@ -142,8 +137,7 @@ class Authentication {
 
     function registerRequest($name, $email, $password): string {
         // first, delete all previous verifications but leave the last 5
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tblUserRegisterRequest
             WHERE email = ? AND token NOT IN (
                 SELECT token
@@ -163,7 +157,7 @@ class Authentication {
 
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             INSERT INTO $this->tblUserRegisterRequest (
                 token,
                 name,
@@ -181,8 +175,7 @@ class Authentication {
 
 
     function registerValid($email, $token) {
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT 1
             FROM $this->tblUserRegisterRequest
             WHERE
@@ -200,8 +193,7 @@ class Authentication {
 
 
     function registerFinish($email, $lang) {
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             INSERT INTO $this->tblUser (
                 name,
                 email,
@@ -221,7 +213,7 @@ class Authentication {
 
 
         // update lang
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             INSERT INTO $this->tblUserOption (_geUserId, name, value)
             VALUES (?, 'lang', ?)
         ");
@@ -230,7 +222,7 @@ class Authentication {
         $insertedId = $stmt->insert_id;
         $stmt->close();
 
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tblUserRegisterRequest
             WHERE email = ?
         ");
@@ -241,8 +233,7 @@ class Authentication {
 
 
     function registerDeleteRequests($email) {
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tblUserRegisterRequest
             WHERE email = ?
         ");
@@ -255,8 +246,7 @@ class Authentication {
     // recover account / password reset
 
     function passwordResetRequest($email): string {
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tblUserPasswordResetRequest
             WHERE email = ?
         ");
@@ -266,7 +256,7 @@ class Authentication {
 
         $token = bin2hex(openssl_random_pseudo_bytes($this->cryptoNrOfBytes));
 
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             INSERT INTO $this->tblUserPasswordResetRequest (
                 token,
                 email
@@ -282,8 +272,7 @@ class Authentication {
 
 
     function passwordResetValid($email, $token) {
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT token
             FROM $this->tblUserPasswordResetRequest
             WHERE
@@ -305,8 +294,7 @@ class Authentication {
 
     function passwordResetFinish($email, $password) {
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
-        $db           = G::getMysqli();
-        $stmt         = $db->prepare("
+        $stmt         = G::prepare("
             UPDATE $this->tblUser
             SET passwordHash = ?
             WHERE email = ?
@@ -315,7 +303,7 @@ class Authentication {
         $stmt->execute();
         $stmt->close();
 
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tblUserPasswordResetRequest
             WHERE email = ?
         ");
@@ -326,8 +314,7 @@ class Authentication {
 
 
     function passwordResetDeleteRequests($email) {
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tblUserPasswordResetRequest
             WHERE email = ?
         ");
@@ -342,8 +329,7 @@ class Authentication {
     function emailChangeRequest($userId, $emailNew): string {
 
         // first, delete all previous verifications
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tblUserEmailChangeRequest
             WHERE _geUserId = ?
         ");
@@ -353,7 +339,7 @@ class Authentication {
 
         $token = bin2hex(openssl_random_pseudo_bytes($this->cryptoNrOfBytes));
 
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             INSERT INTO $this->tblUserEmailChangeRequest (
                 token,
                 _geUserId,
@@ -373,8 +359,7 @@ class Authentication {
         if (!$userId) return false;
         $emailNew = '';
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT emailNew
             FROM $this->tblUserEmailChangeRequest
             WHERE
@@ -394,8 +379,7 @@ class Authentication {
     function emailChangeValid($userId, $token) {
         if (!$userId || !$token) return false;
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT token
             FROM $this->tblUserEmailChangeRequest
             WHERE
@@ -418,8 +402,7 @@ class Authentication {
     function emailChangeFinish($userId, $oldEmail, $token) {
         if (!$userId || !$oldEmail || !$token) return;
         $emailNew = '';
-        $db       = G::getMysqli();
-        $stmt     = $db->prepare("
+        $stmt     = G::prepare("
             SELECT emailNew
             FROM $this->tblUserEmailChangeRequest
             WHERE
@@ -436,7 +419,7 @@ class Authentication {
         $stmt->close();
 
         // set new email
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             UPDATE $this->tblUser
             SET email = ?
             WHERE _geUserId = ?
@@ -446,7 +429,7 @@ class Authentication {
         $stmt->close();
 
         // delete the email change verification token
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tblUserEmailChangeRequest
             WHERE _geUserId = ?
         ");
@@ -457,8 +440,7 @@ class Authentication {
 
 
     function emailChangeDeleteRequests($userId) {
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             DELETE FROM $this->tblUserEmailChangeRequest
             WHERE _geUserId = ?
         ");
@@ -471,8 +453,7 @@ class Authentication {
     function passwordChange($userId, $password): bool {
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             UPDATE $this->tblUser
             SET passwordHash = ?
             WHERE _geUserId = ?

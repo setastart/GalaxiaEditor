@@ -1,7 +1,11 @@
-<?php use Galaxia\Text;
+<?php
 
+use Galaxia\G;
+use Galaxia\Text;
 
-if (!($showSwitchesLang ?? false) && empty($me->perms)) return; ?>
+if (!($showSwitchesLang ?? false) && empty($me->perms)) return;
+
+?>
 <div id="switches">
 <?php   if (!empty($me->perms)) { ?>
     <div class="switch-perms">
@@ -15,7 +19,7 @@ if (!($showSwitchesLang ?? false) && empty($me->perms)) return; ?>
 <?php   } ?>
 <?php   if ($showSwitchesLang ?? false) { ?>
     <div class="switch-lang">
-<?php   foreach ($app->locales as $lang => $locale) { ?>
+<?php   foreach (G::locales() as $lang => $locale) { ?>
         <label for="switch-hide-lang-<?=Text::h($lang)?>" data-remember="true" class="btn btn-pill btn-small btn-checkbox active">
             <?=Text::h($lang)?>
             <input type="checkbox" value="hide-active-lang-<?=Text::h($lang)?>" id="switch-hide-lang-<?=Text::h($lang)?>" title="<?=Text::h($lang)?>" checked>

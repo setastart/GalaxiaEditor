@@ -471,7 +471,7 @@ class Sql {
         do {
             $chunk = $sql . PHP_EOL . 'LIMIT ' . $done . ', ' . $chunkSize . PHP_EOL;
 
-            $stmt = $db->prepare($chunk);
+            $stmt = G::prepare($chunk);
             $stmt->execute();
             $result   = $stmt->get_result();
             $rowCount = $stmt->affected_rows;

@@ -105,8 +105,7 @@ class User {
         $timeLastOnline = '';
         $timeCreated    = '';
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT
                 _geUserId,
                 name,
@@ -134,7 +133,7 @@ class User {
             $this->timeLastOnline = $timeLastOnline ?? '';
             $this->timeCreated    = $timeCreated;
 
-            $stmt = $db->prepare("
+            $stmt = G::prepare("
                 UPDATE $this->tableName
                 SET timestampLastOnline = NOW()
                 WHERE _geUserId = ?
@@ -153,8 +152,7 @@ class User {
     public function setName($name) {
         if (!$this->loggedIn) return;
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             UPDATE $this->tableName
             SET name = ?
             WHERE _geUserId = ?
@@ -172,8 +170,7 @@ class User {
         $optionValue      = '';
         $optionsTableName = $this->tableName . 'Option';
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             SELECT
                 fieldKey,
                 value
@@ -201,8 +198,7 @@ class User {
 
         $optionsTableName = $this->tableName . 'Option';
 
-        $db   = G::getMysqli();
-        $stmt = $db->prepare("
+        $stmt = G::prepare("
             INSERT INTO $optionsTableName (
                 _geUserId,
                 fieldKey,

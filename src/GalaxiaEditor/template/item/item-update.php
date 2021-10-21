@@ -22,7 +22,7 @@ $query .= Sql::updateSet(array_keys($itemChanges));
 $query .= Sql::updateWhere([$item['gcTable'] => [$item['gcTable'] . 'Id']]);
 
 try {
-    $stmt = $db->prepare($query);
+    $stmt = G::prepare($query);
     $stmt->bind_param($types, ...$params);
     $stmt->execute();
     $affectedRows = $stmt->affected_rows;

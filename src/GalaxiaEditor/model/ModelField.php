@@ -24,8 +24,6 @@ class ModelField {
         //     $insert
         // );
 
-        $db = G::getMysqli();
-
         $insertedId = null;
         $values     = [];
 
@@ -38,7 +36,7 @@ class ModelField {
         $query = Sql::queryInsert($gcUpdate, $insert);
 
         // geD($query, $values);
-        $stmt  = $db->prepare($query);
+        $stmt  = G::prepare($query);
         $types = str_repeat('s', count($values));
         $stmt->bind_param($types, ...$values);
         $success = $stmt->execute();
@@ -58,9 +56,6 @@ class ModelField {
         array $update
     ): int {
 
-
-        $db = G::getMysqli();
-
         $affectedRows = null;
 
         $query = Sql::update($gcUpdate);
@@ -75,7 +70,7 @@ class ModelField {
         //     $query
         // );
 
-        $stmt  = $db->prepare($query);
+        $stmt  = G::prepare($query);
         $types = str_repeat('s', count($update)) . 'dds';
         $stmt->bind_param($types, ...$params);
         $stmt->execute();

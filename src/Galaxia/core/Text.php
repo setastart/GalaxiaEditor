@@ -67,7 +67,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = G::getApp()->langs;
+                $langs = G::langs();
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -119,7 +119,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = G::getApp()->langs;
+                $langs = G::langs();
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -204,7 +204,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = G::getApp()->langs;
+                $langs = G::langs();
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -284,7 +284,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = G::getApp()->langs;
+                $langs = G::langs();
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -377,7 +377,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = G::getApp()->langs;
+                $langs = G::langs();
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -481,7 +481,7 @@ HTML;
                 break;
 
             case 'array':
-                $langs = G::getApp()->langs;
+                $langs = G::langs();
                 if ($lang && in_array($lang, $langs)) {
                     $langKey = array_search($lang, $langs);
                     if ($langKey > 0) {
@@ -507,8 +507,7 @@ HTML;
 
 
     static function unsafet(string $text, string $lang = null) {
-        $app = G::getApp();
-        if ($lang == null) $lang = $app->lang;
+        if ($lang == null) $lang = G::lang();
 
         if (isset(self::$translation[$text][$lang]) &&
             self::$translation[$text][$lang]
@@ -690,10 +689,8 @@ HTML;
             if (!$value instanceof DateTimeInterface) return '';
         }
 
-        $app = G::getApp();
-
-        if (empty($lang) || !isset($app->langs[$lang]))
-            $lang = $app->lang;
+        if (empty($lang) || !isset(G::langs()[$lang]))
+            $lang = G::lang();
 
         $df = self::$intlDateFormatters[$pattern][$lang] ?? self::getIntlDateFormatter($pattern, $lang);
 
