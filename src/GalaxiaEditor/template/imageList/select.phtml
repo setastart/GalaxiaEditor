@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\G;
 use Galaxia\Pagination;
 use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
@@ -62,7 +63,7 @@ if (!isset($filterTexts)) {
             </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys($geConf[$editor->imageSlug]['gcImageTypes']))))?></p>
+            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(G::$conf[$editor->imageSlug]['gcImageTypes']))))?></p>
 <?php           } ?>
         </div>
 <?php       } ?>

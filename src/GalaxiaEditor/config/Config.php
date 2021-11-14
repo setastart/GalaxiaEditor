@@ -5,6 +5,7 @@ namespace GalaxiaEditor\config;
 
 
 use Galaxia\Flash;
+use Galaxia\G;
 use GalaxiaEditor\input\Input;
 
 
@@ -183,8 +184,8 @@ class Config {
 
 
 
-    static function validate(array $geConf) {
-        foreach ($geConf as $key => $confPage) {
+    static function validate() {
+        foreach (G::$conf as $key => $confPage) {
             if (!isset($confPage['gcPageType']))
                 Config::geConfigParseError($key . '/gcPageType missing.');
 
@@ -532,8 +533,8 @@ class Config {
 
 
 
-    static function getImageTypes(array $geConf): ?array {
-        foreach ($geConf as $key => $confPage) {
+    static function getImageTypes(): ?array {
+        foreach (G::$conf as $key => $confPage) {
             if ($confPage['gcPageType'] == 'gcpImages') {
                 return $confPage['gcImageTypes'];
             }

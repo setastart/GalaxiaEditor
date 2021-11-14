@@ -228,7 +228,7 @@ Contains documentation and a central php classes to be used by all websites.
 
 - the array with the key 'gcPerms' declares the necessary permissions in its values.
 
-- on every page load, $geConf is searched for any 'gcPerms' key.
+- on every page load, G::$conf is searched for any 'gcPerms' key.
     - when the key is found the users permissions are checked.
     - the parent of any element that doesn't have permissions is deleted.
 

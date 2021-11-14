@@ -42,7 +42,7 @@ $items = G::cache('editor', 2, 'imageList-' . $pgSlug . '-items', function() use
 
 // get in use items using cache
 
-$inUse = Load::imagesInUse($geConf, $pgSlug);
+$inUse = Load::imagesInUse($pgSlug);
 
 
 
@@ -51,7 +51,7 @@ $inUse = Load::imagesInUse($geConf, $pgSlug);
 
 switch ($_POST['imageListType'] ?? '') {
     case 'image-select':
-        $rows = G::cache('editor', 3, 'imageList-' . $pgSlug . '-rows-select', function() use ($app, $geConf, $pgSlug, $items, $inUse) {
+        $rows = G::cache('editor', 3, 'imageList-' . $pgSlug . '-rows-select', function() use ($app, $pgSlug, $items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -70,7 +70,7 @@ $ht .= '    </figure>' . PHP_EOL;
 $ht .= '    <p>' . Text::h($imgSlug) . '</p>' . PHP_EOL;
 
 $ht .= '    <div class="meta">'. PHP_EOL;
-                if (!empty($geConf[$pgSlug]['gcImageTypes'])) {
+                if (!empty(G::$conf[$pgSlug]['gcImageTypes'])) {
                     if (isset($img['extra']['type'])) {
 $ht .= '        <div class="tag brewer-' . Text::h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . Text::h(Text::t($img['extra']['type'])) . '</div>' . PHP_EOL;
                     }
@@ -88,7 +88,7 @@ $ht .= '</button>' . PHP_EOL;
         break;
 
     default:
-        $rows = G::cache('editor', 3, 'imageList-' . $pgSlug . '-rows', function() use ($editor, $geConf, $pgSlug, $items, $inUse) {
+        $rows = G::cache('editor', 3, 'imageList-' . $pgSlug . '-rows', function() use ($editor, $pgSlug, $items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -137,7 +137,7 @@ $ht .= '        <div>' . Text::h($itemKey) . ' / ' . $item . '</div>' . PHP_EOL;
 $ht .= '        <div><span class="small red">' . Text::t('Empty') . '</span></div>' . PHP_EOL;
                 }
 $ht .= '    </div>' . PHP_EOL;
-                if (!empty($geConf[$pgSlug]['gcImageTypes'])) {
+                if (!empty(G::$conf[$pgSlug]['gcImageTypes'])) {
 $ht .= '    <div class="col flexD tags">' . PHP_EOL;
                     if (isset($img['extra']['type'])) {
 $ht .= '        <div class="tag brewer-' . Text::h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . Text::h(Text::t($img['extra']['type'])) . '</div>' . PHP_EOL;
@@ -304,5 +304,5 @@ $rows = array_slice($rows, $offset, $length, true);
 
 // finish
 
-$hdTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']);
-$pgTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']);
+$pgTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']);

@@ -15,7 +15,7 @@ if (G::$ajax) {
 
 // setup list
 
-$list        = $geConf[$pgSlug]['gcList'];
+$list        = G::$conf[$pgSlug]['gcList'];
 $firstTable  = key($list['gcSelect']);
 $firstColumn = $list['gcSelect'][$firstTable][0];
 
@@ -570,8 +570,8 @@ $rows = array_slice($rows, $offset, $length, true);
 
 // finish
 
-$hdTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']) . ' - ' . $hdTitle;
-$pgTitle = Text::t($geConf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']) . ' - ' . $hdTitle;
+$pgTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']);
 
 if ($order) {
     $hdTitle = sprintf(Text::t('Order %s'), $hdTitle);

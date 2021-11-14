@@ -8,10 +8,10 @@ use Galaxia\Text;
 use GalaxiaEditor\render\Load;
 
 
-$pgTitle = Text::t($geConf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
+$pgTitle = Text::t(G::$conf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
 $hdTitle = Text::t('Editing') . ' ' . $pgTitle;
 
-$item   = $geConf[$pgSlug]['gcImage'];
+$item   = G::$conf[$pgSlug]['gcImage'];
 $action ??= '';
 
 
@@ -30,7 +30,7 @@ if (!AppImage::valid(G::dirImage(), $imgSlug)) {
 }
 
 
-$inUse = Load::imagesInUse($geConf, $pgSlug)[$imgSlug] ?? [];
+$inUse = Load::imagesInUse($pgSlug)[$imgSlug] ?? [];
 // geD($inUse);
 
 // load image and build inputs
@@ -65,9 +65,9 @@ foreach (G::locales() as $lang => $locale) {
 }
 
 
-if ($geConf[$pgSlug]['gcImageTypes']) {
+if (G::$conf[$pgSlug]['gcImageTypes']) {
     $options = [];
-    foreach ($geConf[$pgSlug]['gcImageTypes'] as $tag => $bounds) {
+    foreach (G::$conf[$pgSlug]['gcImageTypes'] as $tag => $bounds) {
         $options[$tag] = ['label' => $tag];
     }
     $inputs['type'] = [

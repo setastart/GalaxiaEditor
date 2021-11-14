@@ -106,7 +106,7 @@ if (isset($itemChanges['imgSlug'])) {
         Flash::info(Text::t('Updated') . ': ' . 'Slug');
         Flash::info(Text::t('Updated'), 'form', 'imgSlug');
 
-        foreach ($geConf[$pgSlug]['gcImagesInUse'] as $table => $inUse) {
+        foreach (G::$conf[$pgSlug]['gcImagesInUse'] as $table => $inUse) {
             $imgSlugCol = $inUse['gcSelect'][$table][0];
             $slugChange = [$imgSlugCol => $itemChanges['imgSlug']];
             $params     = array_values($slugChange);

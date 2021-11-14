@@ -12,7 +12,7 @@ class ConfigDb {
 
     const RESERVED_COLUMNS = ['gcMulti'];
 
-    static function validate(array $geConf) {
+    static function validate() {
         $dbSchema = [];
 
         $query = '
@@ -76,7 +76,7 @@ class ConfigDb {
 
         // check configuration
 
-        foreach ($geConf as $areaKey => $area) {
+        foreach (G::$conf as $areaKey => $area) {
 
             if (!empty($area['gcList'])) {
 

@@ -9,7 +9,7 @@ $pageNames   = [];
 $inputKeys   = [];
 $rootSlugs   = [];
 $statusNames = [];
-foreach ($geConf as $rootSlug => $confPage) {
+foreach (G::$conf as $rootSlug => $confPage) {
     if (!isset($confPage['gcItem'])) continue;
     if (!isset($confPage['gcItem']['gcTable'])) continue;
     $pageNames[$confPage['gcItem']['gcTable']] ??= $confPage['gcMenuTitle'];

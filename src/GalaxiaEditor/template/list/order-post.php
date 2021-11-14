@@ -21,7 +21,7 @@ use GalaxiaEditor\model\ModelList;
 
 $editor->view = 'list/order';
 
-$firstTable  = key($geConf[$pgSlug]['gcList']['gcSelect']);
+$firstTable  = key(G::$conf[$pgSlug]['gcList']['gcSelect']);
 
 $changes = ModelList::order($firstTable, $_POST['order']);
 

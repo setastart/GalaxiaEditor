@@ -22,7 +22,7 @@ $stats = Stats::getGoaccessDate($itemDate);
 
 $curDate = date('Y-m-d');
 if ($curDate == $itemDate) {
-    $stats = Stats::getGoaccessTemp($geConf[$pgSlug]['gcGoaccessLog'] ?? '', $geConf[$pgSlug]['gcGoaccessDir'] ?? '');
+    $stats = Stats::getGoaccessTemp(G::$conf[$pgSlug]['gcGoaccessLog'] ?? '', G::$conf[$pgSlug]['gcGoaccessDir'] ?? '');
 }
 
 if (is_null($stats)) G::errorPage(404, 'Could not load Stats file');

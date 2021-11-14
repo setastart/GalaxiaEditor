@@ -26,6 +26,6 @@ foreach ($modules as $moduleKey => $module) {
             break;
     }
 }
-Flash::info('Saved in History: ' . $geConf[$pgSlug]['gcTitleSingle']);
+Flash::info('Saved in History: ' . G::$conf[$pgSlug]['gcTitleSingle']);
 
 G::redirect('edit/' . $pgSlug);

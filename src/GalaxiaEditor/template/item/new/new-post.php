@@ -95,7 +95,7 @@ foreach ($itemChanges as $key => $value)
 // finish
 
 G::cacheDelete('editor');
-Flash::info(sprintf(Text::t('Added: %s.'), Text::t($geConf[$pgSlug]['gcTitleSingle'])));
+Flash::info(sprintf(Text::t('Added: %s.'), Text::t(G::$conf[$pgSlug]['gcTitleSingle'])));
 
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     G::cacheDelete(['app', 'fastroute']);

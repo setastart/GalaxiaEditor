@@ -64,7 +64,7 @@ foreach ($modules as $moduleKey => $module) {
 // finish
 
 G::cacheDelete('editor');
-Flash::info(sprintf(Text::t('Deleted: %s.'), Text::t($geConf[$pgSlug]['gcTitleSingle'])));
+Flash::info(sprintf(Text::t('Deleted: %s.'), Text::t(G::$conf[$pgSlug]['gcTitleSingle'])));
 
 if (!in_array($pgSlug, ['users', 'passwords'])) {
     G::cacheDelete(['app', 'fastroute']);

@@ -1,11 +1,12 @@
 <?php
 
+use Galaxia\G;
 use Galaxia\Text;
 
 
 $menu = [];
 
-foreach ($geConf as $rootSlug => $confPage) {
+foreach (G::$conf as $rootSlug => $confPage) {
     if (!isset($me)) continue;
     if (empty($confPage)) continue;
 

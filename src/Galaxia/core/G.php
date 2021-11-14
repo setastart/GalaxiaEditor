@@ -26,6 +26,8 @@ class G {
     private static User   $me;
     private static mysqli $mysqli;
 
+    static array $conf = [];
+
     /**
      * @deprecated
      */
@@ -649,10 +651,12 @@ class G {
 
     static function login(): bool {
         self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey);
+
         return self::$me->loggedIn;
     }
 
     static function isLoggedIn(): bool {
         return self::$me->loggedIn ?? false;
     }
+
 }

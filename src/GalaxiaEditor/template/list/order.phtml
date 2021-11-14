@@ -13,6 +13,7 @@
   - See the Licence for the specific language governing permissions and limitations under the Licence.
  */
 
+use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
 
@@ -41,7 +42,7 @@ InputRender::form('', 'item-order', 'paper pad');
     <div class="paper-footer pad">
         <div class="paper-footer-actions">
             <button type="submit" class="btn btn-green active"><?=Text::t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t($geConf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t(G::$conf[$pgSlug]['gcTitlePlural']))?></button>
         </div>
     </div>
 

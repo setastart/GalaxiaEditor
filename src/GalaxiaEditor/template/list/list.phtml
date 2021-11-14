@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\input\InputRender;
 use GalaxiaEditor\render\view\ViewPagination;
@@ -17,11 +18,11 @@ foreach ($list['gcLinks'] ?? [] as $href => $link) {
 
     switch ($frags[0]) {
         case 'new':
-            $label = sprintf(Text::t('+ Add new %s'), Text::t($geConf[$pgSlug]['gcTitleSingle']));
+            $label = sprintf(Text::t('+ Add new %s'), Text::t(G::$conf[$pgSlug]['gcTitleSingle']));
             break;
 
         case 'order':
-            $label = sprintf(Text::t('Order %s'), Text::t($geConf[$pgSlug]['gcTitlePlural']));
+            $label = sprintf(Text::t('Order %s'), Text::t(G::$conf[$pgSlug]['gcTitlePlural']));
             break;
 
         default:

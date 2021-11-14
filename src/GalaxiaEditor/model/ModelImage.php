@@ -10,9 +10,9 @@ use Galaxia\Text;
 
 class ModelImage {
 
-    static function inUse(array $geConf, string $pgSlug): array {
+    static function inUse(string $pgSlug): array {
         $inUse = [];
-        foreach ($geConf[$pgSlug]['gcImagesInUse'] as $gcImageInUse) {
+        foreach (G::$conf[$pgSlug]['gcImagesInUse'] as $gcImageInUse) {
 
             if (empty($gcImageInUse['gcSelect'])) return [];
             $firstTable  = key($gcImageInUse['gcSelect']);

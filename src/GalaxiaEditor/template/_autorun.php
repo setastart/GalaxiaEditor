@@ -21,7 +21,7 @@ if (substr($editor->logic, 0, 6) == 'login/') return;
 $includeTrix        = false;
 $showSwitchesLang   = false;
 $passwordColsFound  = false;
-$chatInclude        = isset($geConf['chat']);
+$chatInclude        = isset(G::$conf['chat']);
 $chatIncludeCurrent =
     !in_array($pgSlug, ['users', 'passwords', 'history']) &&
     ((isset($itemId) || isset($imgSlug)) || $pgSlug == 'chat');

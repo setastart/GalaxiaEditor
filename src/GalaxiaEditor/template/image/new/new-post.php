@@ -42,7 +42,7 @@ if (Flash::hasError()) return;
 
 $files = File::simplify($_FILES['images']);
 
-$types = Config::getImageTypes($geConf);
+$types = Config::getImageTypes();
 
 foreach ($files as $i => $file) {
     if (isset($_POST['imgType'][$i]) && isset($types[$_POST['imgType'][$i]])) {
