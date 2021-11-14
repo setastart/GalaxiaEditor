@@ -1,7 +1,10 @@
 <?php
 
 
+use Galaxia\G;
+
+
 $editor->view = 'dev/dev';
 
 
-$app->routeSitemap();
+G::routeSitemap();

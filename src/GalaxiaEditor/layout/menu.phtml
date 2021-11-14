@@ -1,12 +1,12 @@
 <?php
 
-use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 $menu = [];
 
-foreach (G::$conf as $rootSlug => $confPage) {
+foreach (E::$conf as $rootSlug => $confPage) {
     if (!isset($me)) continue;
     if (empty($confPage)) continue;
 

@@ -3,6 +3,7 @@
 
 use Galaxia\G;
 use Galaxia\Sql;
+use GalaxiaEditor\E;
 
 
 $pgTitle = $_SERVER['SERVER_NAME'];
@@ -21,7 +22,7 @@ if (substr($editor->logic, 0, 6) == 'login/') return;
 $includeTrix        = false;
 $showSwitchesLang   = false;
 $passwordColsFound  = false;
-$chatInclude        = isset(G::$conf['chat']);
+$chatInclude        = isset(E::$conf['chat']);
 $chatIncludeCurrent =
     !in_array($pgSlug, ['users', 'passwords', 'history']) &&
     ((isset($itemId) || isset($imgSlug)) || $pgSlug == 'chat');

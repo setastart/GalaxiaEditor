@@ -2,16 +2,17 @@
 
 
 use Galaxia\AppImage;
-use Galaxia\G;
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\render\Load;
 
 
-$pgTitle = Text::t(G::$conf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
+$pgTitle = Text::t(E::$conf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
 $hdTitle = Text::t('Editing') . ' ' . $pgTitle;
 
-$item   = G::$conf[$pgSlug]['gcImage'];
+$item   = E::$conf[$pgSlug]['gcImage'];
 $action ??= '';
 
 
@@ -65,9 +66,9 @@ foreach (G::locales() as $lang => $locale) {
 }
 
 
-if (G::$conf[$pgSlug]['gcImageTypes']) {
+if (E::$conf[$pgSlug]['gcImageTypes']) {
     $options = [];
-    foreach (G::$conf[$pgSlug]['gcImageTypes'] as $tag => $bounds) {
+    foreach (E::$conf[$pgSlug]['gcImageTypes'] as $tag => $bounds) {
         $options[$tag] = ['label' => $tag];
     }
     $inputs['type'] = [

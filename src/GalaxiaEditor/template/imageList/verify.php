@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\AppImage;
+use Galaxia\G;
 use Galaxia\Text;
 
 

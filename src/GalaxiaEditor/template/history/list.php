@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\{G, Pagination, Sql, Text};
+use GalaxiaEditor\E;
 
 
 // ajax
@@ -110,5 +111,5 @@ $rows = array_slice($rows, $offset, $length, true);
 
 // finish
 
-$hdTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']);
-$pgTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']);
+$pgTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']);

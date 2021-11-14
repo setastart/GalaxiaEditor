@@ -180,10 +180,10 @@ foreach ($postModule as $fieldKey => $fields) {
             }
 
             $msg = Text::t('Must be unique. An item with that value already exists.');
-            foreach ($visited as $fieldVal => $current_array) {
-                $fieldValSearch = array_search($current_array, $visited);
+            foreach ($visited as $fieldVal => $currentArray) {
+                $fieldValSearch = array_search($currentArray, $visited);
                 if ($fieldVal != $fieldValSearch) {
-                    foreach ($current_array as $unique => $values) {
+                    foreach ($currentArray as $unique => $values) {
                         Flash::error($msg, 'form', $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['name']);
                         $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['errors'][] = $msg;
                         if ($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['lang']) {

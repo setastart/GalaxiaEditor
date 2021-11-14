@@ -1,6 +1,8 @@
 <?php
+
 use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 
 
@@ -126,15 +128,15 @@ foreach ($modules as $moduleKey => $module) {
 <?php   } ?>
             <a target="_blank" href="/edit/history/<?=Text::h($item['gcTable'])?>/<?=Text::h($itemId)?>" class="btn-a"><?=Text::t('Open History in a new tab')?></a>
 <?php   if ($me->hasPerm('dev')) { ?>
-            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>/history" class="hide-perm-dev btn-a"><?=sprintf(Text::t('Save %s in History'), Text::t(G::$conf[$pgSlug]['gcTitleSingle']))?></a>
+            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>/history" class="hide-perm-dev btn-a"><?=sprintf(Text::t('Save %s in History'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']))?></a>
 <?php   } ?>
 <?php   if ($item['gcDelete']) { ?>
-            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>/delete" class="red btn-a"><?=sprintf(Text::t('Delete %s'), Text::t(G::$conf[$pgSlug]['gcTitleSingle']))?></a>
+            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>/delete" class="red btn-a"><?=sprintf(Text::t('Delete %s'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']))?></a>
 <?php   } ?>
         </div>
         <div class="paper-footer-actions">
             <button type="submit" class="btn btn-green active"><?=Text::t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t(G::$conf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t(E::$conf[$pgSlug]['gcTitlePlural']))?></button>
         </div>
     </div>
 

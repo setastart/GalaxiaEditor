@@ -4,6 +4,7 @@ use Galaxia\AppImage;
 use Galaxia\G;
 use Galaxia\Pagination;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\render\Load;
 
 
@@ -70,7 +71,7 @@ $ht .= '    </figure>' . PHP_EOL;
 $ht .= '    <p>' . Text::h($imgSlug) . '</p>' . PHP_EOL;
 
 $ht .= '    <div class="meta">'. PHP_EOL;
-                if (!empty(G::$conf[$pgSlug]['gcImageTypes'])) {
+                if (!empty(E::$conf[$pgSlug]['gcImageTypes'])) {
                     if (isset($img['extra']['type'])) {
 $ht .= '        <div class="tag brewer-' . Text::h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . Text::h(Text::t($img['extra']['type'])) . '</div>' . PHP_EOL;
                     }
@@ -137,7 +138,7 @@ $ht .= '        <div>' . Text::h($itemKey) . ' / ' . $item . '</div>' . PHP_EOL;
 $ht .= '        <div><span class="small red">' . Text::t('Empty') . '</span></div>' . PHP_EOL;
                 }
 $ht .= '    </div>' . PHP_EOL;
-                if (!empty(G::$conf[$pgSlug]['gcImageTypes'])) {
+                if (!empty(E::$conf[$pgSlug]['gcImageTypes'])) {
 $ht .= '    <div class="col flexD tags">' . PHP_EOL;
                     if (isset($img['extra']['type'])) {
 $ht .= '        <div class="tag brewer-' . Text::h(1 + ($imgTypes[$img['extra']['type']] % 9)) . '">' . Text::h(Text::t($img['extra']['type'])) . '</div>' . PHP_EOL;
@@ -304,5 +305,5 @@ $rows = array_slice($rows, $offset, $length, true);
 
 // finish
 
-$hdTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']);
-$pgTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']);
+$pgTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']);

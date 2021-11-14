@@ -2,10 +2,11 @@
 
 use Galaxia\AppImage;
 use Galaxia\ArrayShape;
-use Galaxia\G;
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
@@ -106,7 +107,7 @@ if (isset($itemChanges['imgSlug'])) {
         Flash::info(Text::t('Updated') . ': ' . 'Slug');
         Flash::info(Text::t('Updated'), 'form', 'imgSlug');
 
-        foreach (G::$conf[$pgSlug]['gcImagesInUse'] as $table => $inUse) {
+        foreach (E::$conf[$pgSlug]['gcImagesInUse'] as $table => $inUse) {
             $imgSlugCol = $inUse['gcSelect'][$table][0];
             $slugChange = [$imgSlugCol => $itemChanges['imgSlug']];
             $params     = array_values($slugChange);

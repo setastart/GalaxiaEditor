@@ -1,5 +1,5 @@
-<?php use Galaxia\G;
-use Galaxia\Text;
+<?php use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 
 
@@ -34,7 +34,7 @@ InputRender::form('', 'image-new', 'image image-new paper pad'); ?>
         </div>
         <div class="paper-footer-actions">
             <button class="btn btn-green active"><?=Text::t('Upload')?></button>
-            <button class="btn btn-aqua active" name="submitAndGoBack"><?=sprintf(Text::t('Upload and go back to %s'), Text::t(G::$conf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-aqua active" name="submitAndGoBack"><?=sprintf(Text::t('Upload and go back to %s'), Text::t(E::$conf[$pgSlug]['gcTitlePlural']))?></button>
             <button class="btn btn-aqua active" name="submitAndAddMore"><?=Text::t('Upload these and more')?></button>
         </div>
     </div>

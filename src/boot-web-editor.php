@@ -9,6 +9,7 @@ use Galaxia\Request;
 use Galaxia\Text;
 use GalaxiaEditor\config\Config;
 use GalaxiaEditor\config\ConfigDb;
+use GalaxiaEditor\E;
 
 
 
@@ -35,8 +36,8 @@ G::timerStop('locales');
 // init editor
 
 G::timerStart('editor');
-$editor = G::initEditor(dirname(__DIR__));
-G::$conf = require G::dir() . 'config/editor.php';
+$editor          = G::initEditor(dirname(__DIR__));
+E::$conf         = require G::dir() . 'config/editor.php';
 $editor->version = '5.0.0-alpha';
 G::timerStop('editor');
 
@@ -88,7 +89,7 @@ if (G::isLoggedIn()) {
 
 
     // galaxia chat
-    if (isset(G::$conf['chat']) && $_SERVER['REQUEST_METHOD'] == 'POST' && in_array($_SERVER['REQUEST_URI'], ['/edit/chat/listen', '/edit/chat/publish']))
+    if (isset(E::$conf['chat']) && $_SERVER['REQUEST_METHOD'] == 'POST' && in_array($_SERVER['REQUEST_URI'], ['/edit/chat/listen', '/edit/chat/publish']))
         require __DIR__ . '/GalaxiaEditor/chat/gChat.php';
 
 
@@ -116,8 +117,8 @@ if (G::isLoggedIn()) {
 
 
     // get editor slugs from config
-    $editor->homeSlug = array_key_first(G::$conf) ?? $editor->homeSlug;
-    foreach (G::$conf as $rootSlug => $confPage) {
+    $editor->homeSlug = array_key_first(E::$conf) ?? $editor->homeSlug;
+    foreach (E::$conf as $rootSlug => $confPage) {
         if ($confPage['gcPageType'] == 'gcpImages') {
             $editor->imageSlug = $rootSlug;
             break;
@@ -126,13 +127,13 @@ if (G::isLoggedIn()) {
 
 
     // disable input modifiers(gcInputsWhere, gcInputsWhereCol, gcInputsWhereParent) without perms by setting their type to 'none'
-    foreach (G::$conf as $rootSlug => $confPage) {
+    foreach (E::$conf as $rootSlug => $confPage) {
         foreach ($confPage['gcItem']['gcInputsWhere'] ?? [] as $whereKey => $where) {
             foreach ($where as $whereVal => $inputs) {
                 foreach ($inputs as $inputKey => $input) {
                     if (!isset($input['gcPerms'])) continue;
                     if (!array_intersect($input['gcPerms'] ?? [], $me->perms)) {
-                        G::$conf[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
+                        E::$conf[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
                     }
                 }
             }
@@ -142,7 +143,7 @@ if (G::isLoggedIn()) {
                 foreach ($inputs as $inputKey => $input) {
                     if (!isset($input['gcPerms'])) continue;
                     if (!array_intersect($input['gcPerms'] ?? [], $me->perms)) {
-                        G::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
+                        E::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
                     }
                 }
             }
@@ -152,7 +153,7 @@ if (G::isLoggedIn()) {
                         foreach ($inputs as $inputKey => $input) {
                             if (!isset($input['gcPerms'])) continue;
                             if (!array_intersect($input['gcPerms'] ?? [], $me->perms)) {
-                                G::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
+                                E::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
                             }
                         }
                     }
@@ -163,41 +164,41 @@ if (G::isLoggedIn()) {
 
 
     G::timerStart('arrayRemovePermsRecursive()');
-    ArrayShape::removePermsRecursive(G::$conf, $me->perms);
+    ArrayShape::removePermsRecursive(E::$conf, $me->perms);
     G::timerStop('arrayRemovePermsRecursive()');
 
     G::timerStart('gecLanguify');
-    ArrayShape::languify(G::$conf, array_keys(G::locales()), $me->perms);
+    ArrayShape::languify(E::$conf, array_keys(G::locales()), $me->perms);
     G::timerStop('gecLanguify');
 
 
     // remove inputs without type
-    foreach (G::$conf as $rootSlug => $confPage) {
+    foreach (E::$conf as $rootSlug => $confPage) {
         foreach ($confPage['gcItem']['gcInputs'] ?? [] as $inputKey => $input) {
-            if (!isset($input['type'])) unset(G::$conf[$rootSlug]['gcItem']['gcInputs'][$inputKey]);
+            if (!isset($input['type'])) unset(E::$conf[$rootSlug]['gcItem']['gcInputs'][$inputKey]);
         }
         foreach ($confPage['gcItem']['gcInputsWhere'] ?? [] as $whereKey => $where) {
             foreach ($where as $whereVal => $inputs) {
                 foreach ($inputs as $inputKey => $input) {
-                    if (!isset($input['type'])) G::$conf[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
+                    if (!isset($input['type'])) E::$conf[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
                 }
             }
         }
 
         foreach ($confPage['gcItem']['gcModules'] ?? [] as $moduleKey => $module) {
             foreach ($module['gcInputs'] as $inputKey => $input) {
-                if (!isset($input['type'])) G::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputs'][$inputKey]['type'] = 'none';
+                if (!isset($input['type'])) E::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputs'][$inputKey]['type'] = 'none';
             }
             foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
                 foreach ($inputs as $inputKey => $input) {
-                    if (!isset($input['type'])) G::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
+                    if (!isset($input['type'])) E::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
                 }
             }
             foreach ($module['gcInputsWhereParent'] as $parentKey => $parent) {
                 foreach ($parent as $parentVal => $fields) {
                     foreach ($fields as $fieldKey => $inputs) {
                         foreach ($inputs as $inputKey => $input) {
-                            if (!isset($input['type'])) G::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
+                            if (!isset($input['type'])) E::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
                         }
                     }
                 }
@@ -240,7 +241,7 @@ if (G::isLoggedIn()) {
         $r->get('/edit/importer/{pgSlug:youtube}', 'importer/youtube');
         $r->get('/edit/importer/{pgSlug:vimeo}', 'importer/vimeo');
 
-        foreach (G::$conf as $rootSlug => $confPage) {
+        foreach (E::$conf as $rootSlug => $confPage) {
             if (!isset($confPage['gcPageType']) || !is_string($confPage['gcPageType'])) continue;
             switch ($confPage['gcPageType']) {
                 case 'gcpHistory':

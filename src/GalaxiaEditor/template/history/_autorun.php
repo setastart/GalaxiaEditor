@@ -3,13 +3,14 @@
 
 use Galaxia\G;
 use Galaxia\Sql;
+use GalaxiaEditor\E;
 
 
 $pageNames   = [];
 $inputKeys   = [];
 $rootSlugs   = [];
 $statusNames = [];
-foreach (G::$conf as $rootSlug => $confPage) {
+foreach (E::$conf as $rootSlug => $confPage) {
     if (!isset($confPage['gcItem'])) continue;
     if (!isset($confPage['gcItem']['gcTable'])) continue;
     $pageNames[$confPage['gcItem']['gcTable']] ??= $confPage['gcMenuTitle'];

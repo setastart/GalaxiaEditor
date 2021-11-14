@@ -2,6 +2,7 @@
 
 use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 
 
@@ -45,7 +46,7 @@ InputRender::form('', 'image-edit', 'image image-new paper pad'); ?>
 <?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions">
             <button class="btn btn-green active"><?=Text::t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t(G::$conf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t(E::$conf[$pgSlug]['gcTitlePlural']))?></button>
         </div>
     </div>
 

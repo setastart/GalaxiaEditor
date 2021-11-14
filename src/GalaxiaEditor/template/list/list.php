@@ -1,6 +1,7 @@
 <?php
 
-use Galaxia\{AppImage, G, Pagination, Sql, Text};
+use Galaxia\{G, Pagination, Sql, Text};
+use GalaxiaEditor\E;
 
 
 // ajax
@@ -15,7 +16,7 @@ if (G::$ajax) {
 
 // setup list
 
-$list        = G::$conf[$pgSlug]['gcList'];
+$list        = E::$conf[$pgSlug]['gcList'];
 $firstTable  = key($list['gcSelect']);
 $firstColumn = $list['gcSelect'][$firstTable][0];
 
@@ -570,8 +571,8 @@ $rows = array_slice($rows, $offset, $length, true);
 
 // finish
 
-$hdTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']) . ' - ' . $hdTitle;
-$pgTitle = Text::t(G::$conf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']) . ' - ' . $hdTitle;
+$pgTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']);
 
 if ($order) {
     $hdTitle = sprintf(Text::t('Order %s'), $hdTitle);

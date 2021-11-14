@@ -4,11 +4,12 @@
 use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$pgTitle = Text::t('+ Add') . ' ' . Text::t(G::$conf[$pgSlug]['gcTitleSingle']);
-$hdTitle = Text::t('+ Add') . ' ' . Text::t(G::$conf[$pgSlug]['gcTitleSingle']);
+$pgTitle = Text::t('+ Add') . ' ' . Text::t(E::$conf[$pgSlug]['gcTitleSingle']);
+$hdTitle = Text::t('+ Add') . ' ' . Text::t(E::$conf[$pgSlug]['gcTitleSingle']);
 
 
 // query extras
@@ -36,7 +37,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
     $input = Input::prepare($input, $extras);
 
     $item['inputs'][$inputKey] = array_merge($input, [
-        'label'       => $input['label'] ?? G::$conf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
+        'label'       => $input['label'] ?? E::$conf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
         'name'        => 'item[' . $inputKey . ']',
         'nameFromDb'  => $inputKey,
     ]);

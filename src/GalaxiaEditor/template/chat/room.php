@@ -1,9 +1,9 @@
 <?php
 
 
-use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
-$hdTitle = Text::t(G::$conf[$pgSlug]['gcMenuTitle']);
-$pgTitle = Text::t(G::$conf[$pgSlug]['gcMenuTitle']);
+$hdTitle = Text::t(E::$conf[$pgSlug]['gcMenuTitle']);
+$pgTitle = Text::t(E::$conf[$pgSlug]['gcMenuTitle']);

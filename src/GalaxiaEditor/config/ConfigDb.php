@@ -4,8 +4,9 @@
 namespace GalaxiaEditor\config;
 
 
-use Galaxia\G;
 use Galaxia\Flash;
+use Galaxia\G;
+use GalaxiaEditor\E;
 
 
 class ConfigDb {
@@ -76,7 +77,7 @@ class ConfigDb {
 
         // check configuration
 
-        foreach (G::$conf as $areaKey => $area) {
+        foreach (E::$conf as $areaKey => $area) {
 
             if (!empty($area['gcList'])) {
 

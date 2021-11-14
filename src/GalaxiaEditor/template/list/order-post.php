@@ -13,15 +13,16 @@
   - See the Licence for the specific language governing permissions and limitations under the Licence.
  */
 
-use Galaxia\G;
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\model\ModelList;
 
 
 $editor->view = 'list/order';
 
-$firstTable  = key(G::$conf[$pgSlug]['gcList']['gcSelect']);
+$firstTable  = key(E::$conf[$pgSlug]['gcList']['gcSelect']);
 
 $changes = ModelList::order($firstTable, $_POST['order']);
 

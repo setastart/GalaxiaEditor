@@ -22,13 +22,13 @@ class ArrayShape {
             return array_splice($input, $offset, $length);
         }
 
-        $part_before  = array_slice($input, 0, $offset, true);
-        $part_removed = array_slice($input, $offset, $length, true);
-        $part_after   = array_slice($input, $offset + $length, null, true);
+        $prefix  = array_slice($input, 0, $offset, true);
+        $remove = array_slice($input, $offset, $length, true);
+        $suffix   = array_slice($input, $offset + $length, null, true);
 
-        $input = $part_before + $replacement + $part_after;
+        $input = $prefix + $replacement + $suffix;
 
-        return $part_removed;
+        return $remove;
     }
 
 

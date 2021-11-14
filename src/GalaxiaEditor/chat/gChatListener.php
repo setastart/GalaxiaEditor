@@ -1,8 +1,8 @@
 <?php
 
-use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\chat\Chat;
+use GalaxiaEditor\E;
 
 
 //  Listen to activity in room
@@ -121,7 +121,7 @@ for ($i = 0; $i < count($temp[1]); $i += 2) {
 }
 
 $r['users'][0] = [
-    'name'     => G::$conf['chat']['gcMenuTitle'] ?? 'Galaxia Chat',
+    'name'     => E::$conf['chat']['gcMenuTitle'] ?? 'Galaxia Chat',
     'lastSeen' => '0',
 ];
 

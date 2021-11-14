@@ -6,13 +6,14 @@ namespace GalaxiaEditor\model;
 use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 class ModelImage {
 
     static function inUse(string $pgSlug): array {
         $inUse = [];
-        foreach (G::$conf[$pgSlug]['gcImagesInUse'] as $gcImageInUse) {
+        foreach (E::$conf[$pgSlug]['gcImagesInUse'] as $gcImageInUse) {
 
             if (empty($gcImageInUse['gcSelect'])) return [];
             $firstTable  = key($gcImageInUse['gcSelect']);

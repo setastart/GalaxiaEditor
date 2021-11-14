@@ -1,5 +1,5 @@
-<?php use Galaxia\G;
-use Galaxia\Text;
+<?php use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 use GalaxiaEditor\render\view\ViewPagination;
 
@@ -10,10 +10,10 @@ InputRender::form('', 'image-list', 'paper pad');?>
         <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t($pgTitle);?></h1>
 
         <div class="list-links">
-<?php   if (G::$conf[$pgSlug]['gcImage']['gcDelete'] ?? []) { ?>
+<?php   if (E::$conf[$pgSlug]['gcImage']['gcDelete'] ?? []) { ?>
             <a href="/edit/<?=Text::h($pgSlug)?>/delete" class="btn btn-pad btn-red active"><?=Text::t('Delete Images')?></a>
 <?php   } ?>
-<?php   if (G::$conf[$pgSlug]['gcImage']['gcInsert'] ?? []) { ?>
+<?php   if (E::$conf[$pgSlug]['gcImage']['gcInsert'] ?? []) { ?>
             <a href="/edit/<?=Text::h($pgSlug)?>/new" class="btn btn-pad btn-blue active"><?=Text::t('Upload Images')?></a>
 <?php   } ?>
         </div>
@@ -45,7 +45,7 @@ InputRender::form('', 'image-list', 'paper pad');?>
             </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(G::$conf[$editor->imageSlug]['gcImageTypes']))))?></p>
+            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(E::$conf[$editor->imageSlug]['gcImageTypes']))))?></p>
 <?php           } ?>
         </div>
 <?php       } ?>

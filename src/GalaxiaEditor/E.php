@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
 
   - Licensed under the EUPL, Version 1.2 only (the "Licence");
@@ -13,20 +13,11 @@
   - See the Licence for the specific language governing permissions and limitations under the Licence.
  */
 
-
-use Galaxia\G;
-use GalaxiaEditor\E;
-use GalaxiaEditor\stats\Stats;
+namespace GalaxiaEditor;
 
 
-$stats = Stats::getGoaccessDate($itemDate);
+class E {
 
-$curDate = date('Y-m-d');
-if ($curDate == $itemDate) {
-    $stats = Stats::getGoaccessTemp(E::$conf[$pgSlug]['gcGoaccessLog'] ?? '', E::$conf[$pgSlug]['gcGoaccessDir'] ?? '');
+    public static array $conf = [];
+
 }
-
-if (is_null($stats)) G::errorPage(404, 'Could not load Stats file');
-
-
-exit($stats);

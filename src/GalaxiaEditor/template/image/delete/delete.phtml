@@ -2,6 +2,7 @@
 
 use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 
 
@@ -24,7 +25,7 @@ InputRender::form('', 'image-delete', 'image image-delete paper pad'); ?>
 <?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions">
             <a class="btn btn-blue btn-mb active" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>"><?=Text::t('Cancel')?></a>
-            <button class="btn btn-red btn-mb active"><?=sprintf(Text::t('Delete %s'), Text::t(G::$conf[$pgSlug]['gcTitleSingle']))?></button>
+            <button class="btn btn-red btn-mb active"><?=sprintf(Text::t('Delete %s'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']))?></button>
         </div>
     </div>
 

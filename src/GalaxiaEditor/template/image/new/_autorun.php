@@ -1,7 +1,7 @@
 <?php
 
-use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
@@ -9,8 +9,8 @@ $pgTitle = Text::t('Upload Images');
 $hdTitle = Text::t('Upload Images');
 
 $options = [];
-if (G::$conf[$pgSlug]['gcImageTypes']) {
-    foreach (G::$conf[$pgSlug]['gcImageTypes'] as $tag => $bounds) {
+if (E::$conf[$pgSlug]['gcImageTypes']) {
+    foreach (E::$conf[$pgSlug]['gcImageTypes'] as $tag => $bounds) {
         $options[$tag] = ['label' => $tag];
     }
 }

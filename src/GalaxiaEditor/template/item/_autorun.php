@@ -3,15 +3,16 @@
 
 // variables
 
-use Galaxia\G;
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
 $uniqueId        = uniqid(true);
-$item            = &G::$conf[$pgSlug]['gcItem'];
+$item            = &E::$conf[$pgSlug]['gcItem'];
 $langSelectClass = [];
 foreach (G::locales() as $lang => $locale) {
     $langSelectClass[$lang] = '';
@@ -58,7 +59,7 @@ $stmt->fetch();
 $stmt->close();
 
 if (!$itemExists) {
-    Flash::error(sprintf(Text::t('%s with id %s does not exist.'), Text::t(G::$conf[$pgSlug]['gcTitleSingle']), Text::h($itemId)));
+    Flash::error(sprintf(Text::t('%s with id %s does not exist.'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']), Text::h($itemId)));
     G::redirect('edit/' . $pgSlug);
 }
 
@@ -127,7 +128,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
     if (isset($input['lang']) && count(G::langs()) > 1) $showSwitchesLang = true;
 
     $inputNew = [
-        'label'      => $input['label'] ?? G::$conf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
+        'label'      => $input['label'] ?? E::$conf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
         'name'       => 'item[' . $inputKey . ']',
         'nameFromDb' => $inputKey,
     ];
@@ -149,7 +150,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
 
 
 foreach ($item['gcInfo'] as $inputKey => $input) {
-    $item['gcInfo'][$inputKey]['label'] = G::$conf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey;
+    $item['gcInfo'][$inputKey]['label'] = E::$conf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey;
 
     $value = $item['data'][$inputKey];
     if ($input['type'] == 'timestamp')
@@ -171,7 +172,7 @@ if (is_array($item['gcColKey'])) {
 $titleTemp = $item['data'][$item['gcColKey']];
 if (empty($titleTemp)) $titleTemp = $itemId;
 if (substr($item['gcColKey'], 0, 9) == 'timestamp') $titleTemp = Text::formatDate($titleTemp, 'd MMM y - HH:mm');
-$pgTitle = Text::t(G::$conf[$pgSlug]['gcTitleSingle']) . ': ' . $titleTemp;
+$pgTitle = Text::t(E::$conf[$pgSlug]['gcTitleSingle']) . ': ' . $titleTemp;
 $hdTitle = Text::t('Editing') . ': ' . $pgTitle;
 
 
@@ -180,9 +181,9 @@ $hdTitle = Text::t('Editing') . ': ' . $pgTitle;
 // add redirect module
 
 if ($item['gcRedirect']) {
-    $table = G::$conf[$pgSlug]['gcItem']['gcTable'];
+    $table = E::$conf[$pgSlug]['gcItem']['gcTable'];
 
-    G::$conf[$pgSlug]['gcItem']['gcModules'][] = [
+    E::$conf[$pgSlug]['gcItem']['gcModules'][] = [
         'gcTable'               => $table . 'Redirect',
         'gcModuleType'          => 'fields',
         'gcModuleTitle'         => '',
@@ -209,7 +210,7 @@ if ($item['gcRedirect']) {
 
 // query modules
 
-$modules = &G::$conf[$pgSlug]['gcItem']['gcModules'];
+$modules = &E::$conf[$pgSlug]['gcItem']['gcModules'];
 
 foreach ($modules as $moduleKey => &$module) {
     switch ($module['gcModuleType']) {

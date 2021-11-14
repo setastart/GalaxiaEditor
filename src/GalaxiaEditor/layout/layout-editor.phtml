@@ -1,8 +1,9 @@
 <?php
 
-use Galaxia\G;
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 $permColors = [
@@ -174,7 +175,7 @@ var gchat = {
     </div>
 <?php       } ?>
     <div class="gchat-room" data-room="/edit/chat">
-        <div class="title"><?=G::$conf['chat']['gcMenuTitle']?></div>
+        <div class="title"><?=E::$conf['chat']['gcMenuTitle']?></div>
         <div class="users"></div>
         <div class="messages-wrapper">
             <div class="s0w s1w messages">

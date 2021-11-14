@@ -26,8 +26,6 @@ class G {
     private static User   $me;
     private static mysqli $mysqli;
 
-    static array $conf = [];
-
     /**
      * @deprecated
      */

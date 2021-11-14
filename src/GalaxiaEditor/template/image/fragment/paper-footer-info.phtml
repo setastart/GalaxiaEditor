@@ -2,6 +2,7 @@
 
 use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 ?>
@@ -20,6 +21,6 @@ use Galaxia\Text;
 <?php   if (isset($item['gcDelete'])) { ?>
     <a class="<?=Text::h('active', $action == 'deleteResizes')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/deleteResizes"><?=Text::t('Delete Resizes')?></a>
     <a class="<?=Text::h('active', $action == 'deleteWebp')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/deleteWebp"><?=Text::t('Delete Webp')?></a>
-    <a class="red<?=Text::h(' active', $action == 'delete')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/delete"><?=sprintf(Text::t('Delete %s'), Text::t(G::$conf[$pgSlug]['gcTitleSingle']))?></a>
+    <a class="red<?=Text::h(' active', $action == 'delete')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/delete"><?=sprintf(Text::t('Delete %s'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']))?></a>
 <?php   } ?>
 </div>
