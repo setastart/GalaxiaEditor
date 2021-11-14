@@ -11,7 +11,7 @@ use GalaxiaEditor\input\Input;
 
 
 $editor->view = 'image/image';
-$mtime        = filemtime(G::dirImage() . $imgSlug . '/');
+$mtime        = filemtime(G::dirImage() . E::$imgSlug . '/');
 
 
 
@@ -23,7 +23,7 @@ foreach ($inputs as $name => $input) {
     $value = $_POST[$name];
     $input = Input::validate($input, $value);
 
-    if ($name == 'imgSlug' && $value != $imgSlug) {
+    if ($name == 'imgSlug' && $value != E::$imgSlug) {
         if ($value && is_dir(G::dirImage() . $value)) {
             $msg               = 'Must be unique. An item with that value already exists.';
             $input['errors'][] = $msg;
@@ -46,7 +46,7 @@ foreach ($inputs as $name => $input) {
 if (Flash::hasError()) return;
 if (!$itemChanges) {
     Flash::warning(Text::t('No changes were made.'));
-    if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
+    if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
 
     return;
 }
@@ -62,7 +62,7 @@ foreach ($itemChanges as $name => $value) {
 
     if (!in_array($name, $altsAndType)) continue;
 
-    $file = G::dirImage() . $imgSlug . '/' . $imgSlug . '_' . $name . '.txt';
+    $file = G::dirImage() . E::$imgSlug . '/' . E::$imgSlug . '_' . $name . '.txt';
 
     if (empty($value)) {
         unlink($file);
@@ -85,10 +85,10 @@ foreach ($itemChanges as $name => $value) {
 
 // update mtime
 
-touch(G::dirImage() . $imgSlug . '/', $mtime);
+touch(G::dirImage() . E::$imgSlug . '/', $mtime);
 foreach ($itemChanges as $name => $value) {
     if ($name != 'timestampM') continue;
-    if (touch(G::dirImage() . $imgSlug . '/', strtotime($value))) {
+    if (touch(G::dirImage() . E::$imgSlug . '/', strtotime($value))) {
         Flash::info(Text::t('Updated') . ': ' . $name);
         Flash::info(Text::t('Updated'), 'form', $name);
     } else {
@@ -103,15 +103,15 @@ foreach ($itemChanges as $name => $value) {
 // rename
 
 if (isset($itemChanges['imgSlug'])) {
-    if (AppImage::slugRename(G::dirImage(), $imgSlug, $itemChanges['imgSlug'])) {
+    if (AppImage::slugRename(G::dirImage(), E::$imgSlug, $itemChanges['imgSlug'])) {
         Flash::info(Text::t('Updated') . ': ' . 'Slug');
         Flash::info(Text::t('Updated'), 'form', 'imgSlug');
 
-        foreach (E::$conf[$pgSlug]['gcImagesInUse'] as $table => $inUse) {
+        foreach (E::$section['gcImagesInUse'] as $table => $inUse) {
             $imgSlugCol = $inUse['gcSelect'][$table][0];
             $slugChange = [$imgSlugCol => $itemChanges['imgSlug']];
             $params     = array_values($slugChange);
-            $params[]   = $imgSlug;
+            $params[]   = E::$imgSlug;
 
             $query = Sql::update([$table => [$imgSlugCol]]);
             $query .= Sql::updateSet(array_keys($slugChange));
@@ -133,9 +133,9 @@ if (isset($itemChanges['imgSlug'])) {
             if ($affectedRows)
                 Flash::info(Text::h($table) . ': Renamed slugs: ' . Text::h($affectedRows));
         }
-        $imgSlug = $itemChanges['imgSlug'];
+        E::$imgSlug = $itemChanges['imgSlug'];
     } else {
-        Flash::error('image-update - Unable to update image slug: ' . $imgSlug);
+        Flash::error('image-update - Unable to update image slug: ' . E::$imgSlug);
     }
 }
 
@@ -145,7 +145,7 @@ if (isset($itemChanges['imgSlug'])) {
 // finish
 
 G::cacheDelete(['app', 'fastroute']);
-G::cacheDelete('editor', 'imageList-' . $pgSlug . '*');
+G::cacheDelete('editor', 'imageList-' . E::$pgSlug . '*');
 
-if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
-G::redirect('edit/' . $pgSlug . '/' . $imgSlug);
+if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
+G::redirect('edit/' . E::$pgSlug . '/' . E::$imgSlug);

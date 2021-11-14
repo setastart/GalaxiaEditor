@@ -14,7 +14,7 @@ if (G::$ajax) {
 
 
 
-$items = G::cache('editor', 2, 'list-' . $pgSlug . '-items', function() use ($db, $userNames) {
+$items = G::cache('editor', 2, 'list-' . E::$pgSlug . '-items', function() use ($db, $userNames) {
     $query = Sql::select(['_geHistory' => ['_geHistoryId', '_geUserId', 'uniqueId', 'tabName', 'tabId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
     $query .= Sql::selectOrderBy(['_geHistory' => ['uniqueId' => 'DESC']]);
 
@@ -68,9 +68,9 @@ $rowsTotal = count($items);
 
 // make html for all rows, using cache
 
-$rows = G::cache('editor', 3, 'list-' . $pgSlug . '-rows', function() use ($pgSlug, $items, $pageNames) {
+$rows = G::cache('editor', 3, 'list-' . E::$pgSlug . '-rows', function() use ($items, $pageNames) {
     foreach ($items as $itemId => $item) {
-$ht = '<a class="row ' . $item['action'] . '" href="/edit/' . Text::h($pgSlug) . '/' . Text::h($item['tabName']) . '/' . Text::h($item['tabId']) . '#' . Text::h($itemId) . '">' . PHP_EOL;
+$ht = '<a class="row ' . $item['action'] . '" href="/edit/' . Text::h(E::$pgSlug) . '/' . Text::h($item['tabName']) . '/' . Text::h($item['tabId']) . '#' . Text::h($itemId) . '">' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
 $ht .= '        <small class="grey">table: </small>' . Text::h($pageNames[$item['tabName']] ?? $item['tabName']) . '<br>' . PHP_EOL;
 $ht .= '        <small class="grey">Id: </small>' . Text::h($item['tabId']) . '<br>' . PHP_EOL;
@@ -111,5 +111,5 @@ $rows = array_slice($rows, $offset, $length, true);
 
 // finish
 
-$hdTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']);
-$pgTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t(E::$section['gcTitlePlural']);
+$pgTitle = Text::t(E::$section['gcTitlePlural']);

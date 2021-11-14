@@ -19,7 +19,6 @@ class AppCache {
         $dir = $dirCache . trim($subdir, '/') . '/';
         if (!is_dir($dir)) mkdir($dir);
 
-        if (is_null($bypass)) $bypass = (G::getApp()->cacheBypass == true);
         if (is_null($write)) $write = !$bypass;
         if (!$bypass) $write = true;
 

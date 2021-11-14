@@ -5,6 +5,7 @@ use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
@@ -35,7 +36,7 @@ if ($passwordColsFound) {
 }
 
 
-if ($me->hasPerm('dev') && $me->id == $itemId) {
+if ($me->hasPerm('dev') && $me->id == E::$itemId) {
     if (isset($_POST['item']['perms']) && isset($item['inputs']['perms'])) {
         $explodedPerms = explode(',', $_POST['item']['perms']);
         if (!in_array('dev', $explodedPerms)) $item['inputs']['perms']['errors'][] = 'Cannot lose own dev permission';
@@ -48,7 +49,7 @@ if ($me->hasPerm('dev') && $me->id == $itemId) {
 
 foreach ($_POST['item'] as $name => $value) {
     if (!isset($item['inputs'][$name])) continue;
-    $input = Input::validate($item['inputs'][$name], $value, $itemId);
+    $input = Input::validate($item['inputs'][$name], $value, E::$itemId);
 
     if ($input['dbUnique']) {
 
@@ -63,7 +64,7 @@ foreach ($_POST['item'] as $name => $value) {
         $stmt->fetch();
         $stmt->close();
 
-        if ($rowId && (string)$rowId != $itemId) {
+        if ($rowId && (string)$rowId != E::$itemId) {
             $input['errors'][] = 'Must be unique. An item with that value already exists.';
         }
 

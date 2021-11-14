@@ -4,6 +4,7 @@ use Galaxia\AppImage;
 use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 $editor->view = 'imageList/deleteMulti';
@@ -24,7 +25,7 @@ foreach ($_POST['modules'][0]['imageDelete'] ?? [] as $imageNew) {
 
 if (Flash::hasInfo()) {
     G::cacheDelete(['app', 'fastroute']);
-    G::cacheDelete('editor', 'imageList-' . $pgSlug . '*');
+    G::cacheDelete('editor', 'imageList-' . E::$pgSlug . '*');
 }
 
-G::redirect('edit/' . $pgSlug);
+G::redirect('edit/' . E::$pgSlug);

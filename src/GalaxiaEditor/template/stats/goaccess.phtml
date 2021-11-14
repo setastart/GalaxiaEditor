@@ -15,6 +15,7 @@
 
 
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 // @formatter:off ?>
@@ -33,7 +34,7 @@ use Galaxia\Text;
         </div>
 
         <div class="list pad">
-            <a class="row status-3" target="_blank" href="/edit/<?=$pgSlug?>/<?=date('Y-m-d')?>">
+            <a class="row status-3" target="_blank" href="/edit/<?=E::$pgSlug?>/<?=date('Y-m-d')?>">
                 <div class="col flex1">
                     <div class="col-text"><?=Text::t('Today')?></div>
                 </div>
@@ -43,7 +44,7 @@ use Galaxia\Text;
             </a>
 <?php   foreach ($stats as $date) { ?>
 <?php       $dt = date_create($date); ?>
-            <a class="row status-3" target="_blank" href="/edit/<?=$pgSlug?>/<?=$date?>">
+            <a class="row status-3" target="_blank" href="/edit/<?=E::$pgSlug?>/<?=$date?>">
                 <div class="col flex1">
                     <div class="col-text"><?=Text::h($dt->format('l'))?></div>
                 </div>

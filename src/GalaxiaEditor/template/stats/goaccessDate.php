@@ -19,11 +19,11 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\stats\Stats;
 
 
-$stats = Stats::getGoaccessDate($itemDate);
+$stats = Stats::getGoaccessDate(E::$itemDate);
 
 $curDate = date('Y-m-d');
-if ($curDate == $itemDate) {
-    $stats = Stats::getGoaccessTemp(E::$conf[$pgSlug]['gcGoaccessLog'] ?? '', E::$conf[$pgSlug]['gcGoaccessDir'] ?? '');
+if ($curDate == E::$itemDate) {
+    $stats = Stats::getGoaccessTemp(E::$section['gcGoaccessLog'] ?? '', E::$section['gcGoaccessDir'] ?? '');
 }
 
 if (is_null($stats)) G::errorPage(404, 'Could not load Stats file');

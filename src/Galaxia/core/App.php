@@ -46,11 +46,6 @@ class App {
     public string $mysqlUser = '';
     public string $mysqlPass = '';
 
-    /**
-     * @deprecated
-     */
-    public bool $cacheBypass = false;
-
     public function __construct(string $dir) {
         $this->dir      = rtrim($dir, '/') . '/';
         $this->dirCache = $this->dir . 'var/cache/';

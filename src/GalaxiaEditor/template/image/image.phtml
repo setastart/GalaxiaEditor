@@ -17,7 +17,7 @@ InputRender::form('', 'image-edit', 'image image-new paper pad'); ?>
         </div>
 
         <div class="paper-header-links">
-            <a href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>" class="btn-a"><?=Text::t('Reload')?></a>
+            <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>" class="btn-a"><?=Text::t('Reload')?></a>
         </div>
     </div>
 
@@ -46,7 +46,7 @@ InputRender::form('', 'image-edit', 'image image-new paper pad'); ?>
 <?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions">
             <button class="btn btn-green active"><?=Text::t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t(E::$conf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t(E::$section['gcTitlePlural']))?></button>
         </div>
     </div>
 

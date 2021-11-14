@@ -33,7 +33,7 @@ InputRender::form('', 'item-new', 'item item-new paper pad'); ?>
     <div class="paper-footer pad">
         <div class="paper-footer-actions">
             <button class="btn btn-green active"><?=Text::t('Save')?></button>
-            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t(E::$conf[$pgSlug]['gcTitlePlural']))?></button>
+            <button class="btn btn-blue active" name="submitAndGoBack"><?=sprintf(Text::t('Save and go back to %s'), Text::t(E::$section['gcTitlePlural']))?></button>
             <button class="btn btn-blue active" name="submitAndAddMore"><?=Text::t('Save and add more')?></button>
         </div>
     </div>

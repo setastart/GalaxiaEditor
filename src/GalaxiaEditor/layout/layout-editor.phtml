@@ -102,7 +102,7 @@ var gchat = {
 <?php   } ?>
 </head>
 
-<body class="page-<?=Text::h($pgSlug)?> hide-active-msgbox-info hide-active-msgbox-warning hide-active-msgbox-error hide-active-msgbox-devlog<?=($menuRight) ? ' menu-right' : ''?>">
+<body class="page-<?=Text::h(E::$pgSlug)?> hide-active-msgbox-info hide-active-msgbox-warning hide-active-msgbox-error hide-active-msgbox-devlog<?=($menuRight) ? ' menu-right' : ''?>">
 
 <div id="openboxes">
 <?php   foreach (['error', 'info', 'warning'] as $box) { ?>
@@ -157,11 +157,11 @@ var gchat = {
 <?php   require $editor->dirView . 'imageList/select.phtml'; ?>
 
 
-<?php   if ($chatInclude && $pgSlug != 'chat') { ?>
+<?php   if ($chatInclude && E::$pgSlug != 'chat') { ?>
 <div id="gchat">
 <?php       if ($chatIncludeCurrent) { ?>
-    <div class="gchat-room" data-room="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>">
-        <div class="title"><?=Text::h($pgSlug)?>/<?=Text::h($itemId)?></div>
+    <div class="gchat-room" data-room="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>">
+        <div class="title"><?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?></div>
         <div class="users"></div>
         <div class="messages-wrapper">
             <div class="s0w s1w messages">
@@ -169,8 +169,8 @@ var gchat = {
         </div>
         <span class="status-publish"></span>
         <div class="send">
-            <textarea class="gchat-room-text input-text input-textarea" name="msg" rows="1" data-room="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>" wrap="soft"></textarea>
-            <button class="gchat-room-btn btn btn-green" data-room="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>"><?=Text::t('Send')?></button>
+            <textarea class="gchat-room-text input-text input-textarea" name="msg" rows="1" data-room="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>" wrap="soft"></textarea>
+            <button class="gchat-room-btn btn btn-green" data-room="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>"><?=Text::t('Send')?></button>
         </div>
     </div>
 <?php       } ?>

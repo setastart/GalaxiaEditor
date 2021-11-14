@@ -3,6 +3,7 @@
 
 use Galaxia\Flash;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
@@ -69,7 +70,7 @@ foreach ($postModule as $fieldKey => $fields) {
 
                 $input = $modules[$moduleKey]['inputs'][$fieldKey]['new-0'][$name];
                 $input['name'] = 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $fieldVal . '][' . $name . ']';
-                $input = Input::validate($input, $val, $itemId);
+                $input = Input::validate($input, $val, E::$itemId);
 
                 $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId][$name] = $input;
 
@@ -118,7 +119,7 @@ foreach ($postModule as $fieldKey => $fields) {
                 continue;
             }
 
-            $input = Input::validate($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$name], $val, $itemId);
+            $input = Input::validate($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$name], $val, E::$itemId);
 
             $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$name] = $input;
 
@@ -207,11 +208,11 @@ foreach ($postModule as $fieldKey => $fields) {
 // foreach ($postModule as $fieldName => $fieldValue) {
 //     foreach ($fieldValue as $name => $value) {
 //         if (isset($modules[$moduleKey]['inputs'][$fieldName][$name])) {
-//             $input = Input::validate($modules[$moduleKey]['inputs'][$fieldName][$name], $value, $itemId);
+//             $input = Input::validate($modules[$moduleKey]['inputs'][$fieldName][$name], $value, E::$itemId);
 //
 //             $modules[$moduleKey]['inputs'][$fieldName][$name] = $input;
 //         } else if (isset($modules[$moduleKey]['inputsUnused'][$fieldName][$name])) {
-//             $input = Input::validate($modules[$moduleKey]['inputsUnused'][$fieldName][$name], $value, $itemId);
+//             $input = Input::validate($modules[$moduleKey]['inputsUnused'][$fieldName][$name], $value, E::$itemId);
 //
 //             $modules[$moduleKey]['inputsUnused'][$fieldName][$name] = $input;
 //         } else {

@@ -44,8 +44,8 @@ InputRender::form('', 'image-delete', 'image image-delete paper pad'); ?>
 
 <div class="paper-footer pad">
     <div class="paper-footer-actions">
-        <a class="btn btn-blue btn-mb active" href="/edit/<?=Text::h($pgSlug)?>"><?=Text::t('Cancel')?></a>
-        <button class="btn btn-red btn-mb active"><?=sprintf(Text::t('Delete %s'), Text::t(E::$conf[$pgSlug]['gcTitlePlural']))?></button>
+        <a class="btn btn-blue btn-mb active" href="/edit/<?=Text::h(E::$pgSlug)?>"><?=Text::t('Cancel')?></a>
+        <button class="btn btn-red btn-mb active"><?=sprintf(Text::t('Delete %s'), Text::t(E::$section['gcTitlePlural']))?></button>
     </div>
 </div>
 

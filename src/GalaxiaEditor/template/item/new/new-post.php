@@ -51,7 +51,7 @@ foreach ($_POST['item'] ?? [] as $name => $value) {
 if (Flash::hasError()) return;
 if (!$itemChanges) {
     Flash::warning('Item not added.');
-    if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
+    if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
     return;
 }
 
@@ -96,15 +96,15 @@ foreach ($itemChanges as $key => $value)
 // finish
 
 G::cacheDelete('editor');
-Flash::info(sprintf(Text::t('Added: %s.'), Text::t(E::$conf[$pgSlug]['gcTitleSingle'])));
+Flash::info(sprintf(Text::t('Added: %s.'), Text::t(E::$section['gcTitleSingle'])));
 
-if (!in_array($pgSlug, ['users', 'passwords'])) {
+if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
     G::cacheDelete(['app', 'fastroute']);
     G::routeSitemap();
     if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php'))
         include G::dir() .'src/script/_editor-item-update-hard.php';
 }
 
-if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
-if (isset($_POST['submitAndAddMore'])) G::redirect('edit/' . $pgSlug . '/new');
-G::redirect('edit/' . $pgSlug . '/' . $itemIdNew);
+if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
+if (isset($_POST['submitAndAddMore'])) G::redirect('edit/' . E::$pgSlug . '/new');
+G::redirect('edit/' . E::$pgSlug . '/' . $itemIdNew);

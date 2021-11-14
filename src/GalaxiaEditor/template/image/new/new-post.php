@@ -5,6 +5,7 @@ use Galaxia\File;
 use Galaxia\Flash;
 use Galaxia\Text;
 use GalaxiaEditor\config\Config;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
@@ -90,9 +91,9 @@ if (Flash::hasError()) return;
 // finish
 
 G::cacheDelete(['app', 'fastroute']);
-G::cacheDelete('editor', 'imageList-' . $pgSlug . '*');
+G::cacheDelete('editor', 'imageList-' . E::$pgSlug . '*');
 
-if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
-if (isset($_POST['submitAndAddMore'])) G::redirect('edit/' . $pgSlug . '/new');
-if (count($uploaded) == 1) G::redirect('edit/' . $pgSlug . '/' . $uploaded[0]['slug']);
-G::redirect('edit/' . $pgSlug);
+if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
+if (isset($_POST['submitAndAddMore'])) G::redirect('edit/' . E::$pgSlug . '/new');
+if (count($uploaded) == 1) G::redirect('edit/' . E::$pgSlug . '/' . $uploaded[0]['slug']);
+G::redirect('edit/' . E::$pgSlug);

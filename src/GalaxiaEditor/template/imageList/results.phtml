@@ -11,7 +11,7 @@ ViewPagination::renderHiddenData($pagination, $rowsFiltered, $rowsTotal) ?>
             <div class="col flex1"><?=Text::t('Info')?></div>
             <div class="col flex1"><?=Text::t('Alt')?></div>
             <div class="col flex1"><?=Text::t('In Use')?></div>
-<?php   if (!empty(E::$conf[$pgSlug]['gcImageTypes'])) { ?>
+<?php   if (!empty(E::$section['gcImageTypes'])) { ?>
             <div class="col flexD"><?=Text::t('Types')?></div>
 <?php   } ?>
         </div>

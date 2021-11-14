@@ -13,16 +13,16 @@ foreach ($list['gcLinks'] ?? [] as $href => $link) {
     if (!$frags) continue;
 
     $label = Text::t($link['label'] ?? '');
-    $href  = Text::h($pgSlug) . '/' . $href;
+    $href  = Text::h(E::$pgSlug) . '/' . $href;
     $css   = Text::h($link['cssClass'] ?? '');
 
     switch ($frags[0]) {
         case 'new':
-            $label = sprintf(Text::t('+ Add new %s'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']));
+            $label = sprintf(Text::t('+ Add new %s'), Text::t(E::$section['gcTitleSingle']));
             break;
 
         case 'order':
-            $label = sprintf(Text::t('Order %s'), Text::t(E::$conf[$pgSlug]['gcTitlePlural']));
+            $label = sprintf(Text::t('Order %s'), Text::t(E::$section['gcTitlePlural']));
             break;
 
         default:

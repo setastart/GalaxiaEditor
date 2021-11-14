@@ -10,11 +10,11 @@ InputRender::form('', 'image-list', 'paper pad');?>
         <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t($pgTitle);?></h1>
 
         <div class="list-links">
-<?php   if (E::$conf[$pgSlug]['gcImage']['gcDelete'] ?? []) { ?>
-            <a href="/edit/<?=Text::h($pgSlug)?>/delete" class="btn btn-pad btn-red active"><?=Text::t('Delete Images')?></a>
+<?php   if (E::$section['gcImage']['gcDelete'] ?? []) { ?>
+            <a href="/edit/<?=Text::h(E::$pgSlug)?>/delete" class="btn btn-pad btn-red active"><?=Text::t('Delete Images')?></a>
 <?php   } ?>
-<?php   if (E::$conf[$pgSlug]['gcImage']['gcInsert'] ?? []) { ?>
-            <a href="/edit/<?=Text::h($pgSlug)?>/new" class="btn btn-pad btn-blue active"><?=Text::t('Upload Images')?></a>
+<?php   if (E::$section['gcImage']['gcInsert'] ?? []) { ?>
+            <a href="/edit/<?=Text::h(E::$pgSlug)?>/new" class="btn btn-pad btn-blue active"><?=Text::t('Upload Images')?></a>
 <?php   } ?>
         </div>
 

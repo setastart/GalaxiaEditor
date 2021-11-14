@@ -6,6 +6,7 @@
 use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 $items = [];
@@ -15,7 +16,7 @@ $query .= Sql::selectWhere(['_geHistory' => ['tabName' => '=', 'tabId' => '=']])
 $query .= Sql::selectOrderBy(['_geHistory' => ['timestampCreated' => 'DESC']]);
 
 $stmt = G::prepare($query);
-$stmt->bind_param('ss', $tabName, $tabId);
+$stmt->bind_param('ss', E::$tabName, E::$tabId);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -37,17 +38,17 @@ while ($data = $result->fetch_assoc()) {
     if (!empty($data['fieldKey'])) {
         $name = $data['fieldKey'];
     } else {
-        if (isset($inputKeys[$tabName])) {
-            $name = $inputKeys[$tabName][$data['inputKey']] ?? $data['inputKey'];
+        if (isset($inputKeys[E::$tabName])) {
+            $name = $inputKeys[E::$tabName][$data['inputKey']] ?? $data['inputKey'];
         }
     }
 
     $content = $data['content'];
     if ($data['content'] == '') $content = '[' . Text::t('Empty') . ']';
     if ($data['inputKey'] == 'status')
-        if (isset($statusNames[$tabName]))
-            if (isset($statusNames[$tabName][$data['content']]))
-                $content = Text::t($statusNames[$tabName][$data['content']]);
+        if (isset($statusNames[E::$tabName]))
+            if (isset($statusNames[E::$tabName][$data['content']]))
+                $content = Text::t($statusNames[E::$tabName][$data['content']]);
 
 
 
@@ -65,5 +66,5 @@ $itemCount = count($items);
 
 
 
-$hdTitle = sprintf(Text::t('History of %s'), ($pageNames[$tabName] ?? $tabName) . ': ' . $tabId);
-$pgTitle = sprintf(Text::t('History of %s'), ($pageNames[$tabName] ?? $tabName) . ': ' . $tabId);
+$hdTitle = sprintf(Text::t('History of %s'), ($pageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);
+$pgTitle = sprintf(Text::t('History of %s'), ($pageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);

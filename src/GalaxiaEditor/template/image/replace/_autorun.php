@@ -5,8 +5,8 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$pgTitle = Text::t('Replace') . ' ' . Text::t(E::$conf[$pgSlug]['gcTitleSingle']);
-$hdTitle = Text::t('Replace') . ' ' . Text::t(E::$conf[$pgSlug]['gcTitleSingle']);
+$pgTitle = Text::t('Replace') . ' ' . Text::t(E::$section['gcTitleSingle']);
+$hdTitle = Text::t('Replace') . ' ' . Text::t(E::$section['gcTitleSingle']);
 
 
 $inputs = [

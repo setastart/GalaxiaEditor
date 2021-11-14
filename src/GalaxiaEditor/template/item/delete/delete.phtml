@@ -46,12 +46,12 @@ InputRender::form('', 'item-delete', 'item item-delete paper pad'); ?>
 
     <div class="paper-footer pad">
         <div class="item-info">
-            <h2><?=sprintf(Text::t('Delete %s'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']))?>?</h2>
+            <h2><?=sprintf(Text::t('Delete %s'), Text::t(E::$section['gcTitleSingle']))?>?</h2>
             <p><?=Text::t('This action is permanent.')?></p>
         </div>
         <div class="paper-footer-actions">
-            <a class="btn btn-blue active" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($itemId)?>"><?=Text::t('Cancel')?></a>
-            <button class="btn btn-red active"><?=sprintf(Text::t('Delete %s'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']))?></button>
+            <a class="btn btn-blue active" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>"><?=Text::t('Cancel')?></a>
+            <button class="btn btn-red active"><?=sprintf(Text::t('Delete %s'), Text::t(E::$section['gcTitleSingle']))?></button>
         </div>
     </div>
 

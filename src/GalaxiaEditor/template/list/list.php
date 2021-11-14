@@ -16,12 +16,12 @@ if (G::$ajax) {
 
 // setup list
 
-$list        = E::$conf[$pgSlug]['gcList'];
+$list        = E::$section['gcList'];
 $firstTable  = key($list['gcSelect']);
 $firstColumn = $list['gcSelect'][$firstTable][0];
 
 $order = '';
-if ($itemId ?? '') {
+if (E::$itemId ?? '') {
     $order                 = 'order-';
     $list['gcFilterInts']  = [];
     $list['gcFilterTexts'] = [];
@@ -84,7 +84,7 @@ foreach ($list['gcFilterInts'] as $filterId => $filter) {
 
 // get items from database using cache
 
-$items = G::cache('editor', 2, 'list-' . $order . $pgSlug . '-items', function() use ($db, $list, $firstTable, $firstColumn, $dbSchema, $order) {
+$items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', function() use ($db, $list, $firstTable, $firstColumn, $dbSchema, $order) {
     // // add key columns to joined tables (used to group joins in columns)
     // $selectQueryWithJoinKeys = $list['gcSelect'];
     // foreach ($selectQueryWithJoinKeys as $table => $columns) {
@@ -243,7 +243,7 @@ foreach ($columns as $columnId => $column) {
 
 // make html for all rows, using cache
 
-$rows = G::cache('editor', 3, 'list-' . $order . $pgSlug . '-rows', function() use ($app, $editor, $pgSlug, $firstTable, $items, $columns, $tags, $order) {
+$rows = G::cache('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', function() use ($app, $editor, $firstTable, $items, $columns, $tags, $order) {
     $rows         = [];
     $currentColor = 0;
     $thumbsToShow = 3;
@@ -254,7 +254,7 @@ $rows = G::cache('editor', 3, 'list-' . $order . $pgSlug . '-rows', function() u
         if ($order) {
             $ht = '<div id="order-' . $itemId . '" class="row' . $statusClass . '">' . PHP_EOL;
         } else {
-            $ht = '<a class="row' . $statusClass . '" href="/edit/' . $pgSlug . '/' . $itemId . '">' . PHP_EOL;
+            $ht = '<a class="row' . $statusClass . '" href="/edit/' . E::$pgSlug . '/' . $itemId . '">' . PHP_EOL;
         }
 
         foreach ($columns as $columnId => $column) {
@@ -277,7 +277,7 @@ $rows = G::cache('editor', 3, 'list-' . $order . $pgSlug . '-rows', function() u
                         if (!isset($data[$dbColumn])) continue;
                         $value = $data[$dbColumn];
 
-                        $isHomeSlug = ($pgSlug == $editor->homeSlug && $value == '' && substr($dbColumn, 0, 9) == 'pageSlug_');
+                        $isHomeSlug = (E::$pgSlug == $editor->homeSlug && $value == '' && substr($dbColumn, 0, 9) == 'pageSlug_');
 
                         if (count(G::langs()) > 1 && substr($dbColumn, -3, 1) == '_' && in_array(substr($dbColumn, -2), G::langs())) {
                             $r .= '<span class="input-label-lang">' . substr($dbColumn, -2) . '</span> ';
@@ -460,7 +460,7 @@ foreach ($filterInts as $filterId => $filter) {
 G::timerStart('Filter Ints');
 foreach ($intFiltersActive as $filterId) {
 
-    $itemsByInt = G::cache('editor', 3, 'list-' . $pgSlug . '-filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
+    $itemsByInt = G::cache('editor', 3, 'list-' . E::$pgSlug . '-filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
         $itemsByInt = [];
         foreach ($items as $itemId => $item)
             foreach ($filterInts[$filterId]['filterWhat'] as $dbTable => $dbColumns)
@@ -506,7 +506,7 @@ foreach ($textFiltersActive as $filterId) {
     if (!$filterInput) continue;
     $filterInput = explode('+', $filterInput);
 
-    $textFilterItems = G::cache('editor', 4, 'list-' . $pgSlug . '-filterText-' . $filterId, function() use ($app, $rows, $items, $filterTexts, $filterId) {
+    $textFilterItems = G::cache('editor', 4, 'list-' . E::$pgSlug . '-filterText-' . $filterId, function() use ($app, $rows, $items, $filterTexts, $filterId) {
         foreach ($rows as $itemId => $row) {
             $textFilterItems[$itemId] = '';
             $emptyFound               = false;
@@ -571,8 +571,8 @@ $rows = array_slice($rows, $offset, $length, true);
 
 // finish
 
-$hdTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']) . ' - ' . $hdTitle;
-$pgTitle = Text::t(E::$conf[$pgSlug]['gcTitlePlural']);
+$hdTitle = Text::t(E::$section['gcTitlePlural']) . ' - ' . $hdTitle;
+$pgTitle = Text::t(E::$section['gcTitlePlural']);
 
 if ($order) {
     $hdTitle = sprintf(Text::t('Order %s'), $hdTitle);

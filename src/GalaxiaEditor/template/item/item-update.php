@@ -2,8 +2,10 @@
 
 
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\history\History;
 
 
@@ -14,7 +16,7 @@ if (isset($itemChanges['passwordHash']))
 
 
 $params = array_values($itemChanges);
-$params[] = $itemId;
+$params[] = E::$itemId;
 $types = str_repeat('s', count($params));
 
 $query = Sql::update($item['gcUpdate']);
@@ -40,7 +42,7 @@ try {
                 if ($inputKey == 'passwordHash')
                     continue;
 
-            History::insert($uniqueId, $item['gcTable'], $itemId, $inputKey, '', 2, $content, $me->id);
+            History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputKey, '', 2, $content, $me->id);
         }
     }
 } catch (Exception $e) {

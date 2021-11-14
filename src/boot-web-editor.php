@@ -17,8 +17,8 @@ require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/autoload-editor.php';
 
 
-$req = new Request($_SERVER['SERVER_NAME']);
-$req->redirectRemoveSlashes();
+E::$req = new Request($_SERVER['SERVER_NAME']);
+E::$req->redirectRemoveSlashes();
 
 
 // init app
@@ -54,7 +54,7 @@ G::login();
 $db = G::getMysqli();
 
 if (G::isDevDebug()) {
-    $app->cacheBypass = true;
+    E::$req->cacheBypass = true;
 }
 
 
@@ -82,7 +82,7 @@ if (G::isLoggedIn()) {
                 'domain'   => '.' . $_SERVER['SERVER_NAME'],
                 'secure'   => isset($_SERVER['HTTPS']),
                 'httponly' => true,
-                'samesite' => 'Strict'
+                'samesite' => 'Strict',
             ]
         );
     }
@@ -349,6 +349,19 @@ if (G::isLoggedIn()) {
             break;
         case FastRoute\Dispatcher::FOUND:
             extract($routeInfo[2]); // make php $variables with names and values defined in the routing above.
+
+            E::$pgSlug   = $routeInfo[2]['pgSlug'] ?? '';
+            E::$tabName  = $routeInfo[2]['tabName'] ?? '';
+            E::$tabId    = $routeInfo[2]['tabId'] ?? '';
+            E::$itemId   = $routeInfo[2]['itemId'] ?? '';
+            E::$imgSlug  = $routeInfo[2]['imgSlug'] ?? '';
+            E::$imgW     = $routeInfo[2]['imgW'] ?? '';
+            E::$imgH     = $routeInfo[2]['imgH'] ?? '';
+            E::$action   = $routeInfo[2]['action'] ?? '';
+            E::$itemDate = $routeInfo[2]['itemDate'] ?? '';
+
+            E::$section = &E::$conf[E::$pgSlug];
+
             $editor->logic = $editor->view = $routeInfo[1];
             break;
     }
@@ -375,7 +388,7 @@ if (G::isLoggedIn()) {
             break;
         case FastRoute\Dispatcher::FOUND:
             extract($routeInfo[2]); // make php $variables with names and values defined in the routing above.
-            $pgSlug        = $routeInfo[2]['pgSlug'];
+            E::$pgSlug     = $routeInfo[2]['pgSlug'];
             $editor->logic = $editor->view = $routeInfo[1];
             break;
     }

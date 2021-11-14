@@ -8,8 +8,8 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$pgTitle = Text::t('+ Add') . ' ' . Text::t(E::$conf[$pgSlug]['gcTitleSingle']);
-$hdTitle = Text::t('+ Add') . ' ' . Text::t(E::$conf[$pgSlug]['gcTitleSingle']);
+$pgTitle = Text::t('+ Add') . ' ' . Text::t(E::$section['gcTitleSingle']);
+$hdTitle = Text::t('+ Add') . ' ' . Text::t(E::$section['gcTitleSingle']);
 
 
 // query extras
@@ -37,7 +37,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
     $input = Input::prepare($input, $extras);
 
     $item['inputs'][$inputKey] = array_merge($input, [
-        'label'       => $input['label'] ?? E::$conf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
+        'label'       => $input['label'] ?? E::$section['gcColNames'][$inputKey] ?? $inputKey,
         'name'        => 'item[' . $inputKey . ']',
         'nameFromDb'  => $inputKey,
     ]);

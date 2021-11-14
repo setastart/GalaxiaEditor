@@ -9,35 +9,34 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\render\Load;
 
 
-$pgTitle = Text::t(E::$conf[$pgSlug]['gcTitleSingle']) . ': ' . $imgSlug;
+$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . E::$imgSlug;
 $hdTitle = Text::t('Editing') . ' ' . $pgTitle;
 
-$item   = E::$conf[$pgSlug]['gcImage'];
-$action ??= '';
+$item   = E::$section['gcImage'];
 
 
 // skip for new item page
 
-if ($imgSlug == 'new') return;
+if (E::$imgSlug == 'new') return;
 
 
 
 
 // item validation
 
-if (!AppImage::valid(G::dirImage(), $imgSlug)) {
-    Flash::error(sprintf(Text::t('Image \'%s\' does not exist.'), Text::h($imgSlug)));
-    G::redirect('edit/' . $pgSlug);
+if (!AppImage::valid(G::dirImage(), E::$imgSlug)) {
+    Flash::error(sprintf(Text::t('Image \'%s\' does not exist.'), Text::h(E::$imgSlug)));
+    G::redirect('edit/' . E::$pgSlug);
 }
 
 
-$inUse = Load::imagesInUse($pgSlug)[$imgSlug] ?? [];
+$inUse = Load::imagesInUse()[E::$imgSlug] ?? [];
 // geD($inUse);
 
 // load image and build inputs
 
-$img = G::imageGet($imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
-$img['resizes'] = AppImage::resizes(G::dirImage(), $imgSlug) ?? [];
+$img = G::imageGet(E::$imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
+$img['resizes'] = AppImage::resizes(G::dirImage(), E::$imgSlug) ?? [];
 
 
 $inputs = [
@@ -46,8 +45,8 @@ $inputs = [
         'name'        => 'imgSlug',
         'type'        => 'slug',
         'options'     => ['minlength' => 1, 'maxlength' => 128],
-        'value'       => $imgSlug,
-        'valueFromDb' => $imgSlug,
+        'value'       => E::$imgSlug,
+        'valueFromDb' => E::$imgSlug,
     ],
 ];
 
@@ -66,9 +65,9 @@ foreach (G::locales() as $lang => $locale) {
 }
 
 
-if (E::$conf[$pgSlug]['gcImageTypes']) {
+if (E::$section['gcImageTypes']) {
     $options = [];
-    foreach (E::$conf[$pgSlug]['gcImageTypes'] as $tag => $bounds) {
+    foreach (E::$section['gcImageTypes'] as $tag => $bounds) {
         $options[$tag] = ['label' => $tag];
     }
     $inputs['type'] = [

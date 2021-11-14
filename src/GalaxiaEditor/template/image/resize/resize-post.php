@@ -2,6 +2,7 @@
 
 use Galaxia\G;
 use Galaxia\Flash;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
@@ -38,8 +39,8 @@ if (Flash::hasError()) return;
 // resize images
 
 $files = [[
-    'tmp_name' => G::dirImage() . $imgSlug . '/' . $imgSlug . $img['ext'],
-    'name' => $imgSlug,
+    'tmp_name' => G::dirImage() . E::$imgSlug . '/' . E::$imgSlug . $img['ext'],
+    'name' => E::$imgSlug,
 ]];
 $uploaded = G::imageUpload($files, true, $_POST['resize']);
 
@@ -49,5 +50,5 @@ $uploaded = G::imageUpload($files, true, $_POST['resize']);
 // finish
 
 G::cacheDelete(['app', 'fastroute']);
-G::cacheDelete('editor', 'imageList-' . $pgSlug . '*');
-G::redirect('edit/' . $pgSlug . '/' . $imgSlug);
+G::cacheDelete('editor', 'imageList-' . E::$pgSlug . '*');
+G::redirect('edit/' . E::$pgSlug . '/' . E::$imgSlug);

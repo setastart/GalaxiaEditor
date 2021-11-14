@@ -5,6 +5,7 @@ use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\history\History;
 use GalaxiaEditor\model\ModelField;
 
@@ -28,7 +29,7 @@ foreach ($fieldsNew as $moduleKey => $fields) {
             //     try {
             //         $reciprocalInsert = $insert;
             //         $reciprocalItemId = $reciprocalInsert[array_key_first($reciprocalInsert)];
-            //         $reciprocalInsert[array_key_first($reciprocalInsert)] = $itemId;
+            //         $reciprocalInsert[array_key_first($reciprocalInsert)] = E::$itemId;
             //         $insertedId = ModelField::insert(
             //             $module['gcUpdate'],
             //             $itemColId, $reciprocalItemId,
@@ -44,7 +45,7 @@ foreach ($fieldsNew as $moduleKey => $fields) {
             try {
                 $insertedId = ModelField::insert(
                     $module['gcUpdate'],
-                    $itemColId, $itemId,
+                    $itemColId, E::$itemId,
                     $fieldCol, $fieldKey,
                     $insert
                 );
@@ -93,7 +94,7 @@ foreach ($fieldsDel as $moduleKey => $fields) {
 
         try {
             $stmt = G::prepare($query);
-            $stmt->bind_param('ss' . str_repeat('d', count($deleteIds)), $itemId, $fieldKey, ...$deleteIds);
+            $stmt->bind_param('ss' . str_repeat('d', count($deleteIds)), E::$itemId, $fieldKey, ...$deleteIds);
             $success    = $stmt->execute();
             $insertedId = $stmt->insert_id;
             $stmt->close();
@@ -124,7 +125,7 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
         foreach ($updates as $fieldVal => $update) {
             $queryUpdateWhere = [$module['gcTable'] => [$module['gcTable'] . 'Id', $itemColId, $fieldCol]];
             $params           = array_values($update);
-            array_push($params, $fieldVal, $itemId, $fieldKey);
+            array_push($params, $fieldVal, E::$itemId, $fieldKey);
 
             $affectedRows = 0;
             try {
@@ -151,7 +152,7 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
                     }
 
                     if ($item['gcTable'] == '_geUser') continue;
-                    History::insert($uniqueId, $item['gcTable'], $itemId, $inputName, $fieldKey, 2, $value, $me->id);
+                    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputName, $fieldKey, 2, $value, $me->id);
                 }
             }
 
@@ -175,7 +176,7 @@ foreach ($modules as $module) {
 
         $query = Sql::deleteOrNull($expression);
 
-        $params = [$itemId];
+        $params = [E::$itemId];
         foreach ($module['gcModuleDeleteIfEmpty'] as $col)
             $params[] = substr($col, -2) == 'Id' ? 0 : '';
 

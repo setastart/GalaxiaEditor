@@ -22,7 +22,7 @@ use GalaxiaEditor\model\ModelList;
 
 $editor->view = 'list/order';
 
-$firstTable  = key(E::$conf[$pgSlug]['gcList']['gcSelect']);
+$firstTable  = key(E::$section['gcList']['gcSelect']);
 
 $changes = ModelList::order($firstTable, $_POST['order']);
 
@@ -37,6 +37,6 @@ G::cacheDelete('editor');
 
 Flash::info('editor caches deleted');
 
-if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
+if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
 
 include __DIR__ . '/list.php';

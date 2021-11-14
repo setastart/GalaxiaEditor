@@ -9,8 +9,8 @@ $pgTitle = Text::t('Upload Images');
 $hdTitle = Text::t('Upload Images');
 
 $options = [];
-if (E::$conf[$pgSlug]['gcImageTypes']) {
-    foreach (E::$conf[$pgSlug]['gcImageTypes'] as $tag => $bounds) {
+if (E::$section['gcImageTypes']) {
+    foreach (E::$section['gcImageTypes'] as $tag => $bounds) {
         $options[$tag] = ['label' => $tag];
     }
 }

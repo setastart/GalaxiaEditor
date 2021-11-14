@@ -7,20 +7,20 @@ use GalaxiaEditor\E;
 
 ?>
 <div class="item-info">
-    <div><?=Text::t('Original')?>: <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=Text::h($imgSlug . $img['ext'])?>"><?=Text::h($img['wOriginal'] . 'x' . $img['hOriginal'])?></a><?=Text::h($img['ext'])?>  (<?=Text::bytesIntToAbbr(filesize(G::dirImage() . $imgSlug . '/' . $imgSlug . $img['ext']))?>)</div>
+    <div><?=Text::t('Original')?>: <a target="_blank" href="/media/image/<?=E::$imgSlug?>/<?=Text::h(E::$imgSlug . $img['ext'])?>"><?=Text::h($img['wOriginal'] . 'x' . $img['hOriginal'])?></a><?=Text::h($img['ext'])?>  (<?=Text::bytesIntToAbbr(filesize(G::dirImage() . E::$imgSlug . '/' . E::$imgSlug . $img['ext']))?>)</div>
 <?php   foreach ($img['resizes'] as $fileName => $resize) { ?>
     <div>
         <?=Text::t('Dimensions')?>:
-        <a target="_blank" href="/media/image/<?=$imgSlug?>/<?=Text::h($fileName)?>"><?=Text::h($resize)?></a>
-        (<?=Text::bytesIntToAbbr(filesize(G::dirImage() . $imgSlug . '/' . $fileName))?>) <?=Text::h($fileName)?>
+        <a target="_blank" href="/media/image/<?=E::$imgSlug?>/<?=Text::h($fileName)?>"><?=Text::h($resize)?></a>
+        (<?=Text::bytesIntToAbbr(filesize(G::dirImage() . E::$imgSlug . '/' . $fileName))?>) <?=Text::h($fileName)?>
     </div>
 <?php   } ?>
 
-    <a class="<?=Text::h('active', $action == 'replace')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/replace"><?=Text::t('Replace Image')?></a>
-    <a class="<?=Text::h('active', $action == 'resize')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/resize"><?=Text::t('Resize Image')?></a>
+    <a class="<?=Text::h('active', E::$action == 'replace')?> btn-a" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>/replace"><?=Text::t('Replace Image')?></a>
+    <a class="<?=Text::h('active', E::$action == 'resize')?> btn-a" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>/resize"><?=Text::t('Resize Image')?></a>
 <?php   if (isset($item['gcDelete'])) { ?>
-    <a class="<?=Text::h('active', $action == 'deleteResizes')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/deleteResizes"><?=Text::t('Delete Resizes')?></a>
-    <a class="<?=Text::h('active', $action == 'deleteWebp')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/deleteWebp"><?=Text::t('Delete Webp')?></a>
-    <a class="red<?=Text::h(' active', $action == 'delete')?> btn-a" href="/edit/<?=Text::h($pgSlug)?>/<?=Text::h($imgSlug)?>/delete"><?=sprintf(Text::t('Delete %s'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']))?></a>
+    <a class="<?=Text::h('active', E::$action == 'deleteResizes')?> btn-a" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>/deleteResizes"><?=Text::t('Delete Resizes')?></a>
+    <a class="<?=Text::h('active', E::$action == 'deleteWebp')?> btn-a" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>/deleteWebp"><?=Text::t('Delete Webp')?></a>
+    <a class="red<?=Text::h(' active', E::$action == 'delete')?> btn-a" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>/delete"><?=sprintf(Text::t('Delete %s'), Text::t(E::$section['gcTitleSingle']))?></a>
 <?php   } ?>
 </div>

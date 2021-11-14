@@ -11,9 +11,9 @@ use GalaxiaEditor\E;
 
 class ModelImage {
 
-    static function inUse(string $pgSlug): array {
+    static function inUse(): array {
         $inUse = [];
-        foreach (E::$conf[$pgSlug]['gcImagesInUse'] as $gcImageInUse) {
+        foreach (E::$section['gcImagesInUse'] as $gcImageInUse) {
 
             if (empty($gcImageInUse['gcSelect'])) return [];
             $firstTable  = key($gcImageInUse['gcSelect']);

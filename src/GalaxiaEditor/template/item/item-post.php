@@ -4,6 +4,7 @@ use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 $editor->view = 'item/item';
@@ -36,7 +37,7 @@ foreach ($_POST['modules'] ?? [] as $moduleKey => $postModule) {
 if (Flash::hasError()) return;
 if (!$itemChanges && !$fieldsNew && !$fieldsDel && !$fieldsUpd) {
     Flash::warning(Text::t('No changes were made.'));
-    if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
+    if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
     return;
 }
 
@@ -61,7 +62,7 @@ if ($fieldsNew || $fieldsDel || $fieldsUpd)
 
 // update timstampModified
 
-$params = [date('Y-m-d G:i:s'), $itemId];
+$params = [date('Y-m-d G:i:s'), E::$itemId];
 $query = Sql::update($item['gcUpdate']);
 $query .= Sql::updateSet(['timestampModified']);
 $query .= Sql::updateWhere([$item['gcTable'] => [$item['gcTable'] . 'Id']]);
@@ -76,7 +77,7 @@ $stmt->close();
 
 // finish
 
-if (!in_array($pgSlug, ['users', 'passwords'])) {
+if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
     $slugs = [$item['gcTable'] . 'Slug'];
     foreach (G::langs() as $lang) $slugs[] = $item['gcTable'] . 'Slug_' . $lang;
 
@@ -111,10 +112,10 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
             try {
                 $query = Sql::queryInsert(
                     [$redirectTable => [$redirectTableSlug]],
-                    [$redirectTableId => $itemId, $redirectTableSlug => $oldSlug, 'fieldKey' => $redirectFieldKey]
+                    [$redirectTableId => E::$itemId, $redirectTableSlug => $oldSlug, 'fieldKey' => $redirectFieldKey]
                 );
                 $stmt = G::prepare($query);
-                $stmt->bind_param('dss', $itemId, $oldSlug, $redirectFieldKey);
+                $stmt->bind_param('dss', E::$itemId, $oldSlug, $redirectFieldKey);
                 $success = $stmt->execute();
                 $itemIdNew = $stmt->insert_id;
                 $stmt->close();
@@ -151,5 +152,5 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
 
 }
 
-if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
-G::redirect('edit/' . $pgSlug . '/' . $itemId);
+if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
+G::redirect('edit/' . E::$pgSlug . '/' . E::$itemId);

@@ -12,7 +12,7 @@ use GalaxiaEditor\input\Input;
 
 
 $uniqueId        = uniqid(true);
-$item            = &E::$conf[$pgSlug]['gcItem'];
+$item            = &E::$section['gcItem'];
 $langSelectClass = [];
 foreach (G::locales() as $lang => $locale) {
     $langSelectClass[$lang] = '';
@@ -28,7 +28,7 @@ $fieldsUpd        = [];
 
 // skip for new item page
 
-if ($itemId == 'new') return;
+if (E::$itemId == 'new') return;
 
 
 
@@ -36,7 +36,7 @@ if ($itemId == 'new') return;
 // restrict edit acces to only own user
 
 if ($item['gcUpdateOnlyOwn'] ?? false) {
-    if (!$me->hasPerm('dev') && $me->id != $itemId) {
+    if (!$me->hasPerm('dev') && $me->id != E::$itemId) {
         Flash::error(Text::t('Redirected. You don\'t have access to that page.'));
         G::redirect('/edit/' . $editor->homeSlug);
     }
@@ -52,15 +52,15 @@ $query .= Sql::selectWhere($querySelectWhere);
 $query .= Sql::selectLimit(0, 1);
 
 $stmt = G::prepare($query);
-$stmt->bind_param('d', $itemId);
+$stmt->bind_param('d', E::$itemId);
 $stmt->bind_result($itemExists);
 $stmt->execute();
 $stmt->fetch();
 $stmt->close();
 
 if (!$itemExists) {
-    Flash::error(sprintf(Text::t('%s with id %s does not exist.'), Text::t(E::$conf[$pgSlug]['gcTitleSingle']), Text::h($itemId)));
-    G::redirect('edit/' . $pgSlug);
+    Flash::error(sprintf(Text::t('%s with id %s does not exist.'), Text::t(E::$section['gcTitleSingle']), Text::h(E::$itemId)));
+    G::redirect('edit/' . E::$pgSlug);
 }
 
 
@@ -73,7 +73,7 @@ $query .= Sql::selectLeftJoinUsing($item['gcSelectLJoin'] ?? []);
 $query .= Sql::selectWhere($querySelectWhere);
 
 $stmt = G::prepare($query);
-$stmt->bind_param('d', $itemId);
+$stmt->bind_param('d', E::$itemId);
 $stmt->execute();
 $result = $stmt->get_result();
 $data   = $result->fetch_assoc();
@@ -128,7 +128,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
     if (isset($input['lang']) && count(G::langs()) > 1) $showSwitchesLang = true;
 
     $inputNew = [
-        'label'      => $input['label'] ?? E::$conf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey,
+        'label'      => $input['label'] ?? E::$section['gcColNames'][$inputKey] ?? $inputKey,
         'name'       => 'item[' . $inputKey . ']',
         'nameFromDb' => $inputKey,
     ];
@@ -150,7 +150,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
 
 
 foreach ($item['gcInfo'] as $inputKey => $input) {
-    $item['gcInfo'][$inputKey]['label'] = E::$conf[$pgSlug]['gcColNames'][$inputKey] ?? $inputKey;
+    $item['gcInfo'][$inputKey]['label'] = E::$section['gcColNames'][$inputKey] ?? $inputKey;
 
     $value = $item['data'][$inputKey];
     if ($input['type'] == 'timestamp')
@@ -170,9 +170,9 @@ if (is_array($item['gcColKey'])) {
 }
 
 $titleTemp = $item['data'][$item['gcColKey']];
-if (empty($titleTemp)) $titleTemp = $itemId;
+if (empty($titleTemp)) $titleTemp = E::$itemId;
 if (substr($item['gcColKey'], 0, 9) == 'timestamp') $titleTemp = Text::formatDate($titleTemp, 'd MMM y - HH:mm');
-$pgTitle = Text::t(E::$conf[$pgSlug]['gcTitleSingle']) . ': ' . $titleTemp;
+$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . $titleTemp;
 $hdTitle = Text::t('Editing') . ': ' . $pgTitle;
 
 
@@ -181,9 +181,9 @@ $hdTitle = Text::t('Editing') . ': ' . $pgTitle;
 // add redirect module
 
 if ($item['gcRedirect']) {
-    $table = E::$conf[$pgSlug]['gcItem']['gcTable'];
+    $table = E::$section['gcItem']['gcTable'];
 
-    E::$conf[$pgSlug]['gcItem']['gcModules'][] = [
+    E::$section['gcItem']['gcModules'][] = [
         'gcTable'               => $table . 'Redirect',
         'gcModuleType'          => 'fields',
         'gcModuleTitle'         => '',
@@ -210,7 +210,7 @@ if ($item['gcRedirect']) {
 
 // query modules
 
-$modules = &E::$conf[$pgSlug]['gcItem']['gcModules'];
+$modules = &E::$section['gcItem']['gcModules'];
 
 foreach ($modules as $moduleKey => &$module) {
     switch ($module['gcModuleType']) {

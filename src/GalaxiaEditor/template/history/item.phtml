@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 ?>
@@ -8,9 +9,9 @@ use Galaxia\Text;
     <div class="item-title">
         <h1><?=Text::st($pgTitle)?></h1>
     </div>
-<?php   if (isset($rootSlugs[$tabName])) { ?>
+<?php   if (isset($rootSlugs[E::$tabName])) { ?>
     <div class="paper-header">
-        <a href="/edit/<?=Text::h($rootSlugs[$tabName])?>/<?=Text::h($tabId)?>"><?=Text::t('Edit Item')?></a>
+        <a href="/edit/<?=Text::h($rootSlugs[E::$tabName])?>/<?=Text::h(E::$tabId)?>"><?=Text::t('Edit Item')?></a>
     </div>
 <?php   } ?>
 <?php   foreach ($items as $itemId => $item) { ?>

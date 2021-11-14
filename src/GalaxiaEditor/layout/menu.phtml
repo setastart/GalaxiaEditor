@@ -25,22 +25,22 @@ foreach (E::$conf as $rootSlug => $confPage) {
         if ($confPage['geLinkToUser'] ?? '') {
             $menu[$rootSlug]['link'] = '/edit/' . $confPage['geLinkToUser'] . '/' . $me->id;
 
-            if (isset($itemId) && $pgSlug == $confPage['geLinkToUser'] && $itemId == $me->id) {
+            if (isset(E::$itemId) && E::$pgSlug == $confPage['geLinkToUser'] && E::$itemId == $me->id) {
                 $menu[$rootSlug]['cssClass'] .= ' active';
             }
         } else if ($confPage['geLinkToItem'] ?? '') {
             $menu[$rootSlug]['link'] = '/edit/' . implode('/', $confPage['geLinkToItem']);
 
-            if (isset($itemId)) {
-                if ($pgSlug == $confPage['geLinkToItem'][0] && $itemId == $confPage['geLinkToItem'][1]) {
+            if (isset(E::$itemId)) {
+                if (E::$pgSlug == $confPage['geLinkToItem'][0] && E::$itemId == $confPage['geLinkToItem'][1]) {
                     $menu[$rootSlug]['cssClass'] .= ' active';
                 }
-            } else if ($pgSlug == 'dev' && $confPage['geLinkToItem'][0] == 'dev') {
+            } else if (E::$pgSlug == 'dev' && $confPage['geLinkToItem'][0] == 'dev') {
                 $menu[$rootSlug]['cssClass'] .= ' active';
             }
         }
     } else {
-        if ($rootSlug == $pgSlug) $menu[$rootSlug]['cssClass'] .= ' active';
+        if ($rootSlug == E::$pgSlug) $menu[$rootSlug]['cssClass'] .= ' active';
     }
 
 

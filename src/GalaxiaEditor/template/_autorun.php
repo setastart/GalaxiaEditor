@@ -23,9 +23,11 @@ $includeTrix        = false;
 $showSwitchesLang   = false;
 $passwordColsFound  = false;
 $chatInclude        = isset(E::$conf['chat']);
+
+// todo: check gcPageType of section instead of hardcoding
 $chatIncludeCurrent =
-    !in_array($pgSlug, ['users', 'passwords', 'history']) &&
-    ((isset($itemId) || isset($imgSlug)) || $pgSlug == 'chat');
+    !in_array(E::$pgSlug, ['users', 'passwords', 'history']) &&
+    ((E::$itemId || E::$imgSlug) || E::$pgSlug == 'chat');
 $itemChanges        = [];
 
 

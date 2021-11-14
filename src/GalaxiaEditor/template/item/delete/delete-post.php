@@ -19,7 +19,7 @@ try {
     $query = Sql::delete($item['gcDelete']);
 
     $stmt = G::prepare($query);
-    $stmt->bind_param('s', $itemId);
+    $stmt->bind_param('s', E::$itemId);
     $stmt->execute();
     $affectedRows = $stmt->affected_rows;
     $stmt->close();
@@ -40,7 +40,7 @@ try {
 // history
 
 foreach ($item['inputs'] as $inputName => $input) {
-    History::insert($uniqueId, $item['gcTable'], $itemId, $inputName, '', 0, $input['valueFromDb'] ?? '', $me->id);
+    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputName, '', 0, $input['valueFromDb'] ?? '', $me->id);
 }
 
 foreach ($modules as $moduleKey => $module) {
@@ -49,7 +49,7 @@ foreach ($modules as $moduleKey => $module) {
             foreach ($module['inputs'] as $fieldKey => $inputs) {
                 foreach ($inputs as $inputKey => $input) {
                     if (!isset($input['valueFromDb'])) continue;
-                    History::insert($uniqueId, $item['gcTable'], $itemId, $inputKey, $fieldKey, 0, $input['valueFromDb'], $me->id);
+                    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputKey, $fieldKey, 0, $input['valueFromDb'], $me->id);
                 }
             }
             break;
@@ -65,13 +65,13 @@ foreach ($modules as $moduleKey => $module) {
 // finish
 
 G::cacheDelete('editor');
-Flash::info(sprintf(Text::t('Deleted: %s.'), Text::t(E::$conf[$pgSlug]['gcTitleSingle'])));
+Flash::info(sprintf(Text::t('Deleted: %s.'), Text::t(E::$section['gcTitleSingle'])));
 
-if (!in_array($pgSlug, ['users', 'passwords'])) {
+if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
     G::cacheDelete(['app', 'fastroute']);
     G::routeSitemap();
     if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php'))
         include G::dir() .'src/script/_editor-item-update-hard.php';
 }
 
-G::redirect('edit/' . $pgSlug);
+G::redirect('edit/' . E::$pgSlug);
