@@ -48,6 +48,6 @@ $uploaded = G::imageUpload($files, true, $_POST['resize']);
 
 // finish
 
-$app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList-' . $pgSlug . '*');
+G::cacheDelete(['app', 'fastroute']);
+G::cacheDelete('editor', 'imageList-' . $pgSlug . '*');
 G::redirect('edit/' . $pgSlug . '/' . $imgSlug);

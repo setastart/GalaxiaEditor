@@ -18,7 +18,7 @@ foreach ($images as $imgSlug => $mtimeDir) {
     touch(G::dirImage() . $imgSlug . '/', $mtime);
 }
 
-$app->cacheDelete('editor');
+G::cacheDelete('editor');
 Flash::info(Text::t('Reordered images by upload time'));
 
 G::redirect('edit/' . $editor->imageSlug);

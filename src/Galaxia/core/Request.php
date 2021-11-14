@@ -1,5 +1,5 @@
 <?php
-/* Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
+/* Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
 
  - Licensed under the EUPL, Version 1.2 only (the "Licence");
  - You may not use this work except in compliance with the Licence.
@@ -112,7 +112,7 @@ class Request {
 
 
     function redirectRemoveSlashes() {
-        if ($this->path != '/' && substr($this->path, -1, 1) == '/') {
+        if ($this->path != '/' && str_ends_with($this->path, '/')) {
             G::redirect($this->path, 301);
         }
     }

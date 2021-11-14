@@ -23,7 +23,7 @@ if (!AppImage::delete(G::dirImage(), $imgSlug)) {
 
 // finish
 
-$app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList-' . $pgSlug . '*');
+G::cacheDelete(['app', 'fastroute']);
+G::cacheDelete('editor', 'imageList-' . $pgSlug . '*');
 Flash::info('Deleted image: ' . Text::h($imgSlug));
 G::redirect('edit/' . $pgSlug);

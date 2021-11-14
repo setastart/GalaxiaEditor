@@ -1,5 +1,5 @@
 <?php
-/* Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
+/* Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
 
  - Licensed under the EUPL, Version 1.2 only (the "Licence");
  - You may not use this work except in compliance with the Licence.
@@ -37,8 +37,7 @@ class Editor {
         'es' => ['long' => 'es_ES', 'full' => 'Castellano'],
     ];
 
-
-
+    public string $translateEndpoint = '';
 
     public function __construct(string $dir) {
         $this->dir       = rtrim($dir, '/') . '/';
@@ -46,5 +45,65 @@ class Editor {
         $this->dirLogic  = $this->dir . 'src/GalaxiaEditor/template/';
         $this->dirView   = $this->dir . 'src/GalaxiaEditor/template/';
     }
+
+
+    static function pageUsers(): array {
+        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultUsers.php';
+    }
+
+    static function linkUser(): array {
+        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultUser.php';
+    }
+
+    static function pagePasswords(): array {
+        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultPasswords.php';
+    }
+
+    static function linkPassword(): array {
+        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultPassword.php';
+    }
+
+    static function pageHistory(): array {
+        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultHistory.php';
+    }
+
+    static function pageDev(): array {
+        return [
+            'gcPerms'      => 'dev',
+            'gcPageType'   => 'gcpLinkToItem',
+            'gcMenuTitle'  => 'Dev',
+            'gcMenuShow'   => ['gcPerms' => ['dev']],
+            'geLinkToItem' => ['dev'],
+        ];
+    }
+
+    static function pageStatsGoaccess(string $logFile, string $dir): array {
+        return [
+            'gcPageType'    => 'gcpGoaccessStats',
+            'gcMenuTitle'   => 'Basic Stats',
+            'gcMenuShow'    => true,
+            'gcGoaccessLog' => $logFile,
+            'gcGoaccessDir' => $dir,
+        ];
+    }
+
+    static function pageChat(string $name): array {
+        return [
+            'gcPageType'  => 'gcpChat',
+            'gcMenuTitle' => $name,
+            'gcMenuShow'  => true,
+        ];
+    }
+
+
+    static function linkToItem(string $title, string $root, string $id): array {
+        return [
+            'gcPageType'   => 'gcpLinkToItem',
+            'gcMenuTitle'  => $title,
+            'gcMenuShow'   => true,
+            'geLinkToItem' => [$root, $id],
+        ];
+    }
+
 
 }

@@ -63,12 +63,12 @@ foreach ($modules as $moduleKey => $module) {
 
 // finish
 
-$app->cacheDelete('editor');
+G::cacheDelete('editor');
 Flash::info(sprintf(Text::t('Deleted: %s.'), Text::t($geConf[$pgSlug]['gcTitleSingle'])));
 
 if (!in_array($pgSlug, ['users', 'passwords'])) {
-    $app->cacheDelete(['app', 'fastroute']);
-    $app->generateSitemap($db);
+    G::cacheDelete(['app', 'fastroute']);
+    G::routeSitemap();
     if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php'))
         include G::dir() .'src/script/_editor-item-update-hard.php';
 }

@@ -1,5 +1,5 @@
 <?php
-/* Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
+/* Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
 
  - Licensed under the EUPL, Version 1.2 only (the "Licence");
  - You may not use this work except in compliance with the Licence.
@@ -611,11 +611,10 @@ HTML;
 
 
 
-
-    static function nofollowHost(string $host) {
-        foreach (G::$nofollowHosts as $nofollowHost)
-            if (strpos($host, $nofollowHost))
-                return $nofollowHost;
+    // todo: empty hosts
+    static function nofollowHost(string $host, array $hosts = ['facebook', 'google', 'instagram', 'twitter', 'linkedin', 'youtube']) {
+        foreach ($hosts as $nofollowHost)
+            if (str_contains($host, $nofollowHost)) return true;
 
         return false;
     }

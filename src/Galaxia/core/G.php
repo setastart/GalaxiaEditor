@@ -1,5 +1,5 @@
 <?php
-/* Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
+/* Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
 
  - Licensed under the EUPL, Version 1.2 only (the "Licence");
  - You may not use this work except in compliance with the Licence.
@@ -30,8 +30,6 @@ class G {
      * @deprecated
      */
     public static bool $ajax = false;
-
-    public static array $nofollowHosts = ['facebook', 'google', 'instagram', 'twitter', 'linkedin', 'youtube']; // todo: refactor
 
     private static array $timers      = [];
     private static int   $timerLevel  = 0;
@@ -516,6 +514,8 @@ class G {
     }
 
 
+
+
     static function dir(): string {
         return self::$app->dir;
     }
@@ -532,6 +532,36 @@ class G {
         return self::$app->dirImage;
     }
 
+
+
+
+    static function langSet(string $lang = null): void {
+        if (!is_string($lang) || !isset(self::$app->locales[$lang])) $lang = self::$app->lang;
+        self::$app->lang   = $lang;
+        self::$app->locale = self::$app->locales[self::$app->lang];
+        self::$app->langs  = array_keys(self::$app->locales);
+
+        $key = array_search(self::$app->lang, self::$app->langs);
+        if ($key > 0) {
+            unset(self::$app->langs[$key]);
+            array_unshift(self::$app->langs, self::$app->lang);
+        }
+
+        setlocale(LC_TIME, self::$app->locale['long'] . '.UTF-8');
+        date_default_timezone_set(self::$app->timeZone);
+    }
+
+    static function langSetFromUrl(Request $req): void {
+        self::langSet($req->langFromUrl(self::$app));
+    }
+
+    static function langAddInactive(): void {
+        foreach (self::$app->localesInactive as $lang => $locale) {
+            if (isset(self::$app->locales[$lang])) continue;
+            self::$app->locales[$lang] = $locale;
+            self::$app->langs          = array_keys(self::$app->locales);
+        }
+    }
 
     static function lang(): string {
         return self::$app->lang;
@@ -557,39 +587,72 @@ class G {
         return Text::h(rtrim(self::$app->locales[$lang]['url'], '/') . '/' . $url);
     }
 
+
+
+
     static function cache(
         string $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): array {
-        return self::$app->cacheGet($scope, $level, $key, $f, $bypass, $write);
+        return AppCache::get(self::dirCache(), $scope, $level, $key, $f, $bypass, $write);
     }
 
     static function cacheDelete($scopes, $key = '*') {
-        self::$app->cacheDelete($scopes, $key);
+        AppCache::delete(self::dirCache(), $scopes, $key);
     }
 
     static function cacheDeleteAll() {
-        self::$app->cacheDeleteAll();
+        AppCache::deleteAll(self::dirCache());
     }
 
     static function cacheDeleteOld() {
-        self::$app->cacheDeleteOld();
+        AppCache::deleteOld(self::dirCache());
     }
+
+
+
 
     static function image($img, $extra = ''): string {
         return AppImage::render($img, $extra);
     }
 
     static function imageGet($imgSlug, $img = [], $resize = true): array {
-        return self::$app->imageGet($imgSlug, $img, $resize);
+        return AppImage::imageGet(self::$app, $imgSlug, $img, $resize);
     }
 
     static function imageUpload(array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = ''): array {
-        return self::$app->imageUpload($files, $replaceDefault, $toFitDefault, $type);
+        return AppImage::imageUpload(self::$app, $files, $replaceDefault, $toFitDefault, $type);
     }
+
+
+
 
     static function prepare(string $query) {
         return self::getMysqli()->prepare($query);
     }
 
+
+
+
+    static function routeList(int $pageMinStatus, $pageSlug = 'pgSlug'): array {
+        return AppRoute::list(self::$app, $pageMinStatus, $pageSlug);
+    }
+
+    static function routeSlugToId(string $table, string $status, string $tableSlug, bool $redirect, string $matchSlug, array $langs = null): array {
+        return AppRoute::slugToId($table, $status, $tableSlug, $redirect, $matchSlug, $langs ?? self::langs());
+    }
+
+    static function routeSitemap() {
+        AppRoute::generateSitemap(self::$app);
+    }
+
+
+    static function login(): bool {
+        self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey);
+        return self::$me->loggedIn;
+    }
+
+    static function isLoggedIn(): bool {
+        return self::$me->loggedIn ?? false;
+    }
 }

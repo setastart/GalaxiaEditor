@@ -2,11 +2,12 @@
 
 
 use Galaxia\Flash;
+use Galaxia\G;
 
 
 $editor->view = 'dev/dev';
 
 
-$app->cacheDelete(['app', 'fastroute']);
+G::cacheDelete(['app', 'fastroute']);
 
 Flash::info('app caches deleted');

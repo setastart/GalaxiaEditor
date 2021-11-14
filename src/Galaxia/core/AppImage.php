@@ -1,5 +1,5 @@
 <?php
-/* Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
+/* Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
 
  - Licensed under the EUPL, Version 1.2 only (the "Licence");
  - You may not use this work except in compliance with the Licence.
@@ -16,6 +16,7 @@ namespace Galaxia;
 
 
 use DirectoryIterator;
+use Exception;
 
 
 class AppImage {
@@ -89,6 +90,337 @@ class AppImage {
         if (file_exists($fileBase . '.png')) return '.png';
 
         return false;
+    }
+
+
+
+
+    // images
+
+    static function imageGet(App $app, $imgSlug, $img = [], $resize = true): array {
+        $img = array_merge(AppImage::PROTO_IMAGE, $img);
+
+        $img['name'] = $app->urlImages . $imgSlug . '/' . $imgSlug;
+        $img['slug'] = $imgSlug;
+
+        if (!$img['ext'] = AppImage::valid($app->dirImage, $imgSlug)) return [];
+        $imgDir     = $app->dirImage . $imgSlug . '/';
+        $imgDirSlug = $imgDir . $imgSlug;
+
+
+        // modified time
+        $img['mtime'] = filemtime($imgDir);
+        if ($img['version'] == 'mtime') $img['version'] = $img['mtime'];
+
+
+        // file size
+        if ($img['fileSize']) $img['fileSize'] = filesize($imgDirSlug . $img['ext']);
+
+
+        // alt
+        foreach ($app->langs as $lang) {
+            $file = $imgDirSlug . '_alt_' . $lang . '.txt';
+            if (!file_exists($file)) continue;
+            $img['alt'][$lang] = file_get_contents($file);
+            if (!$img['lang']) $img['lang'] = $lang;
+        }
+
+
+        // extra info from filesystem (type, caption_, etc)
+        $img['extra'] = array_flip($img['extra']);
+        foreach ($img['extra'] as $extra => $i) {
+            $found = false;
+            if (substr($extra, -1) == '_') {
+                foreach ($app->langs as $lang) {
+                    $file = $imgDirSlug . '_' . $extra . $lang . '.txt';
+                    if (!file_exists($file)) continue;
+                    $img['extra'][$extra][$lang] = file_get_contents($file);
+                    $found                       = true;
+                    break;
+                }
+            } else {
+                $file = $imgDirSlug . '_' . $extra . '.txt';
+                if (file_exists($file)) {
+                    $img['extra'][$extra] = file_get_contents($file);
+                    $found                = true;
+                }
+            }
+            if (!$found) unset($img['extra'][$extra]);
+        }
+
+
+        // dimensions
+        $file = $imgDirSlug . '_dim.txt';
+        if (!file_exists($file)) return [];
+        $dim              = explode('x', file_get_contents($file));
+        $img['wOriginal'] = (int)$dim[0];
+        $img['hOriginal'] = (int)$dim[1];
+
+        $img = array_merge($img, AppImage::fit($img));
+
+        if ($img['w'] == $img['wOriginal'] && $img['h'] == $img['hOriginal']) {
+
+            $file = $imgDirSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp';
+            if ($img['webp'] && !file_exists($file)) {
+                File::lock(
+                    $app->dirCache . 'flock',
+                    '_img_' . $imgSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp' . '.lock',
+                    function() use ($imgDir, $imgSlug, $img) {
+                        try {
+                            ImageVips::crop($imgDir, $imgSlug, $img['ext'], $img['w'], $img['h'], false, $img['debug'], true);
+                        } catch (Exception $e) {
+                            d($e->getMessage(), $e->getTraceAsString());
+                        }
+                        touch($imgDir, $img['mtime']);
+                    }
+                );
+            }
+
+            $img['src'] = $img['name'] . $img['ext'];
+
+        } else {
+
+            $file = $imgDirSlug . '_' . $img['w'] . '_' . $img['h'] . $img['ext'];
+            if ($resize && !file_exists($file)) {
+                File::lock(
+                    $app->dirCache . 'flock',
+                    '_img_' . $imgSlug . '_' . $img['w'] . '_' . $img['h'] . $img['ext'] . '.lock',
+                    function() use ($imgDir, $imgSlug, $img) {
+                        try {
+                            ImageVips::crop($imgDir, $imgSlug, $img['ext'], $img['w'], $img['h'], false, $img['debug']);
+                        } catch (Exception $e) {
+                            d($e->getMessage(), $e->getTraceAsString());
+                        }
+                        touch($imgDir, $img['mtime']);
+                    }
+                );
+            }
+
+            $file = $imgDirSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp';
+            if ($img['webp'] && $resize && !file_exists($file)) {
+                File::lock(
+                    $app->dirCache . 'flock',
+                    '_img_' . $imgSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp' . '.lock',
+                    function() use ($imgDir, $imgSlug, $img) {
+                        try {
+                            ImageVips::crop($imgDir, $imgSlug, $img['ext'], $img['w'], $img['h'], false, $img['debug'], true);
+                        } catch (Exception $e) {
+                            d($e->getMessage(), $e->getTraceAsString());
+                        }
+                        touch($imgDir, $img['mtime']);
+                    }
+                );
+            }
+
+            $img['src'] = $img['name'] . '_' . $img['w'] . '_' . $img['h'] . $img['ext'];
+        }
+
+
+        foreach ($img['set'] as $setDescriptor => $set) {
+            $imgResize = $img;
+
+            $imgResize['w'] = $set['w'] ?? 0;
+            $imgResize['h'] = $set['h'] ?? 0;
+
+            $imgResize = AppImage::fit($imgResize);
+            if ($imgResize['w'] > $img['wOriginal'] || !$set['w'] || !$set['h']) {
+                unset($img['set'][$setDescriptor]);
+                continue;
+            }
+
+            if (is_int($setDescriptor)) $setDescriptor = $imgResize['w'] . 'w';
+
+            if ($imgResize['w'] == $img['wOriginal'] && $imgResize['h'] == $img['hOriginal']) {
+
+                $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp';
+                if ($img['webp'] && $resize && !file_exists($file)) {
+                    File::lock(
+                        $app->dirCache . 'flock',
+                        '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp' . '.lock',
+                        function() use ($imgDir, $imgSlug, $imgResize, $img) {
+                            try {
+                                if ($img['webp']) ImageVips::crop($imgDir, $imgSlug, $imgResize['ext'], $imgResize['w'], $imgResize['h'], false, $imgResize['debug'], true);
+                            } catch (Exception $e) {
+                                d($e->getMessage(), $e->getTraceAsString());
+                            }
+                            touch($imgDir, $imgResize['mtime']);
+                        }
+                    );
+                }
+
+                $img['srcset'] .= $img['name'] . $img['ext'] . ' ' . $setDescriptor . ', ';
+            } else {
+
+                $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'];
+                if ($resize && !file_exists($file)) {
+                    File::lock(
+                        $app->dirCache . 'flock',
+                        '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . '.lock',
+                        function() use ($imgDir, $imgSlug, $imgResize, $img) {
+                            try {
+                                ImageVips::crop($imgDir, $imgSlug, $imgResize['ext'], $imgResize['w'], $imgResize['h'], false, $imgResize['debug']);
+                            } catch (Exception $e) {
+                                d($e->getMessage(), $e->getTraceAsString());
+                            }
+                            touch($imgDir, $imgResize['mtime']);
+                        }
+                    );
+                }
+
+                $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp';
+                if ($img['webp'] && $resize && !file_exists($file)) {
+                    File::lock(
+                        $app->dirCache . 'flock',
+                        '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp' . '.lock',
+                        function() use ($imgDir, $imgSlug, $imgResize, $img) {
+                            try {
+                                ImageVips::crop($imgDir, $imgSlug, $imgResize['ext'], $imgResize['w'], $imgResize['h'], false, $imgResize['debug'], true);
+                            } catch (Exception $e) {
+                                d($e->getMessage(), $e->getTraceAsString());
+                            }
+                            touch($imgDir, $imgResize['mtime']);
+                        }
+                    );
+                }
+                $img['srcset'] .= $img['name'] . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . ' ' . $setDescriptor . ', ';
+            }
+        }
+
+        $img['srcset'] = rtrim($img['srcset'], ', ');
+        if (count($img['set']) == 0) $img['srcset'] = '';
+
+        return $img;
+    }
+
+
+    static function imageUpload(App $app, array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = ''): array {
+        $uploaded = [];
+
+        uasort($files, function($a, $b) {
+            return $a['tmp_name'] <=> $b['tmp_name'];
+        });
+
+        foreach ($files as $file) {
+
+            $fileNameTemp     = $file['tmp_name'];
+            $fileNameProposed = $file['name'];
+
+            $mtime            = false;
+            $fileNameProposed = Text::normalize($fileNameProposed, ' ', '.');
+            $shouldReplace    = false;
+
+            $fileReplace = $replaceDefault;
+            if (isset($file['imgExisting'])) {
+                switch ($file['imgExisting']) {
+                    case 'ignore':
+                        Flash::warning('Ignored image: ' . Text::h($fileNameProposed));
+                        continue 2;
+
+                    case 'rename':
+                        $fileReplace = false;
+                        break;
+
+                    case 'replace':
+                        $fileReplace = true;
+                        break;
+                }
+            }
+
+            // load image
+            try {
+                $imageVips = new ImageVips($fileNameTemp);
+            } catch (Exception $e) {
+                Flash::error($e->getMessage());
+                Flash::devlog($e->getTraceAsString());
+                continue;
+            }
+
+            // prepare directories
+            $fileSlug   = $fileSlugInitial = pathinfo($fileNameProposed, PATHINFO_FILENAME);
+            $fileSlug   = Text::formatSlug($fileSlug);
+            $fileDir    = $app->dirImage . $fileSlug . '/';
+            $dirCreated = false;
+            if (is_dir($app->dirImage . $fileSlug)) {
+                if ($fileReplace) {
+                    $mtime         = filemtime($app->dirImage . $fileSlug . '/');
+                    $shouldReplace = true;
+                } else {
+                    for ($j = 0; $j < 3; $j++) {
+                        if (!is_dir($app->dirImage . $fileSlug)) break;
+                        $fileSlug = Text::formatSlug('temp' . uniqid() . '-' . $fileSlugInitial);
+                        $fileDir  = $app->dirImage . $fileSlug . '/';
+                    }
+                    if (mkdir($fileDir)) {
+                        $dirCreated = true;
+                    } else {
+                        Flash::error('Unable to create directory: ' . Text::h($fileDir));
+                        continue;
+                    }
+                }
+            } else {
+                if (mkdir($fileDir)) {
+                    $dirCreated = true;
+                } else {
+                    Flash::error('Unable to create directory: ' . Text::h($fileDir));
+                    continue;
+                }
+            }
+
+            try {
+                $imageVips->save($fileDir . $fileSlug, $fileReplace, $file['toFit'] ?? $toFitDefault);
+            } catch (Exception $e) {
+                Flash::error($e->getMessage());
+                Flash::devlog($e->getTraceAsString());
+                if ($dirCreated) AppImage::delete($app->dirImage, $fileSlug);
+                if ($dirCreated) rmdir($fileDir);
+                continue;
+            }
+
+
+            if ($shouldReplace) {
+                foreach (ImageVips::FORMATS as $format) {
+                    if ($format == $imageVips->ext) continue;
+                    if (file_exists($fileDir . $fileSlug . $format)) unlink($fileDir . $fileSlug . $format);
+                }
+                AppImage::deleteResizes($app->dirImage, $fileSlug);
+            }
+
+
+            // dimensions
+            file_put_contents($fileDir . $fileSlug . '_dim.txt', $imageVips->w . 'x' . $imageVips->h);
+
+
+            // type
+            if ($file['imgType'] ?? $type) {
+                file_put_contents($fileDir . $fileSlug . '_type.txt', Text::h($file['imgType'] ?? $type));
+            }
+
+
+            // finish
+            $fileNameStripped = pathinfo($fileNameProposed, PATHINFO_FILENAME);
+            if ($fileReplace) {
+                if ($imageVips->resized)
+                    Flash::info('Replaced and resized image: ' . Text::h($fileSlug . $imageVips->ext));
+                else
+                    Flash::info('Replaced image: ' . Text::h($fileSlug . $imageVips->ext));
+
+                if ($mtime) {
+                    touch($fileDir . $fileSlug . $imageVips->ext, $mtime);
+                    touch($app->dirImage . $fileSlug . '/', $mtime);
+                }
+            } else {
+                Flash::info('Uploaded image: ' . Text::h($fileSlug . $imageVips->ext));
+            }
+            $uploaded[] = [
+                'slug'     => $fileSlug,
+                'fileName' => $fileNameStripped,
+                'ext'      => $imageVips->ext,
+                'replaced' => $fileReplace,
+                'type'     => $file['imgType'] ?? $type,
+            ];
+        }
+
+        return $uploaded;
     }
 
 

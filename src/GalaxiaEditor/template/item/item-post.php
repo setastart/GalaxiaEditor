@@ -130,14 +130,14 @@ if (!in_array($pgSlug, ['users', 'passwords'])) {
 
 
     if ($itemChanges || $fieldsNew || $fieldsDel || $fieldsUpd) {
-        $app->cacheDelete(['app', 'fastroute']);
-        $app->cacheDelete('editor');
+        G::cacheDelete(['app', 'fastroute']);
+        G::cacheDelete('editor');
 
         if (
             isset($itemChanges[$item['gcTable'] . 'Status']) ||
             count(array_intersect(array_keys($itemChanges), $slugs)) > 0
         ) {
-            $app->generateSitemap($db);
+            G::routeSitemap();
             if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php')) {
                 include G::dir() .'src/script/_editor-item-update-hard.php';
             }

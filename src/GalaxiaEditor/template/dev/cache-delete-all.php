@@ -2,11 +2,12 @@
 
 
 use Galaxia\Flash;
+use Galaxia\G;
 
 
 $editor->view = 'dev/dev';
 
 
-$app->cacheDeleteAll();
+G::cacheDeleteAll();
 
 Flash::info('ALL caches deleted');

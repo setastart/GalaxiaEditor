@@ -5,43 +5,28 @@ use Galaxia\Authentication;
 use Galaxia\FastRoute;
 use Galaxia\Flash;
 use Galaxia\G;
+use Galaxia\Request;
 use Galaxia\Text;
 use GalaxiaEditor\config\Config;
 use GalaxiaEditor\config\ConfigDb;
 
 
-// redirect to url without trailing slashes
-
-if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/' && substr($_SERVER['REQUEST_URI'], -1, 1) == '/') {
-    $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'], '/');
-    if ($_SERVER['REQUEST_URI'] == '') $_SERVER['REQUEST_URI'] = '/';
-    header('Location: ' . $_SERVER['REQUEST_URI'], true, 302);
-    exit();
-}
-
-
-
-
-// autoload
 
 require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/autoload-editor.php';
 
 
+$req = new Request($_SERVER['SERVER_NAME']);
+$req->redirectRemoveSlashes();
 
 
 // init app
 
 $app = G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '')));
 
-
 G::timerStart('locales');
-foreach ($app->localesInactive as $lang => $locale) {
-    if (isset($app->locales[$lang])) continue;
-    $app->locales[$lang] = $locale;
-    $app->langs          = array_keys($app->locales);
-}
-$app->setLang();
+G::langAddInactive();
+G::langSet();
 G::timerStop('locales');
 
 
@@ -51,8 +36,7 @@ G::timerStop('locales');
 
 G::timerStart('editor');
 $editor = G::initEditor(dirname(__DIR__));
-$geConf = [];
-require $app->dir . 'config/editor.php';
+$geConf = require G::dir() . 'config/editor.php';
 $editor->version = '5.0.0-alpha';
 G::timerStop('editor');
 
@@ -64,7 +48,7 @@ G::loadTranslations();
 // init me
 
 $me = G::initMe();
-$me->logInFromCookieSessionId($app->cookieEditorKey);
+G::login();
 
 $db = G::getMysqli();
 
@@ -84,7 +68,7 @@ $auth = new Authentication();
 
 // routing with fastroute
 
-if ($me->loggedIn) {
+if (G::isLoggedIn()) {
 
     // set nginx cache bypass cookie
     if ($app->cookieNginxCacheBypassKey) {
@@ -119,7 +103,7 @@ if ($me->loggedIn) {
     // set editor language
     if (isset($me->options['Language']))
         if (isset($editor->locales[$me->options['Language']]))
-            $app->setLang($me->options['Language']);
+            G::langSet($me->options['Language']);
 
 
 
@@ -183,7 +167,7 @@ if ($me->loggedIn) {
     G::timerStop('arrayRemovePermsRecursive()');
 
     G::timerStart('gecLanguify');
-    ArrayShape::languify($geConf, array_keys($app->locales), $me->perms);
+    ArrayShape::languify($geConf, array_keys(G::locales()), $me->perms);
     G::timerStop('gecLanguify');
 
 

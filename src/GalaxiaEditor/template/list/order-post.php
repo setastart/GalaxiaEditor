@@ -1,6 +1,6 @@
 <?php
 /*
- Copyright 2017-2020 Ino Detelić & Zaloa G. Ramos
+ Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
 
   - Licensed under the EUPL, Version 1.2 only (the "Licence");
   - You may not use this work except in compliance with the Licence.
@@ -31,8 +31,8 @@ if ($changes) {
     Flash::warning(Text::t('No changes were made.'));
 }
 
-$app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor');
+G::cacheDelete(['app', 'fastroute']);
+G::cacheDelete('editor');
 
 Flash::info('editor caches deleted');
 

@@ -5,7 +5,7 @@ use Galaxia\G;
 use Galaxia\Flash;
 
 
-$app->cacheDelete('editor');
+G::cacheDelete('editor');
 
 Flash::info('editor caches deleted');
 

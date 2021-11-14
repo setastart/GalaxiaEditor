@@ -89,8 +89,8 @@ if (Flash::hasError()) return;
 
 // finish
 
-$app->cacheDelete(['app', 'fastroute']);
-$app->cacheDelete('editor', 'imageList-' . $pgSlug . '*');
+G::cacheDelete(['app', 'fastroute']);
+G::cacheDelete('editor', 'imageList-' . $pgSlug . '*');
 
 if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . $pgSlug);
 if (isset($_POST['submitAndAddMore'])) G::redirect('edit/' . $pgSlug . '/new');

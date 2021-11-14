@@ -18,7 +18,7 @@ foreach ($images as $imgSlug => $mtime) {
     touch(G::dirImage() . $imgSlug . '/', $mtime);
 }
 
-$app->cacheDelete('editor');
+G::cacheDelete('editor');
 Flash::info(sprintf(Text::t('Deleted %d Webp Images'), $count));
 
 G::redirect('edit/dev');

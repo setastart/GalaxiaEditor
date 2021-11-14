@@ -23,8 +23,8 @@ foreach ($_POST['modules'][0]['imageDelete'] ?? [] as $imageNew) {
 // finish
 
 if (Flash::hasInfo()) {
-    $app->cacheDelete(['app', 'fastroute']);
-    $app->cacheDelete('editor', 'imageList-' . $pgSlug . '*');
+    G::cacheDelete(['app', 'fastroute']);
+    G::cacheDelete('editor', 'imageList-' . $pgSlug . '*');
 }
 
 G::redirect('edit/' . $pgSlug);

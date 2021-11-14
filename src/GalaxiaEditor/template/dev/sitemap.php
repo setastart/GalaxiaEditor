@@ -4,4 +4,4 @@
 $editor->view = 'dev/dev';
 
 
-$app->generateSitemap($db);
+$app->routeSitemap();
