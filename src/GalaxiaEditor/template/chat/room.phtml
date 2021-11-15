@@ -1,17 +1,18 @@
 <?php
 
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 ?>
 <div class="paper pad">
 
     <div class="paper-header pad">
-        <h1><?=Text::t($pgTitle);?></h1>
+        <h1><?=Text::t(E::$pgTitle);?></h1>
     </div>
 
     <div class="gchat-room pad" data-room="/edit/chat">
-        <div class="title"><?=Text::t($pgTitle);?></div>
+        <div class="title"><?=Text::t(E::$pgTitle);?></div>
         <div class="users"></div>
         <div class="messages-wrapper">
             <div class="s0w s1w messages">

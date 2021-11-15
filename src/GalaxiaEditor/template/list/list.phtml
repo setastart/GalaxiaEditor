@@ -41,7 +41,7 @@ InputRender::form('', 'item-list', 'paper pad');
 // @formatter:off ?>
 
     <div class="paper-header pad">
-        <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t($pgTitle);?></h1>
+        <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t(E::$pgTitle);?></h1>
 
         <div class="list-links">
 <?php   foreach ($links as $link) { ?>

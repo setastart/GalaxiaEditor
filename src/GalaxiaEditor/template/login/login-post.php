@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\{G, Session};
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
@@ -42,7 +43,7 @@ if ($userId) {
             session_set_cookie_params(
                 31536000,
                 '/; SameSite=Strict',
-                '.' . $_SERVER['SERVER_NAME'],
+                '.' . E::$req->host,
                 isset($_SERVER['HTTPS']),
                 true
             ); // 31536000 seconds = 1 year

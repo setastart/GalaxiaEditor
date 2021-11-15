@@ -299,8 +299,7 @@ select "value-1"="label-1" !"value-2"="label-2"
 
 # extra
 
-- To be used on nginx server.
-- Not tested on Apache, but relies on $_SERVER['SERVER_NAME'], which on Apache can be unsafe.
+- To be used on nginx server, not tested on Apache.
 
 
 © Ino Detelic 2017-2018

@@ -2,7 +2,8 @@
 
 
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
-$pgTitle = Text::t('Developer Tools') . ': ' . $_SERVER['SERVER_NAME'];
-$hdTitle = Text::t('Developer Tools') . ': ' . $_SERVER['SERVER_NAME'];
+E::$pgTitle = Text::t('Developer Tools') . ': ' . E::$req->host;
+E::$hdTitle = Text::t('Developer Tools') . ': ' . E::$req->host;

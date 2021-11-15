@@ -1,8 +1,9 @@
 <?php
 
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
-$pgTitle = Text::t('Delete Images');
-$hdTitle = Text::t('Delete Images');
+E::$pgTitle = Text::t('Delete Images');
+E::$hdTitle = Text::t('Delete Images');
 

@@ -15,6 +15,9 @@
 namespace Galaxia;
 
 
+use GalaxiaEditor\E;
+
+
 class User {
 
     private string $tableName;
@@ -52,7 +55,7 @@ class User {
             session_set_cookie_params(
                 31536000,
                 '/; SameSite=Strict',
-                '.' . $_SERVER['SERVER_NAME'],
+                '.' . E::$req->host,
                 isset($_SERVER['HTTPS']),
                 true
             );

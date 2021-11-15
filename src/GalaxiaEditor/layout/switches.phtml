@@ -2,8 +2,10 @@
 
 use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
-if (!($showSwitchesLang ?? false) && empty($me->perms)) return;
+
+if (!(E::$showSwitchesLang ?? false) && empty($me->perms)) return;
 
 ?>
 <div id="switches">
@@ -17,7 +19,7 @@ if (!($showSwitchesLang ?? false) && empty($me->perms)) return;
 <?php   } ?>
     </div>
 <?php   } ?>
-<?php   if ($showSwitchesLang ?? false) { ?>
+<?php   if (E::$showSwitchesLang ?? false) { ?>
     <div class="switch-lang">
 <?php   foreach (G::locales() as $lang => $locale) { ?>
         <label for="switch-hide-lang-<?=Text::h($lang)?>" data-remember="true" class="btn btn-pill btn-small btn-checkbox active">

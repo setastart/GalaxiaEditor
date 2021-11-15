@@ -23,7 +23,7 @@ E::$req->redirectRemoveSlashes();
 
 // init app
 
-$app = G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . ($_SERVER['SERVER_NAME'] ?? '')));
+$app = G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . (E::$req->host ?? '')));
 
 G::timerStart('locales');
 G::langAddInactive();
@@ -79,7 +79,7 @@ if (G::isLoggedIn()) {
             [
                 'expires'  => time() + 86400, // 1 day
                 'path'     => '/',
-                'domain'   => '.' . $_SERVER['SERVER_NAME'],
+                'domain'   => '.' . E::$req->host,
                 'secure'   => isset($_SERVER['HTTPS']),
                 'httponly' => true,
                 'samesite' => 'Strict',
@@ -89,14 +89,14 @@ if (G::isLoggedIn()) {
 
 
     // galaxia chat
-    if (isset(E::$conf['chat']) && $_SERVER['REQUEST_METHOD'] == 'POST' && in_array($_SERVER['REQUEST_URI'], ['/edit/chat/listen', '/edit/chat/publish']))
+    if (isset(E::$conf['chat']) && E::$req->method == 'POST' && in_array(E::$req->host, ['/edit/chat/listen', '/edit/chat/publish']))
         require __DIR__ . '/GalaxiaEditor/chat/gChat.php';
 
 
     // CSRF
     if (!isset($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(32));
     if (!G::isDevDebug())
-        if ($_SERVER['REQUEST_METHOD'] == 'POST')
+        if (E::$req->method == 'POST')
             if (!isset($_POST['csrf']) || $_POST['csrf'] !== $_SESSION['csrf'])
                 geErrorPage(500, 'invalid csrf token.');
 
@@ -338,7 +338,7 @@ if (G::isLoggedIn()) {
     });
     G::timerStop('routing');
 
-    $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    $routeInfo = $dispatcher->dispatch(E::$req->method, E::$req->path);
 
     switch ($routeInfo[0]) {
         case FastRoute\Dispatcher::NOT_FOUND:
@@ -360,7 +360,11 @@ if (G::isLoggedIn()) {
             E::$action   = $routeInfo[2]['action'] ?? '';
             E::$itemDate = $routeInfo[2]['itemDate'] ?? '';
 
-            E::$section = &E::$conf[E::$pgSlug];
+            if (isset(E::$conf[E::$pgSlug])) {
+                E::$section = &E::$conf[E::$pgSlug];
+            } else {
+                E::$section = [];
+            }
 
             $editor->logic = $editor->view = $routeInfo[1];
             break;
@@ -377,7 +381,7 @@ if (G::isLoggedIn()) {
 
     });
 
-    $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    $routeInfo = $dispatcher->dispatch(E::$req->method, E::$req->path);
 
     switch ($routeInfo[0]) {
         case FastRoute\Dispatcher::NOT_FOUND:
@@ -431,7 +435,7 @@ G::timerStop('logic');
 
 // POST actions
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && Flash::hasError()) {
+if (E::$req->method == 'POST' && Flash::hasError()) {
     Flash::error(Text::t('Form errors found.'));
 }
 

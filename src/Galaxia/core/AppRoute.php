@@ -4,6 +4,9 @@
 namespace Galaxia;
 
 
+use GalaxiaEditor\E;
+
+
 class AppRoute {
 
     static function generateSitemap(App $app) {
@@ -132,10 +135,10 @@ class AppRoute {
                 foreach ($urls as $url) {
                     $rl .= '<url>' . PHP_EOL;
                     $rl .= '  <priority>' . $url['pri'] . '</priority>' . PHP_EOL;
-                    $rl .= '  <loc>' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $url[$lang] . '</loc>' . PHP_EOL;
+                    $rl .= '  <loc>' . E::$req->schemeHost() . $url[$lang] . '</loc>' . PHP_EOL;
                     if (count($activeLocales) > 1) {
                         foreach ($activeLocales as $lang2 => $locale) {
-                            $rl .= '  <xhtml:link hreflang="' . $lang2 . '" href="' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $url[$lang2] . '" rel="alternate"/>' . PHP_EOL;
+                            $rl .= '  <xhtml:link hreflang="' . $lang2 . '" href="' . E::$req->schemeHost() . $url[$lang2] . '" rel="alternate"/>' . PHP_EOL;
                         }
                     }
                     $rl .= '</url>' . PHP_EOL;

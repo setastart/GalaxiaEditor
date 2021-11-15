@@ -6,8 +6,8 @@ use Galaxia\Sql;
 use GalaxiaEditor\E;
 
 
-$pgTitle = $_SERVER['SERVER_NAME'];
-$hdTitle = $_SERVER['SERVER_NAME'];
+E::$pgTitle = E::$req->host;
+E::$hdTitle = E::$req->host;
 
 
 // return if login page
@@ -19,13 +19,9 @@ if (substr($editor->logic, 0, 6) == 'login/') return;
 
 // variables
 
-$includeTrix        = false;
-$showSwitchesLang   = false;
-$passwordColsFound  = false;
-$chatInclude        = isset(E::$conf['chat']);
-
+E::$chatInclude        = isset(E::$conf['chat']);
 // todo: check gcPageType of section instead of hardcoding
-$chatIncludeCurrent =
+E::$chatIncludeCurrent =
     !in_array(E::$pgSlug, ['users', 'passwords', 'history']) &&
     ((E::$itemId || E::$imgSlug) || E::$pgSlug == 'chat');
 $itemChanges        = [];

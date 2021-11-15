@@ -35,4 +35,16 @@ class E {
     static string $itemDate = ''; // itemDate
 
     static Request $req;
+
+    static bool $includeTrix        = false;
+    static bool $showSwitchesLang   = false;
+    static bool $passwordColsFound  = false;
+    static bool $chatInclude        = false;
+    static bool $chatIncludeCurrent = false;
+
+    static string $pgTitle = '';
+    static string $hdTitle = '';
+
+    static array $itemChanges = [];
+
 }

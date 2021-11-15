@@ -9,8 +9,8 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\render\Load;
 
 
-$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . E::$imgSlug;
-$hdTitle = Text::t('Editing') . ' ' . $pgTitle;
+E::$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . E::$imgSlug;
+E::$hdTitle = Text::t('Editing') . ' ' . E::$pgTitle;
 
 $item   = E::$section['gcImage'];
 
@@ -91,7 +91,7 @@ $inputs['timestampM'] = [
 ];
 
 
-$showSwitchesLang = count(G::langs()) > 1;
+E::$showSwitchesLang = count(G::langs()) > 1;
 $langSelectClass = [];
 foreach (G::langs() as $lang) {
     $langSelectClass[$lang] = '';

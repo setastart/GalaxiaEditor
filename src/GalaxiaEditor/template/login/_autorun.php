@@ -1,10 +1,11 @@
 <?php
 
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$pgTitle = 'Editor Login';
-$hdTitle = 'Editor for ' . $_SERVER['SERVER_NAME'];
+E::$pgTitle = 'Editor Login';
+E::$hdTitle = 'Editor for ' . E::$req->host;
 
 $inputs = [];
 

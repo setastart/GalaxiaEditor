@@ -17,7 +17,7 @@ $langSelectClass = [];
 foreach (G::locales() as $lang => $locale) {
     $langSelectClass[$lang] = '';
 }
-$includeTrix      = true;
+E::$includeTrix      = true;
 $querySelectWhere = [$item['gcTable'] => [$item['gcTable'] . 'Id' => '=']];
 $fieldsNew        = [];
 $fieldsDel        = [];
@@ -124,8 +124,8 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
 
     $input = Input::prepare($input, $extras);
 
-    if ($input['type'] == 'password' || substr($inputKey, 0, 8) == 'password') $passwordColsFound = true;
-    if (isset($input['lang']) && count(G::langs()) > 1) $showSwitchesLang = true;
+    if ($input['type'] == 'password' || substr($inputKey, 0, 8) == 'password') E::$passwordColsFound = true;
+    if (isset($input['lang']) && count(G::langs()) > 1) E::$showSwitchesLang = true;
 
     $inputNew = [
         'label'      => $input['label'] ?? E::$section['gcColNames'][$inputKey] ?? $inputKey,
@@ -172,8 +172,8 @@ if (is_array($item['gcColKey'])) {
 $titleTemp = $item['data'][$item['gcColKey']];
 if (empty($titleTemp)) $titleTemp = E::$itemId;
 if (substr($item['gcColKey'], 0, 9) == 'timestamp') $titleTemp = Text::formatDate($titleTemp, 'd MMM y - HH:mm');
-$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . $titleTemp;
-$hdTitle = Text::t('Editing') . ': ' . $pgTitle;
+E::$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . $titleTemp;
+E::$hdTitle = Text::t('Editing') . ': ' . E::$pgTitle;
 
 
 

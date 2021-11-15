@@ -58,7 +58,7 @@ foreach (E::$conf as $rootSlug => $confPage) {
 <div id="menu" class="non-selectable">
     <a id="website-link" target="_blank" rel="noopener" href="/">
         <img src="/favicon.ico" alt="<?=Text::t('Icon')?>" class="thumb-mini">
-        <span><?=Text::h($_SERVER['SERVER_NAME'])?></span>
+        <span><?=Text::h(E::$req->host)?></span>
     </a>
 
 <?php   foreach ($menu as $menuItem) { ?>

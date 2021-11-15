@@ -15,7 +15,7 @@ if (!isset($_POST['item'])) $_POST['item'] = [];
 
 // password field changes require inputting current password
 
-if ($passwordColsFound) {
+if (E::$passwordColsFound) {
     if (!isset($_POST['item']['passwordCurrent'])) Flash::error(Text::t('Your current password is required.'));
     if (!isset($_POST['item']['passwordHash']))    Flash::error(Text::t('Your new password is required.'));
     if (!isset($_POST['item']['passwordRepeat']))  Flash::error(Text::t('Your new password repeat is required.'));

@@ -6,7 +6,7 @@ use GalaxiaEditor\E;
 
 // ajax
 
-if (G::$ajax) {
+if (E::$req->xhr) {
     $editor->layout = 'none';
     $editor->view   = 'list/results';
 }
@@ -571,10 +571,10 @@ $rows = array_slice($rows, $offset, $length, true);
 
 // finish
 
-$hdTitle = Text::t(E::$section['gcTitlePlural']) . ' - ' . $hdTitle;
-$pgTitle = Text::t(E::$section['gcTitlePlural']);
+E::$hdTitle = Text::t(E::$section['gcTitlePlural']) . ' - ' . E::$hdTitle;
+E::$pgTitle = Text::t(E::$section['gcTitlePlural']);
 
 if ($order) {
-    $hdTitle = sprintf(Text::t('Order %s'), $hdTitle);
-    $pgTitle = sprintf(Text::t('Order %s'), $pgTitle);
+    E::$hdTitle = sprintf(Text::t('Order %s'), E::$hdTitle);
+    E::$pgTitle = sprintf(Text::t('Order %s'), E::$pgTitle);
 }

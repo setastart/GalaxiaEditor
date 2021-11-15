@@ -5,8 +5,8 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$pgTitle = Text::t('Upload Images');
-$hdTitle = Text::t('Upload Images');
+E::$pgTitle = Text::t('Upload Images');
+E::$hdTitle = Text::t('Upload Images');
 
 $options = [];
 if (E::$section['gcImageTypes']) {

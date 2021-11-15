@@ -67,7 +67,7 @@ $redis->cmd('HSET', $app->mysqlDb . ':usersLastSeen', $me->id, substr(microtime(
 
 // routing
 
-switch ($_SERVER['REQUEST_URI']) {
+switch (E::$req->host) {
     case '/edit/chat/listen':
         require __DIR__ . '/gChatListener.php';
         break;

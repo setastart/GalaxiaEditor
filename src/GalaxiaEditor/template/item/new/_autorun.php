@@ -8,8 +8,8 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$pgTitle = Text::t('+ Add') . ' ' . Text::t(E::$section['gcTitleSingle']);
-$hdTitle = Text::t('+ Add') . ' ' . Text::t(E::$section['gcTitleSingle']);
+E::$pgTitle = Text::t('+ Add') . ' ' . Text::t(E::$section['gcTitleSingle']);
+E::$hdTitle = Text::t('+ Add') . ' ' . Text::t(E::$section['gcTitleSingle']);
 
 
 // query extras
@@ -44,5 +44,5 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
     if ($input['type'] == 'timestamp') $item['inputs'][$inputKey]['value'] = date('Y-m-d 00:00');
     if ($input['type'] == 'datetime')  $item['inputs'][$inputKey]['value'] = date('Y-m-d 00:00');
 
-    if (isset($input['lang'])) $showSwitchesLang = true;
+    if (isset($input['lang'])) E::$showSwitchesLang = true;
 }

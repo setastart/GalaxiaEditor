@@ -22,7 +22,7 @@ $menuRight = (($me->options['menuPosition'] ?? '') == 'right');
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
 
-    <title><?=Text::h($hdTitle)?></title>
+    <title><?=Text::h(E::$hdTitle)?></title>
 
     <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h($editor->version)?>">
 
@@ -60,11 +60,11 @@ window.addEventListener("DOMContentLoaded", function(event) {
     <link rel="stylesheet" href="/edit/css/galaxiaEditor.css?version=<?=Text::h($editor->version)?>">
     <link rel="stylesheet" href="/edit/css/forms.css?version=<?=Text::h($editor->version)?>">
     <link rel="stylesheet" href="/edit/css/filters.css?version=<?=Text::h($editor->version)?>">
-<?php   if ($chatInclude) { ?>
+<?php   if (E::$chatInclude) { ?>
     <link rel="stylesheet" href="/edit/css/chat.css?version=<?=Text::h($editor->version)?>">
 <?php   } ?>
     <link rel="stylesheet" href="/edit/css/responsive.css?version=<?=Text::h($editor->version)?>">
-<?php   if ($includeTrix) { ?>
+<?php   if (E::$includeTrix) { ?>
     <link rel="stylesheet" href="/edit/css/trix.css?version=<?=Text::h($editor->version)?>">
 <?php   } ?>
     <style>
@@ -80,7 +80,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 
     <script type="text/javascript" src="/edit/js/galaxiaEditor.js?version=<?=Text::h($editor->version)?>"></script>
     <script type="text/javascript">gjImage.editorImageSlug = '<?=Text::h($editor->imageSlug)?>';</script>
-<?php   if ($chatInclude) { ?>
+<?php   if (E::$chatInclude) { ?>
     <script type="text/javascript">
 var gchat = {
     'enabled'       : false,
@@ -97,7 +97,7 @@ var gchat = {
     </script>
     <script type="text/javascript" src="/edit/js/galaxiaChat.js?version=<?=Text::h($editor->version)?>"></script>
 <?php   } ?>
-<?php   if ($includeTrix) { ?>
+<?php   if (E::$includeTrix) { ?>
     <script type="text/javascript" src="/edit/js/gtrix-1.3.1g.min.js?version=<?=Text::h($editor->version)?>" async defer></script>
 <?php   } ?>
 </head>
@@ -157,9 +157,9 @@ var gchat = {
 <?php   require $editor->dirView . 'imageList/select.phtml'; ?>
 
 
-<?php   if ($chatInclude && E::$pgSlug != 'chat') { ?>
+<?php   if (E::$chatInclude && E::$pgSlug != 'chat') { ?>
 <div id="gchat">
-<?php       if ($chatIncludeCurrent) { ?>
+<?php       if (E::$chatIncludeCurrent) { ?>
     <div class="gchat-room" data-room="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>">
         <div class="title"><?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?></div>
         <div class="users"></div>

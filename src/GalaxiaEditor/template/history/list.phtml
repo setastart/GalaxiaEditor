@@ -1,4 +1,6 @@
-<?php use Galaxia\Text;
+<?php
+use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 use GalaxiaEditor\render\view\ViewPagination;
 
@@ -6,7 +8,7 @@ use GalaxiaEditor\render\view\ViewPagination;
 InputRender::form('', 'history-list', 'paper pad');?>
 
     <div class="paper-header">
-        <h1 class="pad"><span class="nrFiltered"><?=Text::h($rowsTotal)?></span> &#8725; <?=Text::h($rowsTotal)?> <?=Text::t($pgTitle);?></h1>
+        <h1 class="pad"><span class="nrFiltered"><?=Text::h($rowsTotal)?></span> &#8725; <?=Text::h($rowsTotal)?> <?=Text::t(E::$pgTitle);?></h1>
     </div>
 
 

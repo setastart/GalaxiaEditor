@@ -15,6 +15,9 @@
 namespace Galaxia;
 
 
+use GalaxiaEditor\E;
+
+
 class Authentication {
 
     private string $tblUser;
@@ -476,7 +479,7 @@ class Authentication {
                 [
                     'expires'  => 1,
                     'path'     => '/',
-                    'domain'   => '.' . $_SERVER['SERVER_NAME'],
+                    'domain'   => '.' . E::$req->host,
                     'secure'   => isset($_SERVER['HTTPS']),
                     'httponly' => true,
                     'samesite' => 'Strict',

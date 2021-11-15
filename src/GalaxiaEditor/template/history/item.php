@@ -66,5 +66,5 @@ $itemCount = count($items);
 
 
 
-$hdTitle = sprintf(Text::t('History of %s'), ($pageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);
-$pgTitle = sprintf(Text::t('History of %s'), ($pageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);
+E::$hdTitle = sprintf(Text::t('History of %s'), ($pageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);
+E::$pgTitle = sprintf(Text::t('History of %s'), ($pageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);
