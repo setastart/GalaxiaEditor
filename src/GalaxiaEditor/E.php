@@ -46,5 +46,6 @@ class E {
     static string $hdTitle = '';
 
     static array $itemChanges = [];
+    static array $pageById = [];
 
 }

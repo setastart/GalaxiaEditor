@@ -33,7 +33,7 @@ foreach ($inputs as $name => $input) {
     }
 
     if ($input['value'] !== $input['valueFromDb'])
-        $itemChanges[$name] = $input['valueToDb'];
+        E::$itemChanges[$name] = $input['valueToDb'];
 
     $inputs[$name] = $input;
 }
@@ -44,7 +44,7 @@ foreach ($inputs as $name => $input) {
 // finish validation
 
 if (Flash::hasError()) return;
-if (!$itemChanges) {
+if (!E::$itemChanges) {
     Flash::warning(Text::t('No changes were made.'));
     if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
 
@@ -58,7 +58,7 @@ if (!$itemChanges) {
 
 $altsAndType = ['alt_', 'type'];
 ArrayShape::languify($altsAndType, array_keys(G::locales()));
-foreach ($itemChanges as $name => $value) {
+foreach (E::$itemChanges as $name => $value) {
 
     if (!in_array($name, $altsAndType)) continue;
 
@@ -86,7 +86,7 @@ foreach ($itemChanges as $name => $value) {
 // update mtime
 
 touch(G::dirImage() . E::$imgSlug . '/', $mtime);
-foreach ($itemChanges as $name => $value) {
+foreach (E::$itemChanges as $name => $value) {
     if ($name != 'timestampM') continue;
     if (touch(G::dirImage() . E::$imgSlug . '/', strtotime($value))) {
         Flash::info(Text::t('Updated') . ': ' . $name);
@@ -102,14 +102,14 @@ foreach ($itemChanges as $name => $value) {
 
 // rename
 
-if (isset($itemChanges['imgSlug'])) {
-    if (AppImage::slugRename(G::dirImage(), E::$imgSlug, $itemChanges['imgSlug'])) {
+if (isset(E::$itemChanges['imgSlug'])) {
+    if (AppImage::slugRename(G::dirImage(), E::$imgSlug, E::$itemChanges['imgSlug'])) {
         Flash::info(Text::t('Updated') . ': ' . 'Slug');
         Flash::info(Text::t('Updated'), 'form', 'imgSlug');
 
         foreach (E::$section['gcImagesInUse'] as $table => $inUse) {
             $imgSlugCol = $inUse['gcSelect'][$table][0];
-            $slugChange = [$imgSlugCol => $itemChanges['imgSlug']];
+            $slugChange = [$imgSlugCol => E::$itemChanges['imgSlug']];
             $params     = array_values($slugChange);
             $params[]   = E::$imgSlug;
 
@@ -133,7 +133,7 @@ if (isset($itemChanges['imgSlug'])) {
             if ($affectedRows)
                 Flash::info(Text::h($table) . ': Renamed slugs: ' . Text::h($affectedRows));
         }
-        E::$imgSlug = $itemChanges['imgSlug'];
+        E::$imgSlug = E::$itemChanges['imgSlug'];
     } else {
         Flash::error('image-update - Unable to update image slug: ' . E::$imgSlug);
     }

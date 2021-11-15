@@ -78,7 +78,7 @@ foreach ($_POST['item'] as $name => $value) {
     }
 
     if ($input['value'] !== $input['valueFromDb']) {
-        $itemChanges[$input['nameFromDb']] = $input['valueToDb'];
+        E::$itemChanges[$input['nameFromDb']] = $input['valueToDb'];
     }
 
     $item['inputs'][$name] = $input;

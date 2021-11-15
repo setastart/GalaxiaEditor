@@ -35,7 +35,7 @@ foreach ($_POST['modules'] ?? [] as $moduleKey => $postModule) {
 // finish validation
 
 if (Flash::hasError()) return;
-if (!$itemChanges && !$fieldsNew && !$fieldsDel && !$fieldsUpd) {
+if (!E::$itemChanges && !$fieldsNew && !$fieldsDel && !$fieldsUpd) {
     Flash::warning(Text::t('No changes were made.'));
     if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
     return;
@@ -46,7 +46,7 @@ if (!$itemChanges && !$fieldsNew && !$fieldsDel && !$fieldsUpd) {
 
 // update item
 
-if ($itemChanges)
+if (E::$itemChanges)
     include $editor->dirView . 'item/item-update.php';
 
 
@@ -88,10 +88,10 @@ if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
         $redirectFieldKey  = 'Redirect';
 
         foreach ($slugs as $slug) {
-            if (!isset($itemChanges[$slug])) continue;
+            if (!isset(E::$itemChanges[$slug])) continue;
 
             $oldSlug = $item['inputs'][$slug]['valueFromDb'] ?? '';
-            $newSlug = $itemChanges[$slug] ?? '';
+            $newSlug = E::$itemChanges[$slug] ?? '';
             if (!$oldSlug || !$newSlug) continue;
 
             try {
@@ -130,13 +130,13 @@ if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
     }
 
 
-    if ($itemChanges || $fieldsNew || $fieldsDel || $fieldsUpd) {
+    if (E::$itemChanges || $fieldsNew || $fieldsDel || $fieldsUpd) {
         G::cacheDelete(['app', 'fastroute']);
         G::cacheDelete('editor');
 
         if (
-            isset($itemChanges[$item['gcTable'] . 'Status']) ||
-            count(array_intersect(array_keys($itemChanges), $slugs)) > 0
+            isset(E::$itemChanges[$item['gcTable'] . 'Status']) ||
+            count(array_intersect(array_keys(E::$itemChanges), $slugs)) > 0
         ) {
             G::routeSitemap();
             if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php')) {

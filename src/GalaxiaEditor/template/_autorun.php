@@ -24,14 +24,11 @@ E::$chatInclude        = isset(E::$conf['chat']);
 E::$chatIncludeCurrent =
     !in_array(E::$pgSlug, ['users', 'passwords', 'history']) &&
     ((E::$itemId || E::$imgSlug) || E::$pgSlug == 'chat');
-$itemChanges        = [];
 
 
 
 
 // load all pages
-
-$pageById = [];
 
 $query = Sql::select(['page' => ['pageId', 'pageStatus', 'pageSlug_', 'pageTitle_']], G::langs());
 
@@ -39,11 +36,11 @@ $stmt = G::prepare($query);
 $stmt->execute();
 $result = $stmt->get_result();
 while ($data = $result->fetch_assoc()) {
-    $pageById[$data['pageId']]['pageStatus'] = $data['pageStatus'];
+    E::$pageById[$data['pageId']]['pageStatus'] = $data['pageStatus'];
     foreach (G::langs() as $lang) {
-        $pageById[$data['pageId']]['slug'][$lang]  = $data['pageSlug_' . $lang];
-        $pageById[$data['pageId']]['title'][$lang] = $data['pageTitle_' . $lang];
-        $pageById[$data['pageId']]['url'][$lang]   = G::addLangPrefix($data['pageSlug_' . $lang], $lang);
+        E::$pageById[$data['pageId']]['slug'][$lang]  = $data['pageSlug_' . $lang];
+        E::$pageById[$data['pageId']]['title'][$lang] = $data['pageTitle_' . $lang];
+        E::$pageById[$data['pageId']]['url'][$lang]   = G::addLangPrefix($data['pageSlug_' . $lang], $lang);
     }
 }
 $stmt->close();

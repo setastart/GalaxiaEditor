@@ -29,11 +29,11 @@ InputRender::form('', 'item-edit', 'item paper pad'); ?>
 <?php   if (is_int($item['gcVisit']) || $item['gcVisit'] === true) { ?>
 <?php       foreach (G::langs() as $lang) { ?>
 <?php           if (isset($item['inputs']['slug_' . $lang])) { ?>
-            <a rel="noreferrer" href="<?=G::addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+            <a rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
 <?php           } else if (isset($item['inputs'][$item['gcTable'] . 'Slug_' . $lang])) { ?>
-            <a rel="noreferrer" href="<?=G::addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
-<?php           } else if (isset($pageById[$item['gcVisit']]['slug'][$lang])) { ?>
-            <a rel="noreferrer" href="<?=G::addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+            <a rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           } else if (isset(E::$pageById[$item['gcVisit']]['slug'][$lang])) { ?>
+            <a rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
 <?php           }  ?>
 <?php       } ?>
 <?php   } else if (is_array($item['gcVisit'])) { ?>
@@ -54,11 +54,11 @@ InputRender::form('', 'item-edit', 'item paper pad'); ?>
 <?php   if (is_int($item['gcVisit']) || $item['gcVisit'] === true) { ?>
 <?php       foreach (G::langs() as $lang) { ?>
 <?php           if (isset($item['inputs']['slug_' . $lang])) { ?>
-            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
 <?php           } else if (isset($item['inputs'][$item['gcTable'] . 'Slug_' . $lang])) { ?>
-            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
-<?php           } else if (isset($pageById[$item['gcVisit']]['slug'][$lang])) { ?>
-            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix($pageById[$item['gcVisit']]['slug'][$lang], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           } else if (isset(E::$pageById[$item['gcVisit']]['slug'][$lang])) { ?>
+            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
 <?php           } ?>
 <?php       } ?>
 <?php   } else if (is_array($item['gcVisit'])) { ?>

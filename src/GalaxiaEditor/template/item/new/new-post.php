@@ -43,13 +43,13 @@ foreach ($_POST['item'] ?? [] as $name => $value) {
     }
 
     if ($input['value'] !== $input['valueFromDb'])
-        $itemChanges[$input['nameFromDb']] = $input['valueToDb'];
+        E::$itemChanges[$input['nameFromDb']] = $input['valueToDb'];
 
     $item['inputs'][$name] = $input;
 }
 
 if (Flash::hasError()) return;
-if (!$itemChanges) {
+if (!E::$itemChanges) {
     Flash::warning('Item not added.');
     if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
     return;
@@ -60,9 +60,9 @@ if (!$itemChanges) {
 
 // item insert
 
-$values = array_values($itemChanges);
+$values = array_values(E::$itemChanges);
 try {
-    $query = Sql::queryInsert($item['gcInsert'], $itemChanges);
+    $query = Sql::queryInsert($item['gcInsert'], E::$itemChanges);
 
     $stmt = G::prepare($query);
     $types = str_repeat('s', count($values));
@@ -87,7 +87,7 @@ try {
 
 //  history
 
-foreach ($itemChanges as $key => $value)
+foreach (E::$itemChanges as $key => $value)
     History::insert($uniqueId, $item['gcTable'], $itemIdNew, $key, '', 3, $value, $me->id);
 
 
