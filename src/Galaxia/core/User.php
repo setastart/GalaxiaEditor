@@ -15,9 +15,6 @@
 namespace Galaxia;
 
 
-use GalaxiaEditor\E;
-
-
 class User {
 
     private string $tableName;
@@ -38,10 +35,9 @@ class User {
     }
 
 
-    public function logInFromCookieSessionId($cookieName) {
+    public function logInFromCookieSessionId(string $cookieName, string $host) {
         if (!isset($_COOKIE[$cookieName])) return;
         G::timerStart('Session');
-
         session_name($cookieName);
         if (ip2long($_SERVER['HTTP_HOST'])) {
             session_set_cookie_params(
@@ -55,7 +51,7 @@ class User {
             session_set_cookie_params(
                 31536000,
                 '/; SameSite=Strict',
-                '.' . E::$req->host,
+                '.' . $host,
                 isset($_SERVER['HTTPS']),
                 true
             );

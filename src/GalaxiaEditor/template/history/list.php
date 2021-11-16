@@ -59,7 +59,7 @@ $items = G::cache('editor', 2, 'list-' . E::$pgSlug . '-items', function() use (
     }
     $stmt->close();
 
-    return $items;
+    return $items ?? [];
 });
 $rowsTotal = count($items);
 
@@ -89,7 +89,7 @@ $ht .= '    </div>' . PHP_EOL;
 $ht .= '</a>' . PHP_EOL;
         $rows[$itemId] = $ht;
     }
-    return $rows;
+    return $rows ?? [];
 });
 
 

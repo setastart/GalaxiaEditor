@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/GalaxiaEditor/function/utils.php';
+require_once __DIR__ . '/GalaxiaEditor/function/utils.php';
 
 
 spl_autoload_register(function($className) {

@@ -190,9 +190,9 @@ class ConfigDb {
                             ConfigDb::gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, ['fieldKey', $module['gcTable'] . 'Field']);
                             ConfigDb::gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'position');
                         }
-                        foreach ($module['gcUpdate'] as $table => $cols) {
-                            // gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'position');
-                        }
+                        // foreach ($module['gcUpdate'] as $table => $cols) {
+                        //     self::gcQueryColumnExists($errorStringPrefix . '/gcSelect', $table, $cols, 'position');
+                        // }
                     }
 
 

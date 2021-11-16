@@ -100,7 +100,7 @@ Flash::info(sprintf(Text::t('Added: %s.'), Text::t(E::$section['gcTitleSingle'])
 
 if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
     G::cacheDelete(['app', 'fastroute']);
-    G::routeSitemap();
+    G::routeSitemap(E::$req->schemeHost());
     if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php'))
         include G::dir() .'src/script/_editor-item-update-hard.php';
 }

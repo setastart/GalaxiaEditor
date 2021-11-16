@@ -49,7 +49,7 @@ G::loadTranslations();
 // init me
 
 $me = G::initMe();
-G::login();
+G::login(E::$req->host);
 
 $db = G::getMysqli();
 
@@ -90,7 +90,7 @@ if (G::isLoggedIn()) {
 
     // galaxia chat
     if (isset(E::$conf['chat']) && E::$req->method == 'POST' && in_array(E::$req->host, ['/edit/chat/listen', '/edit/chat/publish']))
-        require __DIR__ . '/GalaxiaEditor/chat/gChat.php';
+        require_once __DIR__ . '/GalaxiaEditor/chat/gChat.php';
 
 
     // CSRF

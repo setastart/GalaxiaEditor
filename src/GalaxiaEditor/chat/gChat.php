@@ -1,5 +1,6 @@
 <?php
 
+use GalaxiaEditor\E;
 use Galaxia\{RedisCli};
 use GalaxiaEditor\chat\Chat;
 

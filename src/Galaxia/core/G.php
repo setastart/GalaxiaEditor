@@ -26,11 +26,6 @@ class G {
     private static User   $me;
     private static mysqli $mysqli;
 
-    /**
-     * @deprecated
-     */
-    public static bool $ajax = false;
-
     private static array $timers      = [];
     private static int   $timerLevel  = 0;
     private static int   $timerMaxLen = 0;
@@ -46,11 +41,9 @@ class G {
         if (isset(self::$app)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
         if (!$dir) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is empty');
         if (!is_dir($dir)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
-        if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
+        if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' config/app.php');
 
         libxml_use_internal_errors(true);
-
-        if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'XMLHttpRequest') self::$ajax = true;
 
         $app = new App($dir);
 
@@ -638,17 +631,17 @@ class G {
         return AppRoute::list(self::$app, $pageMinStatus, $pageSlug);
     }
 
-    static function routeSlugToId(string $table, string $status, string $tableSlug, bool $redirect, string $matchSlug, array $langs = null): array {
+    static function routeSlugToId(string $table, string $status, string $tableSlug, bool $redirect, string $matchSlug, array $langs = null): ?int {
         return AppRoute::slugToId($table, $status, $tableSlug, $redirect, $matchSlug, $langs ?? self::langs());
     }
 
-    static function routeSitemap() {
-        AppRoute::generateSitemap(self::$app);
+    static function routeSitemap(string $schemeHost) {
+        AppRoute::generateSitemap(self::$app, $schemeHost);
     }
 
 
-    static function login(): bool {
-        self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey);
+    static function login(string $host): bool {
+        self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey, $host);
 
         return self::$me->loggedIn;
     }

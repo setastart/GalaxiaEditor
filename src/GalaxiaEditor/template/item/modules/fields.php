@@ -207,10 +207,10 @@ foreach ($fieldsData as $fieldKey => $field) {
             if (isset($module['inputs'][$fieldKey]['proto'][$inputKey])) {
                 $module['inputs'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['inputs'][$fieldKey]['proto'][$inputKey], $inputNew);
                 $newFieldsToDelete[$fieldKey]                     = true;
-            } else {
-                // $module['inputsUnused'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['gcInputs'][$inputKey], $inputNew);
-                // $module['inputsUnused'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['inputsUnused'][$fieldKey][$inputKey], $inputNew);
-                // $module['inputsUnused'][$fieldKey][$fieldId][$inputKey]['cssClass'] = $module['gcModuleShowUnused']['cssClass'] ?? '';
+            // } else {
+            //     $module['inputsUnused'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['gcInputs'][$inputKey], $inputNew);
+            //     $module['inputsUnused'][$fieldKey][$fieldId][$inputKey] = array_replace($input, $module['inputsUnused'][$fieldKey][$inputKey], $inputNew);
+            //     $module['inputsUnused'][$fieldKey][$fieldId][$inputKey]['cssClass'] = $module['gcModuleShowUnused']['cssClass'] ?? '';
             }
 
             if (isset($input['lang']) && count($app->langs) > 1) E::$showSwitchesLang = true;

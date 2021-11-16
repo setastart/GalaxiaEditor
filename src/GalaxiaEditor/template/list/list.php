@@ -1,6 +1,9 @@
 <?php
 
-use Galaxia\{G, Pagination, Sql, Text};
+use Galaxia\G;
+use Galaxia\Pagination;
+use Galaxia\Sql;
+use Galaxia\Text;
 use GalaxiaEditor\E;
 
 
@@ -26,7 +29,7 @@ if (E::$itemId ?? '') {
     $list['gcFilterInts']  = [];
     $list['gcFilterTexts'] = [];
     $_POST['itemsPerPage'] = 10000;
-    $editor->view   = 'list/order';
+    $editor->view          = 'list/order';
 }
 
 
@@ -210,6 +213,7 @@ $items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', functio
         G::timerStop('list ' . $table);
         $i++;
     }
+
     return $items;
 });
 
@@ -219,14 +223,17 @@ $items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', functio
 
 // get table columns to render per column
 
-foreach ($list['gcColumns'] as $columnKey => $column)
-    foreach ($column['gcColContent'] ?? [] as $colContent)
-        foreach ($colContent['dbCols'] as $dbCol)
+foreach ($list['gcColumns'] as $columnKey => $column) {
+    foreach ($column['gcColContent'] ?? [] as $colContent) {
+        foreach ($colContent['dbCols'] as $dbCol) {
             $list['gcColumns'][$columnKey]['tablesAndCols'][$colContent['dbTab']][] = [
                 'col'    => $dbCol,
                 'type'   => $colContent['colType'],
                 'parent' => $colContent['gcParent'] ?? '',
             ];
+        }
+    }
+}
 
 $columns = $list['gcColumns'];
 foreach ($columns as $columnId => $column) {

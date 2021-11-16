@@ -4,12 +4,9 @@
 namespace Galaxia;
 
 
-use GalaxiaEditor\E;
-
-
 class AppRoute {
 
-    static function generateSitemap(App $app) {
+    static function generateSitemap(App $app, string $schemeHost) {
         $activeLocales = array_diff_key($app->locales, $app->localesInactive);
         $activeLangs   = array_keys($activeLocales);
         $keyLang       = key($activeLocales);
@@ -135,10 +132,10 @@ class AppRoute {
                 foreach ($urls as $url) {
                     $rl .= '<url>' . PHP_EOL;
                     $rl .= '  <priority>' . $url['pri'] . '</priority>' . PHP_EOL;
-                    $rl .= '  <loc>' . E::$req->schemeHost() . $url[$lang] . '</loc>' . PHP_EOL;
+                    $rl .= '  <loc>' . $schemeHost . $url[$lang] . '</loc>' . PHP_EOL;
                     if (count($activeLocales) > 1) {
                         foreach ($activeLocales as $lang2 => $locale) {
-                            $rl .= '  <xhtml:link hreflang="' . $lang2 . '" href="' . E::$req->schemeHost() . $url[$lang2] . '" rel="alternate"/>' . PHP_EOL;
+                            $rl .= '  <xhtml:link hreflang="' . $lang2 . '" href="' . $schemeHost . $url[$lang2] . '" rel="alternate"/>' . PHP_EOL;
                         }
                     }
                     $rl .= '</url>' . PHP_EOL;
@@ -289,7 +286,7 @@ class AppRoute {
 
 
 
-    static function slugToId($table, $status, $tableSlug, $redirect, $matchSlug, $langs) {
+    static function slugToId($table, $status, $tableSlug, $redirect, $matchSlug, $langs): ?int {
         $id                = null;
         $tableId           = $table . 'Id';
         $tableStatus       = $table . 'Status';

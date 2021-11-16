@@ -15,9 +15,6 @@
 namespace Galaxia;
 
 
-use GalaxiaEditor\E;
-
-
 class Authentication {
 
     private string $tblUser;
@@ -469,7 +466,7 @@ class Authentication {
     }
 
 
-    function logout() {
+    function logout(string $host) {
         Flash::cleanMessages();
         session_destroy();
         foreach ($_COOKIE as $key => $val) {
@@ -479,7 +476,7 @@ class Authentication {
                 [
                     'expires'  => 1,
                     'path'     => '/',
-                    'domain'   => '.' . E::$req->host,
+                    'domain'   => '.' . $host,
                     'secure'   => isset($_SERVER['HTTPS']),
                     'httponly' => true,
                     'samesite' => 'Strict',
