@@ -17,13 +17,13 @@ require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/autoload-editor.php';
 
 
-E::$req = new Request($_SERVER['SERVER_NAME']);
-E::$req->redirectRemoveSlashes();
+G::$req = new Request($_SERVER['SERVER_NAME']);
+G::$req->redirectRemoveSlashes();
 
 
 // init app
 
-$app = G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . (E::$req->host ?? '')));
+$app = G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . (G::$req->host ?? '')));
 
 G::timerStart('locales');
 G::langAddInactive();
@@ -49,11 +49,11 @@ G::loadTranslations();
 // init me
 
 $me = G::initMe();
-G::login(E::$req->host);
+G::login(G::$req->host);
 
 
 if (G::isDevDebug()) {
-    E::$req->cacheBypass = true;
+    G::$req->cacheBypass = true;
 }
 
 
@@ -78,7 +78,7 @@ if (G::isLoggedIn()) {
             [
                 'expires'  => time() + 86400, // 1 day
                 'path'     => '/',
-                'domain'   => '.' . E::$req->host,
+                'domain'   => '.' . G::$req->host,
                 'secure'   => isset($_SERVER['HTTPS']),
                 'httponly' => true,
                 'samesite' => 'Strict',
@@ -88,14 +88,14 @@ if (G::isLoggedIn()) {
 
 
     // galaxia chat
-    if (isset(E::$conf['chat']) && E::$req->method == 'POST' && in_array(E::$req->host, ['/edit/chat/listen', '/edit/chat/publish']))
+    if (isset(E::$conf['chat']) && G::$req->method == 'POST' && in_array(G::$req->host, ['/edit/chat/listen', '/edit/chat/publish']))
         require_once __DIR__ . '/GalaxiaEditor/chat/gChat.php';
 
 
     // CSRF
     if (!isset($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(32));
     if (!G::isDevDebug())
-        if (E::$req->method == 'POST')
+        if (G::$req->method == 'POST')
             if (!isset($_POST['csrf']) || $_POST['csrf'] !== $_SESSION['csrf'])
                 geErrorPage(500, 'invalid csrf token.');
 
@@ -338,7 +338,7 @@ if (G::isLoggedIn()) {
     });
     G::timerStop('routing');
 
-    $routeInfo = $dispatcher->dispatch(E::$req->method, E::$req->pathOriginal);
+    $routeInfo = $dispatcher->dispatch(G::$req->method, G::$req->pathOriginal);
 
     switch ($routeInfo[0]) {
         case FastRoute\Dispatcher::NOT_FOUND:
@@ -381,7 +381,7 @@ if (G::isLoggedIn()) {
 
     });
 
-    $routeInfo = $dispatcher->dispatch(E::$req->method, E::$req->path);
+    $routeInfo = $dispatcher->dispatch(G::$req->method, G::$req->path);
 
     switch ($routeInfo[0]) {
         case FastRoute\Dispatcher::NOT_FOUND:
@@ -435,7 +435,7 @@ G::timerStop('logic');
 
 // POST actions
 
-if (E::$req->method == 'POST' && Flash::hasError()) {
+if (G::$req->method == 'POST' && Flash::hasError()) {
     Flash::error(Text::t('Form errors found.'));
 }
 

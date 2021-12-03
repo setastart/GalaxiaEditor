@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\E;
 
@@ -58,7 +59,7 @@ foreach (E::$conf as $rootSlug => $confPage) {
 <div id="menu" class="non-selectable">
     <a id="website-link" target="_blank" rel="noopener" href="/">
         <img src="/favicon.ico" alt="<?=Text::t('Icon')?>" class="thumb-mini">
-        <span><?=Text::h(E::$req->host)?></span>
+        <span><?=Text::h(G::$req->host)?></span>
     </a>
 
 <?php   foreach ($menu as $menuItem) { ?>

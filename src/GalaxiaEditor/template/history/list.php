@@ -6,7 +6,7 @@ use GalaxiaEditor\E;
 
 // ajax
 
-if (E::$req->xhr) {
+if (G::$req->xhr) {
     $editor->layout = 'none';
     $editor->view = 'history/results';
 }
@@ -60,7 +60,7 @@ $items = G::cache('editor', 2, 'list-' . E::$pgSlug . '-items', function() use (
     $stmt->close();
 
     return $items ?? [];
-}, E::$req->cacheBypass);
+}, G::$req->cacheBypass);
 $rowsTotal = count($items);
 
 
@@ -90,7 +90,7 @@ $ht .= '</a>' . PHP_EOL;
         $rows[$itemId] = $ht;
     }
     return $rows ?? [];
-}, E::$req->cacheBypass);
+}, G::$req->cacheBypass);
 
 
 

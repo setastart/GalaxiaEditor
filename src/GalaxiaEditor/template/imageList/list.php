@@ -10,7 +10,7 @@ use GalaxiaEditor\render\Load;
 
 // ajax
 
-if (E::$req->xhr) {
+if (G::$req->xhr) {
     $editor->layout = 'none';
     $editor->view = 'imageList/results';
     if (($_POST['imageListType'] ?? '') == 'image-select') $editor->view = 'imageList/selectResults';
@@ -37,7 +37,7 @@ $items = G::cache('editor', 2, 'imageList-' . E::$pgSlug . '-items', function() 
 
 
     return $items;
-}, E::$req->cacheBypass);
+}, G::$req->cacheBypass);
 
 
 
@@ -85,7 +85,7 @@ $ht .= '</button>' . PHP_EOL;
                 $rows[$imgSlug] = $ht;
             }
             return $rows;
-        }, E::$req->cacheBypass);
+        }, G::$req->cacheBypass);
         break;
 
     default:
@@ -151,7 +151,7 @@ $ht .= '</a>';
                 $rows[$imgSlug] = $ht;
             }
             return $rows;
-        }, E::$req->cacheBypass);
+        }, G::$req->cacheBypass);
         break;
 }
 $rowsTotal = count($rows);
@@ -252,7 +252,7 @@ if ($textFiltersActive) {
             }
 
             return $return;
-        }, E::$req->cacheBypass);
+        }, G::$req->cacheBypass);
 
 
         // slugs search in keys

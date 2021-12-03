@@ -1,7 +1,7 @@
 <?php
 
-use GalaxiaEditor\E;
-use Galaxia\{RedisCli};
+use Galaxia\G;
+use Galaxia\RedisCli;
 use GalaxiaEditor\chat\Chat;
 
 
@@ -68,7 +68,7 @@ $redis->cmd('HSET', $app->mysqlDb . ':usersLastSeen', $me->id, substr(microtime(
 
 // routing
 
-switch (E::$req->host) {
+switch (G::$req->host) {
     case '/edit/chat/listen':
         require __DIR__ . '/gChatListener.php';
         break;

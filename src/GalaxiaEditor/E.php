@@ -16,9 +16,6 @@
 namespace GalaxiaEditor;
 
 
-use Galaxia\Request;
-
-
 class E {
 
     static array $conf    = [];
@@ -36,8 +33,6 @@ class E {
     static string $imgH     = ''; // imgH
     static string $action   = ''; // action
     static string $itemDate = ''; // itemDate
-
-    static Request $req;
 
     static bool $includeTrix        = false;
     static bool $showSwitchesLang   = false;

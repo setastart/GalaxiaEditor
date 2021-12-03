@@ -1,10 +1,9 @@
 <?php
 
-use Galaxia\G;
 use Galaxia\Flash;
-use GalaxiaEditor\E;
+use Galaxia\G;
 
 
-$auth->logout(E::$req->host);
+$auth->logout(G::$req->host);
 Flash::cleanMessages();
 G::redirect('edit', 303);

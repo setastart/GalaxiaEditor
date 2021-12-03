@@ -1,7 +1,7 @@
 <?php
 
-use Galaxia\G;
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
 use GalaxiaEditor\E;
@@ -138,7 +138,7 @@ if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
             isset(E::$itemChanges[$item['gcTable'] . 'Status']) ||
             count(array_intersect(array_keys(E::$itemChanges), $slugs)) > 0
         ) {
-            G::routeSitemap(E::$req->schemeHost());
+            G::routeSitemap(G::$req->schemeHost());
             if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php')) {
                 include G::dir() .'src/script/_editor-item-update-hard.php';
             }

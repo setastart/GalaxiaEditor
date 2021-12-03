@@ -6,8 +6,8 @@ use Galaxia\Sql;
 use GalaxiaEditor\E;
 
 
-E::$pgTitle = E::$req->host;
-E::$hdTitle = E::$req->host;
+E::$pgTitle = G::$req->host;
+E::$hdTitle = G::$req->host;
 
 
 // return if login page

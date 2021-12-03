@@ -9,7 +9,7 @@ use GalaxiaEditor\E;
 
 // ajax
 
-if (E::$req->xhr) {
+if (G::$req->xhr) {
     $editor->layout = 'none';
     $editor->view   = 'list/results';
 }
@@ -215,7 +215,7 @@ $items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', functio
     }
 
     return $items;
-}, E::$req->cacheBypass);
+}, G::$req->cacheBypass);
 
 // dd($items);
 
@@ -415,7 +415,7 @@ $rows = G::cache('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', function(
     }
 
     return $rows;
-}, E::$req->cacheBypass);
+}, G::$req->cacheBypass);
 
 $rowsTotal = count($rows);
 
@@ -476,7 +476,7 @@ foreach ($intFiltersActive as $filterId) {
                         $itemsByInt[$item[$dbTable][$tableKeyId][$dbColumn]][$itemId] = true;
 
         return $itemsByInt;
-    }, E::$req->cacheBypass);
+    }, G::$req->cacheBypass);
 
     $filteredInts = [];
     foreach ($filterInts as $filterId => $filter) {
@@ -542,7 +542,7 @@ foreach ($textFiltersActive as $filterId) {
         }
 
         return $textFilterItems;
-    }, E::$req->cacheBypass);
+    }, G::$req->cacheBypass);
 
     $itemsFiltered = [];
     foreach ($textFilterItems as $itemId => $text) {

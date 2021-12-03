@@ -21,11 +21,11 @@ use Throwable;
 
 class G {
 
-    private static App     $app;
-    private static Editor  $editor;
-    private static User    $me;
-    private static Request $req;
-    private static mysqli  $mysqli;
+    public static Request $req;
+    private static App    $app;
+    private static Editor $editor;
+    private static User   $me;
+    private static mysqli $mysqli;
 
     private static array $timers      = [];
     private static int   $timerLevel  = 0;
@@ -39,6 +39,7 @@ class G {
         header('Content-Type: text/html; charset=utf-8');
         header_remove("X-Powered-By");
 
+        if (!isset(self::$req)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req before G::init()');
         if (isset(self::$app)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
         if (!$dir) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is empty');
         if (!is_dir($dir)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
@@ -63,6 +64,7 @@ class G {
     static function initCLI(string $dir): App {
         self::initEnv();
 
+        if (!isset(self::$req)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req before G::initCLI()');
         if (isset(self::$app)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
         if (!$dir || !is_dir($dir)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
         if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App config not found');
@@ -437,7 +439,7 @@ class G {
 
         if (self::isCli()) {
             echo "$codeOriginal - $msg" . PHP_EOL;
-            echo(' ' . $debugText);
+            echo(' ' . $debugText . PHP_EOL);
             if (self::isDev()) {
                 db();
             }
