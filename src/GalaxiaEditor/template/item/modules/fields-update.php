@@ -152,7 +152,7 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
                     }
 
                     if ($item['gcTable'] == '_geUser') continue;
-                    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputName, $fieldKey, 2, $value, $me->id);
+                    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputName, $fieldKey, 2, $value, G::$me->id);
                 }
             }
 

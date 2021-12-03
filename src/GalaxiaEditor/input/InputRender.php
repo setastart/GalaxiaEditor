@@ -4,7 +4,6 @@
 namespace GalaxiaEditor\input;
 
 
-use Galaxia\App;
 use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
@@ -102,7 +101,7 @@ $ht .= '</div>' . PHP_EOL;
 
 
 
-    static function renderInput(App $app, $input): string {
+    static function renderInput($input): string {
         $input = array_merge(Input::PROTO_INPUT, $input);
         if ($input['type'] == 'none') return '';
 

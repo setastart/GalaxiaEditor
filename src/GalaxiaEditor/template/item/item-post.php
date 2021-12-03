@@ -7,14 +7,14 @@ use Galaxia\Text;
 use GalaxiaEditor\E;
 
 
-$editor->view = 'item/item';
+G::$editor->view = 'item/item';
 
 
 
 
 // item validation
 
-include $editor->dirView . 'item/item-validation.php';
+include G::$editor->dirView . 'item/item-validation.php';
 
 
 
@@ -25,7 +25,7 @@ foreach ($_POST['modules'] ?? [] as $moduleKey => $postModule) {
     if (!isset($modules[$moduleKey])) continue;
 
     if ($modules[$moduleKey]['gcModuleType'] == 'fields') {
-        include $editor->dirView . 'item/modules/fields-validation.php';
+        include G::$editor->dirView . 'item/modules/fields-validation.php';
     }
 }
 
@@ -47,7 +47,7 @@ if (!E::$itemChanges && !$fieldsNew && !$fieldsDel && !$fieldsUpd) {
 // update item
 
 if (E::$itemChanges)
-    include $editor->dirView . 'item/item-update.php';
+    include G::$editor->dirView . 'item/item-update.php';
 
 
 
@@ -55,7 +55,7 @@ if (E::$itemChanges)
 // update modules
 
 if ($fieldsNew || $fieldsDel || $fieldsUpd)
-    include $editor->dirView . 'item/modules/fields-update.php';
+    include G::$editor->dirView . 'item/modules/fields-update.php';
 
 
 

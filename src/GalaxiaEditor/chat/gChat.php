@@ -54,14 +54,14 @@ if ($redis->cmd('PING')->get() != 'PONG')
 
 // save my username
 
-$redis->cmd('HSET', $app->mysqlDb . ':userNames', $me->id, $me->name)->set();
+$redis->cmd('HSET', G::$app->mysqlDb . ':userNames', G::$me->id, G::$me->name)->set();
 
 
 
 
 // save last seen online for knowing when user has left
 
-$redis->cmd('HSET', $app->mysqlDb . ':usersLastSeen', $me->id, substr(microtime(true) * 1000, 0, 13))->set();
+$redis->cmd('HSET', G::$app->mysqlDb . ':usersLastSeen', G::$me->id, substr(microtime(true) * 1000, 0, 13))->set();
 
 
 

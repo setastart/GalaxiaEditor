@@ -24,7 +24,7 @@ if (E::$passwordColsFound) {
     if (!isset($item['inputs']['passwordHash']))    Flash::error(Text::t('Your new password is required - input.'));
     if (!isset($item['inputs']['passwordRepeat']))  Flash::error(Text::t('Your new password repeat is required - input.'));
 
-    if (!$auth->userAuthenticateIdPassword($me->id, $_POST['item']['passwordCurrent'])) {
+    if (!E::$auth->userAuthenticateIdPassword(G::$me->id, $_POST['item']['passwordCurrent'])) {
         $item['inputs']['passwordCurrent']['errors'][] = 'Wrong current password.';
         return false;
     }
@@ -36,7 +36,7 @@ if (E::$passwordColsFound) {
 }
 
 
-if ($me->hasPerm('dev') && $me->id == E::$itemId) {
+if (G::$me->hasPerm('dev') && G::$me->id == E::$itemId) {
     if (isset($_POST['item']['perms']) && isset($item['inputs']['perms'])) {
         $explodedPerms = explode(',', $_POST['item']['perms']);
         if (!in_array('dev', $explodedPerms)) $item['inputs']['perms']['errors'][] = 'Cannot lose own dev permission';

@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\chat\Chat;
 use GalaxiaEditor\E;
@@ -53,14 +54,14 @@ $roomsPrefixed = [];
 $clientId = $post['clientId'];
 
 foreach ($post['rooms'] ?? [] as $room => $roomData) {
-    $redis->cmd('SET', $app->mysqlDb . ':editing:' . $room . ':' . $clientId, $me->id, 'EX', TIMEOUT_ALIVE)->set();
-    $roomsprefixed[$app->mysqlDb . ':rooms:' . $room] = $roomData['lastId'];
+    $redis->cmd('SET', G::$app->mysqlDb . ':editing:' . $room . ':' . $clientId, G::$me->id, 'EX', TIMEOUT_ALIVE)->set();
+    $roomsprefixed[G::$app->mysqlDb . ':rooms:' . $room] = $roomData['lastId'];
 
-    if (!$redis->cmd('EXISTS', $app->mysqlDb . ':rooms:' . $room)->get())
-        $redis->cmd('XADD', $app->mysqlDb . ':rooms:' . $room, '*', 'user', $me->id, 'create', Text::t('Room Created'))->set();
+    if (!$redis->cmd('EXISTS', G::$app->mysqlDb . ':rooms:' . $room)->get())
+        $redis->cmd('XADD', G::$app->mysqlDb . ':rooms:' . $room, '*', 'user', G::$me->id, 'create', Text::t('Room Created'))->set();
 
     if ($room != '/edit/chat')
-        $redis->cmd('EXPIRE', $app->mysqlDb . ':rooms:' . $room, TIMEOUT_ROOM_INACTIVE)->set();
+        $redis->cmd('EXPIRE', G::$app->mysqlDb . ':rooms:' . $room, TIMEOUT_ROOM_INACTIVE)->set();
 
 }
 // $r['rooms'] = $post['rooms'];
@@ -86,7 +87,7 @@ while (!$messageActivity && !$userActivity && time() < $timeoutListen) {
     // get users in rooms
 
     foreach ($post['rooms'] as $room => $roomData) {
-        $clients = $redis->cmd('KEYS', $app->mysqlDb . ':editing:' . $room . ':*')->get();
+        $clients = $redis->cmd('KEYS', G::$app->mysqlDb . ':editing:' . $room . ':*')->get();
 
         unset($r['rooms'][$room]['users']);
 
@@ -95,7 +96,7 @@ while (!$messageActivity && !$userActivity && time() < $timeoutListen) {
             if (!$userId) continue;
             if (!isset($usersSeen[$userId])) $usersSeen[$userId] = true;
 
-            if ($userId == $me->id) {
+            if ($userId == G::$me->id) {
                 $r['rooms'][$room]['users'][$userId] = ($r['rooms'][$room]['users'][$userId] ?? 0) + 1;
             } else {
                 $r['rooms'][$room]['users'][$userId] = 1;
@@ -110,12 +111,12 @@ while (!$messageActivity && !$userActivity && time() < $timeoutListen) {
 
 // get user names and last online timestamp
 
-$temp = $redis->cmd('HSCAN', $app->mysqlDb . ':userNames', '0')->get();
+$temp = $redis->cmd('HSCAN', G::$app->mysqlDb . ':userNames', '0')->get();
 for ($i = 0; $i < count($temp[1]); $i += 2) {
     $r['users'][$temp[1][$i]]['name'] = $temp[1][$i + 1];
 }
 
-$temp = $redis->cmd('HSCAN', $app->mysqlDb . ':usersLastSeen', '0')->get();
+$temp = $redis->cmd('HSCAN', G::$app->mysqlDb . ':usersLastSeen', '0')->get();
 for ($i = 0; $i < count($temp[1]); $i += 2) {
     $r['users'][$temp[1][$i]]['lastSeen'] = $temp[1][$i + 1];
 }
@@ -131,7 +132,7 @@ $r['users'][0] = [
 
 // build messages
 
-$prefixLength = strlen($app->mysqlDb . ':rooms:');
+$prefixLength = strlen(G::$app->mysqlDb . ':rooms:');
 foreach ($xread ?? [] as $streams) {
     $room = substr($streams[0], $prefixLength);
 

@@ -7,7 +7,7 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$editor->view = 'image/replace/replace';
+G::$editor->view = 'image/replace/replace';
 
 
 

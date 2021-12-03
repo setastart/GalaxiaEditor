@@ -7,7 +7,7 @@ use Galaxia\Flash;
 use Galaxia\Text;
 
 
-$editor->view = 'dev/dev';
+G::$editor->view = 'dev/dev';
 
 
 $images = AppImage::list(G::dirImage());

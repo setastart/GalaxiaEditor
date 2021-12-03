@@ -7,7 +7,7 @@ use Galaxia\Flash;
 use Galaxia\Text;
 
 
-$editor->view = 'dev/dev';
+G::$editor->view = 'dev/dev';
 
 
 $images = AppImage::list(G::dirImage());
@@ -21,4 +21,4 @@ foreach ($images as $imgSlug => $mtimeDir) {
 G::cacheDelete('editor');
 Flash::info(Text::t('Reordered images by upload time'));
 
-G::redirect('edit/' . $editor->imageSlug);
+G::redirect('edit/' . G::$editor->imageSlug);

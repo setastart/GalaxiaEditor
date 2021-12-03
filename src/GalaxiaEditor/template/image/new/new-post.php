@@ -9,7 +9,7 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$editor->view = 'image/new/new';
+G::$editor->view = 'image/new/new';
 
 
 // item validation

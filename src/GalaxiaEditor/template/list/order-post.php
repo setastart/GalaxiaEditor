@@ -20,7 +20,7 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\model\ModelList;
 
 
-$editor->view = 'list/order';
+G::$editor->view = 'list/order';
 
 $firstTable  = key(E::$section['gcList']['gcSelect']);
 

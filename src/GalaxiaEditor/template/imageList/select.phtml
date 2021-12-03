@@ -1,5 +1,6 @@
 <?php
 
+use Galaxia\G;
 use Galaxia\Pagination;
 use Galaxia\Text;
 use GalaxiaEditor\E;
@@ -28,7 +29,7 @@ if (!isset($filterTexts)) {
         ],
     ];
 } ?>
-<?php   InputRender::form('/edit/' . $editor->imageSlug, 'image-select', 'hide');?>
+<?php   InputRender::form('/edit/' . G::$editor->imageSlug, 'image-select', 'hide');?>
 
     <div class="image-select-header pad">
         <h1><?=Text::t('Add Images')?> <span class="rowsFiltered">0</span> &#8725; <span class="rowsTotal">0</span></h1>
@@ -63,7 +64,7 @@ if (!isset($filterTexts)) {
             </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(E::$conf[$editor->imageSlug]['gcImageTypes']))))?></p>
+            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(E::$conf[G::$editor->imageSlug]['gcImageTypes']))))?></p>
 <?php           } ?>
         </div>
 <?php       } ?>

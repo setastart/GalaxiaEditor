@@ -6,8 +6,8 @@ namespace Galaxia;
 
 class AppRoute {
 
-    static function generateSitemap(App $app, string $schemeHost) {
-        $activeLocales = array_diff_key($app->locales, $app->localesInactive);
+    static function generateSitemap(string $schemeHost) {
+        $activeLocales = array_diff_key(G::$app->locales, G::$app->localesInactive);
         $activeLangs   = array_keys($activeLocales);
         $keyLang       = key($activeLocales);
 
@@ -19,7 +19,7 @@ class AppRoute {
         $result = $stmt->get_result();
 
         while ($data = $result->fetch_assoc()) {
-            if (!isset($app->routes[$data['pageType']])) continue;
+            if (!isset(G::$app->routes[$data['pageType']])) continue;
             $pages[$data['pageType']][] = $data;
         }
         $stmt->close();
@@ -32,7 +32,7 @@ class AppRoute {
 
         $urls  = [];
         $found = 0;
-        foreach ($app->routes as $pageType => $patterns) {
+        foreach (G::$app->routes as $pageType => $patterns) {
             foreach ($patterns as $pattern => $methods) {
                 foreach ($pages[$pageType] ?? [] as $page) {
                     foreach ($methods as $method => $route) {
@@ -142,7 +142,7 @@ class AppRoute {
                 }
                 $rl .= '</urlset>' . PHP_EOL;
 
-                $result = file_put_contents($app->dir . 'public/' . $fileName, $rl);
+                $result = file_put_contents(G::$app->dir . 'public/' . $fileName, $rl);
                 if ($result === false) {
                     Flash::devlog('Sitemap could not be written to file.');
 
@@ -164,7 +164,7 @@ class AppRoute {
 
 
 
-    static function list(App $app, int $pageMinStatus, $pageSlug = 'pgSlug'): array {
+    static function list(int $pageMinStatus, $pageSlug = 'pgSlug'): array {
         $routes                  = [];
         $routesVisited           = [];
         $slugsAndRedirectsByType = [];
@@ -173,7 +173,7 @@ class AppRoute {
         $query = Sql::select([
             'page'         => ['pageId', 'pageStatus', 'pageSlug_', 'pageType'],
             'pageRedirect' => ['pageRedirectId', 'pageRedirectSlug'],
-        ], $app->langs);
+        ], G::$app->langs);
 
         $query .= Sql::selectLeftJoinUsing(['pageRedirect' => ['pageId']]);
 
@@ -184,9 +184,9 @@ class AppRoute {
         $result = $stmt->get_result();
 
         while ($data = $result->fetch_assoc()) {
-            if (!isset($app->routes[$data['pageType']])) continue;
+            if (!isset(G::$app->routes[$data['pageType']])) continue;
 
-            foreach ($app->langs as $lang)
+            foreach (G::$app->langs as $lang)
                 $slugsAndRedirectsByType['slugs'][$data['pageType']][$data['pageId']][$lang] = $data['pageSlug_' . $lang];
 
             if ($data['pageRedirectSlug'])
@@ -196,14 +196,14 @@ class AppRoute {
 
 
         // main lang
-        foreach ($app->routes as $pageType => $patterns) {
+        foreach (G::$app->routes as $pageType => $patterns) {
             if (!isset($slugsAndRedirectsByType['slugs'][$pageType])) continue;
             foreach ($patterns as $pattern => $methods) {
                 foreach ($slugsAndRedirectsByType['slugs'][$pageType] as $pageId => $page) {
                     foreach ($methods as $routeMethod => $route) {
                         foreach ($page as $lang => $slug) {
-                            if ($slug == '') $routeFinal = $app->locales[$lang]['url'] . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
-                            else $routeFinal = (($app->locales[$lang]['url'] == '/') ? '/' : $app->locales[$lang]['url'] . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
+                            if ($slug == '') $routeFinal = G::$app->locales[$lang]['url'] . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
+                            else $routeFinal = ((G::$app->locales[$lang]['url'] == '/') ? '/' : G::$app->locales[$lang]['url'] . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
                             $routeMeta = [
                                 'template' => $route['template'],
                                 'pageId'   => $pageId,
@@ -222,7 +222,7 @@ class AppRoute {
         }
 
         // page redirects
-        foreach ($app->routes as $pageType => $patterns) {
+        foreach (G::$app->routes as $pageType => $patterns) {
             if (!isset($slugsAndRedirectsByType['redirects'][$pageType])) continue;
             foreach ($patterns as $pattern => $methods) {
                 foreach ($slugsAndRedirectsByType['redirects'][$pageType] as $pageId => $redirect) {
@@ -230,8 +230,8 @@ class AppRoute {
                         if ($routeMethod != 'GET') continue;
                         foreach ($redirect as $redirectId => $slug) {
                             if (!$slug) continue;
-                            foreach ($app->langs as $lang) {
-                                $routeFinal = (($app->locales[$lang]['url'] == '/') ? '/' : $app->locales[$lang]['url'] . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
+                            foreach (G::$app->langs as $lang) {
+                                $routeFinal = ((G::$app->locales[$lang]['url'] == '/') ? '/' : G::$app->locales[$lang]['url'] . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
                                 $routeMeta  = [
                                     'template' => $route['template'],
                                     'pageId'   => $pageId,
@@ -251,17 +251,17 @@ class AppRoute {
         }
 
         // secondary langs
-        foreach ($app->routes as $pageType => $patterns) {
+        foreach (G::$app->routes as $pageType => $patterns) {
             if (!isset($slugsAndRedirectsByType['slugs'][$pageType])) continue;
             foreach ($patterns as $pattern => $methods) {
                 foreach ($slugsAndRedirectsByType['slugs'][$pageType] as $pageId => $page) {
                     foreach ($methods as $routeMethod => $route) {
                         if ($routeMethod != 'GET') continue;
                         foreach ($page as $lang => $slug) {
-                            foreach ($app->langs as $lang2) {
+                            foreach (G::$app->langs as $lang2) {
                                 if ($lang2 == $lang) continue;
                                 if (!$slug) continue;
-                                $routeFinal = (($app->locales[$lang2]['url'] == '/') ? '/' : $app->locales[$lang2]['url'] . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
+                                $routeFinal = ((G::$app->locales[$lang2]['url'] == '/') ? '/' : G::$app->locales[$lang2]['url'] . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
                                 $routeMeta  = [
                                     'template' => $route['template'],
                                     'pageId'   => $pageId,

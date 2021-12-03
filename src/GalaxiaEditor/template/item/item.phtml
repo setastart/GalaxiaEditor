@@ -86,7 +86,7 @@ InputRender::form('', 'item-edit', 'item paper pad'); ?>
 
     <div class="item-row">
 <?php           } ?>
-<?php           echo InputRender::renderInput($app, $input); ?>
+<?php           echo InputRender::renderInput($input); ?>
 <?php           $firstTime = false; ?>
 <?php           $prefixPrev = $input['prefix'] ?? null; ?>
 <?php       } ?>
@@ -108,7 +108,7 @@ foreach ($modules as $moduleKey => $module) {
                 }
                 if (!$foundMulti) continue 2;
             }
-            include $editor->dirView . 'item/modules/fields.phtml';
+            include G::$editor->dirView . 'item/modules/fields.phtml';
             break;
         default:
             geErrorPage(500, 'invalid phtml module');
@@ -127,7 +127,7 @@ foreach ($modules as $moduleKey => $module) {
 <?php       } ?>
 <?php   } ?>
             <a target="_blank" href="/edit/history/<?=Text::h($item['gcTable'])?>/<?=Text::h(E::$itemId)?>" class="btn-a"><?=Text::t('Open History in a new tab')?></a>
-<?php   if ($me->hasPerm('dev')) { ?>
+<?php   if (G::$me->hasPerm('dev')) { ?>
             <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>/history" class="hide-perm-dev btn-a"><?=sprintf(Text::t('Save %s in History'), Text::t(E::$section['gcTitleSingle']))?></a>
 <?php   } ?>
 <?php   if ($item['gcDelete']) { ?>

@@ -8,7 +8,7 @@ use GalaxiaEditor\E;
 $menu = [];
 
 foreach (E::$conf as $rootSlug => $confPage) {
-    if (!isset($me)) continue;
+    if (!isset(G::$me)) continue;
     if (empty($confPage)) continue;
 
     if ($confPage['gcPageType'] == 'gcpSeparator') {
@@ -24,9 +24,9 @@ foreach (E::$conf as $rootSlug => $confPage) {
 
     if ($confPage['gcPageType'] == 'gcpLinkToItem') {
         if ($confPage['geLinkToUser'] ?? '') {
-            $menu[$rootSlug]['link'] = '/edit/' . $confPage['geLinkToUser'] . '/' . $me->id;
+            $menu[$rootSlug]['link'] = '/edit/' . $confPage['geLinkToUser'] . '/' . G::$me->id;
 
-            if (E::$itemId && E::$pgSlug == $confPage['geLinkToUser'] && E::$itemId == $me->id) {
+            if (E::$itemId && E::$pgSlug == $confPage['geLinkToUser'] && E::$itemId == G::$me->id) {
                 $menu[$rootSlug]['cssClass'] .= ' active';
             }
         } else if ($confPage['geLinkToItem'] ?? '') {

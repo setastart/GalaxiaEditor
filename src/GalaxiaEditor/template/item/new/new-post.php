@@ -9,7 +9,7 @@ use GalaxiaEditor\history\History;
 use GalaxiaEditor\input\Input;
 
 
-$editor->view = 'item/new/new';
+G::$editor->view = 'item/new/new';
 
 
 // item validation
@@ -88,7 +88,7 @@ try {
 //  history
 
 foreach (E::$itemChanges as $key => $value)
-    History::insert($uniqueId, $item['gcTable'], $itemIdNew, $key, '', 3, $value, $me->id);
+    History::insert($uniqueId, $item['gcTable'], $itemIdNew, $key, '', 3, $value, G::$me->id);
 
 
 

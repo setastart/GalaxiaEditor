@@ -5,8 +5,6 @@ use Galaxia\Flash;
 use Galaxia\Text;
 
 
-global $editor;
-global $me;
 ?>
 <!DOCTYPE html>
 <html>
@@ -16,16 +14,16 @@ global $me;
 
     <title>Error <?=Text::h($errorCode)?></title>
 
-    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h($editor->version)?>">
+    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h(G::$editor->version)?>">
 
-    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=Text::h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/text.css?version=<?=Text::h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/galaxiaEditor.css?version=<?=Text::h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=Text::h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/filters.css?version=<?=Text::h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/responsive.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=Text::h(G::$editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/text.css?version=<?=Text::h(G::$editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/galaxiaEditor.css?version=<?=Text::h(G::$editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=Text::h(G::$editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/filters.css?version=<?=Text::h(G::$editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/responsive.css?version=<?=Text::h(G::$editor->version)?>">
 
-    <script type="text/javascript" src="/edit/js/galaxiaEditor.js?version=<?=Text::h($editor->version)?>"></script>
+    <script type="text/javascript" src="/edit/js/galaxiaEditor.js?version=<?=Text::h(G::$editor->version)?>"></script>
 </head>
 <body class="page-error">
 
@@ -54,12 +52,12 @@ global $me;
 <div id="footer">
     <div class="links">
         <a href="/edit/logout"><?=Text::t('Logout')?></a>
-<?php   if ($me->hasPerm('dev')) { ?>
+<?php   if (G::$me->hasPerm('dev')) { ?>
         <a href="/edit/dev" class="hide-perm-dev">Developer</a>
 <?php   } ?>
         <a href="/edit/dev/cacheDeleteEditor"><?=Text::t('Delete Editor Caches')?></a>
     </div>
-    <p class="version"><img class="icon" src="/edit/favicon.ico"><?=Text::h($me->name)?>@GalaxiaEditor v<?=Text::h($editor->version);?></p>
+    <p class="version"><img class="icon" src="/edit/favicon.ico"><?=Text::h(G::$me->name)?>@GalaxiaEditor v<?=Text::h(G::$editor->version);?></p>
     <p class="copy"><img class="icon" src="/edit/gfx/icon-setastart-white-32.png"/><a href="https://setastart.com/" target="_blank">setastart.com</a> &copy; 2017-<?=date("Y")?></p>
 </div>
 

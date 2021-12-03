@@ -10,7 +10,7 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$editor->view = 'image/image';
+G::$editor->view = 'image/image';
 $mtime        = filemtime(G::dirImage() . E::$imgSlug . '/');
 
 

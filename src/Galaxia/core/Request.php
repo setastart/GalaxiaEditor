@@ -94,20 +94,17 @@ class Request {
     }
 
 
-    function langFromUrl(App $app): string {
-        $r = $app->lang;
-        foreach ($app->locales as $lang => $locale) {
+    function langFromUrl(): string {
+        foreach (G::$app->locales as $lang => $locale) {
             if ($this->uri == $locale['url']) {
-                $r = $lang;
-                break;
+                return $lang;
             }
             if (substr($this->uri, 0, 4) == $locale['url'] . '/') {
-                $r = $lang;
-                break;
+                return $lang;
             }
         }
 
-        return $r;
+        return G::$app->lang;
     }
 
 

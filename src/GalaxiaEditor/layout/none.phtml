@@ -1,5 +1,9 @@
-<?php use Galaxia\Flash;
+<?php
+
+use Galaxia\Flash;
+use Galaxia\G;
 
 
-include $editor->dirView . $editor->view . '.phtml'; ?>
-<?php   Flash::cleanMessages(); ?>
+include G::$editor->dirView . G::$editor->view . '.phtml';
+
+Flash::cleanMessages();

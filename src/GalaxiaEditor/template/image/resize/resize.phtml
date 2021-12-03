@@ -24,7 +24,7 @@ InputRender::form('', 'image-resize', 'image image-resize paper pad'); ?>
 
     <div class="item-row">
 <?php       } ?>
-<?php       echo InputRender::renderInput($app, $input); ?>
+<?php       echo InputRender::renderInput($input); ?>
 <?php       $firstTime = false; ?>
 <?php       $prefixPrev = $input['prefix'] ?? ''; ?>
 <?php   } ?>
@@ -37,7 +37,7 @@ InputRender::form('', 'image-resize', 'image image-resize paper pad'); ?>
     </div>
 
     <div class="paper-footer pad">
-<?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
+<?php   include G::$editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions">
             <button class="btn btn-green active"><?=Text::t('Resize')?></button>
         </div>

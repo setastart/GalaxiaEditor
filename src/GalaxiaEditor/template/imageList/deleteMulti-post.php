@@ -7,7 +7,7 @@ use Galaxia\Text;
 use GalaxiaEditor\E;
 
 
-$editor->view = 'imageList/deleteMulti';
+G::$editor->view = 'imageList/deleteMulti';
 
 
 foreach ($_POST['modules'][0]['imageDelete'] ?? [] as $imageNew) {

@@ -10,8 +10,8 @@ use GalaxiaEditor\E;
 // ajax
 
 if (G::$req->xhr) {
-    $editor->layout = 'none';
-    $editor->view   = 'list/results';
+    G::$editor->layout = 'none';
+    G::$editor->view   = 'list/results';
 }
 
 
@@ -29,7 +29,7 @@ if (E::$itemId ?? '') {
     $list['gcFilterInts']  = [];
     $list['gcFilterTexts'] = [];
     $_POST['itemsPerPage'] = 10000;
-    $editor->view          = 'list/order';
+    G::$editor->view          = 'list/order';
 }
 
 
@@ -42,7 +42,7 @@ $query = '
 ';
 
 $stmt = G::prepare($query);
-$stmt->bind_param('s', $app->mysqlDb);
+$stmt->bind_param('s', G::$app->mysqlDb);
 $stmt->execute();
 $result = $stmt->get_result();
 while ($data = $result->fetch_assoc()) {
@@ -250,7 +250,7 @@ foreach ($columns as $columnId => $column) {
 
 // make html for all rows, using cache
 
-$rows = G::cache('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', function() use ($app, $editor, $firstTable, $items, $columns, $tags, $order) {
+$rows = G::cache('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', function() use ($firstTable, $items, $columns, $tags, $order) {
     $rows         = [];
     $currentColor = 0;
     $thumbsToShow = 3;
@@ -284,7 +284,7 @@ $rows = G::cache('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', function(
                         if (!isset($data[$dbColumn])) continue;
                         $value = $data[$dbColumn];
 
-                        $isHomeSlug = (E::$pgSlug == $editor->homeSlug && $value == '' && substr($dbColumn, 0, 9) == 'pageSlug_');
+                        $isHomeSlug = (E::$pgSlug == G::$editor->homeSlug && $value == '' && substr($dbColumn, 0, 9) == 'pageSlug_');
 
                         if (count(G::langs()) > 1 && substr($dbColumn, -3, 1) == '_' && in_array(substr($dbColumn, -2), G::langs())) {
                             $r .= '<span class="input-label-lang">' . substr($dbColumn, -2) . '</span> ';
@@ -513,7 +513,7 @@ foreach ($textFiltersActive as $filterId) {
     if (!$filterInput) continue;
     $filterInput = explode('+', $filterInput);
 
-    $textFilterItems = G::cache('editor', 4, 'list-' . E::$pgSlug . '-filterText-' . $filterId, function() use ($app, $rows, $items, $filterTexts, $filterId) {
+    $textFilterItems = G::cache('editor', 4, 'list-' . E::$pgSlug . '-filterText-' . $filterId, function() use ($rows, $items, $filterTexts, $filterId) {
         foreach ($rows as $itemId => $row) {
             $textFilterItems[$itemId] = '';
             $emptyFound               = false;

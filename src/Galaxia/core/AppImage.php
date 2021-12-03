@@ -97,14 +97,14 @@ class AppImage {
 
     // images
 
-    static function imageGet(App $app, $imgSlug, $img = [], $resize = true): array {
+    static function imageGet($imgSlug, $img = [], $resize = true): array {
         $img = array_merge(AppImage::PROTO_IMAGE, $img);
 
-        $img['name'] = $app->urlImages . $imgSlug . '/' . $imgSlug;
+        $img['name'] = G::$app->urlImages . $imgSlug . '/' . $imgSlug;
         $img['slug'] = $imgSlug;
 
-        if (!$img['ext'] = AppImage::valid($app->dirImage, $imgSlug)) return [];
-        $imgDir     = $app->dirImage . $imgSlug . '/';
+        if (!$img['ext'] = AppImage::valid(G::$app->dirImage, $imgSlug)) return [];
+        $imgDir     = G::$app->dirImage . $imgSlug . '/';
         $imgDirSlug = $imgDir . $imgSlug;
 
 
@@ -118,7 +118,7 @@ class AppImage {
 
 
         // alt
-        foreach ($app->langs as $lang) {
+        foreach (G::$app->langs as $lang) {
             $file = $imgDirSlug . '_alt_' . $lang . '.txt';
             if (!file_exists($file)) continue;
             $img['alt'][$lang] = file_get_contents($file);
@@ -131,7 +131,7 @@ class AppImage {
         foreach ($img['extra'] as $extra => $i) {
             $found = false;
             if (substr($extra, -1) == '_') {
-                foreach ($app->langs as $lang) {
+                foreach (G::$app->langs as $lang) {
                     $file = $imgDirSlug . '_' . $extra . $lang . '.txt';
                     if (!file_exists($file)) continue;
                     $img['extra'][$extra][$lang] = file_get_contents($file);
@@ -163,7 +163,7 @@ class AppImage {
             $file = $imgDirSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp';
             if ($img['webp'] && !file_exists($file)) {
                 File::lock(
-                    $app->dirCache . 'flock',
+                    G::$app->dirCache . 'flock',
                     '_img_' . $imgSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp' . '.lock',
                     function() use ($imgDir, $imgSlug, $img) {
                         try {
@@ -183,7 +183,7 @@ class AppImage {
             $file = $imgDirSlug . '_' . $img['w'] . '_' . $img['h'] . $img['ext'];
             if ($resize && !file_exists($file)) {
                 File::lock(
-                    $app->dirCache . 'flock',
+                    G::$app->dirCache . 'flock',
                     '_img_' . $imgSlug . '_' . $img['w'] . '_' . $img['h'] . $img['ext'] . '.lock',
                     function() use ($imgDir, $imgSlug, $img) {
                         try {
@@ -199,7 +199,7 @@ class AppImage {
             $file = $imgDirSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp';
             if ($img['webp'] && $resize && !file_exists($file)) {
                 File::lock(
-                    $app->dirCache . 'flock',
+                    G::$app->dirCache . 'flock',
                     '_img_' . $imgSlug . '_' . $img['w'] . '_' . $img['h'] . '.webp' . '.lock',
                     function() use ($imgDir, $imgSlug, $img) {
                         try {
@@ -235,7 +235,7 @@ class AppImage {
                 $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp';
                 if ($img['webp'] && $resize && !file_exists($file)) {
                     File::lock(
-                        $app->dirCache . 'flock',
+                        G::$app->dirCache . 'flock',
                         '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp' . '.lock',
                         function() use ($imgDir, $imgSlug, $imgResize, $img) {
                             try {
@@ -254,7 +254,7 @@ class AppImage {
                 $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'];
                 if ($resize && !file_exists($file)) {
                     File::lock(
-                        $app->dirCache . 'flock',
+                        G::$app->dirCache . 'flock',
                         '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . $img['ext'] . '.lock',
                         function() use ($imgDir, $imgSlug, $imgResize, $img) {
                             try {
@@ -270,7 +270,7 @@ class AppImage {
                 $file = $imgDirSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp';
                 if ($img['webp'] && $resize && !file_exists($file)) {
                     File::lock(
-                        $app->dirCache . 'flock',
+                        G::$app->dirCache . 'flock',
                         '_img_' . $imgSlug . '_' . $imgResize['w'] . '_' . $imgResize['h'] . '.webp' . '.lock',
                         function() use ($imgDir, $imgSlug, $imgResize, $img) {
                             try {
@@ -293,7 +293,7 @@ class AppImage {
     }
 
 
-    static function imageUpload(App $app, array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = ''): array {
+    static function imageUpload(array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = ''): array {
         $uploaded = [];
 
         uasort($files, function($a, $b) {
@@ -338,17 +338,17 @@ class AppImage {
             // prepare directories
             $fileSlug   = $fileSlugInitial = pathinfo($fileNameProposed, PATHINFO_FILENAME);
             $fileSlug   = Text::formatSlug($fileSlug);
-            $fileDir    = $app->dirImage . $fileSlug . '/';
+            $fileDir    = G::$app->dirImage . $fileSlug . '/';
             $dirCreated = false;
-            if (is_dir($app->dirImage . $fileSlug)) {
+            if (is_dir(G::$app->dirImage . $fileSlug)) {
                 if ($fileReplace) {
-                    $mtime         = filemtime($app->dirImage . $fileSlug . '/');
+                    $mtime         = filemtime(G::$app->dirImage . $fileSlug . '/');
                     $shouldReplace = true;
                 } else {
                     for ($j = 0; $j < 3; $j++) {
-                        if (!is_dir($app->dirImage . $fileSlug)) break;
+                        if (!is_dir(G::$app->dirImage . $fileSlug)) break;
                         $fileSlug = Text::formatSlug('temp' . uniqid() . '-' . $fileSlugInitial);
-                        $fileDir  = $app->dirImage . $fileSlug . '/';
+                        $fileDir  = G::$app->dirImage . $fileSlug . '/';
                     }
                     if (mkdir($fileDir)) {
                         $dirCreated = true;
@@ -371,7 +371,7 @@ class AppImage {
             } catch (Exception $e) {
                 Flash::error($e->getMessage());
                 Flash::devlog($e->getTraceAsString());
-                if ($dirCreated) AppImage::delete($app->dirImage, $fileSlug);
+                if ($dirCreated) AppImage::delete(G::$app->dirImage, $fileSlug);
                 if ($dirCreated) rmdir($fileDir);
                 continue;
             }
@@ -382,7 +382,7 @@ class AppImage {
                     if ($format == $imageVips->ext) continue;
                     if (file_exists($fileDir . $fileSlug . $format)) unlink($fileDir . $fileSlug . $format);
                 }
-                AppImage::deleteResizes($app->dirImage, $fileSlug);
+                AppImage::deleteResizes(G::$app->dirImage, $fileSlug);
             }
 
 
@@ -406,7 +406,7 @@ class AppImage {
 
                 if ($mtime) {
                     touch($fileDir . $fileSlug . $imageVips->ext, $mtime);
-                    touch($app->dirImage . $fileSlug . '/', $mtime);
+                    touch(G::$app->dirImage . $fileSlug . '/', $mtime);
                 }
             } else {
                 Flash::info('Uploaded image: ' . Text::h($fileSlug . $imageVips->ext));

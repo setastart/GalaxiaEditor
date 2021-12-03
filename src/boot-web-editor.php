@@ -23,7 +23,7 @@ G::$req->redirectRemoveSlashes();
 
 // init app
 
-$app = G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . (G::$req->host ?? '')));
+G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . (G::$req->host ?? '')));
 
 G::timerStart('locales');
 G::langAddInactive();
@@ -36,9 +36,11 @@ G::timerStop('locales');
 // init editor
 
 G::timerStart('editor');
-$editor          = G::initEditor(dirname(__DIR__));
-E::$conf         = require G::dir() . 'config/editor.php';
-$editor->version = '5.0.0-alpha';
+G::initEditor(dirname(__DIR__));
+E::$conf = require G::dir() . 'config/editor.php';
+
+G::$editor->version = '5.0.0-alpha';
+
 G::timerStop('editor');
 
 G::loadTranslations();
@@ -48,8 +50,8 @@ G::loadTranslations();
 
 // init me
 
-$me = G::initMe();
-G::login(G::$req->host);
+G::initMe();
+G::login();
 
 
 if (G::isDevDebug()) {
@@ -61,7 +63,7 @@ if (G::isDevDebug()) {
 
 // authentication
 
-$auth = new Authentication();
+E::$auth = new Authentication();
 
 
 
@@ -71,9 +73,9 @@ $auth = new Authentication();
 if (G::isLoggedIn()) {
 
     // set nginx cache bypass cookie
-    if ($app->cookieNginxCacheBypassKey) {
+    if (G::$app->cookieNginxCacheBypassKey) {
         setcookie(
-            $app->cookieNginxCacheBypassKey,
+            G::$app->cookieNginxCacheBypassKey,
             '1',
             [
                 'expires'  => time() + 86400, // 1 day
@@ -101,9 +103,9 @@ if (G::isLoggedIn()) {
 
 
     // set editor language
-    if (isset($me->options['Language']))
-        if (isset($editor->locales[$me->options['Language']]))
-            G::langSet($me->options['Language']);
+    if (isset(G::$me->options['Language']))
+        if (isset(G::$editor->locales[G::$me->options['Language']]))
+            G::langSet(G::$me->options['Language']);
 
 
 
@@ -116,10 +118,10 @@ if (G::isLoggedIn()) {
 
 
     // get editor slugs from config
-    $editor->homeSlug = array_key_first(E::$conf) ?? $editor->homeSlug;
+    G::$editor->homeSlug = array_key_first(E::$conf) ?? G::$editor->homeSlug;
     foreach (E::$conf as $rootSlug => $confPage) {
         if ($confPage['gcPageType'] == 'gcpImages') {
-            $editor->imageSlug = $rootSlug;
+            G::$editor->imageSlug = $rootSlug;
             break;
         }
     }
@@ -131,7 +133,7 @@ if (G::isLoggedIn()) {
             foreach ($where as $whereVal => $inputs) {
                 foreach ($inputs as $inputKey => $input) {
                     if (!isset($input['gcPerms'])) continue;
-                    if (!array_intersect($input['gcPerms'] ?? [], $me->perms)) {
+                    if (!array_intersect($input['gcPerms'] ?? [], G::$me->perms)) {
                         E::$conf[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
                     }
                 }
@@ -141,7 +143,7 @@ if (G::isLoggedIn()) {
             foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
                 foreach ($inputs as $inputKey => $input) {
                     if (!isset($input['gcPerms'])) continue;
-                    if (!array_intersect($input['gcPerms'] ?? [], $me->perms)) {
+                    if (!array_intersect($input['gcPerms'] ?? [], G::$me->perms)) {
                         E::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
                     }
                 }
@@ -151,7 +153,7 @@ if (G::isLoggedIn()) {
                     foreach ($fields as $fieldKey => $inputs) {
                         foreach ($inputs as $inputKey => $input) {
                             if (!isset($input['gcPerms'])) continue;
-                            if (!array_intersect($input['gcPerms'] ?? [], $me->perms)) {
+                            if (!array_intersect($input['gcPerms'] ?? [], G::$me->perms)) {
                                 E::$conf[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
                             }
                         }
@@ -163,11 +165,11 @@ if (G::isLoggedIn()) {
 
 
     G::timerStart('arrayRemovePermsRecursive()');
-    ArrayShape::removePermsRecursive(E::$conf, $me->perms);
+    ArrayShape::removePermsRecursive(E::$conf, G::$me->perms);
     G::timerStop('arrayRemovePermsRecursive()');
 
     G::timerStart('gecLanguify');
-    ArrayShape::languify(E::$conf, array_keys(G::locales()), $me->perms);
+    ArrayShape::languify(E::$conf, array_keys(G::locales()), G::$me->perms);
     G::timerStop('gecLanguify');
 
 
@@ -217,15 +219,15 @@ if (G::isLoggedIn()) {
 
     // routes
     G::timerStart('routing');
-    $editor->layout = 'layout-editor';
+    G::$editor->layout = 'layout-editor';
 
-    $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($me, $editor) {
+    $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
         $r->get('/edit/{pgSlug:login}', 'redirect-home');
         $r->post('/edit/{pgSlug:login}', 'redirect-home');
         $r->get('/edit/{pgSlug:logout}', 'login/logout');
 
-        if ($me->hasPerm('dev')) {
+        if (G::$me->hasPerm('dev')) {
             $r->get('/edit/{pgSlug:dev}', 'dev/dev');
             $r->get('/edit/dev/{pgSlug:sitemap}', 'dev/sitemap');
             $r->get('/edit/dev/{pgSlug:cacheDeleteApp}', 'dev/cache-delete-app');
@@ -270,7 +272,7 @@ if (G::isLoggedIn()) {
                         }
                         if ($confPage['gcItem']['gcUpdate']) {
                             $r->post('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}', 'item/item-post');
-                            if ($me->hasPerm('dev')) {
+                            if (G::$me->hasPerm('dev')) {
                                 $r->get('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}/history', 'item/item-post-save-history');
                             }
                         }
@@ -283,39 +285,39 @@ if (G::isLoggedIn()) {
 
                 case 'gcpImages':
                     if ($confPage['gcImageList']) {
-                        $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}', 'imageList/list');
-                        $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}', 'imageList/list');
+                        $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}', 'imageList/list');
+                        $r->post('/edit/{pgSlug:' . G::$editor->imageSlug . '}', 'imageList/list');
 
                         if ($confPage['gcImage']['gcDelete'] ?? []) {
-                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/delete', 'imageList/deleteMulti');
-                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/delete', 'imageList/deleteMulti-post');
+                            $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/delete', 'imageList/deleteMulti');
+                            $r->post('/edit/{pgSlug:' . G::$editor->imageSlug . '}/delete', 'imageList/deleteMulti-post');
                         }
 
-                        $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/verify', 'imageList/verify');
+                        $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/verify', 'imageList/verify');
 
-                        $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/resize/{imgW}/{imgH}', 'image/resize/resize-request');
+                        $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/resize/{imgW}/{imgH}', 'image/resize/resize-request');
                     }
 
                     if ($confPage['gcImage']) {
                         if ($confPage['gcImage']['gcInsert']) {
-                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug:new}', 'image/new/new');
-                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug:new}', 'image/new/new-post');
+                            $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug:new}', 'image/new/new');
+                            $r->post('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug:new}', 'image/new/new-post');
                         }
                         if ($confPage['gcImage']['gcSelect']) {
-                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}', 'image/image');
+                            $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}', 'image/image');
                         }
                         if ($confPage['gcImage']['gcUpdate']) {
-                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}', 'image/image-post');
-                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:deleteResizes}', 'image/image-delete-resizes-post');
-                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:deleteWebp}', 'image/image-delete-webp-post');
-                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace');
-                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace-post');
-                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:resize}', 'image/resize/resize');
-                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:resize}', 'image/resize/resize-post');
+                            $r->post('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}', 'image/image-post');
+                            $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:deleteResizes}', 'image/image-delete-resizes-post');
+                            $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:deleteWebp}', 'image/image-delete-webp-post');
+                            $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace');
+                            $r->post('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace-post');
+                            $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:resize}', 'image/resize/resize');
+                            $r->post('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:resize}', 'image/resize/resize-post');
                         }
                         if ($confPage['gcImage']['gcDelete']) {
-                            $r->get('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:delete}', 'image/delete/delete');
-                            $r->post('/edit/{pgSlug:' . $editor->imageSlug . '}/{imgSlug}/{action:delete}', 'image/delete/delete-post');
+                            $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:delete}', 'image/delete/delete');
+                            $r->post('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:delete}', 'image/delete/delete-post');
                         }
                     }
                     break;
@@ -366,14 +368,14 @@ if (G::isLoggedIn()) {
                 E::$section = [];
             }
 
-            $editor->logic = $editor->view = $routeInfo[1];
+            G::$editor->logic = G::$editor->view = $routeInfo[1];
             break;
     }
 
 } else {
 
-    $editor->layout = 'layout-default';
-    $dispatcher     = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+    G::$editor->layout = 'layout-default';
+    $dispatcher        = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
         $r->get('/edit/{pgSlug:login}', 'login/login');
         $r->post('/edit/{pgSlug:login}', 'login/login-post');
@@ -392,8 +394,8 @@ if (G::isLoggedIn()) {
             break;
         case FastRoute\Dispatcher::FOUND:
             extract($routeInfo[2]); // make php $variables with names and values defined in the routing above.
-            E::$pgSlug     = $routeInfo[2]['pgSlug'];
-            $editor->logic = $editor->view = $routeInfo[1];
+            E::$pgSlug        = $routeInfo[2]['pgSlug'];
+            G::$editor->logic = G::$editor->view = $routeInfo[1];
             break;
     }
 
@@ -404,7 +406,7 @@ if (G::isLoggedIn()) {
 
 // custom redirects
 
-if ($routeInfo[1] == 'redirect-home') G::redirect('edit/' . $editor->homeSlug, 303);
+if ($routeInfo[1] == 'redirect-home') G::redirect('edit/' . G::$editor->homeSlug, 303);
 
 
 
@@ -413,20 +415,20 @@ if ($routeInfo[1] == 'redirect-home') G::redirect('edit/' . $editor->homeSlug, 3
 // - logic can modify which layout and template are going to be used
 
 G::timerStart('logic');
-$logicExploded  = explode('/', $editor->logic);
+$logicExploded  = explode('/', G::$editor->logic);
 $logicPathCount = count($logicExploded);
 $logicPath      = '';
-if (file_exists($editor->dirLogic . '_autorun.php')) {
-    include $editor->dirLogic . '_autorun.php';
+if (file_exists(G::$editor->dirLogic . '_autorun.php')) {
+    include G::$editor->dirLogic . '_autorun.php';
 }
 for ($i = 0; $i < $logicPathCount - 1; $i++) {
     $logicPath .= ($logicExploded[$i] . '/');
-    if (file_exists($editor->dirLogic . $logicPath . '_autorun.php')) {
-        include $editor->dirLogic . $logicPath . '_autorun.php';
+    if (file_exists(G::$editor->dirLogic . $logicPath . '_autorun.php')) {
+        include G::$editor->dirLogic . $logicPath . '_autorun.php';
     }
 }
-if (file_exists($editor->dirLogic . $editor->logic . '.php')) {
-    include $editor->dirLogic . $editor->logic . '.php';
+if (file_exists(G::$editor->dirLogic . G::$editor->logic . '.php')) {
+    include G::$editor->dirLogic . G::$editor->logic . '.php';
 }
 G::timerStop('logic');
 
@@ -444,11 +446,11 @@ if (G::$req->method == 'POST' && Flash::hasError()) {
 
 // Exit on missing layouts or template view
 
-if (!file_exists($editor->dirLayout . $editor->layout . '.phtml')) {
-    G::errorPage(500, 'missing layout: ' . Text::h($editor->layout));
+if (!file_exists(G::$editor->dirLayout . G::$editor->layout . '.phtml')) {
+    G::errorPage(500, 'missing layout: ' . Text::h(G::$editor->layout));
 }
-if (!file_exists($editor->dirView . $editor->view . '.phtml')) {
-    G::errorPage(500, 'missing template view: ' . $editor->dir . 'src/templates/' . $editor->view);
+if (!file_exists(G::$editor->dirView . G::$editor->view . '.phtml')) {
+    G::errorPage(500, 'missing template view: ' . G::$editor->dir . 'src/templates/' . G::$editor->view);
 }
 
 
@@ -456,10 +458,10 @@ if (!file_exists($editor->dirView . $editor->view . '.phtml')) {
 
 // Include (run) the current layout. the layout includes the template (dynamic part of webpage)
 G::timerStart('layout');
-include $editor->dirLayout . $editor->layout . '.phtml';
+include G::$editor->dirLayout . G::$editor->layout . '.phtml';
 G::timerStop('layout');
 
-if (G::isDev() && $editor->layout != 'none') {
+if (G::isDev() && G::$editor->layout != 'none') {
     G::timerPrint(true, true);
 }
 

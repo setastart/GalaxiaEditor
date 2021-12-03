@@ -11,9 +11,9 @@ use GalaxiaEditor\render\Load;
 // ajax
 
 if (G::$req->xhr) {
-    $editor->layout = 'none';
-    $editor->view = 'imageList/results';
-    if (($_POST['imageListType'] ?? '') == 'image-select') $editor->view = 'imageList/selectResults';
+    G::$editor->layout = 'none';
+    G::$editor->view = 'imageList/results';
+    if (($_POST['imageListType'] ?? '') == 'image-select') G::$editor->view = 'imageList/selectResults';
 }
 
 
@@ -21,7 +21,7 @@ if (G::$req->xhr) {
 
 // get images using cache
 
-$items = G::cache('editor', 2, 'imageList-' . E::$pgSlug . '-items', function() use ($app) {
+$items = G::cache('editor', 2, 'imageList-' . E::$pgSlug . '-items', function() {
     $items = [];
     $imageList = AppImage::list(G::dirImage());
 
@@ -52,7 +52,7 @@ $inUse = Load::imagesInUse();
 
 switch ($_POST['imageListType'] ?? '') {
     case 'image-select':
-        $rows = G::cache('editor', 3, 'imageList-' . E::$pgSlug . '-rows-select', function() use ($app, $items, $inUse) {
+        $rows = G::cache('editor', 3, 'imageList-' . E::$pgSlug . '-rows-select', function() use ($items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -89,7 +89,7 @@ $ht .= '</button>' . PHP_EOL;
         break;
 
     default:
-        $rows = G::cache('editor', 3, 'imageList-' . E::$pgSlug . '-rows', function() use ($editor, $items, $inUse) {
+        $rows = G::cache('editor', 3, 'imageList-' . E::$pgSlug . '-rows', function() use ($items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -98,7 +98,7 @@ $ht .= '</button>' . PHP_EOL;
                 if (isset($img['extra']['type']))
                     if (!isset($imgTypes[$img['extra']['type']])) $imgTypes[$img['extra']['type']] = $currentColor++;
 $ht = '';
-$ht .= '<a class="row row-image" href="/edit/' . $editor->imageSlug .  '/' . $imgSlug . '">' . PHP_EOL;
+$ht .= '<a class="row row-image" href="/edit/' . G::$editor->imageSlug .  '/' . $imgSlug . '">' . PHP_EOL;
 $ht .= '    <div class="col flexT">' . PHP_EOL;
 $ht .= '        <div class="col-thumb figure single">' . PHP_EOL;
 $ht .= '            ' . G::image($img) . PHP_EOL;
@@ -195,7 +195,7 @@ if ($textFiltersActive) {
         if (!$filterInput) continue;
         $filterInput = explode('+', $filterInput);
 
-        $itemsToFilter = G::cache('editor', 3, 'imageList-' . E::$pgSlug . '-filterTexts-' . $filterId, function() use ($app, $items, $inUse, $filterId) {
+        $itemsToFilter = G::cache('editor', 3, 'imageList-' . E::$pgSlug . '-filterTexts-' . $filterId, function() use ($items, $inUse, $filterId) {
             switch ($filterId) {
                 case 'slug':
                     foreach ($items as $imgSlug => $img)

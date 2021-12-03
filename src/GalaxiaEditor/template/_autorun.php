@@ -12,7 +12,7 @@ E::$hdTitle = G::$req->host;
 
 // return if login page
 
-if (substr($editor->logic, 0, 6) == 'login/') return;
+if (substr(G::$editor->logic, 0, 6) == 'login/') return;
 
 
 

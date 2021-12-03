@@ -6,7 +6,7 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$editor->view = 'image/resize/resize';
+G::$editor->view = 'image/resize/resize';
 
 
 

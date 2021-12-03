@@ -1,4 +1,5 @@
-<?php use Galaxia\Text;
+<?php use Galaxia\G;
+use Galaxia\Text;
 use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 use GalaxiaEditor\render\view\ViewPagination;
@@ -18,7 +19,7 @@ InputRender::form('', 'image-list', 'paper pad');?>
 <?php   } ?>
         </div>
 
-<?php   if ($me->hasPerm('dev')) { ?>
+<?php   if (G::$me->hasPerm('dev')) { ?>
         <div class="paper-header-links">
             <a href="/edit/dev/imageListDeleteResizes" class="hide-perm-dev btn-a"><?=Text::t('Delete Resizes')?></a>
             <a href="/edit/dev/imageListDeleteWebp" class="hide-perm-dev btn-a"><?=Text::t('Delete Webp Images')?></a>
@@ -45,7 +46,7 @@ InputRender::form('', 'image-list', 'paper pad');?>
             </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(E::$conf[$editor->imageSlug]['gcImageTypes']))))?></p>
+            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(E::$conf[G::$editor->imageSlug]['gcImageTypes']))))?></p>
 <?php           } ?>
         </div>
 <?php       } ?>
@@ -71,7 +72,7 @@ InputRender::form('', 'image-list', 'paper pad');?>
 
 
     <div class="load">
-<?php   include $editor->dirView . 'imageList/results.phtml'; ?>
+<?php   include G::$editor->dirView . 'imageList/results.phtml'; ?>
     </div>
 
 

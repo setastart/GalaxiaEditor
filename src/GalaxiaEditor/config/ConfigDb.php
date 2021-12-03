@@ -23,7 +23,7 @@ class ConfigDb {
         ';
 
         $stmt = G::prepare($query);
-        $stmt->bind_param('s', G::getApp()->mysqlDb);
+        $stmt->bind_param('s', G::$app->mysqlDb);
         $stmt->execute();
         $result = $stmt->get_result();
         while ($data = $result->fetch_assoc()) {

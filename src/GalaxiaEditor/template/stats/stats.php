@@ -29,5 +29,4 @@ foreach ($statFiles as $path) {
 }
 
 // $stats = array_merge_recursive(...$stats);
-Kint::$max_depth = 0;
 dd($stats);

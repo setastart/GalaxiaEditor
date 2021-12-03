@@ -7,7 +7,7 @@ use Galaxia\Text;
 use GalaxiaEditor\E;
 
 
-$editor->view = 'image/delete/delete';
+G::$editor->view = 'image/delete/delete';
 
 
 

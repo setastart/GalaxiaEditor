@@ -1,4 +1,6 @@
 <?php
+
+use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
@@ -16,7 +18,7 @@ InputRender::form('', 'history-list', 'paper pad');?>
 
 
     <div class="load">
-<?php   include $editor->dirView . 'history/results.phtml'; ?>
+<?php   include G::$editor->dirView . 'history/results.phtml'; ?>
     </div>
 
 

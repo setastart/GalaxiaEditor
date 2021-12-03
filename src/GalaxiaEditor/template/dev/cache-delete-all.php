@@ -5,7 +5,7 @@ use Galaxia\Flash;
 use Galaxia\G;
 
 
-$editor->view = 'dev/dev';
+G::$editor->view = 'dev/dev';
 
 
 G::cacheDeleteAll();

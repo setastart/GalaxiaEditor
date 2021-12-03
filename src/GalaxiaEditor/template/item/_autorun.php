@@ -36,9 +36,9 @@ if (E::$itemId == 'new') return;
 // restrict edit acces to only own user
 
 if ($item['gcUpdateOnlyOwn'] ?? false) {
-    if (!$me->hasPerm('dev') && $me->id != E::$itemId) {
+    if (!G::$me->hasPerm('dev') && G::$me->id != E::$itemId) {
         Flash::error(Text::t('Redirected. You don\'t have access to that page.'));
-        G::redirect('/edit/' . $editor->homeSlug);
+        G::redirect('/edit/' . G::$editor->homeSlug);
     }
 }
 
@@ -215,7 +215,7 @@ $modules = &E::$section['gcItem']['gcModules'];
 foreach ($modules as $moduleKey => &$module) {
     switch ($module['gcModuleType']) {
         case 'fields':
-            include $editor->dirView . 'item/modules/fields.php';
+            include G::$editor->dirView . 'item/modules/fields.php';
             break;
         default:
             geErrorPage(500, 'invalid module');

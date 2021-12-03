@@ -8,7 +8,7 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\history\History;
 
 
-$editor->view = 'item/delete/delete';
+G::$editor->view = 'item/delete/delete';
 
 
 
@@ -40,7 +40,7 @@ try {
 // history
 
 foreach ($item['inputs'] as $inputName => $input) {
-    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputName, '', 0, $input['valueFromDb'] ?? '', $me->id);
+    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputName, '', 0, $input['valueFromDb'] ?? '', G::$me->id);
 }
 
 foreach ($modules as $moduleKey => $module) {
@@ -49,7 +49,7 @@ foreach ($modules as $moduleKey => $module) {
             foreach ($module['inputs'] as $fieldKey => $inputs) {
                 foreach ($inputs as $inputKey => $input) {
                     if (!isset($input['valueFromDb'])) continue;
-                    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputKey, $fieldKey, 0, $input['valueFromDb'], $me->id);
+                    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputKey, $fieldKey, 0, $input['valueFromDb'], G::$me->id);
                 }
             }
             break;

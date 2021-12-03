@@ -9,4 +9,4 @@ G::cacheDelete('editor');
 
 Flash::info('editor caches deleted');
 
-G::redirect('edit/' . $editor->homeSlug);
+G::redirect('edit/' . G::$editor->homeSlug);

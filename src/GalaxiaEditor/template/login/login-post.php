@@ -1,10 +1,12 @@
 <?php
 
-use Galaxia\{G, Session};
+use Galaxia\G;
+use Galaxia\Session;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$editor->view = 'login/login';
+G::$editor->view = 'login/login';
 
 
 $inputs['userEmail']    = Input::validate($inputs['userEmail'], $_POST['userEmail']);
@@ -16,7 +18,7 @@ if (!empty($inputs['userEmail']['errors'])) {
 }
 
 
-if (!$auth->userAuthenticateEmailPassword($inputs['userEmail']['value'], $inputs['userPassword']['value'])) {
+if (!E::$auth->userAuthenticateEmailPassword($inputs['userEmail']['value'], $inputs['userPassword']['value'])) {
     $inputs['userPassword']['errors'][] = 'Wrong password.';
 
     return;
@@ -26,10 +28,10 @@ if (!$auth->userAuthenticateEmailPassword($inputs['userEmail']['value'], $inputs
 
 
 // user is logged in. Reload.
-$userId = $auth->userGetIdByEmail($inputs['userEmail']['value']);
+$userId = E::$auth->userGetIdByEmail($inputs['userEmail']['value']);
 if ($userId) {
     if (session_status() != PHP_SESSION_ACTIVE) {
-        session_name($app->cookieEditorKey); // name of the cookie that holds the session id
+        session_name(G::$app->cookieEditorKey); // name of the cookie that holds the session id
         if (ip2long($_SERVER['HTTP_HOST'])) {
             session_set_cookie_params(
                 31536000,

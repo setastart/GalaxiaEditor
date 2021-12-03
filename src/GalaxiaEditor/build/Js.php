@@ -4,7 +4,6 @@
 namespace GalaxiaEditor\build;
 
 
-use Galaxia\Editor;
 use Galaxia\Text;
 
 
@@ -23,15 +22,14 @@ class Js {
             __DIR__ . '/js/scrape.js',
             __DIR__ . '/js/text.js',
         ],
-        'galaxiaChat'   => [
+
+        'galaxiaChat' => [
             __DIR__ . '/js/galaxiaChat.js',
         ],
     ];
 
 
     static function build() {
-        $editor = new Editor(dirname(dirname(dirname(__DIR__))));
-
         foreach (self::JS_FILENAMES as $buildName => $sources) {
             $jsBuild = '';
             // $jsBuild .= '\'use strict\';' . str_repeat(PHP_EOL, 2);
@@ -47,14 +45,13 @@ class Js {
                 $jsBuild .= str_repeat(PHP_EOL, 4);
             }
 
-            $filePathMain = $editor->dir . 'public/edit/js/' . $buildName . self::FILE_EXT_JS_BUILD;
+            $filePathMain = dirname(dirname(dirname(__DIR__))) . '/public/edit/js/' . $buildName . self::FILE_EXT_JS_BUILD;
 
             $dir = pathinfo($filePathMain, PATHINFO_DIRNAME);
             if (!is_dir($dir)) mkdir($dir, 0644, true);
 
             file_put_contents($filePathMain, $jsBuild);
         }
-
     }
 
 }

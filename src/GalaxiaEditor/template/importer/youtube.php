@@ -7,7 +7,7 @@ use Galaxia\Scrape\Youtube;
 use Galaxia\Text;
 
 
-$editor->layout = 'none';
+G::$editor->layout = 'none';
 
 
 // $r = Youtube::getPlaylistVideos('https://www.youtube.com/playlist?list=PLi5BhhFIMLyjhkd2Vj-VjHXtWUM2oQNIm');
@@ -17,7 +17,6 @@ $id = Text::h($_GET['id']) ?? '';
 $r = Youtube::getVideoFromId($id);
 
 if ($r[Scrape::DATA][Youtube::IMG_SLUG] ?? '') {
-    $app     = G::getApp();
     $imgSlug = $r[Scrape::DATA][Youtube::IMG_SLUG];
 
     if (AppImage::valid(G::dirImage(), $imgSlug)) {

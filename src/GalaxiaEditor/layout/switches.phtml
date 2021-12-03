@@ -5,13 +5,13 @@ use Galaxia\Text;
 use GalaxiaEditor\E;
 
 
-if (!(E::$showSwitchesLang ?? false) && empty($me->perms)) return;
+if (!(E::$showSwitchesLang ?? false) && empty(G::$me->perms)) return;
 
 ?>
 <div id="switches">
-<?php   if (!empty($me->perms)) { ?>
+<?php   if (!empty(G::$me->perms)) { ?>
     <div class="switch-perms">
-<?php   foreach ($me->perms as $perm) { ?>
+<?php   foreach (G::$me->perms as $perm) { ?>
         <label for="switch-hide-perm-<?=Text::h($perm)?>" data-remember="true" class="btn btn-pill btn-blue btn-small btn-checkbox active">
             <?=Text::h($perm)?>
             <input type="checkbox" value="hide-active-perm-<?=Text::h($perm)?>" id="switch-hide-perm-<?=Text::h($perm)?>" title="<?=Text::h($perm)?>" checked>

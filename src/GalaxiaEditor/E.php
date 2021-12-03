@@ -16,7 +16,12 @@
 namespace GalaxiaEditor;
 
 
+use Galaxia\Authentication;
+
+
 class E {
+
+    static Authentication $auth;
 
     static array $conf    = [];
     static array $section = [];

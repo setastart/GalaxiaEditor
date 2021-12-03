@@ -7,7 +7,7 @@ $userEmail = (isset($_SESSION['post']['userEmail'])) ? Text::h($_SESSION['post']
 <form action="/edit/login" method="post" autocomplete="on">
 
 <?php   foreach ($inputs as $input) { ?>
-<?php       echo InputRender::renderInput($app, $input); ?>
+<?php       echo InputRender::renderInput($input); ?>
 <?php   } ?>
 
 

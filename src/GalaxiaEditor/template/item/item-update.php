@@ -42,7 +42,7 @@ try {
                 if ($inputKey == 'passwordHash')
                     continue;
 
-            History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputKey, '', 2, $content, $me->id);
+            History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputKey, '', 2, $content, G::$me->id);
         }
     }
 } catch (Exception $e) {

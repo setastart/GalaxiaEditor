@@ -22,9 +22,10 @@ use Throwable;
 class G {
 
     public static Request $req;
-    private static App    $app;
-    private static Editor $editor;
-    private static User   $me;
+    public static App     $app;
+    public static Editor  $editor;
+    public static User    $me;
+
     private static mysqli $mysqli;
 
     private static array $timers      = [];
@@ -89,7 +90,7 @@ class G {
         error_reporting(E_ALL);
 
         set_exception_handler(function(Throwable $e) {
-            self::errorPage($e->getCode(), $e->getMessage());
+            self::errorPage($e->getCode(), $e->getMessage(), $e->getTraceAsString());
         });
 
         set_error_handler(function($code, $msg, $file = '', $line = 0) {
@@ -174,35 +175,6 @@ class G {
         if (!isset(self::$editor)) return false;
 
         return ($_SERVER['DOCUMENT_ROOT'] ?? null) === self::$editor->dir . 'public';
-    }
-
-
-
-
-    static function getApp(): App {
-        if (!isset(self::$app)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-
-        return self::$app;
-    }
-
-
-
-
-    static function getEditor(): Editor {
-        if (!isset(self::$app)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (!isset(self::$editor)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' Editor was not initialized');
-
-        return self::$editor;
-    }
-
-
-
-
-    static function getMe(): User {
-        if (!isset(self::$app)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (!isset(self::$me)) self::errorPage(500, 'G error', __METHOD__ . ':' . __LINE__ . ' User was not initialized');
-
-        return self::$me;
     }
 
 
@@ -547,8 +519,8 @@ class G {
         if ($argc == 2) {
             $page = $fTest();
             // echo $page;
-            if (empty(trim($page))) G::errorPage(500, 'Empty.');
-            G::errorPage(200, 'OK.');
+            if (empty(trim($page))) self::errorPage(500, 'Empty.');
+            self::errorPage(200, 'OK.');
         }
 
         echo 'Usage:' . PHP_EOL;
@@ -596,7 +568,7 @@ class G {
     }
 
     static function langSetFromUrl(Request $req): void {
-        self::langSet($req->langFromUrl(self::$app));
+        self::langSet($req->langFromUrl());
     }
 
     static function langAddInactive(): void {
@@ -661,11 +633,11 @@ class G {
     }
 
     static function imageGet($imgSlug, $img = [], $resize = true): array {
-        return AppImage::imageGet(self::$app, $imgSlug, $img, $resize);
+        return AppImage::imageGet($imgSlug, $img, $resize);
     }
 
     static function imageUpload(array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = ''): array {
-        return AppImage::imageUpload(self::$app, $files, $replaceDefault, $toFitDefault, $type);
+        return AppImage::imageUpload($files, $replaceDefault, $toFitDefault, $type);
     }
 
 
@@ -679,7 +651,7 @@ class G {
 
 
     static function routeList(int $pageMinStatus, $pageSlug = 'pgSlug'): array {
-        return AppRoute::list(self::$app, $pageMinStatus, $pageSlug);
+        return AppRoute::list($pageMinStatus, $pageSlug);
     }
 
     static function routeSlugToId(string $table, string $status, string $tableSlug, bool $redirect, string $matchSlug, array $langs = null): ?int {
@@ -687,12 +659,12 @@ class G {
     }
 
     static function routeSitemap(string $schemeHost) {
-        AppRoute::generateSitemap(self::$app, $schemeHost);
+        AppRoute::generateSitemap($schemeHost);
     }
 
 
-    static function login(string $host): bool {
-        self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey, $host);
+    static function login(): bool {
+        self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey, self::$req->host);
 
         return self::$me->loggedIn;
     }

@@ -7,14 +7,14 @@ use GalaxiaEditor\E;
 // ajax
 
 if (G::$req->xhr) {
-    $editor->layout = 'none';
-    $editor->view = 'history/results';
+    G::$editor->layout = 'none';
+    G::$editor->view = 'history/results';
 }
 
 
 
 
-$items = G::cache('editor', 2, 'list-' . E::$pgSlug . '-items', function() use ($db, $userNames) {
+$items = G::cache('editor', 2, 'list-' . E::$pgSlug . '-items', function() use ($userNames) {
     $query = Sql::select(['_geHistory' => ['_geHistoryId', '_geUserId', 'uniqueId', 'tabName', 'tabId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
     $query .= Sql::selectOrderBy(['_geHistory' => ['uniqueId' => 'DESC']]);
 

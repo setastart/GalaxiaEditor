@@ -213,7 +213,7 @@ foreach ($fieldsData as $fieldKey => $field) {
             //     $module['inputsUnused'][$fieldKey][$fieldId][$inputKey]['cssClass'] = $module['gcModuleShowUnused']['cssClass'] ?? '';
             }
 
-            if (isset($input['lang']) && count($app->langs) > 1) E::$showSwitchesLang = true;
+            if (isset($input['lang']) && count(G::$app->langs) > 1) E::$showSwitchesLang = true;
         }
 
         if (isset($module['gcModuleMultiple'][$fieldKey])) {

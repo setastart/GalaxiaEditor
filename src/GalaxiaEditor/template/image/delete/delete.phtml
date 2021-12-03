@@ -22,7 +22,7 @@ InputRender::form('', 'image-delete', 'image image-delete paper pad'); ?>
     </div>
 
     <div class="paper-footer pad">
-<?php   include $editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
+<?php   include G::$editor->dirView . 'image/fragment/paper-footer-info.phtml'; ?>
         <div class="paper-footer-actions">
             <a class="btn btn-blue btn-mb active" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>"><?=Text::t('Cancel')?></a>
             <button class="btn btn-red btn-mb active"><?=sprintf(Text::t('Delete %s'), Text::t(E::$section['gcTitleSingle']))?></button>

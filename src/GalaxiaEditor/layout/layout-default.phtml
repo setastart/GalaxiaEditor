@@ -16,13 +16,13 @@ use GalaxiaEditor\E;
 
     <title><?=Text::h(E::$hdTitle)?></title>
 
-    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h($editor->version)?>">
+    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h(G::$editor->version)?>">
 
-    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=Text::h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/text.css?version=<?=Text::h($editor->version)?>">
-    <link rel="stylesheet" href="/edit/css/galaxiaPublic.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/reset.css?version=<?=Text::h(G::$editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/text.css?version=<?=Text::h(G::$editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/galaxiaPublic.css?version=<?=Text::h(G::$editor->version)?>">
 
-    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=Text::h($editor->version)?>">
+    <link rel="stylesheet" href="/edit/css/forms.css?version=<?=Text::h(G::$editor->version)?>">
 </head>
 <body>
 
@@ -30,12 +30,12 @@ use GalaxiaEditor\E;
     <img class="icon-big" src="/favicon.ico">
     <a href="/" class="paper-header"><?=G::$req->host?></a>
 <?php
-    include $editor->dirView . $editor->view . '.phtml';
+    include G::$editor->dirView . G::$editor->view . '.phtml';
 ?>
 </div>
 
 <div id="footer">
-    <p><img class="icon" src="/edit/favicon.ico?version=<?=Text::h($editor->version)?>">GalaxiaEditor</p>
+    <p><img class="icon" src="/edit/favicon.ico?version=<?=Text::h(G::$editor->version)?>">GalaxiaEditor</p>
     <p><a href="https://setastart.com/" target="_blank"> <img class="icon" src="/edit/gfx/icon-setastart-white-32.png"/>setastart.com</a> &copy; 2017-<?=date("Y")?></p>
 </div>
 
