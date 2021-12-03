@@ -24,6 +24,9 @@ class E {
     static array $conf    = [];
     static array $section = [];
 
+    static string $pgTitle = '';
+    static string $hdTitle = '';
+
     static string $pgSlug   = ''; // pgSlug
     static string $tabName  = ''; // tabName
     static string $tabId    = ''; // tabId
@@ -41,9 +44,6 @@ class E {
     static bool $passwordColsFound  = false;
     static bool $chatInclude        = false;
     static bool $chatIncludeCurrent = false;
-
-    static string $pgTitle = '';
-    static string $hdTitle = '';
 
     static array $itemChanges = [];
     static array $pageById = [];

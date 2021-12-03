@@ -13,7 +13,7 @@ class Load {
     static function imagesInUse(): array {
         return G::cache('editor', 2, 'imageList-' . E::$pgSlug . '-inUse', function() {
             return ModelImage::inUse();
-        });
+        }, E::$req->cacheBypass);
     }
 
 }

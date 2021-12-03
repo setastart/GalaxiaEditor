@@ -21,10 +21,11 @@ use Throwable;
 
 class G {
 
-    private static App    $app;
-    private static Editor $editor;
-    private static User   $me;
-    private static mysqli $mysqli;
+    private static App     $app;
+    private static Editor  $editor;
+    private static User    $me;
+    private static Request $req;
+    private static mysqli  $mysqli;
 
     private static array $timers      = [];
     private static int   $timerLevel  = 0;
@@ -294,7 +295,7 @@ class G {
 
 
     static function timerPrint(bool $comments = false, bool $memory = false) {
-        if (!self::isDevEnv() && !self::isDev()) return;
+        if (!self::isCli() && !self::isDevEnv() && !self::isDev()) return;
 
         $timeEnd = microtime(true);
 
@@ -424,7 +425,8 @@ class G {
 
     static function errorPage(int $code, string $msg = '', string $debugText = '') {
         $codeOriginal = $code;
-        $errors       = [
+
+        $errors = [
             403 => 'Forbidden',
             404 => 'Not Found',
             500 => 'Internal Server Error',
@@ -434,11 +436,11 @@ class G {
         http_response_code($code);
 
         if (self::isCli()) {
-            d('Error: ' . Text::h($codeOriginal) . ' - ' . $msg);
+            echo "$codeOriginal - $msg" . PHP_EOL;
+            echo(' ' . $debugText);
             if (self::isDev()) {
-                d($debugText);
+                db();
             }
-            db();
             exit();
         }
 
@@ -497,15 +499,62 @@ class G {
 
     #[NoReturn]
     static function redirect($location = '', int $code = 302) {
-        $location = trim($location, "/ \t\n\r\0\x0B");
-        if (headers_sent()) {
-            echo 'headers already sent. redirect: <a href="' . Text::h($location) . '">' . Text::h($location) . '</a>' . PHP_EOL;
+        $location = Text::h(trim($location, "/ \t\n\r\0\x0B"));
+        if (self::isCli()) {
+            echo "$code - /$location" . PHP_EOL;
+            exit();
+        } else if (headers_sent()) {
+            echo 'headers already sent. redirect: <a href="' . $location . '">' . $location . '</a>' . PHP_EOL;
             exit();
         }
+
         header('Location: /' . $location, true, $code);
         exit();
     }
 
+
+
+    static function test(
+        string $script, array $tests, string $host, int $argc, callable $fBuild, callable $fTest
+    ) {
+        if ($argc == 1) {
+            $testsPassed = 0;
+            $testsTotal  = count($tests);
+
+            if ($argc < 3) echo 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
+
+            $fBuild();
+
+            foreach ($tests as $url => $code) {
+                $cmd    = escapeshellcmd("php $script $url");
+                $result = shell_exec($cmd) ?? '';
+
+                if (str_starts_with($result, $code)) {
+                    $testsPassed++;
+                    continue;
+                }
+
+                echo 'Error: ' . $url . " -- expected: $code -- returned: $result";
+            }
+
+            $prefix = ($testsPassed == count($tests)) ? '[OK]' : '[FAIL]';
+
+            exit("$prefix $testsPassed/$testsTotal tests passed." . PHP_EOL);
+        }
+
+        if ($argc == 2) {
+            $page = $fTest();
+            // echo $page;
+            if (empty(trim($page))) G::errorPage(500, 'Empty.');
+            G::errorPage(200, 'OK.');
+        }
+
+        echo 'Usage:' . PHP_EOL;
+        echo 'run tests: php test.php' . PHP_EOL;
+        echo 'test single page: php test.php /example-url' . PHP_EOL;
+
+        exit();
+    }
 
 
 
@@ -529,7 +578,7 @@ class G {
 
 
     static function langSet(string $lang = null): void {
-        if (!is_string($lang) || !isset(self::$app->locales[$lang])) $lang = self::$app->lang;
+        if (is_null($lang) || !isset(self::$app->locales[$lang])) $lang = self::$app->lang;
         self::$app->lang   = $lang;
         self::$app->locale = self::$app->locales[self::$app->lang];
         self::$app->langs  = array_keys(self::$app->locales);

@@ -34,19 +34,9 @@ require_once __DIR__ . '/Galaxia/fastroute/src/functions.php';
 
 
 
-
+// todo: improve
 // @formatter:off
 if (G::isDevEnv()) {
-    include_once __DIR__ . '/Galaxia/kint.phar';
-    Kint\Renderer\RichRenderer::$folder = false;
-    function dd(...$vars) {
-        +!Kint::dump(...$vars);
-        exit;
-    }
-    function db() {
-        +!Kint::trace();
-    }
-} else if (G::isCli() || G::isDevDebug()) {
     function d(...$vars) {
         foreach ($vars as $var) {
             ob_start();
@@ -65,6 +55,29 @@ if (G::isDevEnv()) {
         foreach ($backtrace as $trace) {
             foreach (['file', 'class', 'function', 'line', 'type'] as $property) {
                 if ($trace[$property] ?? '') $r .= ' - ' . $trace[$property];
+            }
+        }
+        echo $r . PHP_EOL;
+    }
+} else if (G::isCli() || G::isDevDebug()) {
+    function d(...$vars) {
+        foreach ($vars as $var) {
+            ob_start();
+            var_dump($var);
+            $dump = ob_get_clean();
+            $dump = preg_replace('/=>\n\s+/m', ' => ', (string)$dump);
+            $dump = str_replace('<?php ', '', (string)$dump);
+            echo $dump . PHP_EOL;
+        }
+    }
+    function s(...$vars) { d($vars); }
+    function dd(...$vars) { d($vars); exit; }
+    function db() {
+        $backtrace = array_reverse(debug_backtrace());
+        $r = '';
+        foreach ($backtrace as $trace) {
+            foreach (['file', 'class', 'function', 'line', 'type'] as $property) {
+                if ($trace[$property] ?? '') $r .= ' - ' . $trace[$property] . PHP_EOL;
             }
         }
         echo $r . PHP_EOL;

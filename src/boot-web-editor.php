@@ -51,7 +51,6 @@ G::loadTranslations();
 $me = G::initMe();
 G::login(E::$req->host);
 
-$db = G::getMysqli();
 
 if (G::isDevDebug()) {
     E::$req->cacheBypass = true;
@@ -219,7 +218,8 @@ if (G::isLoggedIn()) {
     // routes
     G::timerStart('routing');
     $editor->layout = 'layout-editor';
-    $dispatcher     = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($me, $editor) {
+
+    $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($me, $editor) {
 
         $r->get('/edit/{pgSlug:login}', 'redirect-home');
         $r->post('/edit/{pgSlug:login}', 'redirect-home');
@@ -338,7 +338,7 @@ if (G::isLoggedIn()) {
     });
     G::timerStop('routing');
 
-    $routeInfo = $dispatcher->dispatch(E::$req->method, E::$req->path);
+    $routeInfo = $dispatcher->dispatch(E::$req->method, E::$req->pathOriginal);
 
     switch ($routeInfo[0]) {
         case FastRoute\Dispatcher::NOT_FOUND:

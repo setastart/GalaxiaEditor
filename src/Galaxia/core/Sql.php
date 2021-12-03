@@ -15,9 +15,6 @@
 namespace Galaxia;
 
 
-use mysqli;
-
-
 class Sql {
 
     public const ALLOWED_MODS        = ['COUNT', 'MIN', 'MAX', 'ANY_VALUE', 'DATE', 'TIME', 'YEAR', 'MONTH', 'DAY'];
@@ -215,6 +212,9 @@ class Sql {
 
         return rtrim($r, ' ' . $operation . PHP_EOL) . PHP_EOL . ')' . PHP_EOL . PHP_EOL;
     }
+
+
+
 
     static function selectWhereRaw(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null): string {
         if (empty($expression)) return '';
@@ -465,7 +465,7 @@ class Sql {
 
 
 
-    static function chunkSelect(mysqli $db, string $sql, callable $f, array &$items = [], $chunkSize = 5000) {
+    static function chunkSelect(string $sql, callable $f, array &$items = [], $chunkSize = 5000) {
         $done       = 0;
         $askForData = true;
         do {

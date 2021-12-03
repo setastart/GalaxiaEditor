@@ -1,8 +1,8 @@
 <?php
 
 
-use Galaxia\G;
 use Galaxia\Flash;
+use Galaxia\G;
 
 
 G::cacheDelete('editor');

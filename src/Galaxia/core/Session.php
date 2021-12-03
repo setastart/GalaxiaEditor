@@ -48,6 +48,7 @@ When session_regenerate_id(1) is called after session_start():
 namespace Galaxia;
 
 
+use ReturnTypeWillChange;
 use SessionHandlerInterface;
 
 
@@ -89,8 +90,6 @@ class Session implements SessionHandlerInterface {
     }
 
     public function write($sessionId, $sessionData): bool {
-        $sessionId = filter_var($sessionId, FILTER_SANITIZE_STRING);
-
         $stmt = G::prepare("
             INSERT INTO $this->tableName (
                 _geUserSessionId,
@@ -137,7 +136,8 @@ class Session implements SessionHandlerInterface {
         return $success;
     }
 
-    public function gc($maxlifetime): bool {
+    #[ReturnTypeWillChange]
+    public function gc($maxlifetime) {
         $stmt = G::prepare("
             DELETE FROM $this->tableName
             WHERE

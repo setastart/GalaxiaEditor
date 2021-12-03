@@ -65,7 +65,7 @@ trait Style {
 
 
 
-    static function slope(int $x1, int $y1, int $x2, int $y2): float {
+    static function slope(float $x1, float $y1, float $x2, float $y2): float {
         return ($y2 - $y1) / ($x2 - $x1);
     }
 
@@ -77,7 +77,7 @@ trait Style {
      * calc slope:       m = (y2 - y1) / (x2 - x1)
      * calc y-intersect: b = y1 - (m * x1)
      */
-    static function yIntersect(int $y1, int $y2, int $x1 = 320, int $x2 = 1000, int $round = 3): float {
+    static function yIntersect(float $y1, float $y2, float $x1 = 320, float $x2 = 1000, int $round = 3): float {
         $m = ($y2 - $y1) / ($x2 - $x1);
 
         return round($y1 - ($m * $x1), $round, PHP_ROUND_HALF_UP);

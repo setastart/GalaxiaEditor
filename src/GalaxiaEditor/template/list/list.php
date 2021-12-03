@@ -87,7 +87,7 @@ foreach ($list['gcFilterInts'] as $filterId => $filter) {
 
 // get items from database using cache
 
-$items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', function() use ($db, $list, $firstTable, $firstColumn, $dbSchema, $order) {
+$items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', function() use ($list, $firstTable, $firstColumn, $dbSchema, $order) {
     // // add key columns to joined tables (used to group joins in columns)
     // $selectQueryWithJoinKeys = $list['gcSelect'];
     // foreach ($selectQueryWithJoinKeys as $table => $columns) {
@@ -110,7 +110,7 @@ $items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', functio
     //         }
     //     }
     // };
-    // $items = chunkSelectQuery($db, $query, $f);
+    // $items = chunkSelectQuery($query, $f);
 
 
 
@@ -146,7 +146,7 @@ $items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', functio
                 }
             };
 
-            Sql::chunkSelect($db, $query, $f, $items);
+            Sql::chunkSelect($query, $f, $items);
 
         } else {
 
@@ -215,7 +215,7 @@ $items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', functio
     }
 
     return $items;
-});
+}, E::$req->cacheBypass);
 
 // dd($items);
 
@@ -415,7 +415,7 @@ $rows = G::cache('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', function(
     }
 
     return $rows;
-});
+}, E::$req->cacheBypass);
 
 $rowsTotal = count($rows);
 
@@ -476,7 +476,7 @@ foreach ($intFiltersActive as $filterId) {
                         $itemsByInt[$item[$dbTable][$tableKeyId][$dbColumn]][$itemId] = true;
 
         return $itemsByInt;
-    });
+    }, E::$req->cacheBypass);
 
     $filteredInts = [];
     foreach ($filterInts as $filterId => $filter) {
@@ -542,7 +542,7 @@ foreach ($textFiltersActive as $filterId) {
         }
 
         return $textFilterItems;
-    });
+    }, E::$req->cacheBypass);
 
     $itemsFiltered = [];
     foreach ($textFilterItems as $itemId => $text) {
