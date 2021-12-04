@@ -34,19 +34,22 @@ class G {
     private static int   $timerMaxLev = 0;
 
 
-    static function init(string $dir): App {
+    static function init(string $dir, Request $request = null, string $userTable = '_geUser'): App {
         self::initEnv();
 
         header('Content-Type: text/html; charset=utf-8');
         header_remove("X-Powered-By");
 
-        if (!isset(self::$req)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req before G::init()');
+        if (!isset(self::$req)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req = new Request() before G::init()');
         if (isset(self::$app)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
         if (!$dir) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is empty');
         if (!is_dir($dir)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
         if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' config/app.php');
 
         libxml_use_internal_errors(true);
+
+        if ($request) self::$req = $request;
+        self::$me = new User($userTable);
 
         $app = new App($dir);
 
@@ -62,15 +65,18 @@ class G {
 
 
 
-    static function initCLI(string $dir): App {
+    static function initCLI(string $dir, Request $request = null, string $userTable = '_geUser'): App {
         self::initEnv();
 
-        if (!isset(self::$req)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req before G::initCLI()');
+        if (!isset(self::$req)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req = new Request() before G::initCLI()');
         if (isset(self::$app)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
         if (!$dir || !is_dir($dir)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
         if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App config not found');
 
         libxml_use_internal_errors(true);
+
+        if ($request) self::$req = $request;
+        self::$me = new User($userTable);
 
         $app = new App($dir);
 
@@ -125,17 +131,6 @@ class G {
         self::$editor = new Editor($dir);
 
         return self::$editor;
-    }
-
-
-
-
-    static function initMe(string $userTable = '_geUser'): User {
-        if (!isset(self::$app)) self::errorPage(500, 'G user initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (isset(self::$me)) self::errorPage(500, 'G user initialization', __METHOD__ . ':' . __LINE__ . ' User was already initialized');
-        self::$me = new User($userTable);
-
-        return self::$me;
     }
 
 

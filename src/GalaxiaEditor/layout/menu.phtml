@@ -8,7 +8,7 @@ use GalaxiaEditor\E;
 $menu = [];
 
 foreach (E::$conf as $rootSlug => $confPage) {
-    if (!isset(G::$me)) continue;
+    if (!G::isLoggedIn()) continue;
     if (empty($confPage)) continue;
 
     if ($confPage['gcPageType'] == 'gcpSeparator') {

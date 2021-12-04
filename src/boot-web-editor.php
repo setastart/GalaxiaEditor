@@ -50,7 +50,6 @@ G::loadTranslations();
 
 // init me
 
-G::initMe();
 G::login();
 
 
