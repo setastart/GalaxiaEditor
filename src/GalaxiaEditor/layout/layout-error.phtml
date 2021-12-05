@@ -52,7 +52,7 @@ use Galaxia\Text;
 <div id="footer">
     <div class="links">
         <a href="/edit/logout"><?=Text::t('Logout')?></a>
-<?php   if (G::$me->hasPerm('dev')) { ?>
+<?php   if (G::isDev()) { ?>
         <a href="/edit/dev" class="hide-perm-dev">Developer</a>
 <?php   } ?>
         <a href="/edit/dev/cacheDeleteEditor"><?=Text::t('Delete Editor Caches')?></a>

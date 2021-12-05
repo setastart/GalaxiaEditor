@@ -89,6 +89,19 @@ class Request {
     }
 
 
+    function setUri(string $uri) {
+        $this->uri          = $uri;
+        $this->uri          = urldecode($this->uri);
+        $this->pathOriginal = strtok($this->uri, '?');
+        $this->path         = Text::translit($this->pathOriginal);
+    }
+
+
+    function isHttps() {
+        return $this->scheme == 'https';
+    }
+
+
     function schemeHost(): string {
         return $this->scheme . '://' . $this->host;
     }

@@ -127,7 +127,7 @@ foreach ($modules as $moduleKey => $module) {
 <?php       } ?>
 <?php   } ?>
             <a target="_blank" href="/edit/history/<?=Text::h($item['gcTable'])?>/<?=Text::h(E::$itemId)?>" class="btn-a"><?=Text::t('Open History in a new tab')?></a>
-<?php   if (G::$me->hasPerm('dev')) { ?>
+<?php   if (G::isDev()) { ?>
             <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>/history" class="hide-perm-dev btn-a"><?=sprintf(Text::t('Save %s in History'), Text::t(E::$section['gcTitleSingle']))?></a>
 <?php   } ?>
 <?php   if ($item['gcDelete']) { ?>

@@ -60,6 +60,7 @@ class Input {
 
 
 
+    // todo: FILTER_UNSAFE_RAW does nothing
 
     static function validate($input, $value, $itemId = null): array {
         $input          = array_merge(self::PROTO_INPUT, $input);
@@ -83,7 +84,7 @@ class Input {
         switch ($input['type']) {
 
             case 'datetime':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value'], "- \t\n\r\0\x0B");
                 $input['value'] = preg_replace('/\s\s+/', ' ', $input['value']); // remove double spaces
 
@@ -107,7 +108,7 @@ class Input {
 
 
             case 'date':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value'], "- \t\n\r\0\x0B");
                 $input['value'] = preg_replace('/\s\s+/', ' ', $input['value']); // remove double spaces
 
@@ -128,7 +129,7 @@ class Input {
 
 
             case 'time':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value'], "- \t\n\r\0\x0B");
                 $input['value'] = preg_replace('/\s\s+/', ' ', $input['value']); // remove double spaces
 
@@ -151,7 +152,7 @@ class Input {
 
 
             case 'timestamp':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value'], "- \t\n\r\0\x0B");
                 $input['value'] = preg_replace('/\s\s+/', ' ', $input['value']); // remove double spaces
 
@@ -180,7 +181,7 @@ class Input {
 
 
             case 'raw':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value']);
                 $input['value'] = preg_replace('/\s\s+/', ' ', $input['value']);
 
@@ -194,7 +195,7 @@ class Input {
                 break;
 
             case 'text':
-                // $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                // $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value']);
                 $input['value'] = preg_replace('/\s\s+/', ' ', $input['value']);
 
@@ -209,7 +210,7 @@ class Input {
 
 
             case 'password':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
 
                 if (isset($input['options']['minlength']))
                     if (mb_strlen($input['value']) < $input['options']['minlength'])
@@ -238,7 +239,7 @@ class Input {
 
 
             case 'email':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value']);
 
                 $minLength = max($input['options']['minlength'] ?? 0, 0);
@@ -252,7 +253,7 @@ class Input {
 
 
             case 'url':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value']);
 
                 $minLength = max($input['options']['minlength'] ?? 0, 0);
@@ -266,7 +267,7 @@ class Input {
 
 
             case 'slug':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 // $input['value'] = trim($input['value'], "- \t\n\r\0\x0B");
                 $input['value'] = Text::formatSlug($input['value']);
 
@@ -284,7 +285,7 @@ class Input {
 
 
             case 'slugImage':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value'], "- \t\n\r\0\x0B");
 
                 $minLength = max($input['options']['minlength'] ?? 0, 0);
@@ -303,7 +304,7 @@ class Input {
             case 'select':
             case 'radio':
             case 'status':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value'], "- \t\n\r\0\x0B");
                 if (!isset($input['options'][$input['value']]))
                     $input['errors'][] = 'Invalid option.';
@@ -317,7 +318,7 @@ class Input {
 
 
             case 'link':
-                $input['value'] = filter_var($input['value'], FILTER_SANITIZE_STRING);
+                $input['value'] = filter_var($input['value'], FILTER_UNSAFE_RAW);
                 $input['value'] = trim($input['value']);
 
                 if (!filter_var($input['value'], FILTER_VALIDATE_URL))

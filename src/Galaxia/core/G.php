@@ -467,7 +467,7 @@ class G {
 
 
     #[NoReturn]
-    static function redirect($location = '', int $code = 302) {
+    static function redirect($location = '', int $code = 302): void {
         $location = Text::h(trim($location, "/ \t\n\r\0\x0B"));
         if (self::isCli()) {
             echo "$code - /$location" . PHP_EOL;
@@ -485,7 +485,7 @@ class G {
 
     static function test(
         string $script, array $tests, string $host, int $argc, callable $fBuild, callable $fTest
-    ) {
+    ): void {
         if ($argc == 1) {
             $testsPassed = 0;
             $testsTotal  = count($tests);
@@ -562,8 +562,8 @@ class G {
         date_default_timezone_set(self::$app->timeZone);
     }
 
-    static function langSetFromUrl(Request $req): void {
-        self::langSet($req->langFromUrl());
+    static function langSetFromUrl(): void {
+        self::langSet(self::$req->langFromUrl());
     }
 
     static function langAddInactive(): void {
@@ -590,7 +590,7 @@ class G {
         return self::$app->locales;
     }
 
-    static function addLangPrefix(string $url, string $lang = '') {
+    static function addLangPrefix(string $url, string $lang = ''): string {
         $url = trim($url, '/');
         if (!isset(self::$app->locales[$lang])) $lang = self::$app->lang;
         if ($url == '') return self::$app->locales[$lang]['url'];
@@ -608,15 +608,15 @@ class G {
         return AppCache::get(self::dirCache(), $scope, $level, $key, $f, $bypass, $write);
     }
 
-    static function cacheDelete($scopes, $key = '*') {
+    static function cacheDelete($scopes, $key = '*'): void {
         AppCache::delete(self::dirCache(), $scopes, $key);
     }
 
-    static function cacheDeleteAll() {
+    static function cacheDeleteAll(): void {
         AppCache::deleteAll(self::dirCache());
     }
 
-    static function cacheDeleteOld() {
+    static function cacheDeleteOld(): void {
         AppCache::deleteOld(self::dirCache());
     }
 
@@ -653,15 +653,13 @@ class G {
         return AppRoute::slugToId($table, $status, $tableSlug, $redirect, $matchSlug, $langs ?? self::langs());
     }
 
-    static function routeSitemap(string $schemeHost) {
+    static function routeSitemap(string $schemeHost): void {
         AppRoute::generateSitemap($schemeHost);
     }
 
 
-    static function login(): bool {
+    static function login(): void {
         self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey, self::$req->host);
-
-        return self::$me->loggedIn;
     }
 
     static function isLoggedIn(): bool {

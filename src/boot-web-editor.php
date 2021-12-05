@@ -226,7 +226,7 @@ if (G::isLoggedIn()) {
         $r->post('/edit/{pgSlug:login}', 'redirect-home');
         $r->get('/edit/{pgSlug:logout}', 'login/logout');
 
-        if (G::$me->hasPerm('dev')) {
+        if (G::isDev()) {
             $r->get('/edit/{pgSlug:dev}', 'dev/dev');
             $r->get('/edit/dev/{pgSlug:sitemap}', 'dev/sitemap');
             $r->get('/edit/dev/{pgSlug:cacheDeleteApp}', 'dev/cache-delete-app');
@@ -271,7 +271,7 @@ if (G::isLoggedIn()) {
                         }
                         if ($confPage['gcItem']['gcUpdate']) {
                             $r->post('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}', 'item/item-post');
-                            if (G::$me->hasPerm('dev')) {
+                            if (G::isDev()) {
                                 $r->get('/edit/{pgSlug:' . $rootSlug . '}/{itemId:\d+}/history', 'item/item-post-save-history');
                             }
                         }

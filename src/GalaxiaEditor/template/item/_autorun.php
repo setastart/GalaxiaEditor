@@ -36,7 +36,7 @@ if (E::$itemId == 'new') return;
 // restrict edit acces to only own user
 
 if ($item['gcUpdateOnlyOwn'] ?? false) {
-    if (!G::$me->hasPerm('dev') && G::$me->id != E::$itemId) {
+    if (!G::isDev() && G::$me->id != E::$itemId) {
         Flash::error(Text::t('Redirected. You don\'t have access to that page.'));
         G::redirect('/edit/' . G::$editor->homeSlug);
     }

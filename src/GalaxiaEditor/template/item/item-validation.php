@@ -36,7 +36,7 @@ if (E::$passwordColsFound) {
 }
 
 
-if (G::$me->hasPerm('dev') && G::$me->id == E::$itemId) {
+if (G::isDev() && G::$me->id == E::$itemId) {
     if (isset($_POST['item']['perms']) && isset($item['inputs']['perms'])) {
         $explodedPerms = explode(',', $_POST['item']['perms']);
         if (!in_array('dev', $explodedPerms)) $item['inputs']['perms']['errors'][] = 'Cannot lose own dev permission';
