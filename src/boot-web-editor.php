@@ -39,7 +39,7 @@ G::timerStart('editor');
 G::initEditor(dirname(__DIR__));
 E::$conf = require G::dir() . 'config/editor.php';
 
-G::$editor->version = '5.0.0';
+G::$editor->version = '5.0.1';
 
 G::timerStop('editor');
 
@@ -79,7 +79,6 @@ if (G::isLoggedIn()) {
             [
                 'expires'  => time() + 86400, // 1 day
                 'path'     => '/',
-                'domain'   => '.' . G::$req->host,
                 'secure'   => G::$req->isHttps(),
                 'httponly' => true,
                 'samesite' => 'Strict',

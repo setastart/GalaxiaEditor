@@ -466,7 +466,7 @@ class Authentication {
     }
 
 
-    function logout(string $host) {
+    function logout() {
         Flash::cleanMessages();
         session_destroy();
         foreach ($_COOKIE as $key => $val) {
@@ -476,7 +476,6 @@ class Authentication {
                 [
                     'expires'  => 1,
                     'path'     => '/',
-                    'domain'   => '.' . $host,
                     'secure'   => G::$req->isHttps(),
                     'httponly' => true,
                     'samesite' => 'Strict',

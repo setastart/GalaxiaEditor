@@ -5,6 +5,6 @@ use Galaxia\G;
 use GalaxiaEditor\E;
 
 
-E::$auth->logout(G::$req->host);
+E::$auth->logout();
 Flash::cleanMessages();
 G::redirect('edit', 303);
