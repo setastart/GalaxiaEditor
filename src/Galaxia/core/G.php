@@ -659,7 +659,7 @@ class G {
 
 
     static function login(): void {
-        self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey, self::$req->host);
+        self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey);
     }
 
     static function isLoggedIn(): bool {

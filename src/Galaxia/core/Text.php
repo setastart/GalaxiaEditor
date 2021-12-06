@@ -153,7 +153,7 @@ HTML;
         if ($h1 == 0) return $text;
 
         // add target="_blank" rel="noopener" to outgoing links
-        $host = explode('.', $_SERVER['HTTP_HOST']);
+        $host = explode('.', G::$req->host);
         $host = implode('\.', $host);
         $re   = '~<a href="https?(?!://' . $host . '/)://([^:/\s">]+)~m';
 
@@ -234,7 +234,7 @@ HTML;
         if (empty($transforms)) return $text;
 
         // add target="_blank" rel="noopener" to outgoing links
-        $host = explode('.', $_SERVER['HTTP_HOST']);
+        $host = explode('.', G::$req->host);
         $host = implode('\.', $host);
         $re   = '~<a href="https?(?!://' . $host . '/)://([^:/\s">]+)~m';
 
@@ -314,7 +314,7 @@ HTML;
         if (empty($text)) return '';
 
         // add target="_blank" rel="noopener" to outgoing links
-        $host = explode('.', $_SERVER['HTTP_HOST']);
+        $host = explode('.', G::$req->host);
         $host = implode('\.', $host);
         $re   = '~<a href="https?(?!://' . $host . '/)://([^:/\s">]+)~m';
 

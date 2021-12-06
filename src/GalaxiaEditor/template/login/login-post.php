@@ -45,7 +45,7 @@ if ($userId) {
                 31536000,
                 '/; SameSite=Strict',
                 '.' . G::$req->host,
-                isset($_SERVER['HTTPS']),
+                G::$req->isHttps(),
                 true
             ); // 31536000 seconds = 1 year
         }

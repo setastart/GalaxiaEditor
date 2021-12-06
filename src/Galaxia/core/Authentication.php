@@ -477,7 +477,7 @@ class Authentication {
                     'expires'  => 1,
                     'path'     => '/',
                     'domain'   => '.' . $host,
-                    'secure'   => isset($_SERVER['HTTPS']),
+                    'secure'   => G::$req->isHttps(),
                     'httponly' => true,
                     'samesite' => 'Strict',
                 ]

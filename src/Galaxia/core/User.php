@@ -35,7 +35,7 @@ class User {
     }
 
 
-    public function logInFromCookieSessionId(string $cookieName, string $host) {
+    public function logInFromCookieSessionId(string $cookieName) {
         if (!isset($_COOKIE[$cookieName])) return;
         G::timerStart('Session');
         session_name($cookieName);
@@ -51,8 +51,8 @@ class User {
             session_set_cookie_params(
                 31536000,
                 '/; SameSite=Strict',
-                '.' . $host,
-                isset($_SERVER['HTTPS']),
+                '.' . G::$req->host,
+                G::$req->isHttps(),
                 true
             );
         }

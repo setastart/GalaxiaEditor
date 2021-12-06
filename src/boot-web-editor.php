@@ -80,7 +80,7 @@ if (G::isLoggedIn()) {
                 'expires'  => time() + 86400, // 1 day
                 'path'     => '/',
                 'domain'   => '.' . G::$req->host,
-                'secure'   => isset($_SERVER['HTTPS']),
+                'secure'   => G::$req->isHttps(),
                 'httponly' => true,
                 'samesite' => 'Strict',
             ]

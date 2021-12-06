@@ -90,7 +90,7 @@ class Asset {
         foreach ($links as $href) {
 // @formatter:off ?>
     <link rel="<?=Text::h($rel)?>" href="<?=Text::h($href)?>"/>
-<?php } // @formatter:on
+<?php   } // @formatter:on
     }
 
 
