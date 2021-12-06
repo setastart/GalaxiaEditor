@@ -29,15 +29,15 @@ class E {
     static string $pgTitle = '';
     static string $hdTitle = '';
 
-    static string $pgSlug   = ''; // pgSlug
-    static string $tabName  = ''; // tabName
-    static string $tabId    = ''; // tabId
-    static string $itemId   = ''; // itemId
-    static string $imgSlug  = ''; // imgSlug
-    static string $imgW     = ''; // imgW
-    static string $imgH     = ''; // imgH
-    static string $action   = ''; // action
-    static string $itemDate = ''; // itemDate
+    static string $pgSlug   = '';
+    static string $tabName  = '';
+    static string $tabId    = '';
+    static string $itemId   = '';
+    static string $imgSlug  = '';
+    static string $imgW     = '';
+    static string $imgH     = '';
+    static string $action   = '';
+    static string $itemDate = '';
 
     static bool $includeTrix        = false;
     static bool $showSwitchesLang   = false;
