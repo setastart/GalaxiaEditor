@@ -139,12 +139,12 @@ if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
             count(array_intersect(array_keys(E::$itemChanges), $slugs)) > 0
         ) {
             G::routeSitemap(G::$req->schemeHost());
-            if (file_exists(G::dir() .'src/script/_editor-item-update-hard.php')) {
-                include G::dir() .'src/script/_editor-item-update-hard.php';
+            if (file_exists(G::dir() .'script/_editor-item-update-hard.php')) {
+                include G::dir() .'script/_editor-item-update-hard.php';
             }
         } else {
-            if (file_exists(G::dir() .'src/script/_editor-item-update-soft.php')) {
-                include G::dir() .'src/script/_editor-item-update-soft.php';
+            if (file_exists(G::dir() .'script/_editor-item-update-soft.php')) {
+                include G::dir() .'script/_editor-item-update-soft.php';
             }
         }
 
