@@ -78,6 +78,7 @@ class ConfigDb {
         // check configuration
 
         foreach (E::$conf as $areaKey => $area) {
+            if (empty($area)) continue;
 
             if (!empty($area['gcList'])) {
 
