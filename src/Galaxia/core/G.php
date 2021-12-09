@@ -263,7 +263,11 @@ class G {
     }
 
 
-    static function timerPrint(bool $comments = false, bool $memory = false) {
+    static function timerPrint(
+        bool $comments = false,
+        bool $memory = false,
+        bool $includes = false
+    ) {
         if (!self::isCli() && !self::isDevEnv() && !self::isDev()) return;
 
         $timeEnd = microtime(true);
@@ -366,13 +370,24 @@ class G {
         $memPeak     = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(false), 2, $padHead);
         $memEndReal  = ' ' . Text::bytesIntToAbbr(memory_get_usage(true), 2, $padHead);
         $memPeakReal = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(true), 2, $padHead);
-        $memLenMax   = ' ' . max(strlen($memEnd), strlen($memPeak), strlen($memEndReal), strlen($memPeakReal));
+        $incFiles    = ' ' . count(get_included_files());
+        $memLenMax   = ' ' . max(strlen($memEnd), strlen($memPeak), strlen($memEndReal), strlen($memPeakReal), strlen($incFiles));
 
         if ($memory) {
-            $r .= $prefix . 'mem at end .' . str_pad($memPeak, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
-            $r .= $prefix . 'mem peak ...' . str_pad($memPeak, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
+            $r .= $prefix . 'mem at end ......' . str_pad($memEnd, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
+            $r .= $prefix . 'mem peak ........' . str_pad($memPeak, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
             $r .= $prefix . 'mem real at end .' . str_pad($memEndReal, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
             $r .= $prefix . 'mem real peak ...' . str_pad($memPeakReal, $memLenMax, $padHead, STR_PAD_LEFT) . ' / ' . ini_get('memory_limit') . $postfix;
+        }
+        $r .= $prefix . 'included files ..' . str_pad($incFiles, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
+        if ($includes) {
+            $r         .= $prefix . ' ... ' . $postfix;
+            $parentDir = dirname(self::$app->dir);
+            foreach (get_included_files() as $file) {
+                if (str_starts_with($file, self::$app->dir)) $file = './' . substr($file, strlen(self::$app->dir));
+                else if (str_starts_with($file, $parentDir)) $file = '..' . substr($file, strlen($parentDir));
+                $r .= $prefix . $file . $postfix;
+            }
         }
 
         echo $r;
@@ -462,6 +477,7 @@ class G {
             }
         }
 
+        // self::timerPrint(true, true, true);
         exit();
     }
 
@@ -642,6 +658,15 @@ class G {
         return self::getMysqli()->prepare($query);
     }
 
+    static function execute(string $query, $types = '', ...$vars) {
+        $stmt = self::getMysqli()->prepare($query);
+        if ($types) {
+            $stmt->bind_param($types, ...$vars);
+        }
+        $stmt->execute();
+        return $stmt;
+    }
+
 
 
 
@@ -664,6 +689,17 @@ class G {
 
     static function isLoggedIn(): bool {
         return self::$me->loggedIn ?? false;
+    }
+
+    public static function versionQuery(): string {
+        if (G::$req->cacheBypass) {
+            return '?ver=' . time();
+        } else if (file_exists(G::dir() . '.git/refs/heads/main')) {
+            $gitHash = file_get_contents(G::dir() . '.git/refs/heads/main');
+            return '?ver=' . substr($gitHash, 8, 5);
+        } else {
+            return '?ver=' . date('Y-m');
+        }
     }
 
 }

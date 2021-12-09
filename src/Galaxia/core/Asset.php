@@ -21,18 +21,18 @@ class Asset {
 
     static function build(
         array $builds,
-        string $path,
-        string $subdir,
-        string $srcExt,
-        string $destExt
+        string $publicDir,
+        string $publicSubdir,
+        string $extSource,
+        string $extBuild
     ): void {
-        G::timerStart(__CLASS__ . '::' . __FUNCTION__ . ' ' . $subdir);
+        G::timerStart(__CLASS__ . '::' . __FUNCTION__ . ' ' . $publicSubdir);
 
-        $dir    = rtrim($path, '/') . '/' . $subdir . '/';
-        $dirDev = rtrim($path, '/') . '/dev/' . $subdir . '/';
+        $dir    = rtrim($publicDir, '/') . '/' . $publicSubdir . '/';
+        $dirDev = rtrim($publicDir, '/') . '/dev/' . $publicSubdir . '/';
 
         // delete all development built files
-        $fileListDev = glob($dirDev . '*' . $destExt);
+        $fileListDev = glob($dirDev . '*' . $extBuild);
         foreach ($fileListDev as $fileDev) unlink($fileDev);
 
 
@@ -41,8 +41,8 @@ class Asset {
 
             // build development files
             foreach ($fileList as $fileName) {
-                $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($srcExt));
-                $output     = $dirDev . '/' . $buildName . '-' . $sourceName . $destExt;
+                $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($extSource));
+                $output     = $dirDev . '/' . $buildName . '-' . $sourceName . $extBuild;
 
 
                 ob_start();
@@ -59,31 +59,31 @@ class Asset {
             }
 
             // build file
-            file_put_contents($dir . $buildName . $destExt, $build);
+            file_put_contents($dir . $buildName . $extBuild, $build);
         }
 
-        G::timerStop(__CLASS__ . '::' . __FUNCTION__ . ' ' . $subdir);
+        G::timerStop(__CLASS__ . '::' . __FUNCTION__ . ' ' . $publicSubdir);
     }
 
 
     static function linkBuild(
         array $builds,
         string $buildName,
-        string $subdir,
-        string $srcExt,
-        string $destExt,
+        string $publicSubdir,
+        string $extSource,
+        string $extBuild,
         string $version,
         $rel = 'stylesheet'
     ): void {
         if (!$builds[$buildName] ?? []) return;
 
-        $links = ["/$subdir/$buildName$destExt$version"];
+        $links = ["/$publicSubdir/$buildName$extBuild$version"];
 
         if (G::isDevEnv() && G::isDev()) {
             $links = [];
             foreach ($builds[$buildName] as $fileName) {
-                $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($srcExt));
-                $links[]    = "/dev/$subdir/$buildName-$sourceName$destExt$version";
+                $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($extSource));
+                $links[]    = "/dev/$publicSubdir/$buildName-$sourceName$extBuild$version";
             }
         }
 

@@ -19,8 +19,8 @@ class Head {
 
     static function metaSecond(array $description, string $author, bool $index, int $length = 160): void {
 // @formatter:off ?>
-    <meta name="description" content="<?=Text::descg($description, null, $length)?>">
 
+    <meta name="description" content="<?=Text::descg($description, null, $length)?>">
     <meta name="author" content="<?=Text::h($author)?>">
 <?php   if ($index) { ?>
 
@@ -31,6 +31,7 @@ class Head {
 
     static function metaSecondError(string $author): void {
 // @formatter:off ?>
+
     <meta name="author" content="<?=Text::h($author)?>">
 
     <meta name="robots" content="noindex">
@@ -42,6 +43,7 @@ class Head {
     static function langAlt(array $url): void {
         if (count($url) < 2) return;
 // @formatter:off ?>
+
 <?php   foreach ($url ?? [] as $lang => $langUrl) { ?>
     <link rel="alternate" hreflang="<?=$lang?>" href="<?=G::$req->schemeHost() . Text::h($langUrl)?>"/>
 <?php   } ?>
@@ -52,6 +54,7 @@ class Head {
 
     static function favicon(): void {
 // @formatter:off ?>
+
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="apple-touch-icon" href="/favicon.png">
 <?php } // @formatter:on
@@ -68,6 +71,7 @@ class Head {
         int $descLength = 300
     ): void {
 // @formatter:off ?>
+
     <meta property="og:title" content="<?=Text::h($title)?>">
     <meta property="og:type" content="website">
     <meta property="og:image" content="<?=Text::h($image)?>">
@@ -82,40 +86,59 @@ class Head {
     static function headSchemaOrg(array $schema): void {
         if (!$schema) return;
 // @formatter:off ?>
-    <script type="application/ld+json"><?=PHP_EOL, json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), PHP_EOL?></script>
+
+    <script type="application/ld+json"><?=PHP_EOL, json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), PHP_EOL, '    '?></script>
 <?php // @formatter:on
     }
 
 
     static function css(
-        array $builds, string $buildName, string $srcExt, string $destExt, string $version
+        array $builds,
+        string $buildName,
+        string $extSource,
+        string $extBuild,
+        string $version
     ): void {
+        echo PHP_EOL;
         Asset::linkBuild(
-        $builds,
-        $buildName,
-        'css',
-        $srcExt,
-        $destExt,
-        $version,
-        'stylesheet');
+            $builds,
+            $buildName,
+            'css',
+            $extSource,
+            $extBuild,
+            $version,
+            'stylesheet'
+        );
     }
 
-    static function cssError(string $buildName, string $destExt) {
+
+
+
+    static function cssError(string $buildName, string $extBuild) {
 // @formatter:off ?>
-    <link rel="stylesheet" href="/css/<?=Text::h($buildName . $destExt)?>"/>
-<?php   } // @formatter:on
+
+    <link rel="stylesheet" href="/css/<?=Text::h($buildName . $extBuild)?>"/>
+<?php } // @formatter:on
+
+
+
 
     static function js(
-        array $builds, string $buildName, string $srcExt, string $destExt, string $version
+        array $builds,
+        string $buildName,
+        string $extSource,
+        string $extBuild,
+        string $version
     ): void {
+        echo PHP_EOL;
         Asset::linkBuild(
-        $builds,
-        $buildName,
-        'js',
-        $srcExt,
-        $destExt,
-        $version,
-        'script');
+            $builds,
+            $buildName,
+            'js',
+            $extSource,
+            $extBuild,
+            $version,
+            'script');
     }
 
 
