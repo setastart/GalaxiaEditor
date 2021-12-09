@@ -131,10 +131,10 @@ $ht .= '</div>' . PHP_EOL;
         if ($minlen > 0) $minlen = '<span class="input-min">' . Text::h($minlen) . '</span> < ';
         if ($maxlen > 0) $maxlen = ' < <span class="input-max">' . Text::h($maxlen) . '</span> ';
         if ($input['type'] == 'trix') {
-            $len = '<span class="input-len" title="' . Text::t('Number of letters ❖ Number of words') . '">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'])) . '</span> ';
+            $len = '<span class="input-len" title="' . Text::t('Number of letters ❖ Number of words') . '">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'] ?? '')) . '</span> ';
             $br  = '<br>';
         } else if ($minlen || $maxlen) {
-            $len = '<span class="input-len">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'])) . '</span> ';
+            $len = '<span class="input-len">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'] ?? '')) . '</span> ';
             $br  = '<br>';
         }
 
