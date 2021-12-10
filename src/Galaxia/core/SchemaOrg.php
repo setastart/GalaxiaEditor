@@ -9,7 +9,7 @@ use DateTime;
 
 class SchemaOrg {
 
-    private static function breadcrumbs(array $pages): array {
+    static function breadcrumbs(array $pages): array {
         $list = [];
         $i    = 1;
         foreach ($pages as $name => $url) {
@@ -35,7 +35,7 @@ class SchemaOrg {
     }
 
 
-    private static function images(array $images, $imageCount = 8): array {
+    static function images(array $images, $imageCount = 8): array {
         $images = array_slice($images, 0, $imageCount);
 
         $r = [];
@@ -47,7 +47,7 @@ class SchemaOrg {
     }
 
 
-    private static function brand(
+    static function brand(
         string $name
     ): array {
         return [
@@ -57,7 +57,7 @@ class SchemaOrg {
     }
 
 
-    private static function product(
+    static function product(
         string $name,
         string $desc,
         array $img,
@@ -91,7 +91,7 @@ class SchemaOrg {
     }
 
 
-    private static function article(
+    static function article(
         string $headline,
         DateTime $dtCreate,
         DateTime $dtModify,

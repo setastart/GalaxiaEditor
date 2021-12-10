@@ -39,7 +39,7 @@ G::timerStart('editor');
 G::initEditor(dirname(__DIR__));
 E::$conf = require G::dir() . 'config/editor.php';
 
-G::$editor->version = '5.0.5';
+G::$editor->version = '5.0.6';
 
 G::timerStop('editor');
 
