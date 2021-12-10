@@ -22,7 +22,7 @@ class Head {
 
     <meta name="description" content="<?=Text::descg($description, null, $length)?>">
     <meta name="author" content="<?=Text::h($author)?>">
-<?php   if ($index) { ?>
+<?php   if (!$index) { ?>
 
     <meta name="robots" content="noindex">
 <?php   } ?>
