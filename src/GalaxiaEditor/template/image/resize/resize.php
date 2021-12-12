@@ -5,17 +5,18 @@ use GalaxiaEditor\input\Input;
 
 
 $inputs['resize'] = [
-    'label' => 'Resize image to fit',
-    'name'  => 'resize',
-    'type'  => 'radio',
-    'value' => '1920',
+    'label'   => 'Resize image to fit',
+    'name'    => 'resize',
+    'type'    => 'radio',
+    'value'   => '1920',
     'options' => [
-        '0' => ['label' => 'No', 'cssClass' => 'btn'],
-        '640' => ['label' => '640', 'cssClass' => 'btn'],
-        '960' => ['label' => '960', 'cssClass' => 'btn'],
+        '0'    => ['label' => 'No', 'cssClass' => 'btn'],
+        '640'  => ['label' => '640', 'cssClass' => 'btn'],
+        '960'  => ['label' => '960', 'cssClass' => 'btn'],
         '1440' => ['label' => '1440', 'cssClass' => 'btn'],
-        '1920' => ['label' => '1920', 'cssClass' => 'btn'],
+        '1920' => ['label' => '1920 HD', 'cssClass' => 'btn'],
         '2560' => ['label' => '2560', 'cssClass' => 'btn'],
+        '3840' => ['label' => '3840 4K', 'cssClass' => 'btn'],
     ],
 ];
 

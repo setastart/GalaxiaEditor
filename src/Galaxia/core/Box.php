@@ -102,7 +102,7 @@ class Box {
         string $cssDir,
         string $htmlDir,
         string $htmlGlob = '{/,/*/,/*/*/}*.php',
-        string $buildName = 'gen-spacing',
+        string $buildName = 'gen-box',
         array $templates = self::templates,
         array $sizes = self::sizes
     ): string {
