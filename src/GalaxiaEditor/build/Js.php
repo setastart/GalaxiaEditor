@@ -21,6 +21,7 @@ class Js {
             __DIR__ . '/js/input.js',
             __DIR__ . '/js/scrape.js',
             __DIR__ . '/js/text.js',
+            __DIR__ . '/js/translate.js',
         ],
 
         'galaxiaChat' => [

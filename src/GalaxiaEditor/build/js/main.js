@@ -146,58 +146,7 @@ function handleEventClick(ev) {
         gjImage.selectSingle(ev.target);
     }
     if (ev.target.matches('.input-translate')) {
-
-        let elWrap = ev.target.closest('.input-wrap');
-        if (!elWrap) return;
-
-        let elTrix  = elWrap.querySelector('trix-editor');
-        let elInput = elWrap.querySelector('input, textarea');
-        if (!elInput) return;
-
-        let text = elInput.value;
-        if (!text) return;
-
-        let lang = elWrap.querySelector('.input-label-lang')?.innerText;
-
-        let xhr     = new XMLHttpRequest();
-        xhr.elWrap  = elWrap;
-        xhr.elInput = elInput;
-        xhr.elTrix  = elTrix;
-
-        xhr.onload = function() {
-            if (this.status !== 200 && this.responseText !== 'ok') return;
-
-            if (this.elTrix) {
-                let editor =  this.elTrix.editor;
-                // editor.recordUndoEntry('Content updated');
-                // editor.setSelectedRange([0, editor.getDocument().getLength()]);
-                // editor.insertHTML(this.responseText)
-                editor.composition.replaceHTML(this.responseText);
-                return;
-            }
-            if (this.elInput.tagName === 'TEXTAREA') {
-                this.elInput.innerHTML = this.responseText;
-            }
-        };
-
-        xhr.onprogress = function(event) {
-            if (!event.lengthComputable) return; // size unknown
-            let percentComplete = event.loaded / event.total * 100;
-            console.log(percentComplete);
-        };
-
-        xhr.onerror = function() {
-            console.error('Resize request error.');
-        };
-
-        let post     = {text: text, lang: lang};
-        let formData = new FormData();
-        formData.append('text', text);
-        formData.append('lang', lang);
-
-        xhr.open('POST', '/' + gtranslate);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.send(formData);
+        gjTranslate.input(ev.target);
     }
 
     // checkbox alk key
