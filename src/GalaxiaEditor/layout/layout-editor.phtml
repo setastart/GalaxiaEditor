@@ -80,6 +80,11 @@ window.addEventListener("DOMContentLoaded", function(event) {
 
     <script type="text/javascript" src="/edit/js/galaxiaEditor.js?version=<?=Text::h(G::$editor->version)?>"></script>
     <script type="text/javascript">gjImage.editorImageSlug = '<?=Text::h(G::$editor->imageSlug)?>';</script>
+<?php   if (E::$hookTranslate) { ?>
+    <script type="text/javascript">
+let gtranslate = '<?=E::$hookTranslate?>';
+    </script>
+<?php   } ?>
 <?php   if (E::$chatInclude) { ?>
     <script type="text/javascript">
 var gchat = {

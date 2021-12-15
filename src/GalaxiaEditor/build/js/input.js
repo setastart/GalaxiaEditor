@@ -362,9 +362,11 @@ let gjInput = {
         if (el.checked) {
             document.body.classList.remove(el.value);
             if (el.parentNode.dataset.remember) sessionStorage.setItem(el.value, 'show');
+            this.textareaResize();
         } else {
             document.body.classList.add(el.value);
             if (el.parentNode.dataset.remember) sessionStorage.setItem(el.value, 'hide');
+            this.textareaResize();
         }
     },
 

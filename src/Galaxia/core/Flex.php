@@ -172,7 +172,7 @@ class Flex {
 
         G::timerStop(__CLASS__ . '::' . __FUNCTION__);
 
-        if (G::isDevEnv()) return $css . Text::commentHeader('Unused') . $cssUnused;
+        // if (G::isDevEnv()) return $css . Text::commentHeader('Unused') . $cssUnused;
 
         return $css;
     }

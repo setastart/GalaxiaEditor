@@ -20,6 +20,10 @@ class Config {
             'gcPageType' => 'string',
         ],
 
+        'gcpHooks' => [
+            '?gcHookTranslate' => 'string',
+        ],
+
         'gcpListItem' => [
             'gcPageType'    => 'string',
             'gcMenuTitle'   => 'string',
@@ -189,8 +193,12 @@ class Config {
             if (!isset($confPage['gcPageType']))
                 Config::geConfigParseError($key . '/gcPageType missing.');
 
-            if (!in_array($confPage['gcPageType'], ['gcpListItem', 'gcpHistory', 'gcpChat', 'gcpImages', 'gcpLinkToItem', 'gcpGoaccessStats', 'gcpSeparator']))
+            if (!in_array($confPage['gcPageType'], ['gcpListItem', 'gcpHistory', 'gcpChat', 'gcpImages', 'gcpLinkToItem', 'gcpGoaccessStats', 'gcpSeparator', 'gcpHooks']))
                 Config::geConfigParseError($key . '/gcPageType missing.');
+
+            if ($confPage['gcPageType'] == 'gcpHooks') {
+                E::$hookTranslate = $confPage['gcHookTranslate'] ?? '';
+            }
 
             Config::geConfigParse($key, Config::PROTO_GC[$confPage['gcPageType']], $confPage, '');
         }

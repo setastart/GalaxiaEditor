@@ -866,6 +866,16 @@ return [
         'pt' => 'Modificado',
         'es' => 'Modificado',
     ],
+    'Translate' => [
+        'en' => 'Translate',
+        'pt' => 'Traduzir',
+        'es' => 'Traducir',
+    ],
+    'Mod.' => [
+        'en' => 'Mod.',
+        'pt' => 'Mod.',
+        'es' => 'Mod.',
+    ],
     'Saved' => [
         'en' => 'Saved',
         'pt' => 'Salvado',

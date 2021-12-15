@@ -16,7 +16,7 @@ foreach (E::$conf as $rootSlug => $confPage) {
         continue;
     }
 
-    if (!$confPage['gcMenuShow']) continue;
+    if (!($confPage['gcMenuShow'] ?? '')) continue;
 
     $menu[$rootSlug]['link']     = '/edit/' . Text::h($rootSlug);
     $menu[$rootSlug]['title']    = $confPage['gcMenuTitle'];

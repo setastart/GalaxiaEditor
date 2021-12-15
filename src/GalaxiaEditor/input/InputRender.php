@@ -7,6 +7,7 @@ namespace GalaxiaEditor\input;
 use Galaxia\G;
 use Galaxia\Flash;
 use Galaxia\Text;
+use GalaxiaEditor\E;
 
 
 class InputRender {
@@ -125,31 +126,30 @@ $ht .= '</div>' . PHP_EOL;
 
 
         $len    = '';
-        $br     = '';
         $minlen = $input['options']['minlength'] ?? '';
         $maxlen = $input['options']['maxlength'] ?? '';
         if ($minlen > 0) $minlen = '<span class="input-min">' . Text::h($minlen) . '</span> < ';
         if ($maxlen > 0) $maxlen = ' < <span class="input-max">' . Text::h($maxlen) . '</span> ';
         if ($input['type'] == 'trix') {
             $len = '<span class="input-len" title="' . Text::t('Number of letters ❖ Number of words') . '">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'] ?? '')) . '</span> ';
-            $br  = '<br>';
         } else if ($minlen || $maxlen) {
             $len = '<span class="input-len">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'] ?? '')) . '</span> ';
-            $br  = '<br>';
         }
 
         $titleTitle = (G::isDev()) ? (Text::h($input['prefix']) ?? Text::h($input['name'])) : '';
 
+        $translate = E::$hookTranslate && in_array($input['type'], ['text', 'textarea', 'trix']);
+
 $ht = '<div class="' . Text::h($css) . '">' . PHP_EOL;
 $ht .= '    <div class="input-label">' .
-               '<span class="input-title" title="' . Text::h($titleTitle) . '">' . $input['label'] . ' <span class="input-label-lang">' . $input['lang'] . '</span></span><br> ' .
-       $minlen .
-               $len .
-               $maxlen .
-               $br .
-               '<span class="input-changed">' . Text::t('Modified') . '.</span> ' .
-       '<button type="button" class="input-initial fake">' . Text::t('initial') . '</button> ' .
-       '<button type="button" class="input-initial-undo fake">' . Text::t('undo') . '</button> ' .
+               '<div><span class="input-title" title="' . Text::h($titleTitle) . '">' . $input['label'] . '</span> <span class="input-label-lang">' . $input['lang'] . '</span></div>' .
+               "<div>{$minlen}{$len}{$maxlen}</div>" .
+               // '<div>' .
+               '<div class="input-changed" title="' . Text::t('Modified') . '">' . Text::t('Mod.') . '</div> ' .
+               '<button type="button" class="input-initial fake">' . Text::t('initial') . '</button> ' .
+               '<button type="button" class="input-initial-undo fake">' . Text::t('undo') . '</button> ' .
+        ($translate ? '<button type="button" class="input-translate fake">' . Text::t('Translate') . '</button> ' : '') .
+       // '</div>' .
        '</div>' . PHP_EOL;
 
         switch ($input['type']) {
@@ -158,75 +158,75 @@ $ht .= '    <div class="input-label">' .
                 $input['value']       = '';
                 $input['valueFromDb'] = '';
 
-                $ht .= InputRender::getBasicInput($input) . PHP_EOL;
+$ht .= InputRender::getBasicInput($input) . PHP_EOL;
                 break;
 
             case 'slug':
-                $ht .= InputRender::getSlugInput($input) . PHP_EOL;
+$ht .= InputRender::getSlugInput($input) . PHP_EOL;
                 break;
 
             case 'slugImage':
-                $ht .= InputRender::getSlugImageInput($input) . PHP_EOL;
+$ht .= InputRender::getSlugImageInput($input) . PHP_EOL;
                 break;
 
             case 'raw':
-                $ht .= InputRender::getRawInput($input) . PHP_EOL;
+$ht .= InputRender::getRawInput($input) . PHP_EOL;
                 break;
 
             case 'text':
-                $ht .= InputRender::getTextInput($input) . PHP_EOL;
+$ht .= InputRender::getTextInput($input) . PHP_EOL;
                 break;
 
             case 'email':
             case 'url':
             case 'number':
-                $ht .= InputRender::getBasicInput($input) . PHP_EOL;
+$ht .= InputRender::getBasicInput($input) . PHP_EOL;
                 break;
 
             case 'trix':
-                $ht .= InputRender::getTrixInput($input) . PHP_EOL;
+$ht .= InputRender::getTrixInput($input) . PHP_EOL;
                 break;
 
             case 'textarea':
-                $ht .= InputRender::getTextareaInput($input) . PHP_EOL;
+$ht .= InputRender::getTextareaInput($input) . PHP_EOL;
                 break;
 
             case 'datetime':
             case 'timestamp':
-                $ht .= InputRender::getTimestampInput($input) . PHP_EOL;
+$ht .= InputRender::getTimestampInput($input) . PHP_EOL;
                 break;
 
             case 'date':
-                $ht .= InputRender::getDateInput($input) . PHP_EOL;
+$ht .= InputRender::getDateInput($input) . PHP_EOL;
                 break;
 
             case 'time':
-                $ht .= InputRender::getTimeInput($input) . PHP_EOL;
+$ht .= InputRender::getTimeInput($input) . PHP_EOL;
                 break;
 
             case 'status':
             case 'radio':
-                $ht .= InputRender::getRadioInput($input) . PHP_EOL;
+$ht .= InputRender::getRadioInput($input) . PHP_EOL;
                 break;
 
             case 'select':
-                $ht .= InputRender::getSelectInput($input) . PHP_EOL;
+$ht .= InputRender::getSelectInput($input) . PHP_EOL;
                 break;
 
             case 'image':
-                $ht .= InputRender::getImageInput($input) . PHP_EOL;
+$ht .= InputRender::getImageInput($input) . PHP_EOL;
                 break;
 
             case 'importerJsonld':
-                $ht .= InputRender::getImporterJsonldInput($input) . PHP_EOL;
+$ht .= InputRender::getImporterJsonldInput($input) . PHP_EOL;
                 break;
 
             case 'importerYoutube':
-                $ht .= InputRender::getImporterYoutubeInput($input) . PHP_EOL;
+$ht .= InputRender::getImporterYoutubeInput($input) . PHP_EOL;
                 break;
 
             case 'importerVimeo':
-                $ht .= InputRender::getImporterVimeoInput($input) . PHP_EOL;
+$ht .= InputRender::getImporterVimeoInput($input) . PHP_EOL;
                 break;
 
             default:

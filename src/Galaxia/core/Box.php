@@ -137,7 +137,7 @@ class Box {
                 }
                 foreach ($template[self::permute] ?? [] as $sizeIdMin) {
                     foreach ($template[self::permute] as $sizeIdMax) {
-                        if ($sizeIdMin >= $sizeIdMax) continue;
+                        if ($sizeIdMin == $sizeIdMax) continue;
                         $root         = "$prefix-$sizeIdMin-$sizeIdMax";
                         $rules[$root] = '';
                         foreach ($properties as $property) {
@@ -175,7 +175,7 @@ class Box {
 
         G::timerStop(__CLASS__ . '::' . __FUNCTION__);
 
-        if (G::isDevEnv()) return $css . Text::commentHeader('Unused') . $cssUnused;
+        // if (G::isDevEnv()) return $css . Text::commentHeader('Unused') . $cssUnused;
 
         return $css;
     }

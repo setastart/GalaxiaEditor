@@ -39,6 +39,8 @@ class E {
     static string $action   = '';
     static string $itemDate = '';
 
+    static string $hookTranslate = '';
+
     static bool $includeTrix        = false;
     static bool $showSwitchesLang   = false;
     static bool $passwordColsFound  = false;
@@ -46,6 +48,6 @@ class E {
     static bool $chatIncludeCurrent = false;
 
     static array $itemChanges = [];
-    static array $pageById = [];
+    static array $pageById    = [];
 
 }
