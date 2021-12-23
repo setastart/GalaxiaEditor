@@ -50,14 +50,12 @@ if (G::isDevEnv()) {
     function s(...$vars) { d($vars); }
     function dd(...$vars) { d($vars); exit; }
     function db() {
-        $backtrace = array_reverse(debug_backtrace());
-        $r = '';
-        foreach ($backtrace as $trace) {
-            foreach (['file', 'class', 'function', 'line', 'type'] as $property) {
-                if ($trace[$property] ?? '') $r .= ' - ' . $trace[$property];
-            }
-        }
-        echo $r . PHP_EOL;
+        ob_start();
+        debug_print_backtrace();
+        $trace = ob_get_clean();
+        $trace = str_replace(G::dir(), '', $trace);
+        print $trace;
+        return;
     }
 } else if (G::isCli() || G::isDevDebug()) {
     function d(...$vars) {
@@ -77,8 +75,9 @@ if (G::isDevEnv()) {
         $r = '';
         foreach ($backtrace as $trace) {
             foreach (['file', 'class', 'function', 'line', 'type'] as $property) {
-                if ($trace[$property] ?? '') $r .= ' - ' . $trace[$property] . PHP_EOL;
+                if ($trace[$property] ?? '') $r .= ' - ' . $trace[$property];
             }
+            $r .= PHP_EOL;
         }
         echo $r . PHP_EOL;
     }

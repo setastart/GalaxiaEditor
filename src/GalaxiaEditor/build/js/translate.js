@@ -26,9 +26,12 @@ let gjTranslate = {
                 let editor = this.elTrix.editor;
                 let text   = this.responseText;
 
-                text = text.replaceAll('<br> ', '<br>');
                 text = text.replaceAll('<p> ', '<p>');
+                text = text.replaceAll('<br> ', '<br>');
+                text = text.replaceAll('<h1> ', '<h1>');
+                text = text.replaceAll('<h2> ', '<h2>');
                 text = text.replaceAll('<blockquote> ', '<blockquote>');
+
                 text = text.replaceAll('</strong> ,', '</strong>,');
                 text = text.replaceAll('</strong> .', '</strong>.');
                 text = text.replaceAll('</em> ,', '</em>,');

@@ -3,6 +3,9 @@
 
 namespace Galaxia;
 
+use Galaxia\FastRoute\Dispatcher;
+use function Galaxia\FastRoute\cachedDispatcher;
+
 
 class AppRoute {
 
@@ -366,6 +369,33 @@ class AppRoute {
         }
 
         return $id;
+    }
+
+
+
+
+    static function page(callable $f, string $cacheFile, bool $cacheDisabled) {
+        $dispatcher = cachedDispatcher($f, ['cacheFile' => $cacheFile, 'cacheDisabled' => $cacheDisabled]);
+        $routeInfo = $dispatcher->dispatch(G::$req->method, G::$req->path);
+
+        switch ($routeInfo[0]) {
+            case Dispatcher::NOT_FOUND:
+                G::errorPage(404, 'Route not found.');
+                break;
+
+            case Dispatcher::METHOD_NOT_ALLOWED:
+                G::errorPage(403, 'Method not allowed.');
+                break;
+
+            case Dispatcher::FOUND:
+                G::$req->pagId      = $routeInfo[1]['pageId'] ?? 0;
+                G::$req->isRoot     = $routeInfo[1]['isRoot'] ?? false;
+                G::$req->route      = $routeInfo[1]['template'] ?? '';
+                G::$req->redirectId = $routeInfo[1]['redirect'] ?? 0;
+                G::$req->vars       = $routeInfo[2];
+                break;
+        }
+
     }
 
 }

@@ -469,9 +469,11 @@ class G {
 
         if ($code != 404) {
             if (self::isDevEnv()) {
+                if (!self::isCli()) echo '<!-- ' . PHP_EOL;
                 d($msg);
                 d($debugText);
                 db();
+                if (!self::isCli()) echo '-->' . PHP_EOL;
             } else {
                 error_log($msg . ' - ' . $debugText);
             }

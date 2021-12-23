@@ -39,6 +39,12 @@ class Request {
     public bool $cacheBypassHtml;
     public bool $cacheWrite;
 
+    public int    $pagId;
+    public bool   $isRoot;
+    public string $route;
+    public int    $redirectId;
+    public array  $vars;
+
 
     function __construct(
         string $host,
