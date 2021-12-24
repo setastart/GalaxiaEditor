@@ -47,8 +47,8 @@ if (G::isDevEnv()) {
             echo $dump;
         }
     }
-    function s(...$vars) { d($vars); }
-    function dd(...$vars) { d($vars); exit; }
+    function s(...$vars) { d(...$vars); }
+    function dd(...$vars) { d(...$vars); exit; }
     function db() {
         ob_start();
         debug_print_backtrace();
@@ -68,8 +68,8 @@ if (G::isDevEnv()) {
             echo $dump . PHP_EOL;
         }
     }
-    function s(...$vars) { d($vars); }
-    function dd(...$vars) { d($vars); exit; }
+    function s(...$vars) { d(...$vars); }
+    function dd(...$vars) { d(...$vars); exit; }
     function db() {
         $backtrace = array_reverse(debug_backtrace());
         $r = '';

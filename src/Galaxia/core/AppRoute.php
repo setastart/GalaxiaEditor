@@ -375,6 +375,8 @@ class AppRoute {
 
 
     static function page(callable $f, string $cacheFile, bool $cacheDisabled) {
+        G::timerStart(__CLASS__ . '::' . __FUNCTION__);
+
         $dispatcher = cachedDispatcher($f, ['cacheFile' => $cacheFile, 'cacheDisabled' => $cacheDisabled]);
         $routeInfo = $dispatcher->dispatch(G::$req->method, G::$req->path);
 
@@ -396,6 +398,7 @@ class AppRoute {
                 break;
         }
 
+        G::timerStop(__CLASS__ . '::' . __FUNCTION__);
     }
 
 }

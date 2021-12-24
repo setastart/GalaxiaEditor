@@ -28,8 +28,8 @@ class Asset {
     ): void {
         G::timerStart(__CLASS__ . '::' . __FUNCTION__ . ' ' . $publicSubdir);
 
-        $dir    = rtrim($publicDir, '/') . '/' . $publicSubdir . '/';
-        $dirDev = rtrim($publicDir, '/') . '/dev/' . $publicSubdir . '/';
+        $dir    = rtrim($publicDir, '/') . "/$publicSubdir/";
+        $dirDev = rtrim($publicDir, '/') . "/dev/$publicSubdir/";
 
         // delete all development built files
         $fileListDev = glob($dirDev . '*' . $extBuild);
@@ -42,7 +42,7 @@ class Asset {
             // build development files
             foreach ($fileList as $fileName) {
                 $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($extSource));
-                $output     = $dirDev . '/' . $buildName . '-' . $sourceName . $extBuild;
+                $output     = "${dirDev}${buildName}-${sourceName}${extBuild}";
 
 
                 ob_start();
@@ -92,6 +92,37 @@ class Asset {
     <link rel="<?=Text::h($rel)?>" href="<?=Text::h($href)?>"/>
 <?php } // @formatter:on
     }
+
+
+
+
+    static function fontFace(array $fonts, string $family): string {
+        $r = '';
+        foreach ($fonts[$family] ?? [] as $style => $weights) {
+            foreach ($weights as $file => $descriptors) {
+                $srces = [];
+                foreach ($descriptors['local'] ?? [] as $local) {
+                    $srces[] = "local('" . Text::h($local) . "')";
+                }
+                foreach ($descriptors['ext'] ?? ['woff2'] as $ext) {
+                    $srces[] = "url('" . Text::h($file) . "." . Text::h($ext) . "') format('" . Text::h($ext) . "')";
+                }
+                unset($descriptors['local'], $descriptors['ext']);
+
+                $r .= '@font-face {' . PHP_EOL;
+                $r .= "    font-family: '" . Text::h($family) . "';" . PHP_EOL;
+                $r .= "    font-style: " . Text::h($style) . ";" . PHP_EOL;
+                foreach ($descriptors as $descriptor => $value) {
+                    $r .= "    " . Text::h($descriptor) . ": " . Text::h($value) . ";" . PHP_EOL;
+                }
+                $r .= "    src: " . implode(', ', $srces) . ";" . PHP_EOL;
+                $r .= "}" . PHP_EOL . PHP_EOL;
+            }
+        }
+
+        return $r;
+    }
+
 
 
 
