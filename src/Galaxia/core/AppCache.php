@@ -39,7 +39,7 @@ class AppCache {
             $timerName = 'Cache ' . $cacheType . ': ' . $cacheName;
             G::timerStart($timerName);
 
-            $fImageWrite = function() use ($f, $write, $cacheFile) {
+            $fCache = function() use ($f, $write, $cacheFile) {
                 $r = $f();
                 if ($write && is_array($r)) {
                     file_put_contents($cacheFile, '<?php return ' . var_export($r, true) . ';' . PHP_EOL);
@@ -49,9 +49,9 @@ class AppCache {
             };
 
             if ($bypass) {
-                $result = $fImageWrite();
+                $result = $fCache();
             } else {
-                $result = File::lock($dirCache . 'flock', $cacheName . '.lock', $fImageWrite);
+                $result = File::lock($dirCache . 'flock', $cacheName . '.lock', $fCache);
             }
 
         }

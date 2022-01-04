@@ -4,6 +4,7 @@ use Galaxia\G;
 use Galaxia\Pagination;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\Cache;
 use GalaxiaEditor\E;
 
 
@@ -29,7 +30,7 @@ if (E::$itemId ?? '') {
     $list['gcFilterInts']  = [];
     $list['gcFilterTexts'] = [];
     $_POST['itemsPerPage'] = 10000;
-    G::$editor->view          = 'list/order';
+    G::$editor->view       = 'list/order';
 }
 
 
@@ -87,7 +88,7 @@ foreach ($list['gcFilterInts'] as $filterId => $filter) {
 
 // get items from database using cache
 
-$items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', function() use ($list, $firstTable, $firstColumn, $dbSchema, $order) {
+$items = Cache::listItems($order, function() use ($list, $firstTable, $firstColumn, $dbSchema, $order) {
     // // add key columns to joined tables (used to group joins in columns)
     // $selectQueryWithJoinKeys = $list['gcSelect'];
     // foreach ($selectQueryWithJoinKeys as $table => $columns) {
@@ -215,7 +216,7 @@ $items = G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', functio
     }
 
     return $items;
-}, G::$req->cacheBypass);
+});
 
 // dd($items);
 
@@ -250,7 +251,7 @@ foreach ($columns as $columnId => $column) {
 
 // make html for all rows, using cache
 
-$rows = G::cache('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', function() use ($firstTable, $items, $columns, $tags, $order) {
+$rows = Cache::listRows($order, function() use ($firstTable, $items, $columns, $tags, $order) {
     $rows         = [];
     $currentColor = 0;
     $thumbsToShow = 3;
@@ -415,7 +416,7 @@ $rows = G::cache('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', function(
     }
 
     return $rows;
-}, G::$req->cacheBypass);
+});
 
 $rowsTotal = count($rows);
 
@@ -467,7 +468,7 @@ foreach ($filterInts as $filterId => $filter) {
 G::timerStart('Filter Ints');
 foreach ($intFiltersActive as $filterId) {
 
-    $itemsByInt = G::cache('editor', 3, 'list-' . E::$pgSlug . '-filterInt-' . $filterId, function() use ($items, $filterInts, $filterId) {
+    $itemsByInt = Cache::listItemsFilterInt($filterId, function() use ($items, $filterInts, $filterId) {
         $itemsByInt = [];
         foreach ($items as $itemId => $item)
             foreach ($filterInts[$filterId]['filterWhat'] as $dbTable => $dbColumns)
@@ -476,7 +477,7 @@ foreach ($intFiltersActive as $filterId) {
                         $itemsByInt[$item[$dbTable][$tableKeyId][$dbColumn]][$itemId] = true;
 
         return $itemsByInt;
-    }, G::$req->cacheBypass);
+    });
 
     $filteredInts = [];
     foreach ($filterInts as $filterId => $filter) {
@@ -513,7 +514,7 @@ foreach ($textFiltersActive as $filterId) {
     if (!$filterInput) continue;
     $filterInput = explode('+', $filterInput);
 
-    $textFilterItems = G::cache('editor', 4, 'list-' . E::$pgSlug . '-filterText-' . $filterId, function() use ($rows, $items, $filterTexts, $filterId) {
+    $textFilterItems = Cache::listItemsFilterText($filterId, function() use ($rows, $items, $filterTexts, $filterId) {
         foreach ($rows as $itemId => $row) {
             $textFilterItems[$itemId] = '';
             $emptyFound               = false;
@@ -542,7 +543,7 @@ foreach ($textFiltersActive as $filterId) {
         }
 
         return $textFilterItems;
-    }, G::$req->cacheBypass);
+    });
 
     $itemsFiltered = [];
     foreach ($textFilterItems as $itemId => $text) {

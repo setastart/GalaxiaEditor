@@ -22,7 +22,9 @@
 }
 .input-wrap .input-label > :not(:first-child) {
 }
-.input-wrap .input-label + * {
+.input-wrap .input-label + input,
+.input-wrap .input-label + select,
+.input-wrap .input-label + textarea {
     flex: 3 1 0;
     min-width: 240px;
 }

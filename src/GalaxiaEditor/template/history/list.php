@@ -1,6 +1,7 @@
 <?php
 
 use Galaxia\{G, Pagination, Sql, Text};
+use GalaxiaEditor\Cache;
 use GalaxiaEditor\E;
 
 
@@ -14,7 +15,7 @@ if (G::$req->xhr) {
 
 
 
-$items = G::cache('editor', 2, 'list-' . E::$pgSlug . '-items', function() use ($userNames) {
+$items = Cache::historyItems(function() use ($userNames) {
     $query = Sql::select(['_geHistory' => ['_geHistoryId', '_geUserId', 'uniqueId', 'tabName', 'tabId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
     $query .= Sql::selectOrderBy(['_geHistory' => ['uniqueId' => 'DESC']]);
 
@@ -60,7 +61,7 @@ $items = G::cache('editor', 2, 'list-' . E::$pgSlug . '-items', function() use (
     $stmt->close();
 
     return $items ?? [];
-}, G::$req->cacheBypass);
+});
 $rowsTotal = count($items);
 
 
@@ -68,7 +69,7 @@ $rowsTotal = count($items);
 
 // make html for all rows, using cache
 
-$rows = G::cache('editor', 3, 'list-' . E::$pgSlug . '-rows', function() use ($items, $pageNames) {
+$rows = Cache::historyRows(function() use ($items, $pageNames) {
     foreach ($items as $itemId => $item) {
 $ht = '<a class="row ' . $item['action'] . '" href="/edit/' . Text::h(E::$pgSlug) . '/' . Text::h($item['tabName']) . '/' . Text::h($item['tabId']) . '#' . Text::h($itemId) . '">' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
@@ -90,7 +91,7 @@ $ht .= '</a>' . PHP_EOL;
         $rows[$itemId] = $ht;
     }
     return $rows ?? [];
-}, G::$req->cacheBypass);
+});
 
 
 

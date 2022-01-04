@@ -3,17 +3,16 @@
 namespace GalaxiaEditor\render;
 
 
-use Galaxia\G;
-use GalaxiaEditor\E;
+use GalaxiaEditor\Cache;
 use GalaxiaEditor\model\ModelImage;
 
 
 class Load {
 
     static function imagesInUse(): array {
-        return G::cache('editor', 2, 'imageList-' . E::$pgSlug . '-inUse', function() {
+        return Cache::imageListInUse(function() {
             return ModelImage::inUse();
-        }, G::$req->cacheBypass);
+        });
     }
 
 }

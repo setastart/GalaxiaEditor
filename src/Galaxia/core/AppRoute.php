@@ -9,10 +9,13 @@ use function Galaxia\FastRoute\cachedDispatcher;
 
 class AppRoute {
 
-    static function generateSitemap(string $schemeHost) {
-        $activeLocales = array_diff_key(G::$app->locales, G::$app->localesInactive);
-        $activeLangs   = array_keys($activeLocales);
-        $keyLang       = key($activeLocales);
+    static function sitemap(bool $removeInactiveLangs = true): array {
+        $activeLocales = G::$app->locales;
+        if ($removeInactiveLangs) {
+            $activeLocales = array_diff_key(G::$app->locales, G::$app->localesInactive);
+        }
+        $activeLangs = array_keys($activeLocales);
+        $keyLang     = key($activeLocales);
 
         $pages = [];
         $query = Sql::select(['page' => ['pageSlug_', 'pageType', 'timestampModified']], $activeLangs);
@@ -27,18 +30,13 @@ class AppRoute {
         }
         $stmt->close();
 
-        if (empty($pages)) {
-            Flash::devlog('Sitemap not generated.');
-
-            return;
-        }
-
-        $urls  = [];
-        $found = 0;
+        $urls      = [];
+        $urlsFound = [];
+        $found     = 0;
         foreach (G::$app->routes as $pageType => $patterns) {
             foreach ($patterns as $pattern => $methods) {
-                foreach ($pages[$pageType] ?? [] as $page) {
-                    foreach ($methods as $method => $route) {
+                foreach ($methods as $method => $route) {
+                    foreach ($pages[$pageType] ?? [] as $page) {
                         if ($method != 'GET') continue;
                         if (empty($route['sitemap'])) continue;
                         $sm = $route['sitemap'];
@@ -94,7 +92,10 @@ class AppRoute {
 
                                 if (count($activeLocales) > 1) {
                                     foreach ($activeLocales as $lang => $locale) {
-                                        $urls[$found][$lang] = G::addLangPrefix($page['pageSlug_' . $lang] . $subLang[$lang], $lang);
+                                        $urlPrefixed = G::addLangPrefix($page['pageSlug_' . $lang] . $subLang[$lang], $lang);
+                                        if (isset($urlsFound[$urlPrefixed])) continue;
+                                        $urls[$found][$lang]     = $urlPrefixed;
+                                        $urlsFound[$urlPrefixed] = true;
                                     }
                                 }
                                 $found++;
@@ -105,13 +106,15 @@ class AppRoute {
                         if ($pattern == '') {
                             $urls[$found] = [
                                 $keyLang => G::addLangPrefix($page['pageSlug_' . $keyLang], $keyLang),
-
-                                'pri' => $sm['priority'],
+                                'pri'    => $sm['priority'],
                             ];
 
                             if (count($activeLocales) > 1) {
                                 foreach ($activeLocales as $lang => $locale) {
-                                    $urls[$found][$lang] = G::addLangPrefix($page['pageSlug_' . $lang], $lang);
+                                    $urlPrefixed = G::addLangPrefix($page['pageSlug_' . $lang], $lang);
+                                    if (isset($urlsFound[$urlPrefixed])) continue;
+                                    $urls[$found][$lang]     = $urlPrefixed;
+                                    $urlsFound[$urlPrefixed] = true;
                                 }
                             }
                             $found++;
@@ -122,46 +125,78 @@ class AppRoute {
             }
         }
 
-
-        if ($found > 0) {
-            foreach ($activeLocales as $lang => $locale) {
-                $fileName = 'sitemap_' . $lang . '.xml';
-                if ($lang == $keyLang) $fileName = 'sitemap.xml';
+        return $urls;
+    }
 
 
-                $rl = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-                $rl .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . PHP_EOL;
 
-                foreach ($urls as $url) {
-                    $rl .= '<url>' . PHP_EOL;
-                    $rl .= '  <priority>' . $url['pri'] . '</priority>' . PHP_EOL;
-                    $rl .= '  <loc>' . $schemeHost . $url[$lang] . '</loc>' . PHP_EOL;
-                    if (count($activeLocales) > 1) {
-                        foreach ($activeLocales as $lang2 => $locale) {
-                            $rl .= '  <xhtml:link hreflang="' . $lang2 . '" href="' . $schemeHost . $url[$lang2] . '" rel="alternate"/>' . PHP_EOL;
-                        }
-                    }
-                    $rl .= '</url>' . PHP_EOL;
-                }
-                $rl .= '</urlset>' . PHP_EOL;
+    static function urls(bool $removeInactiveLangs = true): array {
+        $urls    = [];
+        $sitemap = self::sitemap($removeInactiveLangs);
 
-                $result = file_put_contents(G::$app->dir . 'public/' . $fileName, $rl);
-                if ($result === false) {
-                    Flash::devlog('Sitemap could not be written to file.');
-
-                    return;
-                }
-                if ($result == 0) {
-                    Flash::devlog(sprintf('Sitemap written with 0 bytes - %s.', $fileName));
-
-                    return;
-                }
-
-                Flash::devlog(sprintf('Sitemap generated: %d items - %s', $found, $fileName) . ' <a target="blank" href="/' . $fileName . '">' . Text::t('Open in new tab') . '</a>');
+        foreach ($sitemap as $page) {
+            foreach ($page as $key => $val) {
+                if ($key == 'pri') continue;
+                $urls[] = $val;
             }
-        } else {
-            Flash::devlog('Sitemap not generated, no items found.');
         }
+
+        return $urls;
+    }
+
+
+    static function generateSitemap(string $schemeHost) {
+        $activeLocales = array_diff_key(G::$app->locales, G::$app->localesInactive);
+        $keyLang       = key($activeLocales);
+
+        $urls  = self::sitemap();
+        $found = count($urls);
+
+        if ($found <= 0) {
+            Flash::devlog('Sitemap not generated, no items found.');
+            return;
+        }
+
+        foreach ($activeLocales as $lang => $locale) {
+            $found = 0;
+
+            $fileName = 'sitemap_' . $lang . '.xml';
+            if ($lang == $keyLang) $fileName = 'sitemap.xml';
+
+            $rl = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+            $rl .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . PHP_EOL;
+
+            foreach ($urls as $url) {
+                if (!isset($url[$lang])) continue;
+                $found++;
+                $rl .= '<url>' . PHP_EOL;
+                $rl .= '  <priority>' . $url['pri'] . '</priority>' . PHP_EOL;
+                $rl .= '  <loc>' . $schemeHost . $url[$lang] . '</loc>' . PHP_EOL;
+                if (count($activeLocales) > 1) {
+                    foreach ($activeLocales as $lang2 => $locale) {
+                        if (!isset($url[$lang2])) continue;
+                        $rl .= '  <xhtml:link hreflang="' . $lang2 . '" href="' . $schemeHost . $url[$lang2] . '" rel="alternate"/>' . PHP_EOL;
+                    }
+                }
+                $rl .= '</url>' . PHP_EOL;
+            }
+            $rl .= '</urlset>' . PHP_EOL;
+
+            $result = file_put_contents(G::$app->dir . 'public/' . $fileName, $rl);
+            if ($result === false) {
+                Flash::devlog('Sitemap could not be written to file.');
+
+                return;
+            }
+            if ($result == 0) {
+                Flash::devlog(sprintf('Sitemap written with 0 bytes - %s.', $fileName));
+
+                return;
+            }
+
+            Flash::devlog(sprintf('Sitemap generated: %d items - %s', $found, $fileName) . ' <a target="blank" href="/' . $fileName . '">' . Text::t('Open in new tab') . '</a>');
+        }
+
     }
 
 
@@ -378,7 +413,7 @@ class AppRoute {
         G::timerStart(__CLASS__ . '::' . __FUNCTION__);
 
         $dispatcher = cachedDispatcher($f, ['cacheFile' => $cacheFile, 'cacheDisabled' => $cacheDisabled]);
-        $routeInfo = $dispatcher->dispatch(G::$req->method, G::$req->path);
+        $routeInfo  = $dispatcher->dispatch(G::$req->method, G::$req->path);
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:

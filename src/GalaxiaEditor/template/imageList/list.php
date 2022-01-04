@@ -4,6 +4,7 @@ use Galaxia\AppImage;
 use Galaxia\G;
 use Galaxia\Pagination;
 use Galaxia\Text;
+use GalaxiaEditor\Cache;
 use GalaxiaEditor\E;
 use GalaxiaEditor\render\Load;
 
@@ -21,7 +22,7 @@ if (G::$req->xhr) {
 
 // get images using cache
 
-$items = G::cache('editor', 2, 'imageList-' . E::$pgSlug . '-items', function() {
+$items = Cache::imageListItems(function() {
     $items = [];
     $imageList = AppImage::list(G::dirImage());
 
@@ -37,7 +38,7 @@ $items = G::cache('editor', 2, 'imageList-' . E::$pgSlug . '-items', function() 
 
 
     return $items;
-}, G::$req->cacheBypass);
+});
 
 
 
@@ -52,7 +53,7 @@ $inUse = Load::imagesInUse();
 
 switch ($_POST['imageListType'] ?? '') {
     case 'image-select':
-        $rows = G::cache('editor', 3, 'imageList-' . E::$pgSlug . '-rows-select', function() use ($items, $inUse) {
+        $rows = Cache::imageListRowsSelect(function() use ($items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -85,11 +86,11 @@ $ht .= '</button>' . PHP_EOL;
                 $rows[$imgSlug] = $ht;
             }
             return $rows;
-        }, G::$req->cacheBypass);
+        });
         break;
 
     default:
-        $rows = G::cache('editor', 3, 'imageList-' . E::$pgSlug . '-rows', function() use ($items, $inUse) {
+        $rows = Cache::imageListRows(function() use ($items, $inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
@@ -151,7 +152,7 @@ $ht .= '</a>';
                 $rows[$imgSlug] = $ht;
             }
             return $rows;
-        }, G::$req->cacheBypass);
+        });
         break;
 }
 $rowsTotal = count($rows);
@@ -195,7 +196,7 @@ if ($textFiltersActive) {
         if (!$filterInput) continue;
         $filterInput = explode('+', $filterInput);
 
-        $itemsToFilter = G::cache('editor', 3, 'imageList-' . E::$pgSlug . '-filterTexts-' . $filterId, function() use ($items, $inUse, $filterId) {
+        $itemsToFilter = Cache::imageListFilterText($filterId, function() use ($items, $inUse, $filterId) {
             switch ($filterId) {
                 case 'slug':
                     foreach ($items as $imgSlug => $img)
@@ -252,7 +253,7 @@ if ($textFiltersActive) {
             }
 
             return $return;
-        }, G::$req->cacheBypass);
+        });
 
 
         // slugs search in keys

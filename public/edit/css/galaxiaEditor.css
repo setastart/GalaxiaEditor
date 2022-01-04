@@ -1054,6 +1054,7 @@ a.row:hover, .row a:hover {
 
 #upload-images {
     width: 100%;
+    flex: 1 1 auto;
 }
 #upload-images .controls .input-label {
     width: 100%;

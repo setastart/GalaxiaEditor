@@ -445,13 +445,13 @@ HTML;
             $text = $html;
             $text = trim($text, " \t\n\r\0\x0B\xC2\xA0");
             $text = strip_tags($text);
-            $text = preg_replace('~\s+~u', ' ', $text);
+            $text = preg_replace('~\s+~u', ' ', $text ?? '');
         }
-        $text = preg_replace('~\s*\.\s*\n+~m', '. ', $text);
-        $text = preg_replace('~\s*:\s*\n+~m', ': ', $text);
-        $text = preg_replace('~\s*\n+\s*~m', $separator, $text);
-        $text = preg_replace('~\s+~u', ' ', $text);
-        $text = preg_replace('~\s?,\s?~', ', ', $text);
+        $text = preg_replace('~\s*\.\s*\n+~m', '. ', $text ?? '');
+        $text = preg_replace('~\s*:\s*\n+~m', ': ', $text ?? '');
+        $text = preg_replace('~\s*\n+\s*~m', $separator, $text ?? '');
+        $text = preg_replace('~\s+~u', ' ', $text ?? '');
+        $text = preg_replace('~\s?,\s?~', ', ', $text ?? '');
 
         if ($length > 0 && mb_strlen($text) > $length) {
             $text = mb_substr($text, 0, $length) . '[…]';
