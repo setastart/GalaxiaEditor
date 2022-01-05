@@ -2002,6 +2002,8 @@ let gjTranslate = {
 
         let lang = elWrap.querySelector('.input-label-lang')?.innerText;
 
+        console.log(elWrap, elTrix, elInput, text)
+
         let xhr       = new XMLHttpRequest();
         xhr.elWrap    = elWrap;
         xhr.elInput   = elInput;
@@ -2031,9 +2033,7 @@ let gjTranslate = {
                 editor.composition.replaceHTML(text);
                 return;
             }
-            if (this.elInput.tagName === 'TEXTAREA') {
-                this.elInput.innerHTML = this.responseText;
-            }
+            this.elInput.value = this.responseText;
         };
 
         xhr.onprogress = function(event) {
