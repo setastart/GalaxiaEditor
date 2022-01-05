@@ -126,7 +126,7 @@ class Asset {
 
 
 
-    private static function preloadLink(
+    static function preloadLink(
         string $href,
         string $as = '',
         string $type = '',
@@ -150,7 +150,7 @@ class Asset {
     }
 
 
-    private static function preloadHeader(
+    static function preloadHeader(
         string $href,
         string $as = '',
         string $type = '',
