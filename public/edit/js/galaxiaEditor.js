@@ -2002,8 +2002,6 @@ let gjTranslate = {
 
         let lang = elWrap.querySelector('.input-label-lang')?.innerText;
 
-        console.log(elWrap, elTrix, elInput, text)
-
         let xhr       = new XMLHttpRequest();
         xhr.elWrap    = elWrap;
         xhr.elInput   = elInput;

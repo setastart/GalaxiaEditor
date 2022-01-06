@@ -77,13 +77,13 @@ class Asset {
     ): void {
         if (!$builds[$buildName] ?? []) return;
 
-        $links = ["/$publicSubdir/$buildName$extBuild$version"];
+        $links = ["/{$publicSubdir}/{$buildName}{$extBuild}{$version}"];
 
         if (G::isDevEnv() && G::isDev()) {
             $links = [];
             foreach ($builds[$buildName] as $fileName) {
                 $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($extSource));
-                $links[]    = "/dev/$publicSubdir/$buildName-$sourceName$extBuild$version";
+                $links[]    = "/dev/{$publicSubdir}/{$buildName}-{$sourceName}{$extBuild}{$version}";
             }
         }
 

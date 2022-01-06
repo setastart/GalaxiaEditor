@@ -14,6 +14,9 @@
 .input-wrap > * {
     flex: 1 1 0;
 }
+.input-wrap > .slugImage {
+    flex: 1 1 auto;
+}
 .input-wrap .input-label {
     display: flex;
     flex-wrap: wrap;
