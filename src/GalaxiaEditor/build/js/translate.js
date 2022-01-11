@@ -31,6 +31,7 @@ let gjTranslate = {
                 text = text.replaceAll('<h1> ', '<h1>');
                 text = text.replaceAll('<h2> ', '<h2>');
                 text = text.replaceAll('<blockquote> ', '<blockquote>');
+                text = text.replaceAll('<li> ', '<li>');
 
                 text = text.replaceAll('</strong> ,', '</strong>,');
                 text = text.replaceAll('</strong> .', '</strong>.');
