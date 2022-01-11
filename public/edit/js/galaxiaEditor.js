@@ -2009,11 +2009,11 @@ let gjTranslate = {
         xhr.textInput = text;
 
         xhr.onload = function() {
-            if (this.status !== 200 && this.responseText !== 'ok') return;
+            let text = this.responseText;
+            if (this.status !== 200 && text !== 'ok') return;
 
             if (this.elTrix) {
                 let editor = this.elTrix.editor;
-                let text   = this.responseText;
 
                 text = text.replaceAll('<p> ', '<p>');
                 text = text.replaceAll('<br> ', '<br>');
@@ -2032,7 +2032,11 @@ let gjTranslate = {
                 editor.composition.replaceHTML(text);
                 return;
             }
-            this.elInput.value = this.responseText;
+
+            console.log(text);
+            text = gjTranslate.decodeHtml(text);
+            console.log(text);
+            this.elInput.value = text;
         };
 
         xhr.onprogress = function(event) {
@@ -2053,6 +2057,13 @@ let gjTranslate = {
         xhr.open('POST', '/' + gtranslate);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.send(formData);
+    },
+
+
+    decodeHtml: function(html) {
+        let txt       = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
     }
 
 }

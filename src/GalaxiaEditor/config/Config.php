@@ -21,6 +21,7 @@ class Config {
         ],
 
         'gcpHooks' => [
+            'gcPageType'       => 'string',
             '?gcHookTranslate' => 'string',
         ],
 
@@ -117,9 +118,9 @@ class Config {
         ],
 
         'gcpGoaccessStats' => [
-            'gcPageType'    => 'string',
-            'gcMenuTitle'   => 'string',
-            'gcMenuShow'    => 'boolean',
+            'gcPageType'     => 'string',
+            'gcMenuTitle'    => 'string',
+            'gcMenuShow'     => 'boolean',
             '?gcGoaccessLog' => 'string',
             '?gcGoaccessDir' => 'string',
         ],
