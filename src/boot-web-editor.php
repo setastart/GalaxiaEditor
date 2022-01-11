@@ -39,7 +39,7 @@ G::timerStart('editor');
 G::initEditor(dirname(__DIR__));
 E::$conf = require G::dir() . 'config/editor.php';
 
-G::$editor->version = '5.3.5';
+G::$editor->version = '5.4.0';
 
 G::timerStop('editor');
 
@@ -228,6 +228,7 @@ if (G::isLoggedIn()) {
         if (G::isDev()) {
             $r->get('/edit/{pgSlug:dev}', 'dev/dev');
             $r->get('/edit/dev/{pgSlug:sitemap}', 'dev/sitemap');
+            $r->get('/edit/dev/{pgSlug:urls}', 'dev/urls');
             $r->get('/edit/dev/{pgSlug:cacheDeleteApp}', 'dev/cache-delete-app');
             $r->get('/edit/dev/{pgSlug:cacheDeleteAll}', 'dev/cache-delete-all');
             $r->get('/edit/dev/{pgSlug:info}', 'dev/info');
