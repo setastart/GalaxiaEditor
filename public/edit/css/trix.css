@@ -251,8 +251,8 @@ trix-toolbar .trix-button--icon-quote::before                  { background-imag
 trix-toolbar .trix-button--icon-code::before                   { background-image: url(/edit/gfx/gtrix/gtrix-code.png); }
 trix-toolbar .trix-button--icon-bullet-list::before            { background-image: url(/edit/gfx/gtrix/gtrix-list-bullet.png); }
 trix-toolbar .trix-button--icon-number-list::before            { background-image: url(/edit/gfx/gtrix/gtrix-list-number.png); }
-trix-toolbar .trix-button--icon-decrease-nesting-level::before { background-image: url(/edit/gfx/gtrix/gtrix-nesting-inc.png); }
-trix-toolbar .trix-button--icon-increase-nesting-level::before { background-image: url(/edit/gfx/gtrix/gtrix-nesting-dec.png); }
+trix-toolbar .trix-button--icon-decrease-nesting-level::before { background-image: url(/edit/gfx/gtrix/gtrix-nesting-dec.png); }
+trix-toolbar .trix-button--icon-increase-nesting-level::before { background-image: url(/edit/gfx/gtrix/gtrix-nesting-inc.png); }
 
 
 
