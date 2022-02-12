@@ -100,7 +100,7 @@ class Scrape {
     }
 
 
-    static function printJsonAndExit(array $r): void {
+    static function printJsonAndExit(array $r): never {
         header('Content-Type: application/json');
         exit(json_encode(self::resultClean($r), JSON_PRETTY_PRINT));
     }

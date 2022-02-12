@@ -178,7 +178,7 @@ foreach ($modules as $module) {
 
         $params = [E::$itemId];
         foreach ($module['gcModuleDeleteIfEmpty'] as $col)
-            $params[] = substr($col, -2) == 'Id' ? 0 : '';
+            $params[] = str_ends_with($col, 'Id') ? 0 : '';
 
         try {
             $stmt  = G::prepare($query);

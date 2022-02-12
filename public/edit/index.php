@@ -1,3 +1,3 @@
 <?php
 
-require dirname(dirname(__DIR__)) . '/src/boot-web-editor.php';
+require dirname(__DIR__, 2) . '/src/boot-web-editor.php';

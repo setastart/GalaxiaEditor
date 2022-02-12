@@ -199,7 +199,7 @@ class Flex {
     }
 
 
-    private static function findClasses(array $rules, array &$classesFound, array $htmlFiles) {
+    private static function findClasses(array $rules, array &$classesFound, array $htmlFiles): void {
         foreach ($rules as $prefix => $classes) {
             foreach ($classes as $class => $rule) {
                 if (isset($classesFound[$class])) continue;
@@ -220,7 +220,7 @@ class Flex {
         string &$css,
         string &$cssUnused,
         string $indent = ''
-    ) {
+    ): void {
         foreach ($rules as $prefix => $classes) {
             foreach ($classes as $class => $rule) {
                 $complete = $indent . $prefix . $class . ' { ' . $rule . '; }' . PHP_EOL;

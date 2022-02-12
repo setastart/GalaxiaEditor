@@ -92,7 +92,7 @@ class G {
 
 
 
-    private static function initEnv() {
+    private static function initEnv(): void {
         error_reporting(E_ALL);
 
         set_exception_handler(function(Throwable $e) {
@@ -101,8 +101,6 @@ class G {
 
         set_error_handler(function($code, $msg, $file = '', $line = 0) {
             self::errorPage($code, $msg, $file . ':' . $line);
-
-            return true;
         });
 
         register_shutdown_function(function() {
@@ -200,7 +198,7 @@ class G {
 
 
 
-    static function loadTranslations() {
+    static function loadTranslations(): void {
         self::timerStart('Translations');
 
         if (isset(self::$editor) && file_exists(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'))
@@ -220,7 +218,7 @@ class G {
 
     // timing
 
-    static function timerStart(string $timerLabel, $timeFloat = null) {
+    static function timerStart(string $timerLabel, $timeFloat = null): void {
         // if (isset(self::$me) && !self::isDev()) return;
 
         if (isset(self::$timers[$timerLabel])) {
@@ -247,7 +245,7 @@ class G {
     }
 
 
-    static function timerStop(string $timerLabel) {
+    static function timerStop(string $timerLabel): void {
         // if (isset(self::$me) && !self::isDev()) return;
 
         if (!isset(self::$timers[$timerLabel])) return;
@@ -267,7 +265,7 @@ class G {
         bool $comments = false,
         bool $memory = false,
         bool $includes = false
-    ) {
+    ): void {
         if (!self::isCli() && !self::isDevEnv() && !self::isDev()) return;
 
         $timeEnd = microtime(true);
@@ -281,7 +279,7 @@ class G {
 
         $r       = '';
         $prefix  = '';
-        $postfix = '' . PHP_EOL;
+        $postfix = PHP_EOL;
         $padHead = ' ';
         $pad     = ' ';
 
@@ -332,8 +330,8 @@ class G {
             $colLen['%']            = max(strlen('%'), $colLen['%'] ?? 0, strlen($cols[$timerLabel]['%'] ?? ''));
             $colLen[$time['level']] = max($colLen[$time['level']] ?? 0, strlen($cols[$timerLabel][$time['level']] ?? ''));
         }
-        foreach ($cols as $timerLabel => $time) {
-            $colLen['label'] = max($colLen['label'] ?? 0, strlen($cols[$timerLabel]['label'] ?? ''));
+        foreach ($cols as $time) {
+            $colLen['label'] = max($colLen['label'] ?? 0, strlen($time['label'] ?? ''));
         }
 
         $r .= $prefix;
@@ -351,7 +349,7 @@ class G {
         $r .= $postfix;
 
 
-        foreach ($cols as $timerLabel => $val) {
+        foreach ($cols as $val) {
             $r .= $prefix;
             foreach ($colLen as $col => $len) {
                 if ($col == 'label') {
@@ -394,7 +392,7 @@ class G {
     }
 
 
-    static function timerReset() {
+    static function timerReset(): void {
         self::$timers      = [];
         self::$timerLevel  = 0;
         self::$timerMaxLen = 0;
@@ -407,7 +405,7 @@ class G {
 
     // app + editor error page
 
-    static function errorPage(int $code, string $msg = '', string $debugText = '') {
+    static function errorPage(int $code, string $msg = '', string $debugText = ''): never {
         $codeOriginal = $code;
 
         $errors = [
@@ -484,8 +482,7 @@ class G {
     }
 
 
-    #[NoReturn]
-    static function redirect($location = '', int $code = 302): void {
+    static function redirect($location = '', int $code = 302): never {
         $location = Text::h(trim($location, "/ \t\n\r\0\x0B"));
         if (self::isCli()) {
             echo "$code - /$location" . PHP_EOL;
@@ -503,7 +500,7 @@ class G {
 
     static function test(
         string $script, array $tests, string $host, int $argc, callable $fBuild, callable $fTest
-    ): void {
+    ): never {
         if ($argc == 1) {
             $testsPassed = 0;
             $testsTotal  = count($tests);

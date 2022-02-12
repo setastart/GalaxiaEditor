@@ -280,7 +280,7 @@ trix-toolbar .trix-dialog__link-fields .trix-button-group {
     margin: 0;
 }
 trix-toolbar .trix-input--dialog {
-    padding: 0px 4px;
+    padding: 0 4px;
     height: 25px;
     margin: 0 5px 0 0;
     border-radius: 4px;
@@ -293,7 +293,7 @@ trix-toolbar .trix-input--dialog {
     min-width: 20px;
 }
 trix-toolbar .trix-input--dialog.validate:invalid {
-    box-shadow: #F00 0px 0px 1.5px 1px;
+    box-shadow: #F00 0 0 1.5px 1px;
 }
 trix-toolbar .trix-button--dialog {
     padding: 0 5px;

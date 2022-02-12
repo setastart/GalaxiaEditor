@@ -29,12 +29,10 @@ class AppCache {
             $timerName = 'Cache HIT: ' . $cacheName;
             G::timerStart($timerName);
 
-            /** @noinspection PhpIncludeInspection */
             $result = include $cacheFile;
 
         } else {
 
-            $result    = null;
             $cacheType = $bypass ? 'BYPASS' : 'MISS';
             $timerName = 'Cache ' . $cacheType . ': ' . $cacheName;
             G::timerStart($timerName);
@@ -66,7 +64,7 @@ class AppCache {
     }
 
 
-    static function delete(string $dirCache, $scopes, $key = '*') {
+    static function delete(string $dirCache, $scopes, $key = '*'): void {
         $dirCacheStrlen = strlen($dirCache);
         if (!is_array($scopes)) $scopes = [$scopes];
         if (in_array('editor', $scopes) && !in_array('app', $scopes)) $scopes[] = 'app';
@@ -122,7 +120,7 @@ class AppCache {
     }
 
 
-    static function deleteAll(string $dirCache) {
+    static function deleteAll(string $dirCache): void {
         $dirCacheStrlen = strlen($dirCache);
         $files          = [];
 
@@ -171,7 +169,7 @@ class AppCache {
     }
 
 
-    static function deleteOld(string $dirCache) {
+    static function deleteOld(string $dirCache): void {
         $pattern = $dirCache . '*.cache';
         $glob    = glob($pattern, GLOB_NOSORT);
 

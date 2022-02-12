@@ -114,7 +114,7 @@ class Head {
 
 
 
-    static function cssError(string $buildName, string $extBuild) {
+    static function cssError(string $buildName, string $extBuild): void {
 // @formatter:off ?>
 
     <link rel="stylesheet" href="/css/<?=Text::h($buildName . $extBuild)?>"/>

@@ -34,7 +34,7 @@ class ArrayShape {
 
 
 
-    static function removePermsRecursive(array &$arr, array $perms = []) {
+    static function removePermsRecursive(array &$arr, array $perms = []): void {
         foreach ($arr as $subKey => $subVal) {
             if (is_array($subVal)) {
                 if (isset($subVal['gcPerms'])) {
@@ -60,11 +60,8 @@ class ArrayShape {
      * Examples:
      *      keys: ['value_' => ['label' => 'Value']] becomes ['value_pt' => ['label' => 'Value'], 'value_en' => ['label' => 'Value']]
      *      values: ['slug_', 'pageId'] becomes ['slug_pt', 'slug_en', 'pageId']
-     * @param $arr
-     * @param $langs
-     * @param array $perms
      */
-    static function languify(&$arr, $langs, $perms = []) {
+    static function languify(&$arr, array $langs, array $perms = []): void {
         if (!is_array($arr)) return;
 
         $count = count($arr);
@@ -75,7 +72,7 @@ class ArrayShape {
             if (is_string($subVal)) {
 
                 // languify keys with values
-                if (substr($subKey, -1) == '_') {
+                if (str_ends_with($subKey, '_')) {
                     $j          = $i;
                     $subItemNew = [];
                     foreach ($langs as $lang) {
@@ -87,7 +84,7 @@ class ArrayShape {
                     }
 
                     // languify values in arrays
-                } else if (substr($subVal, -1) == '_') {
+                } else if (str_ends_with($subVal, '_')) {
                     $subItemNew = [];
                     foreach ($langs as $lang)
                         $subItemNew[] = $subVal . $lang;
@@ -102,7 +99,7 @@ class ArrayShape {
             } else if (is_array($subVal)) {
 
                 // languify keys with arrays
-                if (substr($subKey, -1) == '_') {
+                if (str_ends_with($subKey, '_')) {
                     $j = $i;
                     foreach ($langs as $lang) {
                         $subItemNew = [$subKey . $lang => array_merge($subVal, [

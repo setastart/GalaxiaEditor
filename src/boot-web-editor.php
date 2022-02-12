@@ -23,7 +23,7 @@ G::$req->redirectRemoveSlashes();
 
 // init app
 
-G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(dirname(__DIR__)) . '/' . (G::$req->host ?? '')));
+G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(__DIR__, 2) . '/' . (G::$req->host ?? '')));
 
 G::timerStart('locales');
 G::langAddInactive();
@@ -39,7 +39,7 @@ G::timerStart('editor');
 G::initEditor(dirname(__DIR__));
 E::$conf = require G::dir() . 'config/editor.php';
 
-G::$editor->version = '5.4.2';
+G::$editor->version = '5.5.0';
 
 G::timerStop('editor');
 
@@ -52,15 +52,9 @@ G::loadTranslations();
 
 G::login();
 
-
 if (G::isDevDebug()) {
     G::$req->cacheBypass = true;
 }
-
-
-
-
-// authentication
 
 E::$auth = new Authentication();
 

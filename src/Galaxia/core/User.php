@@ -35,7 +35,7 @@ class User {
     }
 
 
-    public function logInFromCookieSessionId(string $cookieName) {
+    public function logInFromCookieSessionId(string $cookieName): void {
         if (!isset($_COOKIE[$cookieName])) return;
         G::timerStart('Session');
         session_name($cookieName);
@@ -85,7 +85,7 @@ class User {
     }
 
 
-    private function load() {
+    private function load(): bool {
         $userId         = '';
         $name           = '';
         $email          = '';
@@ -138,7 +138,7 @@ class User {
     }
 
 
-    public function setName($name) {
+    public function setName($name): void {
         if (!$this->loggedIn) return;
 
         $stmt = G::prepare("
@@ -152,7 +152,7 @@ class User {
     }
 
 
-    public function loadOptions() {
+    public function loadOptions(): void {
         if (!$this->loggedIn) return;
 
         $optionName       = '';
@@ -177,7 +177,7 @@ class User {
     }
 
 
-    public function setOptions($name, $value) {
+    public function setOptions($name, $value): void {
         if (!$this->loggedIn) return;
 
         if (!array_key_exists($name, $this->options)) {

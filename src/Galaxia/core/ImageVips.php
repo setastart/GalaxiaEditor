@@ -33,7 +33,7 @@ class ImageVips {
     public static int $qualityPngMin = 70;
     public static int $qualityPngMax = 90;
 
-    public         $vips    = null;
+    public mixed   $vips    = null;
     public bool    $fromUrl = false;
     public string  $in;
     public ?string $ext;
@@ -76,7 +76,7 @@ class ImageVips {
     /**
      * @throws Exception
      */
-    function save(string $outWithoutExt, bool $overwite = false, int $toFit = 0) {
+    function save(string $outWithoutExt, bool $overwrite = false, int $toFit = 0): void {
         if ($toFit > 0 && ($this->w > $toFit || $this->h > $toFit)) {
             if ($img = AppImage::fit(array_merge(AppImage::PROTO_IMAGE, ['wOriginal' => $this->w, 'hOriginal' => $this->h, 'w' => $toFit, 'h' => $toFit]))) {
                 $this->w = $img['w'];
@@ -92,7 +92,7 @@ class ImageVips {
         }
 
         try {
-            self::write($this->vips, $this->ext, $outWithoutExt . $this->ext, $overwite);
+            self::write($this->vips, $this->ext, $outWithoutExt . $this->ext, $overwrite);
         } catch (Exception $e) {
             throw $e;
         }
@@ -164,7 +164,7 @@ class ImageVips {
     /**
      * @throws Exception
      */
-    private static function write($vips, $ext, $out, $overwite) {
+    private static function write($vips, $ext, $out, $overwite): void {
         $outOriginal = $out;
         if ($overwite) {
             $out .= '.temp' . $ext;

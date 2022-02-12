@@ -39,13 +39,13 @@ class Pagination {
     }
 
 
-    public function setItemsTotal(int $itemsTotal) {
+    public function setItemsTotal(int $itemsTotal): void {
         $this->itemsTotal = $itemsTotal;
         $this->compute();
     }
 
 
-    public function compute() {
+    public function compute(): void {
 
         $this->pageLast = ceil($this->itemsTotal / $this->itemsPerPage);
         if ($this->pageLast < 1)

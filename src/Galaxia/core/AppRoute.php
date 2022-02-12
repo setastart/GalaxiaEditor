@@ -46,7 +46,7 @@ class AppRoute {
                         if (isset($sm['gcSelect'])) {
                             $statusFound = false;
                             foreach ($sm['gcSelect'][key($sm['gcSelect'])] as $fieldName) {
-                                if (is_string($fieldName) && substr($fieldName, -6) == 'Status') $statusFound = $fieldName;
+                                if (is_string($fieldName) && str_ends_with($fieldName, 'Status')) $statusFound = $fieldName;
                             }
                             $query = Sql::select($sm['gcSelect'], $activeLangs);
                             $query .= Sql::selectLeftJoinUsing($sm['gcSelectLJoin'], $activeLangs);
@@ -65,9 +65,9 @@ class AppRoute {
 
                                 $subs = [];
                                 foreach ($route['sitemap']['loc'] as $col) {
-                                    if (substr($col, -5) == 'MONTH' || substr($col, -3) == 'DAY') {
+                                    if (str_ends_with($col, 'MONTH') || str_ends_with($col, 'DAY')) {
                                         $subs[$col] = str_pad($data[$col], 2, '0', STR_PAD_LEFT);
-                                    } else if (substr($col, -1) == '_') {
+                                    } else if (str_ends_with($col, '_')) {
                                         foreach ($activeLocales as $lang => $locale) {
                                             $subs[$col][$lang] = $data[$col . $lang];
                                         }
@@ -145,7 +145,7 @@ class AppRoute {
     }
 
 
-    static function generateSitemap(string $schemeHost) {
+    static function generateSitemap(string $schemeHost): void {
         $activeLocales = array_diff_key(G::$app->locales, G::$app->localesInactive);
         $keyLang       = key($activeLocales);
 
@@ -336,7 +336,7 @@ class AppRoute {
         $arraySelect        = [$table => [$tableId, $tableSlug]];
         $arraySelectWhereOr = [$table => [$tableSlug => '=']];
 
-        $useLangs = (substr($tableSlug, -1) == '_');
+        $useLangs = (str_ends_with($tableSlug, '_'));
         if (!$useLangs) $langs = ['nolang'];
 
         $otherLangs = $langs;
@@ -409,7 +409,7 @@ class AppRoute {
 
 
 
-    static function page(callable $f, string $cacheFile, bool $cacheDisabled) {
+    static function page(callable $f, string $cacheFile, bool $cacheDisabled): void {
         G::timerStart(__CLASS__ . '::' . __FUNCTION__);
 
         $dispatcher = cachedDispatcher($f, ['cacheFile' => $cacheFile, 'cacheDisabled' => $cacheDisabled]);

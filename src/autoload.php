@@ -8,28 +8,16 @@ spl_autoload_register(function($className) {
     $classes   = explode('\\', $className);
 
     if ($classes[0] == 'Galaxia') {
-        switch ($classes[1]) {
-            case 'FastRoute':
-                $fileName = __DIR__ . '/Galaxia/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php';
-                break;
-
-            case 'PHPMailer':
-                $fileName = __DIR__ . '/Galaxia/mailer/' . implode('/', array_slice($classes, 2)) . '.php';
-                break;
-
-            case 'RedisCli':
-                $fileName = __DIR__ . '/Galaxia/redis/src/RedisCli.php';
-                break;
-
-            default:
-                $fileName = __DIR__ . '/Galaxia/core/' . implode('/', array_slice($classes, 1)) . '.php';
-                break;
-        }
+        $fileName = match ($classes[1]) {
+            'FastRoute' => __DIR__ . '/Galaxia/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php',
+            'PHPMailer' => __DIR__ . '/Galaxia/mailer/' . implode('/', array_slice($classes, 2)) . '.php',
+            'RedisCli'  => __DIR__ . '/Galaxia/redis/src/RedisCli.php',
+            default     => __DIR__ . '/Galaxia/core/' . implode('/', array_slice($classes, 1)) . '.php',
+        };
         require_once $fileName;
     }
 });
 
-require_once __DIR__ . '/Galaxia/polyfill.php';
 require_once __DIR__ . '/Galaxia/fastroute/src/functions.php';
 
 
@@ -37,7 +25,7 @@ require_once __DIR__ . '/Galaxia/fastroute/src/functions.php';
 // todo: improve
 // @formatter:off
 if (G::isDevEnv()) {
-    function d(...$vars) {
+    function d(...$vars):void {
         foreach ($vars as $var) {
             ob_start();
             var_dump($var);
@@ -47,18 +35,17 @@ if (G::isDevEnv()) {
             echo $dump;
         }
     }
-    function s(...$vars) { d(...$vars); }
-    function dd(...$vars) { d(...$vars); exit; }
-    function db() {
+    function s(...$vars):void { d(...$vars); }
+    function dd(...$vars):never { d(...$vars); exit; }
+    function db():void {
         ob_start();
         debug_print_backtrace();
         $trace = ob_get_clean();
         $trace = str_replace(G::dir(), '', $trace);
         print $trace;
-        return;
     }
 } else if (G::isCli() || G::isDevDebug()) {
-    function d(...$vars) {
+    function d(...$vars):void {
         foreach ($vars as $var) {
             ob_start();
             var_dump($var);
@@ -68,9 +55,9 @@ if (G::isDevEnv()) {
             echo $dump . PHP_EOL;
         }
     }
-    function s(...$vars) { d(...$vars); }
-    function dd(...$vars) { d(...$vars); exit; }
-    function db() {
+    function s(...$vars):void { d(...$vars); }
+    function dd(...$vars):never { d(...$vars); exit; }
+    function db():void {
         $backtrace = array_reverse(debug_backtrace());
         $r = '';
         foreach ($backtrace as $trace) {
@@ -82,10 +69,10 @@ if (G::isDevEnv()) {
         echo $r . PHP_EOL;
     }
 } else {
-    function d() {}
-    function s() {}
-    function dd() {}
-    function db() {}
+    function d():void {}
+    function s():void {}
+    function dd():void {}
+    function db():void {}
 }
 // @formatter:on
 

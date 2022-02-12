@@ -6,7 +6,7 @@ use Galaxia\Flash;
 
 
 
-function geD() {
+function geD(): void {
     $dump      = '';
     $backtrace = array_reverse(debug_backtrace());
 
@@ -28,7 +28,7 @@ function geD() {
 
 
 
-function geErrorPage($code, $msg = '') {
+function geErrorPage($code, $msg = ''): void {
     G::errorPage($code, $msg);
 }
 

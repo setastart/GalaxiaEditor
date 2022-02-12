@@ -40,7 +40,7 @@ HTML;
     private static array           $intlDateFormatters  = [];
 
 
-    static function unsafe(string $text, bool $condition = true) {
+    static function unsafe(string $text, bool $condition = true): ?string {
         if ($condition) return $text;
 
         return null;
@@ -93,13 +93,13 @@ HTML;
 
 
 
-    static function h($text, bool $condition = true) {
+    static function h($text, bool $condition = true): ?string {
         if ($condition) return htmlspecialchars((string)$text, self::HTMLSPECIALCHARS_FLAGS);
 
         return null;
     }
 
-    static function hg(array $arr, string $key = null, string $lang = '') {
+    static function hg(array $arr, string $key = null, string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -145,7 +145,7 @@ HTML;
 
 
 
-    static function st(string $text, int $h1 = 0, int $f1 = 0, int $f2 = 0) {
+    static function st(string $text, int $h1 = 0, int $f1 = 0, int $f2 = 0): string {
         // if (G::$dev) $text = TEST_HTML;
         if (empty($text)) return '';
         $text = trim(strip_tags($text, self::ALLOWED_TAGS));
@@ -184,7 +184,7 @@ HTML;
         return $text;
     }
 
-    static function stg(array $arr, string $key = null, int $h1 = 0, int $f1 = 0, int $f2 = 0, string $lang = '') {
+    static function stg(array $arr, string $key = null, int $h1 = 0, int $f1 = 0, int $f2 = 0, string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -264,7 +264,7 @@ HTML;
         return $text;
     }
 
-    static function trixg(array $arr, string $key = null, array $transforms = [], string $lang = '') {
+    static function trixg(array $arr, string $key = null, array $transforms = [], string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -307,7 +307,7 @@ HTML;
         return $text;
     }
 
-    static function stp(string $text, int $f1 = 0, int $f2 = 0, int $fp = 0) {
+    static function stp(string $text, int $f1 = 0, int $f2 = 0, int $fp = 0): string {
         // if (G::$dev) $text = TEST_HTML;
         if (empty($text)) return '';
         $text = trim(strip_tags($text, self::ALLOWED_TAGS));
@@ -357,7 +357,7 @@ HTML;
         return $text;
     }
 
-    static function stpg(array $arr, string $key = null, int $f1 = 0, int $f2 = 0, int $fp = 0, string $lang = '') {
+    static function stpg(array $arr, string $key = null, int $f1 = 0, int $f2 = 0, int $fp = 0, string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -403,7 +403,7 @@ HTML;
 
 
 
-    static function desc(string $html, int $length = null, string $separator = ' / ') {
+    static function desc(string $html, int $length = null, string $separator = ' / '): string {
         if (empty($html)) return '';
         if (is_null($length)) $length = 255;
 
@@ -419,15 +419,10 @@ HTML;
         $i     = 0;
         foreach ($pTags as $pTag) {
             if ($i > 0) {
-                switch (substr($text, -1)) {
-                    case '.':
-                    case ':':
-                        $text .= ' ';
-                        break;
-                    default:
-                        $text .= PHP_EOL;
-                        break;
-                }
+                $text .= match (substr($text, -1)) {
+                    '.', ':' => ' ',
+                    default  => PHP_EOL,
+                };
             }
             $line = $pTag->nodeValue;
             $line = trim($line, " \t\n\r\0\x0B\xC2\xA0");
@@ -460,7 +455,7 @@ HTML;
         return htmlspecialchars($text, self::HTMLSPECIALCHARS_FLAGS);
     }
 
-    static function descg(array $arr, string $key = null, int $length = null, string $separator = ' / ', string $lang = '') {
+    static function descg(array $arr, string $key = null, int $length = null, string $separator = ' / ', string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -529,7 +524,7 @@ HTML;
         return $text;
     }
 
-    static function t(string $text, string $lang = null) {
+    static function t(string $text, string $lang = null): string {
         return htmlspecialchars(self::unsafet($text, $lang), self::HTMLSPECIALCHARS_FLAGS);
     }
 
@@ -541,7 +536,7 @@ HTML;
      * @param string $text
      * @return string
      */
-    static function q(string $text) {
+    static function q(string $text): string {
         return '`' . str_replace('`', '``', self::h($text)) . '`';
     }
 
@@ -561,7 +556,7 @@ HTML;
 
 
 
-    static function firstLine(string $text) {
+    static function firstLine(string $text): string {
         if (empty($text)) return '';
         $text = str_replace('<', ' <', $text);
         $text = strip_tags($text);
@@ -578,7 +573,7 @@ HTML;
 
 
 
-    static function renderLinkEmail($email, string $subject = '', string $class = '', string $prepend = '', string $append = '') {
+    static function renderLinkEmail($email, string $subject = '', string $class = '', string $prepend = '', string $append = ''): ?string {
         if (!is_string($email)) return '';
         if (!$email = filter_var($email, FILTER_VALIDATE_EMAIL)) return null;
         $email = self::h($email);
@@ -588,7 +583,7 @@ HTML;
         return '<a aria-label="' . self::t('Email') . '" href="mailto:' . $email . $subject . '"' . $class . '>' . $prepend . $email . $append . '</a>';
     }
 
-    static function renderLinkTel($prefix, $tel = '', string $class = '', string $prepend = '', string $append = '') {
+    static function renderLinkTel($prefix, $tel = '', string $class = '', string $prepend = '', string $append = ''): ?string {
         if (!is_string($prefix)) return '';
         if (!is_string($tel)) return '';
         if (!$tel) return null;
@@ -612,7 +607,7 @@ HTML;
 
 
     // todo: empty hosts
-    static function nofollowHost(string $host, array $hosts = ['facebook', 'google', 'instagram', 'twitter', 'linkedin', 'youtube']) {
+    static function nofollowHost(string $host, array $hosts = ['facebook', 'google', 'instagram', 'twitter', 'linkedin', 'youtube']): bool {
         foreach ($hosts as $nofollowHost)
             if (str_contains($host, $nofollowHost)) return true;
 
@@ -622,7 +617,7 @@ HTML;
 
 
 
-    static function formatSlug(string $text, array $existing = []) {
+    static function formatSlug(string $text, array $existing = []): string {
 
         $text = str_replace('<', ' <', $text);
         $text = strip_tags($text);
@@ -635,8 +630,8 @@ HTML;
         $text = preg_replace('~[\x{1F600}-\x{1F64F}]~u', '', $text); // Match Emoticons
         $text = preg_replace('~[\x{1F300}-\x{1F5FF}]~u', '', $text); // Match Miscellaneous Symbols and Pictographs
         $text = preg_replace('~[\x{1F680}-\x{1F6FF}]~u', '', $text); // Match Transport And Map Symbols
-        $text = preg_replace('~[\x{2600}-\x{26FF}]~u', '', $text); // Match Miscellaneous Symbols
-        $text = preg_replace('~[\x{2700}-\x{27BF}]~u', '', $text); // Match Dingbats
+        $text = preg_replace('~[\x{2600}-\x{26FF}]~u', '', $text);   // Match Miscellaneous Symbols
+        $text = preg_replace('~[\x{2700}-\x{27BF}]~u', '', $text);   // Match Dingbats
         $text = preg_replace('~[^a-z0-9-]+~u', '-', $text);
         $text = preg_replace('~-+~', '-', $text);
         $text = trim($text, '-');
@@ -658,7 +653,7 @@ HTML;
 
 
 
-    static function formatSearch(string $text) {
+    static function formatSearch(string $text): ?string {
         $text = self::translit($text);
 
         // replace non letter or digits by a space
@@ -682,7 +677,7 @@ HTML;
      *
      * @param mixed $value a timestamp, a DateTime or a string that creates a DateTime
      */
-    static function formatDate($value, string $pattern = '', string $lang = ''): string {
+    static function formatDate(mixed $value, string $pattern = '', string $lang = ''): string {
         if (is_string($value) && !ctype_digit($value)) {
             $value = date_create($value);
             if (!$value instanceof DateTimeInterface) return '';
@@ -699,7 +694,7 @@ HTML;
 
 
 
-    static function normalize(string $text, string $delimiter = '-', string $keep = '') {
+    static function normalize(string $text, string $delimiter = '-', string $keep = ''): string {
         $text = str_replace('<', ' <', $text);
         $text = strip_tags($text);
         $text = Normalizer::normalize($text);
@@ -710,7 +705,7 @@ HTML;
         return $text;
     }
 
-    static function translit(string $text, bool $lower = true) {
+    static function translit(string $text, bool $lower = true): string {
         if ($lower)
             $tr = self::$transliteratorLower ?? self::getTransliteratorLower();
         else
@@ -750,7 +745,7 @@ HTML;
 
 
 
-    static function commentHeader(string $text) {
+    static function commentHeader(string $text): string {
         $r = '';
         $r .= '/********' . str_repeat('*', strlen($text)) . '********/' . PHP_EOL;
         $r .= '/******  ' . self::h($text) . '  ******/' . PHP_EOL;
@@ -762,14 +757,14 @@ HTML;
 
 
 
-    static function br2nl(string $text) {
+    static function br2nl(string $text): string {
         return preg_replace('~<br(\s*)?/?>~i', PHP_EOL, $text) ?? '';
     }
 
 
 
 
-    private static function getTransliteratorLower() {
+    private static function getTransliteratorLower(): ?Transliterator {
         if (self::$transliteratorLower == null) {
             self::$transliteratorLower = Transliterator::createFromRules(':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: Lower(); :: NFC;');
         }
@@ -778,7 +773,7 @@ HTML;
     }
 
 
-    private static function getTransliterator() {
+    private static function getTransliterator(): ?Transliterator {
         if (self::$transliterator == null) {
             self::$transliterator = Transliterator::createFromRules(':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: NFC;');
         }

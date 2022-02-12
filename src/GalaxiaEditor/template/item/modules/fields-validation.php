@@ -32,7 +32,7 @@ foreach ($postModule as $fieldKey => $fields) {
 
         // new fields
         if (is_string($fieldVal)) {
-            if (substr($fieldVal, 0, 4) != 'new-') {
+            if (!str_starts_with($fieldVal, 'new-')) {
                 Flash::error('Invalid new input field name: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal));
                 continue;
             }

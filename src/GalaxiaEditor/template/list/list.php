@@ -285,7 +285,7 @@ $rows = Cache::listRows($order, function() use ($firstTable, $items, $columns, $
                         if (!isset($data[$dbColumn])) continue;
                         $value = $data[$dbColumn];
 
-                        $isHomeSlug = (E::$pgSlug == G::$editor->homeSlug && $value == '' && substr($dbColumn, 0, 9) == 'pageSlug_');
+                        $isHomeSlug = (E::$pgSlug == G::$editor->homeSlug && $value == '' && str_starts_with($dbColumn, 'pageSlug_'));
 
                         if (count(G::langs()) > 1 && substr($dbColumn, -3, 1) == '_' && in_array(substr($dbColumn, -2), G::langs())) {
                             $r .= '<span class="input-label-lang">' . substr($dbColumn, -2) . '</span> ';
@@ -302,7 +302,7 @@ $rows = Cache::listRows($order, function() use ($firstTable, $items, $columns, $
                                 $value .= Text::t($text) . ' / ';
                                 // if ($value) break;
                             }
-                            $value = rtrim($value, ' / ');
+                            $value = rtrim($value, ' /');
                         }
 
 
@@ -350,7 +350,7 @@ $rows = Cache::listRows($order, function() use ($firstTable, $items, $columns, $
                                 break;
 
                             case 'time':
-                                if (substr($value, -3) == ':00') $value = substr($value, 0, 5);
+                                if (str_ends_with($value, ':00')) $value = substr($value, 0, 5);
                                 $r .= Text::h($value);
                                 break;
 
@@ -458,7 +458,7 @@ foreach ($filterInts as $filterId => $filter) {
 $intFiltersActive = [];
 foreach ($filterInts as $filterId => $filter) {
     foreach ($filter['options'] as $int => $value) {
-        if (!$filterInts[$filterId]['options'][$int]['checked']) {
+        if (!$filter['options'][$int]['checked']) {
             $intFiltersActive[] = $filterId;
             // break 2;
         }
@@ -526,9 +526,9 @@ foreach ($textFiltersActive as $filterId) {
                         }
                         if (empty($value)) {
                             $emptyFound = true;
-                        } else if (substr($dbColumn, 0, 9) == 'timestamp') {
+                        } else if (str_starts_with($dbColumn, 'timestamp')) {
                             $textFilterItems[$itemId] .= Text::formatSearch(Text::formatDate($value, 'd MMM y')) . ' ';
-                        } else if (substr($dbColumn, 0, 4) == 'date') {
+                        } else if (str_starts_with($dbColumn, 'date')) {
                             $textFilterItems[$itemId] .= Text::formatSearch(Text::formatDate(strtotime($value), 'd MMM y')) . ' ';
                         } else {
                             $textFilterItems[$itemId] .= Text::formatSearch($value) . ' ';

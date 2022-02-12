@@ -813,11 +813,10 @@ button.fake:hover { color: #00a; }
     cursor: pointer;
     -moz-appearance: none;
     -webkit-appearance: none;
-    -o-appearance: none;
+    appearance: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-
 }
 

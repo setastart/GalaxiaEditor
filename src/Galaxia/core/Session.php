@@ -17,7 +17,7 @@
 /* info from http://php.net/manual/en/function.session-set-save-handler.php
 
 Colin 08-Mar-2007 09:25
-Aspects of this have been posted in various comments but it's helpful to make it clearer.
+Aspects of this have been posted in various comments, but it's helpful to make it clearer.
 
 The custom session handler seems to perform actions in these orders:
 

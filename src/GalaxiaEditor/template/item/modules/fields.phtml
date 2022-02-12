@@ -101,7 +101,7 @@ use GalaxiaEditor\input\InputRender;
                 if ($multi) {
                     $moduleGroupCss .= 'module-field-group';
                     if ($fieldVal == 'new-0') continue;
-                    if (substr($fieldVal, 0, 4) == 'new-') {
+                    if (str_starts_with($fieldVal, 'new-')) {
                         $moduleGroupCss .= ' module-field-group-new';
                     }
                     if (isset($field['delete']) && $field['delete'] == 'on') {

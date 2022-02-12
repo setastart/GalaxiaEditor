@@ -79,7 +79,7 @@ class AppImage {
 
 
 
-    static function valid(string $dirImage, string $imgSlug) {
+    static function valid(string $dirImage, string $imgSlug): bool|string {
         if (empty($imgSlug)) return false;
         if (preg_match('/[^a-z0-9-]/', $imgSlug)) return false;
         if (realpath($dirImage) == realpath($dirImage . $imgSlug)) return false;
@@ -130,7 +130,7 @@ class AppImage {
         $img['extra'] = array_flip($img['extra']);
         foreach ($img['extra'] as $extra => $i) {
             $found = false;
-            if (substr($extra, -1) == '_') {
+            if (str_ends_with($extra, '_')) {
                 foreach (G::$app->langs as $lang) {
                     $file = $imgDirSlug . '_' . $extra . $lang . '.txt';
                     if (!file_exists($file)) continue;
@@ -504,7 +504,7 @@ class AppImage {
 
 
 
-    static function alt(string $dirImage, string $imgSlug, $lang) {
+    static function alt(string $dirImage, string $imgSlug, $lang): string {
         $file = $dirImage . $imgSlug . '/' . $imgSlug . '_alt_' . $lang . '.txt';
         if (!file_exists($file)) return '';
 

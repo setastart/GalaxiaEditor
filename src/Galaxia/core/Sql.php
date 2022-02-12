@@ -33,7 +33,7 @@ class Sql {
 
         $r .= 'VALUES' . PHP_EOL;
         $r .= '    (';
-        foreach ($changes as $key => $value) {
+        foreach ($changes as $value) {
             $r .= '?, ';
         }
         $r = rtrim($r, ', ') . ')' . PHP_EOL . PHP_EOL;
@@ -63,13 +63,13 @@ class Sql {
                 if (!is_int($column) && in_array($mod, Sql::ALLOWED_MODS)) {
                     $r .= '    ' . $mod . '(' . Text::q($table) . '.' . Text::q($column) . ') AS ' . Text::q($column . $mod) . ', ' . PHP_EOL;
                     continue;
-                } else if (substr($mod, 0, 3) == 'AS ') {
+                } else if (str_starts_with($mod, 'AS ')) {
                     $r .= '    ' . Text::q($table) . '.' . Text::q($column) . ' AS ' . Text::q(substr($mod, 3)) . ', ' . PHP_EOL;
                     continue;
                 }
 
                 $column = $mod;
-                if (substr($column, 0, 9) == 'timestamp') {
+                if (str_starts_with($column, 'timestamp')) {
                     $r .= '    UNIX_TIMESTAMP(' . Text::q($table) . '.' . Text::q($column) . ') AS ' . Text::q($column) . ', ' . PHP_EOL;
                     continue;
                 }
@@ -159,17 +159,11 @@ class Sql {
         foreach ($expression as $table => $columns) {
             foreach ($columns as $column => $logic) {
                 if (!in_array($logic, Sql::ALLOWED_WHERE_LOGIC)) $logic = '=';
-                switch ($logic) {
-                    case 'BETWEEN':
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ?' . PHP_EOL;
-                        break;
-                    case 'IS NOT NULL':
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL AND' . PHP_EOL;
-                        break;
-                    default:
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? AND' . PHP_EOL;
-                        break;
-                }
+                $r .= match ($logic) {
+                    'BETWEEN'     => Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ?' . PHP_EOL,
+                    'IS NOT NULL' => Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL AND' . PHP_EOL,
+                    default       => Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? AND' . PHP_EOL,
+                };
             }
         }
 
@@ -189,23 +183,13 @@ class Sql {
                 if (is_string($logics)) $logics = [$logics];
                 foreach ($logics as $logic) {
                     if (!in_array($logics, Sql::ALLOWED_WHERE_LOGIC)) $logics = '=';
-                    switch ($logic) {
-                        case 'BETWEEN':
-                            $r .= Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ? ' . $operation . PHP_EOL;
-                            break;
-                        case 'IS NULL':
-                            $r .= Text::q($table) . '.' . Text::q($column) . ' IS NULL ' . $operation . PHP_EOL;
-                            break;
-                        case 'IS NOT NULL':
-                            $r .= Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL ' . $operation . PHP_EOL;
-                            break;
-                        case 'NOT IN':
-                            $r .= Text::q($column) . ' NOT IN (SELECT ' . Text::q($column) . ' FROM ' . Text::q($table) . ') ' . $operation . PHP_EOL;
-                            break;
-                        default:
-                            $r .= Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? ' . $operation . PHP_EOL;
-                            break;
-                    }
+                    $r .= match ($logic) {
+                        'BETWEEN'     => Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ? ' . $operation . PHP_EOL,
+                        'IS NULL'     => Text::q($table) . '.' . Text::q($column) . ' IS NULL ' . $operation . PHP_EOL,
+                        'IS NOT NULL' => Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL ' . $operation . PHP_EOL,
+                        'NOT IN'      => Text::q($column) . ' NOT IN (SELECT ' . Text::q($column) . ' FROM ' . Text::q($table) . ') ' . $operation . PHP_EOL,
+                        default       => Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? ' . $operation . PHP_EOL,
+                    };
                 }
             }
         }
@@ -241,17 +225,11 @@ class Sql {
         foreach ($expression as $table => $columns) {
             foreach ($columns as $column => $logic) {
                 if (!in_array($logic, Sql::ALLOWED_WHERE_LOGIC)) $logic = '=';
-                switch ($logic) {
-                    case 'BETWEEN':
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ?' . PHP_EOL;
-                        break;
-                    case 'IS NOT NULL':
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL OR' . PHP_EOL;
-                        break;
-                    default:
-                        $r .= Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? OR' . PHP_EOL;
-                        break;
-                }
+                $r .= match ($logic) {
+                    'BETWEEN'     => Text::q($table) . '.' . Text::q($column) . ' BETWEEN ? AND ?' . PHP_EOL,
+                    'IS NOT NULL' => Text::q($table) . '.' . Text::q($column) . ' IS NOT NULL OR' . PHP_EOL,
+                    default       => Text::q($table) . '.' . Text::q($column) . ' ' . $logic . ' ? OR' . PHP_EOL,
+                };
             }
         }
 
@@ -465,7 +443,7 @@ class Sql {
 
 
 
-    static function chunkSelect(string $sql, callable $f, array &$items = [], $chunkSize = 5000) {
+    static function chunkSelect(string $sql, callable $f, array &$items = [], $chunkSize = 5000): void {
         $done       = 0;
         $askForData = true;
         do {

@@ -65,8 +65,8 @@ class File {
         }
 
         foreach ($errors as $i => $error)
-            foreach ($_FILES[$inputName] as $propery => $values)
-                unset($_FILES[$inputName][$propery][$i]);
+            foreach ($_FILES[$inputName] as $property => $values)
+                unset($_FILES[$inputName][$property][$i]);
 
         return $errors;
     }
@@ -92,8 +92,8 @@ class File {
         $r   = null;
 
         if (is_dir($dir) && $fp = fopen($dir . '/' . $fileName, 'w')) {
-            flock($fp, LOCK_EX | LOCK_NB, $wouldblock);
-            if ($wouldblock) {
+            flock($fp, LOCK_EX | LOCK_NB, $wouldBlock);
+            if ($wouldBlock) {
                 flock($fp, LOCK_SH);
             } else {
                 $r = $f();

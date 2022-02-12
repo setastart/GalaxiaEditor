@@ -196,7 +196,7 @@ foreach ($fieldsData as $fieldKey => $field) {
 
             $value = $data[$inputKey];
             // if (isset($input['nullable']) && $input['nullable'] && !$value) $value = null;
-            if (substr($inputKey, 0, 9) == 'timestamp') $value = date('Y-m-d H:i:s', $data[$inputKey]);
+            if (str_starts_with($inputKey, 'timestamp')) $value = date('Y-m-d H:i:s', $data[$inputKey]);
             $inputNew = [
                 'name'        => 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $fieldId . '][' . $inputKey . ']',
                 'nameFromDb'  => $inputKey,

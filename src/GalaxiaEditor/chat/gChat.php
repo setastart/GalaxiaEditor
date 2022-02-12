@@ -1,18 +1,12 @@
 <?php
 
+namespace GalaxiaEditor\chat;
+
 use Galaxia\G;
 use Galaxia\RedisCli;
-use GalaxiaEditor\chat\Chat;
 
 
 session_write_close();
-
-
-const TIMEOUT_XREAD         = 1000;    // miliseconds
-const TIMEOUT_LISTEN        = 11;      // seconds
-const TIMEOUT_ALIVE         = 15;      // seconds
-const TIMEOUT_LEAVE         = 2;       // seconds
-const TIMEOUT_ROOM_INACTIVE = 60 * 30; // seconds
 
 
 
@@ -22,19 +16,15 @@ const TIMEOUT_ROOM_INACTIVE = 60 * 30; // seconds
 $postJson = file_get_contents('php://input');
 if ($postJson === false) Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid request']);
 
-$post = json_decode($postJson, true);
-if ($post === null) Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid json']);
-
-$r = [
-    'status' => 'ok',
-];
+Chat::$post = json_decode($postJson, true);
+if (Chat::$post === null) Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid json']);
 
 
 
 
 // csrf
 
-if (!isset($_SESSION['csrf']) || !isset($post['csrf']) || $post['csrf'] !== $_SESSION['csrf'])
+if (!isset($_SESSION['csrf']) || !isset(Chat::$post['csrf']) || Chat::$post['csrf'] !== $_SESSION['csrf'])
     Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid csrf token']);
 
 
@@ -42,11 +32,11 @@ if (!isset($_SESSION['csrf']) || !isset($post['csrf']) || $post['csrf'] !== $_SE
 
 // redis
 
-$redis = new RedisCli('localhost', '6379', true);
-$redis->set_error_function(function($error) {
+Chat::$redis = new RedisCli('localhost', '6379', true);
+Chat::$redis->set_error_function(function($error) {
     Chat::exitArrayToJson(['status' => 'error', 'error' => $error]);
 });
-if ($redis->cmd('PING')->get() != 'PONG')
+if (Chat::$redis->cmd('PING')->get() != 'PONG')
     Chat::exitArrayToJson(['status' => 'error', 'error' => 'redis not connected']);
 
 
@@ -54,14 +44,14 @@ if ($redis->cmd('PING')->get() != 'PONG')
 
 // save my username
 
-$redis->cmd('HSET', G::$app->mysqlDb . ':userNames', G::$me->id, G::$me->name)->set();
+Chat::$redis->cmd('HSET', G::$app->mysqlDb . ':userNames', G::$me->id, G::$me->name)->set();
 
 
 
 
 // save last seen online for knowing when user has left
 
-$redis->cmd('HSET', G::$app->mysqlDb . ':usersLastSeen', G::$me->id, substr(microtime(true) * 1000, 0, 13))->set();
+Chat::$redis->cmd('HSET', G::$app->mysqlDb . ':usersLastSeen', G::$me->id, substr(microtime(true) * 1000, 0, 13))->set();
 
 
 

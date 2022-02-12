@@ -28,7 +28,7 @@ class Flash {
 
 
 
-    static function error($msg, $domain = 'errorBox', $arrayIndex = false) {
+    static function error($msg, $domain = 'errorBox', $arrayIndex = false): void {
         if ($arrayIndex !== false) {
             $_SESSION['errors'][$domain][$arrayIndex][] = $msg;
         } else {
@@ -59,7 +59,7 @@ class Flash {
 
 
 
-    static function warning($msg, $domain = 'warningBox', $arrayIndex = false) {
+    static function warning($msg, $domain = 'warningBox', $arrayIndex = false): void {
         if ($arrayIndex !== false) {
             $_SESSION['warnings'][$domain][$arrayIndex][] = $msg;
         } else {
@@ -90,7 +90,7 @@ class Flash {
 
 
 
-    static function info($msg, $domain = 'infoBox', $arrayIndex = false) {
+    static function info($msg, $domain = 'infoBox', $arrayIndex = false): void {
         if ($arrayIndex !== false) {
             $_SESSION['infos'][$domain][$arrayIndex][] = $msg;
         } else {
@@ -121,7 +121,7 @@ class Flash {
 
 
 
-    static function devlog($msg, $domain = 'devlogBox', $arrayIndex = false) {
+    static function devlog($msg, $domain = 'devlogBox', $arrayIndex = false): void {
         if ($arrayIndex !== false) {
             $_SESSION['devlogs'][$domain][$arrayIndex][] = $msg;
         } else {
@@ -152,7 +152,7 @@ class Flash {
 
 
 
-    static function cleanMessages() {
+    static function cleanMessages(): void {
         if (session_status() !== PHP_SESSION_ACTIVE) return;
         unset($_SESSION['errors']);
         unset($_SESSION['infos']);
@@ -163,7 +163,7 @@ class Flash {
 
 
 
-    static function printCli() {
+    static function printCli(): void {
         if (Flash::hasError()) {
             echo '🍎 errors: ' . PHP_EOL;
             foreach (Flash::errors() as $key => $msgs) {

@@ -30,7 +30,7 @@ class Js {
     ];
 
 
-    static function build() {
+    static function build(): void {
         foreach (self::JS_FILENAMES as $buildName => $sources) {
             $jsBuild = '';
             // $jsBuild .= '\'use strict\';' . str_repeat(PHP_EOL, 2);
@@ -46,7 +46,7 @@ class Js {
                 $jsBuild .= str_repeat(PHP_EOL, 4);
             }
 
-            $filePathMain = dirname(dirname(dirname(__DIR__))) . '/public/edit/js/' . $buildName . self::FILE_EXT_JS_BUILD;
+            $filePathMain = dirname(__DIR__, 3) . '/public/edit/js/' . $buildName . self::FILE_EXT_JS_BUILD;
 
             $dir = pathinfo($filePathMain, PATHINFO_DIRNAME);
             if (!is_dir($dir)) mkdir($dir, 0644, true);

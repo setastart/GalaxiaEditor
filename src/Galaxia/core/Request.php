@@ -95,7 +95,7 @@ class Request {
     }
 
 
-    function setUri(string $uri) {
+    function setUri(string $uri): void {
         $this->uri          = $uri;
         $this->uri          = urldecode($this->uri);
         $this->pathOriginal = strtok($this->uri, '?');
@@ -103,7 +103,7 @@ class Request {
     }
 
 
-    function isHttps() {
+    function isHttps(): bool {
         return $this->scheme == 'https';
     }
 
@@ -127,21 +127,21 @@ class Request {
     }
 
 
-    function redirectRemoveSlashes() {
+    function redirectRemoveSlashes(): void {
         if ($this->path != '/' && str_ends_with($this->path, '/')) {
             G::redirect($this->path, 301);
         }
     }
 
 
-    function redirectRemoveQuery() {
+    function redirectRemoveQuery(): void {
         if ($this->query) {
             G::redirect($this->path, 301);
         }
     }
 
 
-    function redirectTransliterated() {
+    function redirectTransliterated(): void {
         if ($this->path != $this->pathOriginal) {
             G::redirect($this->path, 301);
         }

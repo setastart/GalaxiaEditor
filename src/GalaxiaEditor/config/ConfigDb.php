@@ -13,7 +13,7 @@ class ConfigDb {
 
     const RESERVED_COLUMNS = ['gcMulti'];
 
-    static function validate() {
+    static function validate(): void {
         $dbSchema = [];
 
         $query = '
@@ -270,13 +270,13 @@ class ConfigDb {
 
     }
 
-    static function gcTableColumnInput($dbSchema, $errorString, $table, $col, $input) {
+    static function gcTableColumnInput($dbSchema, $errorString, $table, $col, $input): void {
         $errorString .= '/' . $table . '/' . $col;
 
         if (!$input) return;
         if ($col == 'gcPerms') return;
-        if (substr($col, 0, 8) == 'password') return;
-        if (substr($col, 0, 8) == 'importer') return;
+        if (str_starts_with($col, 'password')) return;
+        if (str_starts_with($col, 'importer')) return;
 
         ConfigDb::gcTableColumnExists($dbSchema, $errorString, $table, $col);
 
@@ -300,7 +300,7 @@ class ConfigDb {
         }
     }
 
-    static function gcTableExists($dbSchema, $errorString, $table) {
+    static function gcTableExists($dbSchema, $errorString, $table): void {
         $errorString .= '/' . $table;
         if (!isset($dbSchema[$table])) {
             Flash::error($errorString . ': db table missing.');
@@ -309,7 +309,7 @@ class ConfigDb {
         }
     }
 
-    static function gcTableColumnExists(array $dbSchema, string $errorString, string $table, $cols) {
+    static function gcTableColumnExists(array $dbSchema, string $errorString, string $table, $cols): void {
         if (is_string($cols)) $cols = [$cols];
 
         $found = false;
@@ -329,7 +329,7 @@ class ConfigDb {
         }
     }
 
-    static function gcQueryColumnExists($errorString, $table, $colsExisting, $cols) {
+    static function gcQueryColumnExists($errorString, $table, $colsExisting, $cols): void {
         if (is_string($cols)) $cols = [$cols];
 
         $found = false;

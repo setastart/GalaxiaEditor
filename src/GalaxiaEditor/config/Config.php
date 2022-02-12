@@ -189,7 +189,7 @@ class Config {
 
 
 
-    static function validate() {
+    static function validate(): void {
         foreach (E::$conf as $key => $confPage) {
             if (!isset($confPage['gcPageType']))
                 Config::geConfigParseError($key . '/gcPageType missing.');
@@ -208,11 +208,11 @@ class Config {
 
 
 
-    private static function geConfigParse($schemaKey, $schema, $config, $errorString) {
+    private static function geConfigParse($schemaKey, $schema, $config, $errorString): void {
         $errorString .= $schemaKey . '/';
 
         foreach ($schema as $key => $val) {
-            if (substr($key, 0, 1) == '?') {
+            if (str_starts_with($key, '?')) {
                 $key = substr($key, 1);
                 if (!isset($config[$key])) continue;
             }
@@ -239,7 +239,7 @@ class Config {
         $extraKeys = array_diff_key($config, $schema);
         foreach ($extraKeys as $key => $val) {
             if ($key == 'gcPerms') continue;
-            if (substr($key, 0, 1) == '?') continue;
+            if (str_starts_with($key, '?')) continue;
             if (isset($schema['?' . $key])) continue;
 
             Flash::devlog($errorString . ' - extra keys: ' . $key);
@@ -249,7 +249,7 @@ class Config {
 
 
 
-    private static function geConfigParseFine($schema, $config, $errorString) {
+    private static function geConfigParseFine($schema, $config, $errorString): void {
         switch ($schema) {
 
             case 'boolean':
@@ -296,12 +296,12 @@ class Config {
                     Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
 
                 foreach ($config as $key => $val) {
-                    if (is_array($config[$key]) && count($config[$key]) == 1 && isset($config[$key]['gcPerms'])) continue;
+                    if (is_array($val) && count($val) == 1 && isset($val['gcPerms'])) continue;
 
                     if (!is_array($val))
                         Config::geConfigParseError($errorString . '/' . $key . ' should be an array.', $schema, $config);
 
-                    foreach ($config[$key] as $key2 => $val2)
+                    foreach ($val as $key2 => $val2)
                         if (!is_string($val2))
                             Config::geConfigParseError($errorString . '/' . $key . '/' . $key2 . ' should be a string.', $schema, $config);
                 }
@@ -316,7 +316,7 @@ class Config {
                     if (!is_array($val))
                         Config::geConfigParseError($errorString . '/' . $key . ' should be an array.', $schema, $config);
 
-                    foreach ($config[$key] as $key2 => $val2)
+                    foreach ($val as $key2 => $val2)
                         if (!is_string($val2) || !in_array($val2, ['ASC', 'DESC']))
                             Config::geConfigParseError($errorString . '/' . $key . '/' . $key2 . ' should be ASC or DESC.', $schema, $config);
                 }
@@ -328,7 +328,7 @@ class Config {
                     Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
 
                 foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpLinks'], $config[$key], $errorString);
+                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpLinks'], $val, $errorString);
                 break;
 
 
@@ -337,7 +337,7 @@ class Config {
                     Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
 
                 foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpColumns'], $config[$key], $errorString);
+                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpColumns'], $val, $errorString);
                 break;
 
 
@@ -346,7 +346,7 @@ class Config {
                     Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
 
                 foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpRowData'], $config[$key], $errorString);
+                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpRowData'], $val, $errorString);
                 break;
 
 
@@ -355,7 +355,7 @@ class Config {
                     Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
 
                 foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpFilterTexts'], $config[$key], $errorString);
+                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpFilterTexts'], $val, $errorString);
                 break;
 
 
@@ -364,7 +364,7 @@ class Config {
                     Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
 
                 foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpFilterInts'], $config[$key], $errorString);
+                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpFilterInts'], $val, $errorString);
                 break;
 
 
@@ -465,7 +465,7 @@ class Config {
                     Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
 
                 foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpModuleMultiple'], $config[$key], $errorString);
+                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpModuleMultiple'], $val, $errorString);
 
                 break;
 
@@ -489,7 +489,7 @@ class Config {
                     Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
 
                 foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpModules'], $config[$key], $errorString);
+                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpModules'], $val, $errorString);
 
                 break;
 
@@ -499,7 +499,7 @@ class Config {
                     Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
 
                 foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpImagesInUse'], $config[$key], $errorString);
+                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpImagesInUse'], $val, $errorString);
 
                 break;
 
@@ -512,9 +512,9 @@ class Config {
 
                     case 'array':
                         foreach ($config as $key => $val) {
-                            if (!isset($config[$key]['id']))
+                            if (!isset($val['id']))
                                 Config::geConfigParseError($errorString . '/' . $val . ' should have an id.', $schema, $config);
-                            if (!isset($config[$key]['prefix']))
+                            if (!isset($val['prefix']))
                                 Config::geConfigParseError($errorString . '/' . $val . ' should have a prefix.', $schema, $config);
                         }
                         break;
@@ -535,7 +535,7 @@ class Config {
 
 
 
-    private static function geConfigParseError() {
+    private static function geConfigParseError():void {
         geD(func_get_args());
         geErrorPage(500, 'config error');
     }
@@ -543,7 +543,7 @@ class Config {
 
 
     static function getImageTypes(): ?array {
-        foreach (E::$conf as $key => $confPage) {
+        foreach (E::$conf as $confPage) {
             if ($confPage['gcPageType'] == 'gcpImages') {
                 return $confPage['gcImageTypes'];
             }

@@ -48,23 +48,23 @@ class Editor {
 
 
     static function pageUsers(): array {
-        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultUsers.php';
+        return require dirname(__DIR__, 2) . '/GalaxiaEditor/config/default/gcDefaultUsers.php';
     }
 
     static function linkUser(): array {
-        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultUser.php';
+        return require dirname(__DIR__, 2) . '/GalaxiaEditor/config/default/gcDefaultUser.php';
     }
 
     static function pagePasswords(): array {
-        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultPasswords.php';
+        return require dirname(__DIR__, 2) . '/GalaxiaEditor/config/default/gcDefaultPasswords.php';
     }
 
     static function linkPassword(): array {
-        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultPassword.php';
+        return require dirname(__DIR__, 2) . '/GalaxiaEditor/config/default/gcDefaultPassword.php';
     }
 
     static function pageHistory(): array {
-        return require dirname(dirname(__DIR__)) . '/GalaxiaEditor/config/default/gcDefaultHistory.php';
+        return require dirname(__DIR__, 2) . '/GalaxiaEditor/config/default/gcDefaultHistory.php';
     }
 
     static function pageDev(): array {

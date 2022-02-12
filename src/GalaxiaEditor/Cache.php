@@ -43,30 +43,30 @@ class Cache {
 
 
 
-    static function listItems(string $order, callable $f) {
+    static function listItems(string $order, callable $f): array {
         return G::cache('editor', 2, 'list-' . $order . E::$pgSlug . '-items', $f, G::$req->cacheBypass);
     }
 
-    static function listRows(string $order, callable $f) {
+    static function listRows(string $order, callable $f): array {
         return G::cache('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', $f, G::$req->cacheBypass);
     }
 
-    static function listItemsFilterInt(string $filterId, callable $f) {
+    static function listItemsFilterInt(string $filterId, callable $f): array {
         return G::cache('editor', 3, 'list-' . E::$pgSlug . '-filterInt-' . $filterId,  $f, G::$req->cacheBypass);
     }
 
-    static function listItemsFilterText(string $filterId, callable $f) {
+    static function listItemsFilterText(string $filterId, callable $f): array {
         return G::cache('editor', 4, 'list-' . E::$pgSlug . '-filterText-' . $filterId, $f, G::$req->cacheBypass);
     }
 
 
 
 
-    static function historyItems(callable $f) {
+    static function historyItems(callable $f): array {
         return G::cache('editor', 2, 'historyList-' . E::$pgSlug . '-items', $f, G::$req->cacheBypass);
     }
 
-    static function historyRows(callable $f) {
+    static function historyRows(callable $f): array {
         return G::cache('editor', 3, 'historyList-' . E::$pgSlug . '-rows', $f, G::$req->cacheBypass);
     }
 

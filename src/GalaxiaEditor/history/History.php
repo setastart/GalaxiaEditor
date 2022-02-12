@@ -11,7 +11,7 @@ use Galaxia\Sql;
 
 class History {
 
-    public static function insert($uniqueId, $tabName, $tabId, $inputKey, $fieldKey, $action, $content, $userId) {
+    public static function insert($uniqueId, $tabName, $tabId, $inputKey, $fieldKey, $action, $content, $userId): ?bool {
         // $action == 0: delete
         // $action == 1: save
         // $action == 2: update
@@ -22,7 +22,7 @@ class History {
 
         if ($inputKey == 'passwordCurrent') return null;
         if ($inputKey == 'passwordRepeat') return null;
-        if (substr($inputKey, 0, 8) == 'password') $content = '****************';
+        if (str_starts_with($inputKey, 'password')) $content = '****************';
 
         $changes = [
             '_geUserId' => $userId,

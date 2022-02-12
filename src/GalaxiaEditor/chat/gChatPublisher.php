@@ -1,8 +1,9 @@
 <?php
 
+namespace GalaxiaEditor\chat;
+
 use Galaxia\G;
 use Galaxia\Text;
-use GalaxiaEditor\chat\Chat;
 
 
 //  Process messages sent from the clients (browser tabs).
@@ -26,35 +27,34 @@ $r = [
     'messages' => [],
 ];
 
-$msg      = $post['msg'];
-$clientId = $post['clientId'];
-switch ($post['type']) {
+$msg      = Chat::$post['msg'];
+$clientId = Chat::$post['clientId'];
+switch (Chat::$post['type']) {
     case 'speak':
-        $room = $post['room'];
+        $room = Chat::$post['room'];
         // send message to room
-        if ($redis->cmd('XADD', G::$app->mysqlDb . ':rooms:' . $room, '*', 'user', G::$me->id, 'speak', Text::h(trim($msg)))->set()) {
-            $redis->cmd('SET', G::$app->mysqlDb . ':editing:' . $room . ':' . $clientId, G::$me->id, 'EX', TIMEOUT_ALIVE)->set();
+        if (Chat::$redis->cmd('XADD', G::$app->mysqlDb . ':rooms:' . $room, '*', 'user', G::$me->id, 'speak', Text::h(trim($msg)))->set()) {
+            Chat::$redis->cmd('SET', G::$app->mysqlDb . ':editing:' . $room . ':' . $clientId, G::$me->id, 'EX', Chat::timeoutAlive)->set();
             Chat::exitArrayToJson(['status' => 'ok']);
         } else {
             Chat::exitArrayToJson(['status' => 'error', 'error' => 'could not store message']);
-        } break;
+        }
 
     case 'leave':
         // leave rooms in X seconds
-        foreach ($post['rooms'] as $roomToLeave) {
-            $redis->cmd('EXPIRE', G::$app->mysqlDb . ':editing:' . $roomToLeave . ':' . $clientId, TIMEOUT_LEAVE)->set();
+        foreach (Chat::$post['rooms'] as $roomToLeave) {
+            Chat::$redis->cmd('EXPIRE', G::$app->mysqlDb . ':editing:' . $roomToLeave . ':' . $clientId, Chat::timeoutLeave)->set();
         }
-        // $redis->cmd('SET', G::$app->mysqlDb . ':leaving:' . $roomToLeave . ':' . $clientId, G::$me->id, 'EX', TIMEOUT_ALIVE)->set();
+
+        // Chat::$redis->cmd('SET', G::$app->mysqlDb . ':leaving:' . $roomToLeave . ':' . $clientId, G::$me->id, 'EX', TIMEOUT_ALIVE)->set();
         Chat::exitArrayToJson(['status' => 'ok', 'type' => 'leaving ' . $clientId]);
-        break;
 
     default:
         Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid message type']);
-        break;
 }
 
 
 
-Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid message', 'post' => $post]);
+Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid message', 'post' => Chat::$post]);
 
 exit();

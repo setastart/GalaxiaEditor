@@ -17,7 +17,7 @@ namespace Galaxia;
  * - If 'node' is empty, an empty string is returned unless 'keep' is true
  *
  * Boolean arguments are rendered only if true
- * Supports html5 self closing tabs
+ * Supports html5 self-closing tabs
  *
  * example:
  *
@@ -169,18 +169,18 @@ class H {
 
         if (!$short && !$keep && $node == '') return '';
 
-        $atts = '';
+        $attributes = '';
         foreach ($arguments as $att => $val) {
             if (is_bool($val)) {
-                if ($val) $atts .= ' ' . strtolower(htmlspecialchars($att));
+                if ($val) $attributes .= ' ' . strtolower(htmlspecialchars($att));
             } else {
-                $atts .= ' ' . strtolower(htmlspecialchars($att)) . '="' . htmlspecialchars($val) . '"';
+                $attributes .= ' ' . strtolower(htmlspecialchars($att)) . '="' . htmlspecialchars($val) . '"';
             }
         }
 
-        if ($short) return '<' . $name . $atts . '>';
+        if ($short) return '<' . $name . $attributes . '>';
 
-        return '<' . $name . $atts . '>' . $node . '</' . $name . '>';
+        return '<' . $name . $attributes . '>' . $node . '</' . $name . '>';
     }
 
 

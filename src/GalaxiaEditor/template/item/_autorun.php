@@ -124,7 +124,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
 
     $input = Input::prepare($input, $extras);
 
-    if ($input['type'] == 'password' || substr($inputKey, 0, 8) == 'password') E::$passwordColsFound = true;
+    if ($input['type'] == 'password' || str_starts_with($inputKey, 'password')) E::$passwordColsFound = true;
     if (isset($input['lang']) && count(G::langs()) > 1) E::$showSwitchesLang = true;
 
     $inputNew = [
@@ -138,7 +138,7 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
     if (array_key_exists($inputKey, $item['data'])) {
         $value = $item['data'][$inputKey];
         if ($input['type'] == 'timestamp') $value = date('Y-m-d H:i:s', $item['data'][$inputKey]);
-        if (substr($inputKey, 0, 8) == 'password') $value = '';
+        if (str_starts_with($inputKey, 'password')) $value = '';
         $inputNew['value']       = $value;
         $inputNew['valueFromDb'] = $value;
     }
@@ -171,7 +171,7 @@ if (is_array($item['gcColKey'])) {
 
 $titleTemp = $item['data'][$item['gcColKey']];
 if (empty($titleTemp)) $titleTemp = E::$itemId;
-if (substr($item['gcColKey'], 0, 9) == 'timestamp') $titleTemp = Text::formatDate($titleTemp, 'd MMM y - HH:mm');
+if (str_starts_with($item['gcColKey'], 'timestamp')) $titleTemp = Text::formatDate($titleTemp, 'd MMM y - HH:mm');
 E::$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . $titleTemp;
 E::$hdTitle = Text::t('Editing') . ': ' . E::$pgTitle;
 

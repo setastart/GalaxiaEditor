@@ -27,7 +27,7 @@ use GalaxiaEditor\E;
 <body>
 
 <div class="paper">
-    <img class="icon-big" src="/favicon.ico">
+    <img class="icon-big" src="/favicon.ico" alt="Icon">
     <a href="/" class="paper-header"><?=G::$req->host?></a>
 <?php
     include G::$editor->dirView . G::$editor->view . '.phtml';
@@ -35,8 +35,8 @@ use GalaxiaEditor\E;
 </div>
 
 <div id="footer">
-    <p><img class="icon" src="/edit/favicon.ico?version=<?=Text::h(G::$editor->version)?>">GalaxiaEditor</p>
-    <p><a href="https://setastart.com/" target="_blank"> <img class="icon" src="/edit/gfx/icon-setastart-white-32.png"/>setastart.com</a> &copy; 2017-<?=date("Y")?></p>
+    <p><img class="icon" alt="Icon" src="/edit/favicon.ico?version=<?=Text::h(G::$editor->version)?>">GalaxiaEditor</p>
+    <p><a href="https://setastart.com/" target="_blank"> <img class="icon" alt="Setastart Icon" src="/edit/gfx/icon-setastart-white-32.png"/>setastart.com</a> &copy; 2017-<?=date("Y")?></p>
 </div>
 
 <script type="text/javascript">

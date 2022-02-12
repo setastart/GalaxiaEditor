@@ -22,7 +22,7 @@ use Galaxia\Text;
 
 class Stats {
 
-    static function getStats(int $trim = 0) {
+    static function getStats(int $trim = 0): array {
         $files = glob(G::dir() . 'var/stats/????-??-??.stats.php.gz');
         arsort($files);
 
@@ -32,7 +32,7 @@ class Stats {
         return $files;
     }
 
-    static function getGoaccessStats(int $trim = 0) {
+    static function getGoaccessStats(int $trim = 0): array {
         $files = glob(G::dir() . 'var/goaccess/????-??-??.html');
         arsort($files);
 

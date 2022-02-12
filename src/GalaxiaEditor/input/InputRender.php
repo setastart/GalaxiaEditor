@@ -12,7 +12,7 @@ use GalaxiaEditor\E;
 
 class InputRender {
 
-    static function form($action = '', $id = '', $classes = '') {
+    static function form($action = '', $id = '', $classes = ''): void {
         if ($action) $action = ' action="' . Text::h($action) . '"';
         if ($id) $id = ' id="' . Text::h($id) . '"';
         if ($classes) $classes = ' class="' . Text::h($classes) . '"';
@@ -21,7 +21,7 @@ class InputRender {
         echo $form;
     }
 
-    static function renderFormEnd() {
+    static function renderFormEnd(): void {
         echo '</form>';
     }
 

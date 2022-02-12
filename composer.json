@@ -27,7 +27,6 @@
             "Galaxia\\FastRoute\\": "src/Galaxia/fastroute/src/"
         },
         "files": [
-            "src/Galaxia/polyfill.php",
             "src/Galaxia/fastroute/src/functions.php"
         ]
     }

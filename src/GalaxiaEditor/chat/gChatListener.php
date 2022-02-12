@@ -1,8 +1,9 @@
 <?php
 
+namespace GalaxiaEditor\chat;
+
 use Galaxia\G;
 use Galaxia\Text;
-use GalaxiaEditor\chat\Chat;
 use GalaxiaEditor\E;
 
 
@@ -27,7 +28,7 @@ use GalaxiaEditor\E;
 $r = [
     'status'   => 'ok',
     'error'    => '',
-    'clientId' => $post['clientId'],
+    'clientId' => Chat::$post['clientId'],
 
     'users' => [
     ],
@@ -41,9 +42,9 @@ $r = [
 
 // validation
 
-if (!isset($post['clientId'])) Chat::exitArrayToJson(['status' => 'error', 'error' => 'missing clientId']);
-if (!isset($post['rooms'])) Chat::exitArrayToJson(['status' => 'error', 'error' => 'missing rooms']);
-if (empty($post['rooms'])) Chat::exitArrayToJson(['status' => 'error', 'error' => 'rooms empty']);
+if (!isset(Chat::$post['clientId'])) Chat::exitArrayToJson(['status' => 'error', 'error' => 'missing clientId']);
+if (!isset(Chat::$post['rooms'])) Chat::exitArrayToJson(['status' => 'error', 'error' => 'missing rooms']);
+if (empty(Chat::$post['rooms'])) Chat::exitArrayToJson(['status' => 'error', 'error' => 'rooms empty']);
 
 
 
@@ -51,20 +52,20 @@ if (empty($post['rooms'])) Chat::exitArrayToJson(['status' => 'error', 'error' =
 // Enter rooms
 
 $roomsPrefixed = [];
-$clientId = $post['clientId'];
+$clientId      = Chat::$post['clientId'];
 
-foreach ($post['rooms'] ?? [] as $room => $roomData) {
-    $redis->cmd('SET', G::$app->mysqlDb . ':editing:' . $room . ':' . $clientId, G::$me->id, 'EX', TIMEOUT_ALIVE)->set();
-    $roomsprefixed[G::$app->mysqlDb . ':rooms:' . $room] = $roomData['lastId'];
+foreach (Chat::$post['rooms'] ?? [] as $room => $roomData) {
+    Chat::$redis->cmd('SET', G::$app->mysqlDb . ':editing:' . $room . ':' . $clientId, G::$me->id, 'EX', Chat::timeoutAlive)->set();
+    $roomsPrefixed[G::$app->mysqlDb . ':rooms:' . $room] = $roomData['lastId'];
 
-    if (!$redis->cmd('EXISTS', G::$app->mysqlDb . ':rooms:' . $room)->get())
-        $redis->cmd('XADD', G::$app->mysqlDb . ':rooms:' . $room, '*', 'user', G::$me->id, 'create', Text::t('Room Created'))->set();
+    if (!Chat::$redis->cmd('EXISTS', G::$app->mysqlDb . ':rooms:' . $room)->get())
+        Chat::$redis->cmd('XADD', G::$app->mysqlDb . ':rooms:' . $room, '*', 'user', G::$me->id, 'create', Text::t('Room Created'))->set();
 
     if ($room != '/edit/chat')
-        $redis->cmd('EXPIRE', G::$app->mysqlDb . ':rooms:' . $room, TIMEOUT_ROOM_INACTIVE)->set();
+        Chat::$redis->cmd('EXPIRE', G::$app->mysqlDb . ':rooms:' . $room, Chat::timeoutRoomInactive)->set();
 
 }
-// $r['rooms'] = $post['rooms'];
+// $r['rooms'] = Chat::$post['rooms'];
 
 
 
@@ -72,27 +73,27 @@ foreach ($post['rooms'] ?? [] as $room => $roomData) {
 // listen
 
 $messageActivity = false;
-$userActivity = false;
-$timeoutListen = time() + TIMEOUT_LISTEN;
-$usersSeen = [];
+$userActivity    = false;
+$timeoutListen   = time() + Chat::timeoutListen;
+$usersSeen       = [];
 
 while (!$messageActivity && !$userActivity && time() < $timeoutListen) {
 
     // listen to new messages
 
-    $xread = $redis->cmd('XREAD', 'BLOCK', TIMEOUT_XREAD, 'COUNT', 100, 'STREAMS', ...array_keys($roomsprefixed), ...array_values($roomsprefixed))->get();
+    $xread = Chat::$redis->cmd('XREAD', 'BLOCK', Chat::timeoutXread, 'COUNT', 100, 'STREAMS', ...array_keys($roomsPrefixed), ...array_values($roomsPrefixed))->get();
     if ($xread) $messageActivity = true;
 
 
     // get users in rooms
 
-    foreach ($post['rooms'] as $room => $roomData) {
-        $clients = $redis->cmd('KEYS', G::$app->mysqlDb . ':editing:' . $room . ':*')->get();
+    foreach (Chat::$post['rooms'] as $room => $roomData) {
+        $clients = Chat::$redis->cmd('KEYS', G::$app->mysqlDb . ':editing:' . $room . ':*')->get();
 
         unset($r['rooms'][$room]['users']);
 
         foreach ($clients as $client) {
-            $userId = $redis->cmd('GET', $client)->get();
+            $userId = Chat::$redis->cmd('GET', $client)->get();
             if (!$userId) continue;
             if (!isset($usersSeen[$userId])) $usersSeen[$userId] = true;
 
@@ -102,21 +103,21 @@ while (!$messageActivity && !$userActivity && time() < $timeoutListen) {
                 $r['rooms'][$room]['users'][$userId] = 1;
             }
         }
-        if (isset($r['rooms'][$room]['users']) && $r['rooms'][$room]['users'] != $post['rooms'][$room]['users']) $userActivity = true;
+        if (isset($r['rooms'][$room]['users']) && $r['rooms'][$room]['users'] != Chat::$post['rooms'][$room]['users']) $userActivity = true;
     }
 }
 
 
 
 
-// get user names and last online timestamp
+// get usernames and last online timestamp
 
-$temp = $redis->cmd('HSCAN', G::$app->mysqlDb . ':userNames', '0')->get();
+$temp = Chat::$redis->cmd('HSCAN', G::$app->mysqlDb . ':userNames', '0')->get();
 for ($i = 0; $i < count($temp[1]); $i += 2) {
     $r['users'][$temp[1][$i]]['name'] = $temp[1][$i + 1];
 }
 
-$temp = $redis->cmd('HSCAN', G::$app->mysqlDb . ':usersLastSeen', '0')->get();
+$temp = Chat::$redis->cmd('HSCAN', G::$app->mysqlDb . ':usersLastSeen', '0')->get();
 for ($i = 0; $i < count($temp[1]); $i += 2) {
     $r['users'][$temp[1][$i]]['lastSeen'] = $temp[1][$i + 1];
 }
@@ -125,7 +126,6 @@ $r['users'][0] = [
     'name'     => E::$conf['chat']['gcMenuTitle'] ?? 'Galaxia Chat',
     'lastSeen' => '0',
 ];
-
 
 
 
@@ -145,7 +145,7 @@ foreach ($xread ?? [] as $streams) {
             'timestamp' => substr($message[0], 0, 13),
         ];
     }
-    $r['rooms'][$room]['lastId'] = $message[0];
+    $r['rooms'][$room]['lastId'] = $message[0] ?? '0';
 }
 
 

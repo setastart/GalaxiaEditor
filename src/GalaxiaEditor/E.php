@@ -25,6 +25,7 @@ class E {
 
     static array $conf    = [];
     static array $section = [];
+    static array $item    = [];
 
     static string $pgTitle = '';
     static string $hdTitle = '';
