@@ -20,7 +20,7 @@ class Asset {
 
 
     static function build(
-        array $builds,
+        array  $builds,
         string $publicDir,
         string $publicSubdir,
         string $extSource,
@@ -46,7 +46,6 @@ class Asset {
 
 
                 ob_start();
-                /** @noinspection PhpIncludeInspection */
                 require $fileName;
                 $fileContent = ob_get_clean();
 
@@ -67,13 +66,13 @@ class Asset {
 
 
     static function linkBuild(
-        array $builds,
+        array  $builds,
         string $buildName,
         string $publicSubdir,
         string $extSource,
         string $extBuild,
         string $version,
-        $rel = 'stylesheet'
+        string $rel = 'stylesheet'
     ): void {
         if (!$builds[$buildName] ?? []) return;
 
@@ -90,6 +89,37 @@ class Asset {
         foreach ($links as $href) {
 // @formatter:off ?>
     <link rel="<?=Text::h($rel)?>" href="<?=Text::h($href)?>"/>
+<?php } // @formatter:on
+    }
+
+
+
+
+    static function scriptBuild(
+        array  $builds,
+        string $buildName,
+        string $publicSubdir,
+        string $extSource,
+        string $extBuild,
+        string $version,
+        string $attributes = 'async defer',
+    ): void {
+        if (!$builds[$buildName] ?? []) return;
+
+        $links = ["/{$publicSubdir}/{$buildName}{$extBuild}{$version}"];
+        if (G::isDevEnv() && G::isDev()) {
+            $links = [];
+            foreach ($builds[$buildName] as $fileName) {
+                $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($extSource));
+                $links[]    = Text::h("/dev/{$publicSubdir}/{$buildName}-{$sourceName}{$extBuild}{$version}");
+            }
+        }
+
+        if ($attributes) $attributes = ' ' . trim(Text::h($attributes));
+
+        foreach ($links as $href) {
+// @formatter:off ?>
+<script type="text/javascript" src="<?=$href?>"<?=$attributes?>></script>
 <?php } // @formatter:on
     }
 
@@ -130,7 +160,7 @@ class Asset {
         string $href,
         string $as = '',
         string $type = '',
-        bool $crossorigin = false,
+        bool   $crossorigin = false,
         string $srcset = '',
         string $sizes = '',
         string $importance = 'high'
@@ -154,7 +184,7 @@ class Asset {
         string $href,
         string $as = '',
         string $type = '',
-        bool $crossorigin = false
+        bool   $crossorigin = false
     ): void {
         if (!$href) return;
         $co = '';
