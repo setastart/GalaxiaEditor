@@ -184,7 +184,10 @@ class Asset {
         string $href,
         string $as = '',
         string $type = '',
-        bool   $crossorigin = false
+        bool   $crossorigin = false,
+        string $srcset = '',
+        string $sizes = '',
+        string $importance = 'high',
     ): void {
         if (!$href) return;
         $co = '';
@@ -192,8 +195,11 @@ class Asset {
         if ($as) $as = ' as="' . Text::h($as) . '";';
         if ($type) $type = ' type="' . Text::h($type) . '";';
         if ($crossorigin) $co = ' crossorigin';
+        if ($srcset) $srcset = ' imagesrcset="' . Text::h($srcset) . '"';
+        if ($sizes) $sizes = ' imagesizes="' . Text::h($sizes) . '"';
+        if ($importance) $importance = ' importance="' . Text::h($importance) . '"';
 
-        header("link: <$href>; rel=preload;$as$type$co", false);
+        header("link: <$href>; rel=preload;$as$type$srcset$sizes$importance$co", false);
     }
 
 }
