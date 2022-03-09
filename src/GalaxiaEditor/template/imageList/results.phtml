@@ -1,9 +1,12 @@
-<?php use Galaxia\Text;
+<?php
+
+use Galaxia\Text;
 use GalaxiaEditor\E;
 use GalaxiaEditor\render\view\ViewPagination;
 
 
-ViewPagination::renderHiddenData($pagination, $rowsFiltered, $rowsTotal) ?>
+ViewPagination::renderHiddenData(E::$pagination)
+// @formatter:off ?>
 
     <div class="list pad">
         <div class="row-head">
@@ -15,8 +18,8 @@ ViewPagination::renderHiddenData($pagination, $rowsFiltered, $rowsTotal) ?>
             <div class="col flexD"><?=Text::t('Types')?></div>
 <?php   } ?>
         </div>
-<?php   $i = $pagination->itemFirst; ?>
-<?php   foreach ($rows as $imgSlug => $html) { ?>
+<?php   $i = E::$pagination->itemFirst; ?>
+<?php   foreach (E::$imgRows as $imgSlug => $html) { ?>
 <div class="row-number"><?=$i?></div>
 <?=$html?>
 <?php       $i++; ?>

@@ -16,7 +16,7 @@ G::$editor->view = 'item/delete/delete';
 // delete item from database
 
 try {
-    $query = Sql::delete($item['gcDelete']);
+    $query = Sql::delete(E::$item['gcDelete']);
 
     $stmt = G::prepare($query);
     $stmt->bind_param('s', E::$itemId);
@@ -39,17 +39,17 @@ try {
 
 // history
 
-foreach ($item['inputs'] as $inputName => $input) {
-    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputName, '', 0, $input['valueFromDb'] ?? '', G::$me->id);
+foreach (E::$item['inputs'] as $inputName => $input) {
+    History::insert(E::$uniqueId, E::$item['gcTable'], E::$itemId, $inputName, '', 0, $input['valueFromDb'] ?? '', G::$me->id);
 }
 
-foreach ($modules as $moduleKey => $module) {
+foreach (E::$modules as $module) {
     switch ($module['gcModuleType']) {
         case 'fields':
             foreach ($module['inputs'] as $fieldKey => $inputs) {
                 foreach ($inputs as $inputKey => $input) {
                     if (!isset($input['valueFromDb'])) continue;
-                    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputKey, $fieldKey, 0, $input['valueFromDb'], G::$me->id);
+                    History::insert(E::$uniqueId, E::$item['gcTable'], E::$itemId, $inputKey, $fieldKey, 0, $input['valueFromDb'], G::$me->id);
                 }
             }
             break;

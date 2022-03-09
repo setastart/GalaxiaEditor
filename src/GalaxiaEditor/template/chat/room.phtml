@@ -21,10 +21,12 @@ use GalaxiaEditor\E;
         publish status: <span class="status-publish"></span>
         <div class="send input-wrap input-wrap-textarea">
             <div class="input-label">
-                <?=Text::t('Send message')?><br>
+                <div><?=Text::t('Send message')?></div>
             </div>
-            <textarea class="gchat-room-text input-text input-textarea rl" name="msg" rows="1" wrap="soft" data-room="/edit/chat"></textarea>
-            <button class="gchat-room-btn btn btn-green active rr" data-room="/edit/chat"><?=Text::t('Send')?></button>
+            <div class="input-inputs">
+                <textarea class="gchat-room-text input-text input-textarea rl" name="msg" rows="1" wrap="soft" data-room="/edit/chat"></textarea>
+                <button class="gchat-room-btn btn btn-green active rr" data-room="/edit/chat"><?=Text::t('Send')?></button>
+            </div>
         </div>
     </div>
 

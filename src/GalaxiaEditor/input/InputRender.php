@@ -126,29 +126,30 @@ $ht .= '</div>' . PHP_EOL;
 
 
         $len    = '';
-        $minlen = $input['options']['minlength'] ?? '';
-        $maxlen = $input['options']['maxlength'] ?? '';
-        if ($minlen > 0) $minlen = '<span class="input-min">' . Text::h($minlen) . '</span> < ';
-        if ($maxlen > 0) $maxlen = ' < <span class="input-max">' . Text::h($maxlen) . '</span> ';
+        $minlen = $input['options']['minlength'] ?? 0;
+        $maxlen = $input['options']['maxlength'] ?? 0;
+        $minlen = $minlen ?: '';
+        $maxlen = $maxlen ?: '';
+        if ($minlen) $minlen = '<span class="input-min">' . Text::h($minlen) . '</span> < ';
+        if ($maxlen) $maxlen = ' < <span class="input-max">' . Text::h($maxlen) . '</span> ';
         if ($input['type'] == 'trix') {
             $len = '<span class="input-len" title="' . Text::t('Number of letters ❖ Number of words') . '">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'] ?? '')) . '</span> ';
         } else if ($minlen || $maxlen) {
-            $len = '<span class="input-len">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'] ?? '')) . '</span> ';
+            $len = '<span class="input-len">' . mb_strlen($input['value'] ?? '') . '</span> ';
         }
 
         $titleTitle = (G::isDev()) ? (Text::h($input['prefix']) ?? Text::h($input['name'])) : '';
-
-        $translate = E::$hookTranslate && in_array($input['type'], ['text', 'textarea', 'trix']);
+        $translate = (substr($input['nameFromDb'], -3, 1) == '_' || substr($input['name'], -3, 1) == '_') && E::$hookTranslate && in_array($input['type'], ['text', 'textarea', 'trix']);
 
 $ht = '<div class="' . Text::h($css) . '">' . PHP_EOL;
 $ht .= '    <div class="input-label">' .
                '<div><span class="input-title" title="' . Text::h($titleTitle) . '">' . $input['label'] . '</span> <span class="input-label-lang">' . $input['lang'] . '</span></div>' .
-               "<div>{$minlen}{$len}{$maxlen}</div>" .
+               "<div class=\"grey\">{$minlen}{$len}{$maxlen}</div>" .
                // '<div>' .
                '<div class="input-changed" title="' . Text::t('Modified') . '">' . Text::t('Mod.') . '</div> ' .
                '<button type="button" class="input-initial fake">' . Text::t('initial') . '</button> ' .
                '<button type="button" class="input-initial-undo fake">' . Text::t('undo') . '</button> ' .
-        ($translate ? '<button type="button" class="input-translate fake">' . Text::t('Translate') . '</button> ' : '') .
+        ($translate ? '<button type="button" class="input-translate fake">' . Text::t('translate') . '</button> ' : '') .
        // '</div>' .
        '</div>' . PHP_EOL;
 
@@ -323,8 +324,9 @@ $r .= ' ' . $optionName . '="' . $option . '"';
         $multiple = ($input['options']['multiple'] ?? false) ? ' multiple' : '';
         $disabled = ($maxUploadSize < 1 || $input['disabled']) ? ' disabled' : '';
 
+        $typeInput = Input::PROTO_INPUT;
         if ($input['options']['type'] ?? []) {
-            $typeInput = array_merge(Input::PROTO_INPUT, [
+            $typeInput = array_merge($typeInput, [
                 'label'   => 'Type',
                 'name'    => 'type',
                 'type'    => 'radio',
@@ -333,8 +335,9 @@ $r .= ' ' . $optionName . '="' . $option . '"';
             ]);
         }
 
+        $existingInput = Input::PROTO_INPUT;
         if ($input['options']['existing'] ?? []) {
-            $existingInput = array_merge(Input::PROTO_INPUT, [
+            $existingInput = array_merge($existingInput, [
                 'label'   => 'Type',
                 'name'    => 'type',
                 'type'    => 'radio',
@@ -407,7 +410,7 @@ $r .= ' ' . $optionName . '="' . $optionValue . '"';
 
 
     static function getRadioInput($input): string {
-$r = '';
+$r = '<div class="input-inputs">';
         foreach ($input['options'] as $optionValue => $option) {
             $css  = 'btn input-radio btn-pill';
             $attr = '';
@@ -429,6 +432,7 @@ if ($icon) $r .= '        ' . Text::unsafe($icon) . PHP_EOL;
 $r .= '        ' . Text::t($option['label']) . PHP_EOL;
 $r .= '    </label>' . PHP_EOL;
         }
+$r .= '</div>';
 
         return $r;
     }

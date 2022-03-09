@@ -9,7 +9,7 @@ use Galaxia\Text;
 use GalaxiaEditor\E;
 
 
-$items = [];
+E::$historyItems = [];
 
 $query = Sql::select(['_geHistory' => ['_geHistoryId', 'uniqueId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
 $query .= Sql::selectWhere(['_geHistory' => ['tabName' => '=', 'tabId' => '=']]);
@@ -21,14 +21,14 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 while ($data = $result->fetch_assoc()) {
-    if (!isset($items[$data['uniqueId']])) {
-        $items[$data['uniqueId']]            = [];
-        $items[$data['uniqueId']]['changes'] = [];
-        $items[$data['uniqueId']]['action']  = $data['action'];
-        $items[$data['uniqueId']]['created'] = $data['timestampCreated'];
+    if (!isset(E::$historyItems[$data['uniqueId']])) {
+        E::$historyItems[$data['uniqueId']]            = [];
+        E::$historyItems[$data['uniqueId']]['changes'] = [];
+        E::$historyItems[$data['uniqueId']]['action']  = $data['action'];
+        E::$historyItems[$data['uniqueId']]['created'] = $data['timestampCreated'];
     }
 
-    $items[$data['uniqueId']] ??= [];
+    E::$historyItems[$data['uniqueId']] ??= [];
 
 
 
@@ -38,33 +38,33 @@ while ($data = $result->fetch_assoc()) {
     if (!empty($data['fieldKey'])) {
         $name = $data['fieldKey'];
     } else {
-        if (isset($inputKeys[E::$tabName])) {
-            $name = $inputKeys[E::$tabName][$data['inputKey']] ?? $data['inputKey'];
+        if (isset(E::$historyInputKeys[E::$tabName])) {
+            $name = E::$historyInputKeys[E::$tabName][$data['inputKey']] ?? $data['inputKey'];
         }
     }
 
     $content = $data['content'];
     if ($data['content'] == '') $content = '[' . Text::t('Empty') . ']';
     if ($data['inputKey'] == 'status')
-        if (isset($statusNames[E::$tabName]))
-            if (isset($statusNames[E::$tabName][$data['content']]))
-                $content = Text::t($statusNames[E::$tabName][$data['content']]);
+        if (isset(E::$historyStatusNames[E::$tabName]))
+            if (isset(E::$historyStatusNames[E::$tabName][$data['content']]))
+                $content = Text::t(E::$historyStatusNames[E::$tabName][$data['content']]);
 
 
 
-    $items[$data['uniqueId']]['changes'] ??= [];
+    E::$historyItems[$data['uniqueId']]['changes'] ??= [];
 
-    $items[$data['uniqueId']]['changes'][] = [
+    E::$historyItems[$data['uniqueId']]['changes'][] = [
         'name'    => $name,
         'content' => $content,
         'lang'    => $lang,
     ];
 }
 $stmt->close();
-$itemCount = count($items);
+$itemCount = count(E::$historyItems);
 
 
 
 
-E::$hdTitle = sprintf(Text::t('History of %s'), ($pageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);
-E::$pgTitle = sprintf(Text::t('History of %s'), ($pageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);
+E::$hdTitle = sprintf(Text::t('History of %s'), (E::$historyPageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);
+E::$pgTitle = sprintf(Text::t('History of %s'), (E::$historyPageNames[E::$tabName] ?? E::$tabName) . ': ' . E::$tabId);

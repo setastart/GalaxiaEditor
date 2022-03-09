@@ -15,12 +15,12 @@ G::$editor->view = 'image/replace/replace';
 // item validation
 
 foreach (File::uploadRemoveErrors('images') as $error)
-    $inputs['images']['errors'][] = 'Error uploading ' . $error['file'] . ' - ' . $error['msg'];
+    E::$imgInputs['images']['errors'][] = 'Error uploading ' . $error['file'] . ' - ' . $error['msg'];
 
 if (count($_FILES['images']['name'] ?? []) != 1)
-    $inputs['images']['errors'][] = 'Required 1 image.';
+    E::$imgInputs['images']['errors'][] = 'Required 1 image.';
 
-foreach ($inputs as $inputKey => $input) {
+foreach (E::$imgInputs as $inputKey => $input) {
     if ($inputKey == 'images') continue;
     if (!isset($_POST[$input['name']])) {
         $input['errors'][] = 'Required.';
@@ -28,14 +28,14 @@ foreach ($inputs as $inputKey => $input) {
     }
     $value             = $_POST[$input['name']];
     $input             = Input::validate($input, $value);
-    $inputs[$inputKey] = $input;
+    E::$imgInputs[$inputKey] = $input;
 }
 
-foreach ($inputs as $input) {
+foreach (E::$imgInputs as $input) {
     foreach ($input['errors'] as $msg) {
         Flash::error($msg, 'form', $input['name']);
         if ($input['lang']) {
-            $langSelectClass[$input['lang']] = 'btn-red';
+            E::$langSelectClass[$input['lang']] = 'btn-red';
         }
     }
 }

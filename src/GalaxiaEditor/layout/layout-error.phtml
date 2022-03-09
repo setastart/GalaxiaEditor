@@ -12,7 +12,7 @@ use Galaxia\Text;
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Error <?=Text::h($errorCode)?></title>
+    <title>Error <?=Text::h(G::$errorCode)?></title>
 
     <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h(G::$editor->version)?>">
 
@@ -36,15 +36,15 @@ use Galaxia\Text;
 <?php   include 'messageBoxes.phtml'; ?>
     <div class="paper pad">
         <div class="paper-header pad">
-            <h1>Error <?=Text::h($errorCode)?></h1>
+            <h1>Error <?=Text::h(G::$errorCode)?></h1>
         </div>
         <div class="pad">
-            <?=nl2br($error)?>
+            <?=nl2br(G::$error)?>
         </div>
 <?php   if (G::isDevDebug()) { ?>
-        <div class="pad">
+        <pre class="pad">
             <?php db(); ?>
-        </div>
+        </pre>
 <?php   } ?>
     </div>
 </div>

@@ -87,6 +87,10 @@
         padding-left: 6px;
         padding-right: 6px;
     }
+    .padv {
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
     .paper {
         border-left: none;
         border-right: none;

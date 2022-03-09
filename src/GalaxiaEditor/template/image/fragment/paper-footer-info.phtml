@@ -7,8 +7,8 @@ use GalaxiaEditor\E;
 
 ?>
 <div class="item-info">
-    <div><?=Text::t('Original')?>: <a target="_blank" href="/media/image/<?=E::$imgSlug?>/<?=Text::h(E::$imgSlug . $img['ext'])?>"><?=Text::h($img['wOriginal'] . 'x' . $img['hOriginal'])?></a><?=Text::h($img['ext'])?>  (<?=Text::bytesIntToAbbr(filesize(G::dirImage() . E::$imgSlug . '/' . E::$imgSlug . $img['ext']))?>)</div>
-<?php   foreach ($img['resizes'] as $fileName => $resize) { ?>
+    <div><?=Text::t('Original')?>: <a target="_blank" href="/media/image/<?=E::$imgSlug?>/<?=Text::h(E::$imgSlug . E::$img['ext'])?>"><?=Text::h(E::$img['wOriginal'] . 'x' . E::$img['hOriginal'])?></a><?=Text::h(E::$img['ext'])?>  (<?=Text::bytesIntToAbbr(filesize(G::dirImage() . E::$imgSlug . '/' . E::$imgSlug . E::$img['ext']))?>)</div>
+<?php   foreach (E::$img['resizes'] as $fileName => $resize) { ?>
     <div>
         <?=Text::t('Dimensions')?>:
         <a target="_blank" href="/media/image/<?=E::$imgSlug?>/<?=Text::h($fileName)?>"><?=Text::h($resize)?></a>

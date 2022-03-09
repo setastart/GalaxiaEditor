@@ -17,6 +17,13 @@ foreach ($list['gcLinks'] ?? [] as $href => $link) {
     $href  = Text::h(E::$pgSlug) . '/' . $href;
     $css   = Text::h($link['cssClass'] ?? '');
 
+    $padCss = 'pad padv';
+    foreach ($link['gcPerms'] ?? [] as $perm) {
+        $padCss .= ' hide-perm-' . Text::h($perm);
+    }
+
+
+
     switch ($frags[0]) {
         case 'new':
             $label = sprintf(Text::t('+ Add new %s'), Text::t(E::$section['gcTitleSingle']));
@@ -33,6 +40,7 @@ foreach ($list['gcLinks'] ?? [] as $href => $link) {
         'label' => $label,
         'href'  => $href,
         'css'   => $css,
+        'padCss'   => $padCss,
     ];
 }
 
@@ -42,11 +50,11 @@ InputRender::form('', 'item-list', 'paper pad');
 // @formatter:off ?>
 
     <div class="paper-header pad">
-        <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t(E::$pgTitle);?></h1>
+        <h1><span class="rowsFiltered"><?=E::$pagination->itemsFiltered?></span> &#8725; <span class="rowsTotal"><?=E::$pagination->itemsTotal?></span> <?=Text::t(E::$pgTitle);?></h1>
 
         <div class="list-links">
 <?php   foreach ($links as $link) { ?>
-            <a href="/edit/<?=Text::h($link['href'])?>" class="btn btn-pad <?=Text::h($link['css'])?>"><?=Text::t($link['label'])?></a>
+            <div class="<?=$link['padCss']?>"><a href="/edit/<?=Text::h($link['href'])?>" class="btn btn-pad <?=Text::h($link['css'])?>"><?=Text::t($link['label'])?></a></div>
 <?php   } ?>
         </div>
     </div>
@@ -55,16 +63,18 @@ InputRender::form('', 'item-list', 'paper pad');
 <?php   if (!empty($filterTexts)) { ?>
 <?php       foreach ($filterTexts as $filterId => $filter) { ?>
         <div class="input-wrap pad">
-            <div class="input-label"><?=Text::t($filter['label'])?></div>
+            <div class="input-label"><div><?=Text::t($filter['label'])?></div></div>
+            <div class="input-inputs">
 <?php           if (empty($filter['filterEmpty'])) { ?>
-            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
+                <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
 <?php           } else { ?>
-            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
-            <label for="<?=Text::h($filterId)?>-empty" class="btn btn-pill btn-checkbox rr">
-                <?=Text::t('Empty')?>
-                <input class="filterChangeEmpty" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=Text::h($filterId)?>-empty" title="<?=Text::t('Empty')?>">
-            </label>
+                <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
+                <label for="<?=Text::h($filterId)?>-empty" class="btn btn-pill btn-checkbox rr">
+                    <?=Text::t('Empty')?>
+                    <input class="filterChangeEmpty" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=Text::h($filterId)?>-empty" title="<?=Text::t('Empty')?>">
+                </label>
 <?php           } ?>
+            </div>
         </div>
 <?php       } ?>
 <?php   } ?>
@@ -72,20 +82,22 @@ InputRender::form('', 'item-list', 'paper pad');
 <?php   if (!empty($filterInts)) { ?>
 <?php       foreach ($filterInts as $filterId => $filter) { ?>
         <div class="input-wrap input-filter-int pad">
-            <div class="input-label"><?=Text::t($filter['label'])?></div>
+            <div class="input-label"><div><?=Text::t($filter['label'])?></div></div>
+            <div class="input-inputs">
 <?php       foreach ($filter['options'] as $key => $options) { ?>
-            <label for="<?=Text::h($filterId)?>-<?=Text::h($key)?>" class="btn btn-pill btn-checkbox <?=Text::h($options['cssClass'] ?? '')?><?=($options['checked']) ? ' active' : ''?>">
-                <?=Text::t($options['label'])?>
-                <input class="filterChange" name="filterInts[<?=$filterId?>][<?=Text::h($key)?>]" type="checkbox" value="1" id="<?=Text::h($filterId)?>-<?=Text::h($key)?>" title="<?=Text::t($options['label'])?>" <?=($options['checked']) ? ' checked' : ''?>>
-            </label>
+                <label for="<?=Text::h($filterId)?>-<?=Text::h($key)?>" class="btn btn-pill btn-checkbox <?=Text::h($options['cssClass'] ?? '')?><?=($options['checked']) ? ' active' : ''?>">
+                    <?=Text::t($options['label'])?>
+                    <input class="filterChange" name="filterInts[<?=$filterId?>][<?=Text::h($key)?>]" type="checkbox" value="1" id="<?=Text::h($filterId)?>-<?=Text::h($key)?>" title="<?=Text::t($options['label'])?>" <?=($options['checked']) ? ' checked' : ''?>>
+                </label>
 <?php       } ?>
+            </div>
         </div>
 <?php       } ?>
 <?php   } ?>
     </div>
 
 
-<?php ViewPagination::renderHeader($pagination) ?>
+<?php ViewPagination::renderHeader(E::$pagination) ?>
 
 
     <div class="load">
@@ -93,7 +105,7 @@ InputRender::form('', 'item-list', 'paper pad');
     </div>
 
 
-<?php ViewPagination::renderFooter($pagination) ?>
+<?php ViewPagination::renderFooter(E::$pagination) ?>
 
 
 <?php   InputRender::renderFormEnd(); ?>

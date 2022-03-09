@@ -10,11 +10,11 @@ use GalaxiaEditor\render\view\ViewPagination;
 InputRender::form('', 'history-list', 'paper pad');?>
 
     <div class="paper-header">
-        <h1 class="pad"><span class="nrFiltered"><?=Text::h($rowsTotal)?></span> &#8725; <?=Text::h($rowsTotal)?> <?=Text::t(E::$pgTitle);?></h1>
+        <h1 class="pad"><span class="nrFiltered"><?=Text::h(E::$pagination->itemsFiltered)?></span> &#8725; <?=Text::h(E::$pagination->itemsTotal)?> <?=Text::t(E::$pgTitle);?></h1>
     </div>
 
 
-<?php ViewPagination::renderHeader($pagination) ?>
+<?php ViewPagination::renderHeader(E::$pagination) ?>
 
 
     <div class="load">
@@ -22,7 +22,7 @@ InputRender::form('', 'history-list', 'paper pad');?>
     </div>
 
 
-<?php ViewPagination::renderFooter($pagination) ?>
+<?php ViewPagination::renderFooter(E::$pagination) ?>
 
 
 <?php   InputRender::renderFormEnd(); ?>

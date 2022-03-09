@@ -7,14 +7,14 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-foreach ($postModule as $fieldKey => $fields) {
+foreach (E::$itemPostModule as $fieldKey => $fields) {
 
-    if (!isset($modules[$moduleKey]['inputs'][$fieldKey])) {
+    if (!isset(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey])) {
         Flash::error('Invalid input field name: ' . Text::h($fieldKey));
         continue;
     }
 
-    if (isset($modules[$moduleKey]['gcModuleMultiple'][$fieldKey])) {
+    if (isset(E::$modules[E::$itemPostModuleKey]['gcModuleMultiple'][$fieldKey])) {
         foreach ($fields as $fieldVal => $field) {
             if ($fieldVal == 'new-0') unset($fields[$fieldVal]);
         }
@@ -43,7 +43,7 @@ foreach ($postModule as $fieldKey => $fields) {
             }
             $newId = (int)$newId;
 
-            if (!isset($modules[$moduleKey]['inputs'][$fieldKey]['new-0'])) {
+            if (!isset(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey]['new-0'])) {
                 Flash::error('Missing new input field id in module: ' . Text::h($fieldKey) . '/new-0');
                 continue;
             }
@@ -53,31 +53,31 @@ foreach ($postModule as $fieldKey => $fields) {
             foreach ($field as $name => $val) {
                 if ($name == 'delete') {
                     if (in_array($val, ['', 'on']))
-                        $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId]['delete'] = $val;
+                        E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey]['new-' . $newId]['delete'] = $val;
                     else
                         Flash::error('Invalid new input field delete: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal) . '/' . Text::h($val));
                     continue;
                 }
                 if ($name == 'position') {
                     if (ctype_digit($val)) {
-                        $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId]['position'] = $val;
-                        $fieldsNew[$moduleKey][$fieldKey][$fieldVal][$name] = $val;
+                        E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey]['new-' . $newId]['position'] = $val;
+                        E::$fieldsNew[E::$itemPostModuleKey][$fieldKey][$fieldVal][$name] = $val;
                     } else {
                         Flash::error('Invalid new input field position: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal) . '/' . Text::h($val));
                     }
                     continue;
                 }
 
-                $input = $modules[$moduleKey]['inputs'][$fieldKey]['new-0'][$name];
-                $input['name'] = 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $fieldVal . '][' . $name . ']';
+                $input = E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey]['new-0'][$name];
+                $input['name'] = 'modules[' . E::$itemPostModuleKey . '][' . $fieldKey . '][' . $fieldVal . '][' . $name . ']';
                 $input = Input::validate($input, $val, E::$itemId);
 
-                $modules[$moduleKey]['inputs'][$fieldKey]['new-' . $newId][$name] = $input;
+                E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey]['new-' . $newId][$name] = $input;
 
                 if ($input['nullable'] && !$input['value'] && !$input['valueFromDb']) $input['valueFromDb'] = null;
 
                 if ($input['value'] !== $input['valueFromDb'])
-                    $fieldsNew[$moduleKey][$fieldKey][$fieldVal][$name] = $input['valueToDb'];
+                    E::$fieldsNew[E::$itemPostModuleKey][$fieldKey][$fieldVal][$name] = $input['valueToDb'];
 
                 // if ($input['dbReciprocal']) {
                 //     geD($input);
@@ -93,8 +93,8 @@ foreach ($postModule as $fieldKey => $fields) {
 
         // deleted fields
         if (isset($field['delete']) && $field['delete'] == 'on') {
-            $fieldsDel[$moduleKey][$fieldKey][] = $fieldVal;
-            $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal]['delete'] = 'on';
+            E::$fieldsDel[E::$itemPostModuleKey][$fieldKey][] = $fieldVal;
+            E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal]['delete'] = 'on';
             continue;
         }
 
@@ -102,16 +102,16 @@ foreach ($postModule as $fieldKey => $fields) {
         foreach ($field as $name => $val) {
             if ($name == 'delete') {
                 if (in_array($val, ['', 'on']))
-                    $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal]['delete'] = $val;
+                    E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal]['delete'] = $val;
                 else
                     Flash::error('Invalid new input field delete: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal) . '/' . Text::h($val));
                 continue;
             }
             if ($name == 'position') {
                 if (ctype_digit($val)) {
-                    if ($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal]['position'] != $val) {
-                        $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal]['position'] = $val;
-                        $fieldsUpd[$moduleKey][$fieldKey][$fieldVal][$name] = $val;
+                    if (E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal]['position'] != $val) {
+                        E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal]['position'] = $val;
+                        E::$fieldsUpd[E::$itemPostModuleKey][$fieldKey][$fieldVal][$name] = $val;
                     }
                 } else {
                     Flash::error('Invalid new input field position: ' . Text::h($fieldKey) . '/' . Text::h($fieldVal) . '/' . Text::h($val));
@@ -119,44 +119,44 @@ foreach ($postModule as $fieldKey => $fields) {
                 continue;
             }
 
-            $input = Input::validate($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$name], $val, E::$itemId);
+            $input = Input::validate(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal][$name], $val, E::$itemId);
 
-            $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$name] = $input;
+            E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal][$name] = $input;
 
             if ($input['nullable'] && !$input['value'] && !$input['valueFromDb']) $input['valueFromDb'] = null;
 
             if ($input['value'] !== $input['valueFromDb'])
-                $fieldsUpd[$moduleKey][$fieldKey][$fieldVal][$name] = $input['valueToDb'];
+                E::$fieldsUpd[E::$itemPostModuleKey][$fieldKey][$fieldVal][$name] = $input['valueToDb'];
 
         }
 
     }
 
     // reorder fields
-    if (isset($modules[$moduleKey]['gcModuleMultiple'][$fieldKey])) {
-        if ($modules[$moduleKey]['gcModuleMultiple'][$fieldKey]['reorder']) {
-            uasort($modules[$moduleKey]['inputs'][$fieldKey], function($a, $b) {
+    if (isset(E::$modules[E::$itemPostModuleKey]['gcModuleMultiple'][$fieldKey])) {
+        if (E::$modules[E::$itemPostModuleKey]['gcModuleMultiple'][$fieldKey]['reorder']) {
+            uasort(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey], function($a, $b) {
                 return $a['position'] <=> $b['position'];
             });
         } else {
-            $orderBy = array_reverse($modules[$moduleKey]['gcSelectOrderBy']);
+            $orderBy = array_reverse(E::$modules[E::$itemPostModuleKey]['gcSelectOrderBy']);
             foreach ($orderBy as $tabKey => $cols) {
                 foreach ($cols as $colKey => $colSort) {
-                    if (!isset($modules[$moduleKey]['inputs'][$fieldKey][$colKey])) continue;
+                    if (!isset(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$colKey])) continue;
                     if ($colSort == 'ASC') {
-                        uasort($modules[$moduleKey]['inputs'][$fieldKey], function($a, $b) use ($colKey) {
+                        uasort(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey], function($a, $b) use ($colKey) {
                             return $a[$colKey]['value'] <=> $b[$colKey]['value'];
                         });
-                        uksort($modules[$moduleKey]['inputs'][$fieldKey], function($a, $b) {
+                        uksort(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey], function($a, $b) {
                             if (is_numeric($a) && !is_numeric($b)) return 1;
                             else if (!is_numeric($a) && is_numeric($b)) return -1;
                             return 0;
                         });
                     } else {
-                        uasort($modules[$moduleKey]['inputs'][$fieldKey], function($a, $b) use ($colKey) {
+                        uasort(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey], function($a, $b) use ($colKey) {
                             return $b[$colKey]['value'] <=> $a[$colKey]['value'];
                         });
-                        uksort($modules[$moduleKey]['inputs'][$fieldKey], function($a, $b) {
+                        uksort(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey], function($a, $b) {
                             if (is_numeric($b) && !is_numeric($a)) return 1;
                             else if (!is_numeric($b) && is_numeric($a)) return -1;
                             return 0;
@@ -168,14 +168,14 @@ foreach ($postModule as $fieldKey => $fields) {
     }
 
     // error on duplicate unique input
-    if (isset($modules[$moduleKey]['gcModuleMultiple'][$fieldKey])) {
-        if ($modules[$moduleKey]['gcModuleMultiple'][$fieldKey]['unique']) {
+    if (isset(E::$modules[E::$itemPostModuleKey]['gcModuleMultiple'][$fieldKey])) {
+        if (E::$modules[E::$itemPostModuleKey]['gcModuleMultiple'][$fieldKey]['unique']) {
             $visited = [];
             foreach ($fields as $fieldVal => $field) {
-                if (!isset($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal])) continue;
+                if (!isset(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal])) continue;
                 if (isset($field['delete']) && $field['delete'] == 'on') continue;
-                foreach ($modules[$moduleKey]['gcModuleMultiple'][$fieldKey]['unique'] as $unique) {
-                    $val = $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['value'];
+                foreach (E::$modules[E::$itemPostModuleKey]['gcModuleMultiple'][$fieldKey]['unique'] as $unique) {
+                    $val = E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal][$unique]['value'];
                     $visited[$fieldVal][$unique] = $val;
                 }
             }
@@ -185,10 +185,10 @@ foreach ($postModule as $fieldKey => $fields) {
                 $fieldValSearch = array_search($currentArray, $visited);
                 if ($fieldVal != $fieldValSearch) {
                     foreach ($currentArray as $unique => $values) {
-                        Flash::error($msg, 'form', $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['name']);
-                        $modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['errors'][] = $msg;
-                        if ($modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['lang']) {
-                            $langSelectClass[$modules[$moduleKey]['inputs'][$fieldKey][$fieldVal][$unique]['lang']] = 'btn-red';
+                        Flash::error($msg, 'form', E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal][$unique]['name']);
+                        E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal][$unique]['errors'][] = $msg;
+                        if (E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal][$unique]['lang']) {
+                            E::$langSelectClass[E::$modules[E::$itemPostModuleKey]['inputs'][$fieldKey][$fieldVal][$unique]['lang']] = 'btn-red';
                         }
                     }
                 }
@@ -205,16 +205,16 @@ foreach ($postModule as $fieldKey => $fields) {
 
 // return;
 //
-// foreach ($postModule as $fieldName => $fieldValue) {
+// foreach (E::$itemPostModule as $fieldName => $fieldValue) {
 //     foreach ($fieldValue as $name => $value) {
-//         if (isset($modules[$moduleKey]['inputs'][$fieldName][$name])) {
-//             $input = Input::validate($modules[$moduleKey]['inputs'][$fieldName][$name], $value, E::$itemId);
+//         if (isset(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldName][$name])) {
+//             $input = Input::validate(E::$modules[E::$itemPostModuleKey]['inputs'][$fieldName][$name], $value, E::$itemId);
 //
-//             $modules[$moduleKey]['inputs'][$fieldName][$name] = $input;
-//         } else if (isset($modules[$moduleKey]['inputsUnused'][$fieldName][$name])) {
-//             $input = Input::validate($modules[$moduleKey]['inputsUnused'][$fieldName][$name], $value, E::$itemId);
+//             E::$modules[E::$itemPostModuleKey]['inputs'][$fieldName][$name] = $input;
+//         } else if (isset(E::$modules[E::$itemPostModuleKey]['inputsUnused'][$fieldName][$name])) {
+//             $input = Input::validate(E::$modules[E::$itemPostModuleKey]['inputsUnused'][$fieldName][$name], $value, E::$itemId);
 //
-//             $modules[$moduleKey]['inputsUnused'][$fieldName][$name] = $input;
+//             E::$modules[E::$itemPostModuleKey]['inputsUnused'][$fieldName][$name] = $input;
 //         } else {
 //             $input['errors'][] = 'Non existant input.';
 //         }
@@ -240,7 +240,7 @@ foreach ($postModule as $fieldKey => $fields) {
 //         foreach ($input['errors'] as $msg) {
 //             Flash::error($msg, 'form', $input['name']);
 //             if ($input['lang']) {
-//                 $langSelectClass[$input['lang']] = 'btn-red';
+//                 E::$langSelectClass[$input['lang']] = 'btn-red';
 //             }
 //         }
 //
@@ -249,7 +249,7 @@ foreach ($postModule as $fieldKey => $fields) {
 //         $valueToDb =  $input['valueToDb'];
 //
 //         if ($input['value'] !== $input['valueFromDb']) {
-//             $modules[$moduleKey]['inputs'][$fieldName][$name] = $input;
+//             E::$modules[E::$itemPostModuleKey]['inputs'][$fieldName][$name] = $input;
 //         }
 //
 //     }

@@ -9,17 +9,17 @@ use GalaxiaEditor\input\Input;
 G::$editor->view = 'login/login';
 
 
-$inputs['userEmail']    = Input::validate($inputs['userEmail'], $_POST['userEmail']);
-$inputs['userPassword'] = Input::validate($inputs['userPassword'], $_POST['userPassword']);
+E::$loginInputs['userEmail']    = Input::validate(E::$loginInputs['userEmail'], $_POST['userEmail']);
+E::$loginInputs['userPassword'] = Input::validate(E::$loginInputs['userPassword'], $_POST['userPassword']);
 
 
-if (!empty($inputs['userEmail']['errors'])) {
+if (!empty(E::$loginInputs['userEmail']['errors'])) {
     return;
 }
 
 
-if (!E::$auth->userAuthenticateEmailPassword($inputs['userEmail']['value'], $inputs['userPassword']['value'])) {
-    $inputs['userPassword']['errors'][] = 'Wrong password.';
+if (!E::$auth->userAuthenticateEmailPassword(E::$loginInputs['userEmail']['value'], E::$loginInputs['userPassword']['value'])) {
+    E::$loginInputs['userPassword']['errors'][] = 'Wrong password.';
 
     return;
 }
@@ -28,7 +28,7 @@ if (!E::$auth->userAuthenticateEmailPassword($inputs['userEmail']['value'], $inp
 
 
 // user is logged in. Reload.
-$userId = E::$auth->userGetIdByEmail($inputs['userEmail']['value']);
+$userId = E::$auth->userGetIdByEmail(E::$loginInputs['userEmail']['value']);
 if ($userId) {
     if (session_status() != PHP_SESSION_ACTIVE) {
         session_name(G::$app->cookieEditorKey); // name of the cookie that holds the session id

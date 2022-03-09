@@ -42,7 +42,7 @@ use GalaxiaEditor\E;
                     <div class="col-text"><?=date('Y-m-d')?></div>
                 </div>
             </a>
-<?php   foreach ($stats as $date) { ?>
+<?php   foreach (E::$statsGoaccess as $date) { ?>
 <?php       $dt = date_create($date); ?>
             <a class="row status-3" target="_blank" href="/edit/<?=E::$pgSlug?>/<?=$date?>">
                 <div class="col flex1">

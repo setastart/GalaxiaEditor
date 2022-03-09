@@ -826,21 +826,21 @@ let gjField = {
 
         window.requestAnimationFrame(function() {
             el.style.transition = 'transform 352ms cubic-bezier(0.65,0.05,0.36,1)';
-            el.style.transform = 'translate(0px, 0px)';
+            el.style.transform  = 'translate(0px, 0px)';
         });
     },
 
     animateZIndex: function(el) {
-        el.style.zIndex = '2';
+        el.style.zIndex   = '2';
         el.style.position = 'relative';
-        console.log(el.style.zIndex, el);
+        // console.log(el.style.zIndex, el);
 
         if (!el.ontransitionend) {
             el.ontransitionend = function(ev) {
-                ev.target.style.zIndex = '1';
+                ev.target.style.zIndex   = '1';
                 ev.target.style.position = '';
                 // ev.target.scrollIntoView({block: "nearest", inline: "nearest"});
-                console.log(ev.target.style.zIndex, ev.target);
+                // console.log(ev.target.style.zIndex, ev.target);
             };
         }
     },
@@ -927,42 +927,52 @@ let gjField = {
         gjField.countPos(list);
     },
 
-    cloneNew: function(fieldId, pos) {
-        const groupId = gjUnique();
-        let newGroup  = document.getElementById(fieldId + '-new').cloneNode(true);
-        let where     = document.getElementById(fieldId);
-
-        newGroup.classList.remove('hide');
-        newGroup.classList.add('module-field-group-new');
-        newGroup.id      = newGroup.id + '-' + groupId;
-        newGroup.groupId = groupId;
-
-        let inputs    = newGroup.getElementsByTagName('input');
-        let selects   = newGroup.getElementsByTagName('select');
-        let textareas = newGroup.getElementsByTagName('textarea');
-        let buttons   = newGroup.getElementsByTagName('button');
+    setNewId: function(group, groupId) {
+        let inputs    = group.getElementsByTagName('input');
+        let selects   = group.getElementsByTagName('select');
+        let textareas = group.getElementsByTagName('textarea');
+        let buttons   = group.getElementsByTagName('button');
+        let trixes    = group.getElementsByTagName('trix-editor');
         let i;
         for (i = inputs.length - 1; i >= 0; i--) {
             inputs[i].name     = inputs[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
+            inputs[i].id       = inputs[i].id.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
             inputs[i].disabled = false;
-            if (inputs[i].dataset.target !== undefined) inputs[i].dataset.target = newGroup.id;
+            if (inputs[i].dataset.target !== undefined) inputs[i].dataset.target = group.id;
+        }
+        for (i = trixes.length - 1; i >= 0; i--) {
+            trixes[i].setAttribute('input', trixes[i].attributes.input.value.replace('\]\[new-0\]\[', '][new-' + groupId + ']['));
         }
         for (i = selects.length - 1; i >= 0; i--) {
             selects[i].name     = selects[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
             selects[i].disabled = false;
-            if (selects[i].dataset.target !== undefined) selects[i].dataset.target = newGroup.id;
+            if (selects[i].dataset.target !== undefined) selects[i].dataset.target = group.id;
         }
         for (i = textareas.length - 1; i >= 0; i--) {
             textareas[i].name     = textareas[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
             textareas[i].disabled = false;
-            if (textareas[i].dataset.target !== undefined) textareas[i].dataset.target = newGroup.id;
+            if (textareas[i].dataset.target !== undefined) textareas[i].dataset.target = group.id;
         }
         for (i = buttons.length - 1; i >= 0; i--) {
             if (buttons[i].classList.contains('ev-module-add')) continue;
             buttons[i].name     = buttons[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
             buttons[i].disabled = false;
-            if (buttons[i].dataset.target !== undefined) buttons[i].dataset.target = newGroup.id;
+            if (buttons[i].dataset.target !== undefined) buttons[i].dataset.target = group.id;
         }
+
+    },
+
+    cloneNew: function(fieldId, pos) {
+        const groupId = gjUnique();
+
+        let newGroup = document.getElementById(fieldId + '-new').cloneNode(true);
+        let where = document.getElementById(fieldId);
+
+        newGroup.classList.remove('hide');
+        newGroup.classList.add('module-field-group-new');
+        newGroup.id      = newGroup.id + '-' + groupId;
+        newGroup.groupId = groupId;
+        gjField.setNewId(newGroup, groupId);
 
         where.prepend(newGroup);
         let go = newGroup.querySelector('.ev-module-go');
@@ -2033,16 +2043,16 @@ let gjTranslate = {
                 return;
             }
 
-            console.log(text);
+            // console.log(text);
             text = gjTranslate.decodeHtml(text);
-            console.log(text);
+            // console.log(text);
             this.elInput.value = text;
         };
 
         xhr.onprogress = function(event) {
             if (!event.lengthComputable) return; // size unknown
             let percentComplete = event.loaded / event.total * 100;
-            console.log(percentComplete);
+            // console.log(percentComplete);
         };
 
         xhr.onerror = function() {

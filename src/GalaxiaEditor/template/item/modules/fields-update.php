@@ -10,13 +10,13 @@ use GalaxiaEditor\history\History;
 use GalaxiaEditor\model\ModelField;
 
 
-$itemColId = $item['gcTable'] . 'Id';
+$itemColId = E::$item['gcTable'] . 'Id';
 
 
 // insert fields
 
-foreach ($fieldsNew as $moduleKey => $fields) {
-    $module   = $modules[$moduleKey];
+foreach (E::$fieldsNew as $moduleKey => $fields) {
+    $module   = E::$modules[$moduleKey];
     $fieldCol = 'fieldKey';
     if (in_array($module['gcTable'] . 'Field', $module['gcSelect'][$module['gcTable']])) {
         $fieldCol = $module['gcTable'] . 'Field';
@@ -76,8 +76,8 @@ foreach ($fieldsNew as $moduleKey => $fields) {
 
 // delete fields
 
-foreach ($fieldsDel as $moduleKey => $fields) {
-    $module   = $modules[$moduleKey];
+foreach (E::$fieldsDel as $moduleKey => $fields) {
+    $module   = E::$modules[$moduleKey];
     $fieldCol = 'fieldKey';
     if (in_array($module['gcTable'] . 'Field', $module['gcSelect'][$module['gcTable']])) {
         $fieldCol = $module['gcTable'] . 'Field';
@@ -114,8 +114,8 @@ foreach ($fieldsDel as $moduleKey => $fields) {
 
 // update fields
 
-foreach ($fieldsUpd as $moduleKey => $fields) {
-    $module   = $modules[$moduleKey];
+foreach (E::$fieldsUpd as $moduleKey => $fields) {
+    $module   = E::$modules[$moduleKey];
     $fieldCol = 'fieldKey';
     if (in_array($module['gcTable'] . 'Field', $module['gcSelect'][$module['gcTable']])) {
         $fieldCol = $module['gcTable'] . 'Field';
@@ -151,8 +151,8 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
                         Flash::info(Text::t('Deleted'), 'form', 'modules[' . $moduleKey . '][' . $fieldKey . '][new-0][' . $inputName . ']');
                     }
 
-                    if ($item['gcTable'] == '_geUser') continue;
-                    History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputName, $fieldKey, 2, $value, G::$me->id);
+                    if (E::$item['gcTable'] == '_geUser') continue;
+                    History::insert(E::$uniqueId, E::$item['gcTable'], E::$itemId, $inputName, $fieldKey, 2, $value, G::$me->id);
                 }
             }
 
@@ -165,7 +165,7 @@ foreach ($fieldsUpd as $moduleKey => $fields) {
 
 // delete fields with empty values
 
-foreach ($modules as $module) {
+foreach (E::$modules as $module) {
     if (!empty($module['gcModuleDeleteIfEmpty'])) {
 
         $cols = [$itemColId];

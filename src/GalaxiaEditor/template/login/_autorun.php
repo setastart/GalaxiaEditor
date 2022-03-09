@@ -8,15 +8,15 @@ use GalaxiaEditor\input\Input;
 E::$pgTitle = 'Editor Login';
 E::$hdTitle = 'Editor for ' . G::$req->host;
 
-$inputs = [];
+E::$loginInputs = [];
 
-$inputs['userEmail'] = array_merge(Input::PROTO_INPUT, [
+E::$loginInputs['userEmail'] = array_merge(Input::PROTO_INPUT, [
     'label'    => 'Email',
     'name'     => 'userEmail',
     'type'     => 'email',
 ]);
 
-$inputs['userPassword'] = array_merge(Input::PROTO_INPUT, [
+E::$loginInputs['userPassword'] = array_merge(Input::PROTO_INPUT, [
     'label'    => 'Password',
     'name'     => 'userPassword',
     'type'     => 'password',

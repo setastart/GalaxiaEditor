@@ -24,6 +24,7 @@ class ModelList {
 
     static function order(string $table, array $order): int {
         $affected = 0;
+        $stmt = null;
         foreach ($order as $old => $new) {
             $q = 'UPDATE ' . Text::q($table) .
                   ' SET position = ' . (int)$new .
@@ -32,7 +33,7 @@ class ModelList {
             $stmt->execute();
             $affected += $stmt->affected_rows;
         }
-        $stmt->close();
+        if (!is_null($stmt)) $stmt->close();
 
         return $affected;
     }

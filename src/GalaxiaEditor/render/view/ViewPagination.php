@@ -71,7 +71,7 @@ class ViewPagination {
 
 
 
-    public static function renderHiddenData(Pagination $pagination, int $rowsFiltered, int $rowsTotal): void {
+    public static function renderHiddenData(Pagination $pagination): void {
 
 // @formatter:off ?>
     <div class="results hide"
@@ -80,8 +80,8 @@ class ViewPagination {
          data-pagePrev="<?=$pagination->pagePrev?>"
          data-pageNext="<?=$pagination->pageNext?>"
          data-pageLast="<?=$pagination->pageLast?>"
-         data-rowsFiltered="<?=$rowsFiltered?>"
-         data-rowsTotal="<?=$rowsTotal?>"
+         data-rowsFiltered="<?=$pagination->itemsFiltered?>"
+         data-rowsTotal="<?=$pagination->itemsTotal?>"
     ></div>
 <?php // @formatter:on
     }

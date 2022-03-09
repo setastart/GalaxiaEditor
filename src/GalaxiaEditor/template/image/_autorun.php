@@ -1,5 +1,6 @@
 <?php
 
+namespace GalaxiaEditor\template\image;
 
 use Galaxia\AppImage;
 use Galaxia\Flash;
@@ -35,11 +36,11 @@ $inUse = Load::imagesInUse()[E::$imgSlug] ?? [];
 
 // load image and build inputs
 
-$img = G::imageGet(E::$imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
-$img['resizes'] = AppImage::resizes(G::dirImage(), E::$imgSlug) ?? [];
+E::$img = G::imageGet(E::$imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
+E::$img['resizes'] = AppImage::resizes(G::dirImage(), E::$imgSlug) ?? [];
 
 
-$inputs = [
+E::$imgInputs = [
     'imgSlug'     => [
         'label'       => 'Slug',
         'name'        => 'imgSlug',
@@ -52,15 +53,15 @@ $inputs = [
 
 
 foreach (G::locales() as $lang => $locale) {
-    $inputs['alt_' . $lang] = [
+    E::$imgInputs['alt_' . $lang] = [
         'label'       => 'Alt',
         'name'        => 'alt_' . $lang,
         'type'        => 'text',
         'options'     => ['minlength' => 0, 'maxlength' => 255],
         'lang'        => $lang,
         'prefix'      => 'alt_',
-        'value'       => $img['alt'][$lang] ?? '',
-        'valueFromDb' => $img['alt'][$lang] ?? '',
+        'value'       => E::$img['alt'][$lang] ?? '',
+        'valueFromDb' => E::$img['alt'][$lang] ?? '',
     ];
 }
 
@@ -70,19 +71,19 @@ if (E::$section['gcImageTypes']) {
     foreach (E::$section['gcImageTypes'] as $tag => $bounds) {
         $options[$tag] = ['label' => $tag];
     }
-    $inputs['type'] = [
+    E::$imgInputs['type'] = [
         'label'       => 'Type',
         'name'        => 'type',
         'type'        => 'select',
         'options'     => $options,
-        'value'       => $img['extra']['type'] ?? '',
-        'valueFromDb' => $img['extra']['type'] ?? '',
+        'value'       => E::$img['extra']['type'] ?? '',
+        'valueFromDb' => E::$img['extra']['type'] ?? '',
     ];
 }
 
 
-$mtime = date('Y-m-d H:i:s', $img['mtime']);
-$inputs['timestampM'] = [
+$mtime = date('Y-m-d H:i:s', E::$img['mtime']);
+E::$imgInputs['timestampM'] = [
     'label'       => 'Date and Time',
     'name'        => 'timestampM',
     'type'        => 'timestamp',
@@ -92,8 +93,7 @@ $inputs['timestampM'] = [
 
 
 E::$showSwitchesLang = count(G::langs()) > 1;
-$langSelectClass = [];
 foreach (G::langs() as $lang) {
-    $langSelectClass[$lang] = '';
+    E::$langSelectClass[$lang] = '';
 }
 

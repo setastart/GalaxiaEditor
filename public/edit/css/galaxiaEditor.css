@@ -14,7 +14,6 @@ body.menu-right {
     grid-row: 2/3;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    grid-gap: 1px;
     position: fixed;
     top: 0px;
     bottom: 0px;
@@ -86,7 +85,6 @@ a#website-link > img {
 #menu {
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #98b #cfe9ef;
     scrollbar-color: #98b transparent;
     align-content: start;
     width: 225px;
@@ -114,11 +112,14 @@ a#website-link > img {
     -webkit-hyphens: auto;
             hyphens: auto;
     font-size: 13px;
+    border: 1px solid #a78;
+    margin-top: -1px;
+    margin-left: -1px;
 }
 a.menu-item {
     color: #102;
     text-decoration: none;
-    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.4), 0 0 0 1px #a78, 2px 2px 3px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.4), 2px 2px 3px rgba(0, 0, 0, 0.075);
 }
 a.menu-item.active {
     background-image: linear-gradient(-135deg, #98b, #98b 8px, #eb1 8px, #eb1 12px, transparent 12px);
@@ -266,6 +267,10 @@ a.paper {
     grid-row: 1/3;
     margin-top: 0.1em;
 }
+.paper-header .list-links {
+    display: flex;
+    flex-wrap: wrap;
+}
 .paper-header .list-links > a + a {
     margin-left: 10px;
 }
@@ -297,6 +302,14 @@ a.paper {
 .paper-header-links {
     grid-column: 1/-1;
     padding: 1px 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+.paper-header-links > * {
+    margin-right: 2em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
 }
 .paper-footer {
     margin-top: 24px;

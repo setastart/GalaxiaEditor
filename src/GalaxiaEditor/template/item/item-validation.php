@@ -20,26 +20,26 @@ if (E::$passwordColsFound) {
     if (!isset($_POST['item']['passwordHash']))    Flash::error(Text::t('Your new password is required.'));
     if (!isset($_POST['item']['passwordRepeat']))  Flash::error(Text::t('Your new password repeat is required.'));
 
-    if (!isset($item['inputs']['passwordCurrent'])) Flash::error(Text::t('Your current password is required - input.'));
-    if (!isset($item['inputs']['passwordHash']))    Flash::error(Text::t('Your new password is required - input.'));
-    if (!isset($item['inputs']['passwordRepeat']))  Flash::error(Text::t('Your new password repeat is required - input.'));
+    if (!isset(E::$item['inputs']['passwordCurrent'])) Flash::error(Text::t('Your current password is required - input.'));
+    if (!isset(E::$item['inputs']['passwordHash']))    Flash::error(Text::t('Your new password is required - input.'));
+    if (!isset(E::$item['inputs']['passwordRepeat']))  Flash::error(Text::t('Your new password repeat is required - input.'));
 
     if (!E::$auth->userAuthenticateIdPassword(G::$me->id, $_POST['item']['passwordCurrent'])) {
-        $item['inputs']['passwordCurrent']['errors'][] = 'Wrong current password.';
+        E::$item['inputs']['passwordCurrent']['errors'][] = 'Wrong current password.';
         return false;
     }
 
-    if ($item['inputs']['passwordHash'] != isset($item['inputs']['passwordRepeat'])) {
-        $item['inputs']['passwordRepeat']['errors'][] = 'Passwords don\'t match.';
+    if (E::$item['inputs']['passwordHash'] != isset(E::$item['inputs']['passwordRepeat'])) {
+        E::$item['inputs']['passwordRepeat']['errors'][] = 'Passwords don\'t match.';
         return false;
     }
 }
 
 
 if (G::isDev() && G::$me->id == E::$itemId) {
-    if (isset($_POST['item']['perms']) && isset($item['inputs']['perms'])) {
+    if (isset($_POST['item']['perms']) && isset(E::$item['inputs']['perms'])) {
         $explodedPerms = explode(',', $_POST['item']['perms']);
-        if (!in_array('dev', $explodedPerms)) $item['inputs']['perms']['errors'][] = 'Cannot lose own dev permission';
+        if (!in_array('dev', $explodedPerms)) E::$item['inputs']['perms']['errors'][] = 'Cannot lose own dev permission';
     }
 }
 
@@ -48,13 +48,13 @@ if (G::isDev() && G::$me->id == E::$itemId) {
 // validate inputs
 
 foreach ($_POST['item'] as $name => $value) {
-    if (!isset($item['inputs'][$name])) continue;
-    $input = Input::validate($item['inputs'][$name], $value, E::$itemId);
+    if (!isset(E::$item['inputs'][$name])) continue;
+    $input = Input::validate(E::$item['inputs'][$name], $value, E::$itemId);
 
     if ($input['dbUnique']) {
 
-        $query = Sql::selectFirst($item['gcUpdate']);
-        $query .= Sql::selectWhere([key($item['gcUpdate']) => [$input['nameFromDb'] => '=']]);
+        $query = Sql::selectFirst(E::$item['gcUpdate']);
+        $query .= Sql::selectWhere([key(E::$item['gcUpdate']) => [$input['nameFromDb'] => '=']]);
         $query .= Sql::selectLimit(0, 1);
 
         $stmt = G::prepare($query);
@@ -73,7 +73,7 @@ foreach ($_POST['item'] as $name => $value) {
     foreach ($input['errors'] as $msg) {
         Flash::error($msg, 'form', $input['name']);
         if ($input['lang']) {
-            $langSelectClass[$input['lang']] = 'btn-red';
+            E::$langSelectClass[$input['lang']] = 'btn-red';
         }
     }
 
@@ -81,5 +81,5 @@ foreach ($_POST['item'] as $name => $value) {
         E::$itemChanges[$input['nameFromDb']] = $input['valueToDb'];
     }
 
-    $item['inputs'][$name] = $input;
+    E::$item['inputs'][$name] = $input;
 }

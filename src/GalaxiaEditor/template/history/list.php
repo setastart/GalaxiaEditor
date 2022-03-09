@@ -1,6 +1,11 @@
 <?php
 
-use Galaxia\{G, Pagination, Sql, Text};
+namespace GalaxiaEditor\history;
+
+use Galaxia\G;
+use Galaxia\Pagination;
+use Galaxia\Sql;
+use Galaxia\Text;
 use GalaxiaEditor\Cache;
 use GalaxiaEditor\E;
 
@@ -9,13 +14,11 @@ use GalaxiaEditor\E;
 
 if (G::$req->xhr) {
     G::$editor->layout = 'none';
-    G::$editor->view = 'history/results';
+    G::$editor->view   = 'history/results';
 }
 
 
-
-
-$items = Cache::historyItems(function() use ($userNames) {
+$items = Cache::historyItems(function() {
     $query = Sql::select(['_geHistory' => ['_geHistoryId', '_geUserId', 'uniqueId', 'tabName', 'tabId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
     $query .= Sql::selectOrderBy(['_geHistory' => ['uniqueId' => 'DESC']]);
 
@@ -23,9 +26,10 @@ $items = Cache::historyItems(function() use ($userNames) {
     $stmt->execute();
     $result = $stmt->get_result();
 
+    $items = [];
     while ($data = $result->fetch_assoc()) {
         if (!isset($items[$data['uniqueId']])) {
-            $items[$data['uniqueId']]['user']     = $userNames[$data['_geUserId']] ?? $data['_geUserId'];
+            $items[$data['uniqueId']]['user']     = E::$historyUserNames[$data['_geUserId']] ?? $data['_geUserId'];
             $items[$data['uniqueId']]['tabName']  = $data['tabName'];
             $items[$data['uniqueId']]['tabId']    = $data['tabId'];
             $items[$data['uniqueId']]['inputKey'] = $data['inputKey'];
@@ -41,17 +45,17 @@ $items = Cache::historyItems(function() use ($userNames) {
         if (!empty($data['fieldKey'])) {
             $name = $data['fieldKey'];
         } else {
-            if (isset($inputKeys[$data['tabName']]))
-                $name = $inputKeys[$data['tabName']][$data['inputKey']] ?? $data['inputKey'];
+            if (isset(E::$historyInputKeys[$data['tabName']]))
+                $name = E::$historyInputKeys[$data['tabName']][$data['inputKey']] ?? $data['inputKey'];
         }
 
         $content = $data['content'];
         if ($data['inputKey'] == 'status')
-            if (isset($statusNames[$data['tabName']]))
-                if (isset($statusNames[$data['tabName']][$data['content']]))
-                    $content = Text::t($statusNames[$data['tabName']][$data['content']]);
+            if (isset(E::$historyStatusNames[$data['tabName']]))
+                if (isset(E::$historyStatusNames[$data['tabName']][$data['content']]))
+                    $content = Text::t(E::$historyStatusNames[$data['tabName']][$data['content']]);
 
-        $name = trim($name);
+        $name                                  = trim($name);
         $items[$data['uniqueId']]['changes'][] = [
             'name'    => Text::t($name),
             'content' => $content,
@@ -62,18 +66,18 @@ $items = Cache::historyItems(function() use ($userNames) {
 
     return $items ?? [];
 });
-$rowsTotal = count($items);
 
 
 
 
 // make html for all rows, using cache
 
-$rows = Cache::historyRows(function() use ($items, $pageNames) {
+E::$historyRows = Cache::historyRows(function() use ($items): array {
     foreach ($items as $itemId => $item) {
+// @formatter:off
 $ht = '<a class="row ' . $item['action'] . '" href="/edit/' . Text::h(E::$pgSlug) . '/' . Text::h($item['tabName']) . '/' . Text::h($item['tabId']) . '#' . Text::h($itemId) . '">' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
-$ht .= '        <small class="grey">table: </small>' . Text::h($pageNames[$item['tabName']] ?? $item['tabName']) . '<br>' . PHP_EOL;
+$ht .= '        <small class="grey">table: </small>' . Text::h(E::$historyPageNames[$item['tabName']] ?? $item['tabName']) . '<br>' . PHP_EOL;
 $ht .= '        <small class="grey">Id: </small>' . Text::h($item['tabId']) . '<br>' . PHP_EOL;
 $ht .= '        <small class="grey">User: </small>' . Text::h($item['user']) . '<br>' . PHP_EOL;
 $ht .= '        <small class="">' . Text::h(Text::formatDate($item['created'], 'd MMM y')) . '</small><br>' . PHP_EOL;
@@ -89,6 +93,7 @@ $ht .= '    </div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '</a>' . PHP_EOL;
         $rows[$itemId] = $ht;
+// @formatter:on
     }
     return $rows ?? [];
 });
@@ -98,14 +103,10 @@ $ht .= '</a>' . PHP_EOL;
 
 // pagination
 
-$pagination = new Pagination((int) ($_POST['page'] ?? 1), (int) ($_POST['itemsPerPage'] ?? 50));
-$rowsFiltered = count($rows);
-$pagination->setItemsTotal($rowsFiltered);
-$offset = $pagination->itemFirst - 1;
-$length = $pagination->itemsPerPage;
-if ($length >= $pagination->itemsTotal) $length = null;
+E::$pagination = new Pagination($_POST['page'] ?? 1, $_POST['itemsPerPage'] ?? 50);
+E::$pagination->setItemCounts(count($items), count(E::$historyRows));
 
-$rows = array_slice($rows, $offset, $length, true);
+E::$historyRows = E::$pagination->sliceRows(E::$historyRows);
 
 
 

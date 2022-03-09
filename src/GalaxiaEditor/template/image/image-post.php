@@ -18,7 +18,7 @@ $mtime        = filemtime(G::dirImage() . E::$imgSlug . '/');
 
 // item validation
 
-foreach ($inputs as $name => $input) {
+foreach (E::$imgInputs as $name => $input) {
     if (!isset($_POST[$name])) continue;
     $value = $_POST[$name];
     $input = Input::validate($input, $value);
@@ -28,14 +28,14 @@ foreach ($inputs as $name => $input) {
             $msg               = 'Must be unique. An item with that value already exists.';
             $input['errors'][] = $msg;
             Flash::error($msg, 'form', $input['name']);
-            if ($input['lang']) $langSelectClass[$input['lang']] = 'btn-red';
+            if ($input['lang']) E::$langSelectClass[$input['lang']] = 'btn-red';
         }
     }
 
     if ($input['value'] !== $input['valueFromDb'])
-        E::$itemChanges[$name] = $input['valueToDb'];
+        E::$imgChanges[$name] = $input['valueToDb'];
 
-    $inputs[$name] = $input;
+    E::$imgInputs[$name] = $input;
 }
 
 
@@ -44,7 +44,7 @@ foreach ($inputs as $name => $input) {
 // finish validation
 
 if (Flash::hasError()) return;
-if (!E::$itemChanges) {
+if (!E::$imgChanges) {
     Flash::warning(Text::t('No changes were made.'));
     if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
 
@@ -58,7 +58,7 @@ if (!E::$itemChanges) {
 
 $altsAndType = ['alt_', 'type'];
 ArrayShape::languify($altsAndType, array_keys(G::locales()));
-foreach (E::$itemChanges as $name => $value) {
+foreach (E::$imgChanges as $name => $value) {
 
     if (!in_array($name, $altsAndType)) continue;
 
@@ -86,7 +86,7 @@ foreach (E::$itemChanges as $name => $value) {
 // update mtime
 
 touch(G::dirImage() . E::$imgSlug . '/', $mtime);
-foreach (E::$itemChanges as $name => $value) {
+foreach (E::$imgChanges as $name => $value) {
     if ($name != 'timestampM') continue;
     if (touch(G::dirImage() . E::$imgSlug . '/', strtotime($value))) {
         Flash::info(Text::t('Updated') . ': ' . $name);
@@ -102,14 +102,14 @@ foreach (E::$itemChanges as $name => $value) {
 
 // rename
 
-if (isset(E::$itemChanges['imgSlug'])) {
-    if (AppImage::slugRename(G::dirImage(), E::$imgSlug, E::$itemChanges['imgSlug'])) {
+if (isset(E::$imgChanges['imgSlug'])) {
+    if (AppImage::slugRename(G::dirImage(), E::$imgSlug, E::$imgChanges['imgSlug'])) {
         Flash::info(Text::t('Updated') . ': ' . 'Slug');
         Flash::info(Text::t('Updated'), 'form', 'imgSlug');
 
         foreach (E::$section['gcImagesInUse'] as $table => $inUse) {
             $imgSlugCol = $inUse['gcSelect'][$table][0];
-            $slugChange = [$imgSlugCol => E::$itemChanges['imgSlug']];
+            $slugChange = [$imgSlugCol => E::$imgChanges['imgSlug']];
             $params     = array_values($slugChange);
             $params[]   = E::$imgSlug;
 
@@ -133,7 +133,7 @@ if (isset(E::$itemChanges['imgSlug'])) {
             if ($affectedRows)
                 Flash::info(Text::h($table) . ': Renamed slugs: ' . Text::h($affectedRows));
         }
-        E::$imgSlug = E::$itemChanges['imgSlug'];
+        E::$imgSlug = E::$imgChanges['imgSlug'];
     } else {
         Flash::error('image-update - Unable to update image slug: ' . E::$imgSlug);
     }

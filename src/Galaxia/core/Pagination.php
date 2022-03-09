@@ -19,35 +19,32 @@ class Pagination {
 
     public bool $active = false;
 
-    // pages
     public int $pageCurrent = 1;
     public int $pagePrev    = 0;
     public int $pageNext    = 0;
     public int $pageFirst   = 0;
     public int $pageLast    = 0;
 
-    // items
-    public int $itemsPerPage = 50;
-    public int $itemsTotal   = 0;
-    public int $itemFirst    = 1;
+    public int $itemsPerPage  = 50;
+    public int $itemsFiltered = 0;
+    public int $itemsTotal    = 0;
+    public int $itemFirst     = 1;
 
 
-    public function __construct(int $pageCurrent, int $itemsPerPage = null) {
-        $this->pageCurrent = $pageCurrent;
-        if ($itemsPerPage !== null) $this->itemsPerPage = $itemsPerPage;
-
+    public function __construct(
+        int $pageCurrent = 1,
+        int $itemsPerPage = 50,
+    ) {
+        $this->itemsPerPage = $itemsPerPage;
+        $this->pageCurrent  = $pageCurrent;
     }
 
 
-    public function setItemsTotal(int $itemsTotal): void {
-        $this->itemsTotal = $itemsTotal;
-        $this->compute();
-    }
+    public function setItemCounts(int $filtered, int $total = null): void {
+        $this->itemsFiltered = $filtered;
+        $this->itemsTotal    = $total ?? $this->itemsFiltered;
 
-
-    public function compute(): void {
-
-        $this->pageLast = ceil($this->itemsTotal / $this->itemsPerPage);
+        $this->pageLast = ceil($this->itemsFiltered / $this->itemsPerPage);
         if ($this->pageLast < 1)
             $this->pageLast = 1;
 
@@ -68,17 +65,17 @@ class Pagination {
 
         $this->itemFirst = ($this->itemsPerPage * ($this->pageCurrent - 1)) + 1;
 
-        if ($this->itemsTotal > $this->itemsPerPage) $this->active = true;
+        if ($this->itemsFiltered > $this->itemsPerPage) $this->active = true;
     }
 
 
-    // public function sliceRows(array $rows): array {
-    //     $offset = $this->itemFirst - 1;
-    //     $length = $this->itemsPerPage;
-    //     if ($length >= $this->itemsTotal) $length = null;
-    //
-    //     return array_slice($rows, $offset, $length);
-    // }
+    public function sliceRows(array $rows): array {
+        $offset = $this->itemFirst - 1;
+        $length = $this->itemsPerPage;
+        if ($length >= $this->itemsTotal) $length = null;
+
+        return array_slice($rows, $offset, $length, preserve_keys: true);
+    }
 
 }
 

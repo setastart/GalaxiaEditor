@@ -12,7 +12,7 @@ InputRender::form('', 'image-new', 'image image-new paper pad'); ?>
     <div class="item-row">
 <?php   $firstTime = true; ?>
 <?php   $prefixPrev = null; ?>
-<?php   foreach ($inputs as $input) { ?>
+<?php   foreach (E::$imgInputs as $input) { ?>
 <?php       if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
     </div>
 

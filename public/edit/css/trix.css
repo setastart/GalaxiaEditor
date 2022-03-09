@@ -141,7 +141,7 @@ trix-toolbar .trix-button-row {
     display: flex;
     flex-wrap: wrap;
     margin-right: -5px;
-    max-width: 600px;
+    max-width: 605px;
 }
 trix-toolbar .trix-button-group {
     display: flex;

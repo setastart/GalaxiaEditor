@@ -163,7 +163,7 @@ class Asset {
         bool   $crossorigin = false,
         string $srcset = '',
         string $sizes = '',
-        string $importance = 'high'
+        string $importance = 'high',
     ): string {
         if (!$href) return '';
         $co = '';

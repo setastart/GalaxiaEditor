@@ -15,7 +15,7 @@ E::$hdTitle = Text::t('+ Add') . ' ' . Text::t(E::$section['gcTitleSingle']);
 // query extras
 
 $extras = [];
-foreach ($item['gcSelectExtra'] as $table => $cols) {
+foreach (E::$item['gcSelectExtra'] as $table => $cols) {
     $query = Sql::select([$table => $cols]);
     $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
 
@@ -33,16 +33,16 @@ foreach ($item['gcSelectExtra'] as $table => $cols) {
 
 
 
-foreach ($item['gcInputs'] as $inputKey => $input) {
+foreach (E::$item['gcInputs'] as $inputKey => $input) {
     $input = Input::prepare($input, $extras);
 
-    $item['inputs'][$inputKey] = array_merge($input, [
+    E::$item['inputs'][$inputKey] = array_merge($input, [
         'label'       => $input['label'] ?? E::$section['gcColNames'][$inputKey] ?? $inputKey,
         'name'        => 'item[' . $inputKey . ']',
         'nameFromDb'  => $inputKey,
     ]);
-    if ($input['type'] == 'timestamp') $item['inputs'][$inputKey]['value'] = date('Y-m-d 00:00');
-    if ($input['type'] == 'datetime')  $item['inputs'][$inputKey]['value'] = date('Y-m-d 00:00');
+    if ($input['type'] == 'timestamp') E::$item['inputs'][$inputKey]['value'] = date('Y-m-d 00:00');
+    if ($input['type'] == 'datetime')  E::$item['inputs'][$inputKey]['value'] = date('Y-m-d 00:00');
 
     if (isset($input['lang'])) E::$showSwitchesLang = true;
 }

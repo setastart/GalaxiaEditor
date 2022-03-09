@@ -79,6 +79,7 @@ class ConfigDb {
 
         foreach (E::$conf as $areaKey => $area) {
             if (empty($area)) continue;
+            $table = '';
 
             if (!empty($area['gcList'])) {
 

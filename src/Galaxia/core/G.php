@@ -33,6 +33,9 @@ class G {
     private static int   $timerMaxLen = 0;
     private static int   $timerMaxLev = 0;
 
+    public static int    $errorCode = 0;
+    public static string $error     = '';
+
 
     static function init(string $dir, Request $request = null, string $userTable = '_geUser'): App {
         self::initEnv();
@@ -96,11 +99,14 @@ class G {
         error_reporting(E_ALL);
 
         set_exception_handler(function(Throwable $e) {
-            self::errorPage($e->getCode(), $e->getMessage(), $e->getTraceAsString());
+            self::errorPage(
+                $e->getCode(),
+                'exc ' . $e->getFile() . ' ' . $e->getLine() .  ' ' . $e->getMessage(),
+                $e->getTraceAsString());
         });
 
         set_error_handler(function($code, $msg, $file = '', $line = 0) {
-            self::errorPage($code, $msg, $file . ':' . $line);
+            self::errorPage($code, 'error ' . $msg, $file . ':' . $line);
         });
 
         register_shutdown_function(function() {
@@ -428,12 +434,13 @@ class G {
 
         if (self::insideEditor()) {
             if (isset(self::$me) && self::$me->loggedIn) {
-                $errorCode = $code;
-                $error     = $errors[$code] . '<br><br>';
+
+                self::$errorCode = $code;
+                self::$error     = $errors[$code] . '<br><br>';
                 // if (self::isDev()) {
-                $error .= 'Original error code: ' . $codeOriginal . '<br>';
-                $error .= nl2br($msg) . '<br><br>';
-                $error .= nl2br($debugText) . '<br>';
+                self::$error .= 'Original error code: ' . $codeOriginal . '<br>';
+                self::$error .= nl2br($msg) . '<br><br>';
+                self::$error .= nl2br($debugText) . '<br>';
                 // }
 
                 include self::$editor->dirLayout . 'layout-error.phtml';
@@ -617,7 +624,7 @@ class G {
 
 
     static function cache(
-        string $scope, int $level, string $key,
+        string   $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): array {
         return AppCache::get(self::dirCache(), $scope, $level, $key, $f, $bypass, $write);
@@ -691,7 +698,7 @@ class G {
     }
 
     public static function versionQuery(): string {
-        if (G::$req->cacheBypass) {
+        if (G::$req->cacheBypass || G::isDevEnv()) {
             return '?ver=' . time();
         } else if (file_exists(G::dir() . '.git/refs/heads/main')) {
             $gitHash = file_get_contents(G::dir() . '.git/refs/heads/main');

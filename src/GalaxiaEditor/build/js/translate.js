@@ -44,16 +44,16 @@ let gjTranslate = {
                 return;
             }
 
-            console.log(text);
+            // console.log(text);
             text = gjTranslate.decodeHtml(text);
-            console.log(text);
+            // console.log(text);
             this.elInput.value = text;
         };
 
         xhr.onprogress = function(event) {
             if (!event.lengthComputable) return; // size unknown
             let percentComplete = event.loaded / event.total * 100;
-            console.log(percentComplete);
+            // console.log(percentComplete);
         };
 
         xhr.onerror = function() {

@@ -21,12 +21,6 @@ use Galaxia\Text;
 //      If tab was reloading, 'listener' will reenter the room and extend this time.
 
 
-$r = [
-    'status' => 'error',
-    'error' => '',
-    'messages' => [],
-];
-
 $msg      = Chat::$post['msg'];
 $clientId = Chat::$post['clientId'];
 switch (Chat::$post['type']) {
@@ -52,9 +46,3 @@ switch (Chat::$post['type']) {
     default:
         Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid message type']);
 }
-
-
-
-Chat::exitArrayToJson(['status' => 'error', 'error' => 'invalid message', 'post' => Chat::$post]);
-
-exit();

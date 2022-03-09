@@ -1,10 +1,11 @@
 <?php
 
 
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$inputs['resize'] = [
+E::$imgInputs['resize'] = [
     'label'   => 'Resize image to fit',
     'name'    => 'resize',
     'type'    => 'radio',
@@ -21,6 +22,6 @@ $inputs['resize'] = [
 ];
 
 
-foreach ($inputs as $key => $input) {
-    $inputs[$key] = array_merge(Input::PROTO_INPUT, $input);
+foreach (E::$imgInputs as $key => $input) {
+    E::$imgInputs[$key] = array_merge(Input::PROTO_INPUT, $input);
 }

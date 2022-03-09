@@ -9,12 +9,12 @@ use GalaxiaEditor\E;
     <div class="item-title">
         <h1><?=Text::st(E::$pgTitle)?></h1>
     </div>
-<?php   if (isset($rootSlugs[E::$tabName])) { ?>
+<?php   if (isset(E::$historyRootSlugs[E::$tabName])) { ?>
     <div class="paper-header">
-        <a href="/edit/<?=Text::h($rootSlugs[E::$tabName])?>/<?=Text::h(E::$tabId)?>"><?=Text::t('Edit Item')?></a>
+        <a href="/edit/<?=Text::h(E::$historyRootSlugs[E::$tabName])?>/<?=Text::h(E::$tabId)?>"><?=Text::t('Edit Item')?></a>
     </div>
 <?php   } ?>
-<?php   foreach ($items as $itemId => $item) { ?>
+<?php   foreach (E::$historyItems as $itemId => $item) { ?>
     <div id="<?=Text::h($itemId)?>" class="history-item paper pad action-<?=Text::h($item['action'])?>">
 <?php       foreach ($item['changes'] as $change) { ?>
         <div class="input-label pad"><span class="input-label-lang"><?=Text::t($change['lang'])?></span> <?=Text::t($change['name'])?></div>

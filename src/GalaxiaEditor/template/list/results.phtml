@@ -1,20 +1,25 @@
-<?php use Galaxia\Text;
+<?php
+
+use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\render\view\ViewPagination;
 
 
-if ($pagination) ViewPagination::renderHiddenData($pagination, $rowsFiltered, $rowsTotal) ?>
+ViewPagination::renderHiddenData(E::$pagination)
+
+// @formatter:off ?>
 
     <div class="pad">
         <div class="row-head">
-<?php   foreach ($columns as $column) { ?>
+<?php   foreach (E::$listColumns as $column) { ?>
             <div class="col <?=Text::h($column['cssClass'] ?? '')?>"><?=Text::t($column['label'] ?? '')?></div>
 <?php   } ?>
         </div>
     </div>
     <div class="list pad">
-<?php   $i = $pagination->itemFirst; ?>
-<?php   foreach ($rows as $itemId => $html) { ?>
-<?php       if (!$order) { ?>
+<?php   $i = E::$pagination->itemFirst; ?>
+<?php   foreach (E::$listRows as $itemId => $html) { ?>
+<?php       if (!E::$listOrder) { ?>
 <div class="row-number"><?=$i?></div>
 <?php       } ?>
 <?=$html?>

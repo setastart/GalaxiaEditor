@@ -9,7 +9,7 @@ E::$pgTitle = Text::t('Replace') . ' ' . Text::t(E::$section['gcTitleSingle']);
 E::$hdTitle = Text::t('Replace') . ' ' . Text::t(E::$section['gcTitleSingle']);
 
 
-$inputs = [
+E::$imgInputs = [
     'images' => [
         'label' => 'Image',
         'name'  => 'images[]',
@@ -18,7 +18,7 @@ $inputs = [
 ];
 
 
-$inputs['resize'] = [
+E::$imgInputs['resize'] = [
     'label'   => 'Resize images to fit',
     'name'    => 'resize',
     'type'    => 'radio',
@@ -35,6 +35,6 @@ $inputs['resize'] = [
 ];
 
 
-foreach ($inputs as $key => $input) {
-    $inputs[$key] = array_merge(Input::PROTO_INPUT, $input);
+foreach (E::$imgInputs as $key => $input) {
+    E::$imgInputs[$key] = array_merge(Input::PROTO_INPUT, $input);
 }

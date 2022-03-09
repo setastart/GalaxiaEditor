@@ -6,13 +6,15 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 
 
-InputRender::form('', 'item-edit', 'item paper pad'); ?>
+InputRender::form('', 'item-edit', 'item paper pad');
+
+// @formatter:off ?>
 
     <div class="paper-header pad">
         <h1><?=Text::st(E::$pgTitle)?></h1>
 
-<?php   if ($firstStatus) { ?>
-<?php       echo InputRender::status($item['inputs'][$firstStatus]); ?>
+<?php   if (E::$firstStatus) { ?>
+<?php       echo InputRender::status(E::$item['inputs'][E::$firstStatus]); ?>
 <?php   } ?>
 
         <div class="paper-header-actions">
@@ -22,65 +24,71 @@ InputRender::form('', 'item-edit', 'item paper pad'); ?>
 
         <div class="paper-header-links">
             <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>" class="btn-a"><?=Text::t('Reload')?></a>
-<?php   if ($item['gcVisit']) { ?>
-            <br><?=Text::t('Open here')?>:
+<?php   if (E::$item['gcVisit']) { ?>
+            <div>
+            <?=Text::t('Open here')?>:
 <?php   } ?>
 
-<?php   if (is_int($item['gcVisit']) || $item['gcVisit'] === true) { ?>
+<?php   if (is_int(E::$item['gcVisit']) || E::$item['gcVisit'] === true) { ?>
 <?php       foreach (G::langs() as $lang) { ?>
-<?php           if (isset($item['inputs']['slug_' . $lang])) { ?>
-            <a rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
-<?php           } else if (isset($item['inputs'][$item['gcTable'] . 'Slug_' . $lang])) { ?>
-            <a rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
-<?php           } else if (isset(E::$pageById[$item['gcVisit']]['slug'][$lang])) { ?>
-            <a rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           if (isset(E::$item['inputs']['slug_' . $lang])) { ?>
+            <a rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[E::$item['gcVisit']]['slug'][$lang] . '/' . E::$item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           } else if (isset(E::$item['inputs'][E::$item['gcTable'] . 'Slug_' . $lang])) { ?>
+            <a rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[E::$item['gcVisit']]['slug'][$lang] . '/' . E::$item['inputs'][E::$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           } else if (isset(E::$pageById[E::$item['gcVisit']]['slug'][$lang])) { ?>
+            <a rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[E::$item['gcVisit']]['slug'][$lang], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
 <?php           }  ?>
 <?php       } ?>
-<?php   } else if (is_array($item['gcVisit'])) { ?>
-<?php       foreach ($item['gcVisit'] as $link) { ?>
+<?php   } else if (is_array(E::$item['gcVisit'])) { ?>
+<?php       foreach (E::$item['gcVisit'] as $link) { ?>
 <?php           if (!isset($link['id'])) continue ?>
 <?php           if (!isset($link['prefix'])) continue ?>
-<?php           $id = $item['inputs'][$link['id']]['value'] ?? ''; ?>
+<?php           $id = E::$item['inputs'][$link['id']]['value'] ?? ''; ?>
 <?php           $prefix = $link['prefix'] ?? ''; ?>
-<?php           $name = $prefix . $item['inputs'][$link['id']]['value']; ?>
+<?php           $name = $prefix . E::$item['inputs'][$link['id']]['value']; ?>
             <a rel="noreferrer" href="<?=Text::h($name)?>" class="btn-a"><?=Text::h($name)?></a>
 <?php       } ?>
 <?php   } ?>
 
-<?php   if ($item['gcVisit']) { ?>
-            <br><?=Text::t('Open in new tab')?>:
+<?php   if (E::$item['gcVisit']) { ?>
+            </div>
+            <div>
+            <?=Text::t('Open in new tab')?>:
 <?php   } ?>
 
-<?php   if (is_int($item['gcVisit']) || $item['gcVisit'] === true) { ?>
+<?php   if (is_int(E::$item['gcVisit']) || E::$item['gcVisit'] === true) { ?>
 <?php       foreach (G::langs() as $lang) { ?>
-<?php           if (isset($item['inputs']['slug_' . $lang])) { ?>
-            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
-<?php           } else if (isset($item['inputs'][$item['gcTable'] . 'Slug_' . $lang])) { ?>
-            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang] . '/' . $item['inputs'][$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
-<?php           } else if (isset(E::$pageById[$item['gcVisit']]['slug'][$lang])) { ?>
-            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[$item['gcVisit']]['slug'][$lang], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           if (isset(E::$item['inputs']['slug_' . $lang])) { ?>
+            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[E::$item['gcVisit']]['slug'][$lang] . '/' . E::$item['inputs']['slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           } else if (isset(E::$item['inputs'][E::$item['gcTable'] . 'Slug_' . $lang])) { ?>
+            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[E::$item['gcVisit']]['slug'][$lang] . '/' . E::$item['inputs'][E::$item['gcTable'] . 'Slug_' . $lang]['value'], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
+<?php           } else if (isset(E::$pageById[E::$item['gcVisit']]['slug'][$lang])) { ?>
+            <a target="_blank" rel="noreferrer" href="<?=G::addLangPrefix(E::$pageById[E::$item['gcVisit']]['slug'][$lang], $lang)?>" class="btn-a"><?=Text::h($lang)?></a>
 <?php           } ?>
 <?php       } ?>
-<?php   } else if (is_array($item['gcVisit'])) { ?>
-<?php       foreach ($item['gcVisit'] as $link) { ?>
+<?php   } else if (is_array(E::$item['gcVisit'])) { ?>
+<?php       foreach (E::$item['gcVisit'] as $link) { ?>
 <?php           if (!isset($link['id'])) continue ?>
 <?php           if (!isset($link['prefix'])) continue ?>
-<?php           $id = $item['inputs'][$link['id']]['value'] ?? ''; ?>
+<?php           $id = E::$item['inputs'][$link['id']]['value'] ?? ''; ?>
 <?php           $prefix = $link['prefix'] ?? ''; ?>
-<?php           $name = $prefix . $item['inputs'][$link['id']]['value']; ?>
+<?php           $name = $prefix . E::$item['inputs'][$link['id']]['value']; ?>
             <a target="_blank" rel="noreferrer" href="<?=Text::h($name)?>" class="btn-a"><?=Text::h($name)?></a>
 <?php       } ?>
+<?php   } ?>
+<?php   if (E::$item['gcVisit']) { ?>
+            </div>
 <?php   } ?>
         </div>
     </div>
 
 
-<?php   if ($item['inputs'] ?? []) { ?>
+<?php   if (E::$item['inputs'] ?? []) { ?>
     <div class="item-row">
 <?php       $firstTime = true; ?>
 <?php       $prefixPrev = null; ?>
-<?php       foreach ($item['inputs'] as $inputKey => $input) { ?>
-<?php           if ($inputKey == $firstStatus) continue; ?>
+<?php       foreach (E::$item['inputs'] as $inputKey => $input) { ?>
+<?php           if ($inputKey == E::$firstStatus) continue; ?>
 <?php           if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
     </div>
 
@@ -94,15 +102,15 @@ InputRender::form('', 'item-edit', 'item paper pad'); ?>
 <?php   } ?>
 
 
-<?php
+<?php // @formatter:on
 
-foreach ($modules as $moduleKey => $module) {
-    if (!$module['inputs'] ?? []) continue;
-    switch ($module['gcModuleType']) {
+foreach (E::$modules as E::$moduleKey => &E::$module) {
+    if (!E::$module['inputs'] ?? []) continue;
+    switch (E::$module['gcModuleType']) {
         case 'fields':
-            if (empty($module['inputs'])) {
+            if (empty(E::$module['inputs'])) {
                 $foundMulti = false;
-                if (!empty($module['gcModuleMultiple'])) {
+                if (!empty(E::$module['gcModuleMultiple'])) {
                     $foundMulti = true;
                     break;
                 }
@@ -116,22 +124,27 @@ foreach ($modules as $moduleKey => $module) {
     }
 }
 
-?>
+$classDel = 'red btn-a';
+foreach (E::$item['gcDelete']['gcPerms'] ?? [] as $perm) {
+    $classDel .= ' hide-perm-' . Text::h($perm);
+}
+
+// @formatter:off ?>
 
 
     <div class="paper-footer pad">
         <div class="item-info">
-<?php   if ($item['gcInfo']) { ?>
-<?php       foreach ($item['gcInfo'] as $info) { ?>
+<?php   if (E::$item['gcInfo']) { ?>
+<?php       foreach (E::$item['gcInfo'] as $info) { ?>
             <p><?=Text::t($info['label'])?>: <?=Text::h($info['value'])?></p>
 <?php       } ?>
 <?php   } ?>
-            <a target="_blank" href="/edit/history/<?=Text::h($item['gcTable'])?>/<?=Text::h(E::$itemId)?>" class="btn-a"><?=Text::t('Open History in a new tab')?></a>
+            <a target="_blank" href="/edit/history/<?=Text::h(E::$item['gcTable'])?>/<?=Text::h(E::$itemId)?>" class="btn-a"><?=Text::t('Open History in a new tab')?></a>
 <?php   if (G::isDev()) { ?>
             <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>/history" class="hide-perm-dev btn-a"><?=sprintf(Text::t('Save %s in History'), Text::t(E::$section['gcTitleSingle']))?></a>
 <?php   } ?>
-<?php   if ($item['gcDelete']) { ?>
-            <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>/delete" class="red btn-a"><?=sprintf(Text::t('Delete %s'), Text::t(E::$section['gcTitleSingle']))?></a>
+<?php   if (E::$item['gcDelete']) { ?>
+            <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>/delete" class="<?=$classDel?>"><?=sprintf(Text::t('Delete %s'), Text::t(E::$section['gcTitleSingle']))?></a>
 <?php   } ?>
         </div>
         <div class="paper-footer-actions">

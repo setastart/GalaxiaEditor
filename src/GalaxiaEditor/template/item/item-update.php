@@ -19,9 +19,9 @@ $params = array_values(E::$itemChanges);
 $params[] = E::$itemId;
 $types = str_repeat('s', count($params));
 
-$query = Sql::update($item['gcUpdate']);
+$query = Sql::update(E::$item['gcUpdate']);
 $query .= Sql::updateSet(array_keys(E::$itemChanges));
-$query .= Sql::updateWhere([$item['gcTable'] => [$item['gcTable'] . 'Id']]);
+$query .= Sql::updateWhere([E::$item['gcTable'] => [E::$item['gcTable'] . 'Id']]);
 
 try {
     $stmt = G::prepare($query);
@@ -34,15 +34,15 @@ try {
         Flash::error('item-update - Unable to update database.');
     } else {
         foreach (E::$itemChanges as $inputKey => $content) {
-            $lang = $item['inputs'][$inputKey]['lang'] ? ' - ' . $item['inputs'][$inputKey]['lang'] : '';
-            Flash::info(Text::t('Updated') . ': ' . Text::t($item['inputs'][$inputKey]['label']) . $lang);
-            Flash::info(Text::t('Updated'), 'form', $item['inputs'][$inputKey]['name']);
+            $lang = E::$item['inputs'][$inputKey]['lang'] ? ' - ' . E::$item['inputs'][$inputKey]['lang'] : '';
+            Flash::info(Text::t('Updated') . ': ' . Text::t(E::$item['inputs'][$inputKey]['label']) . $lang);
+            Flash::info(Text::t('Updated'), 'form', E::$item['inputs'][$inputKey]['name']);
 
-            if ($item['gcTable'] == '_geUser')
+            if (E::$item['gcTable'] == '_geUser')
                 if ($inputKey == 'passwordHash')
                     continue;
 
-            History::insert($uniqueId, $item['gcTable'], E::$itemId, $inputKey, '', 2, $content, G::$me->id);
+            History::insert(E::$uniqueId, E::$item['gcTable'], E::$itemId, $inputKey, '', 2, $content, G::$me->id);
         }
     }
 } catch (Exception $e) {

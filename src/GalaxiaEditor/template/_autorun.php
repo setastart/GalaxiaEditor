@@ -21,9 +21,7 @@ if (str_starts_with(G::$editor->logic, 'login/')) return;
 
 E::$chatInclude        = isset(E::$conf['chat']);
 // todo: check gcPageType of section instead of hardcoding
-E::$chatIncludeCurrent =
-    !in_array(E::$pgSlug, ['users', 'passwords', 'history']) &&
-    ((E::$itemId || E::$imgSlug) || E::$pgSlug == 'chat');
+E::$chatIncludeCurrent = !in_array(E::$pgSlug, ['users', 'passwords', 'history']) && (E::$itemId || E::$imgSlug || E::$pgSlug == 'chat');
 
 
 

@@ -4,18 +4,27 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 use GalaxiaEditor\render\view\ViewPagination;
 
+$classDel = 'pad padv';
+foreach (E::$section['gcImage']['gcDelete']['gcPerms'] ?? [] as $perm) {
+    $classDel .= ' hide-perm-' . Text::h($perm);
+}
+
+$classIns = 'pad padv';
+foreach (E::$section['gcImage']['gcInsert']['gcPerms'] ?? [] as $perm) {
+    $classIns .= ' hide-perm-' . Text::h($perm);
+}
 
 InputRender::form('', 'image-list', 'paper pad');?>
 
     <div class="paper-header pad">
-        <h1><span class="rowsFiltered"><?=Text::h($rowsFiltered)?></span> &#8725; <span class="rowsTotal"><?=Text::h($rowsTotal)?></span> <?=Text::t(E::$pgTitle);?></h1>
+        <h1><span class="rowsFiltered"><?=E::$pagination->itemsFiltered?></span> &#8725; <span class="rowsTotal"><?=E::$pagination->itemsFiltered?></span> <?=Text::t(E::$pgTitle);?></h1>
 
         <div class="list-links">
 <?php   if (E::$section['gcImage']['gcDelete'] ?? []) { ?>
-            <a href="/edit/<?=Text::h(E::$pgSlug)?>/delete" class="btn btn-pad btn-red active"><?=Text::t('Delete Images')?></a>
+            <div class="<?=$classDel?>"><a href="/edit/<?=Text::h(E::$pgSlug)?>/delete" class="btn btn-pad btn-red active"><?=Text::t('Delete Images')?></a></div>
 <?php   } ?>
 <?php   if (E::$section['gcImage']['gcInsert'] ?? []) { ?>
-            <a href="/edit/<?=Text::h(E::$pgSlug)?>/new" class="btn btn-pad btn-blue active"><?=Text::t('Upload Images')?></a>
+            <div class="<?=$classIns?>"><a href="/edit/<?=Text::h(E::$pgSlug)?>/new" class="btn btn-pad btn-blue active"><?=Text::t('Upload Images')?></a></div>
 <?php   } ?>
         </div>
 
@@ -35,19 +44,21 @@ InputRender::form('', 'image-list', 'paper pad');?>
 <?php   if (!empty($filterTexts)) { ?>
 <?php       foreach ($filterTexts as $filterId => $filter) { ?>
         <div class="input-wrap pad">
-            <div class="input-label"><?=Text::t($filter['label'])?></div>
+            <div class="input-label"><div><?=Text::t($filter['label'])?></div></div>
+                <div class="input-inputs">
 <?php           if (empty($filter['filterEmpty'])) { ?>
-            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
+                <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
 <?php           } else { ?>
-            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
-            <label for="<?=Text::h($filterId)?>-empty" class="btn btn-pill btn-checkbox rr">
-                <?=Text::t('Empty')?>
-                <input class="filterChangeEmpty" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=Text::h($filterId)?>-empty" title="<?=Text::t('Empty')?>">
-            </label>
+                <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
+                <label for="<?=Text::h($filterId)?>-empty" class="btn btn-pill btn-checkbox rr">
+                    <?=Text::t('Empty')?>
+                    <input class="filterChangeEmpty" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=Text::h($filterId)?>-empty" title="<?=Text::t('Empty')?>">
+                </label>
 <?php           } ?>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(E::$conf[G::$editor->imageSlug]['gcImageTypes']))))?></p>
+                <div class="input-footer"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(E::$conf[G::$editor->imageSlug]['gcImageTypes']))))?></div>
 <?php           } ?>
+            </div>
         </div>
 <?php       } ?>
 <?php   } ?>
@@ -55,20 +66,22 @@ InputRender::form('', 'image-list', 'paper pad');?>
 <?php   if (!empty($filterInts)) { ?>
 <?php       foreach ($filterInts as $filterId => $filter) { ?>
         <div class="input-wrap input-filter-int pad">
-            <div class="input-label"><?=Text::t($filter['label'])?></div>
-<?php       foreach ($filter['options'] as $key => $options) { ?>
-            <label for="<?=Text::h($filterId)?>-<?=Text::h($key)?>" class="btn btn-pill btn-checkbox <?=Text::h($options['cssClass'])?><?=($options['checked']) ? ' active' : ''?>">
-                <?=Text::t($options['label'])?>
-                <input class="filterChange" name="filterInts[<?=$filterId?>][<?=Text::h($key)?>]" type="checkbox" value="1" id="<?=Text::h($filterId)?>-<?=Text::h($key)?>" title="<?=Text::t($options['label'])?>" <?=($options['checked']) ? ' checked' : ''?>>
-            </label>
+            <div class="input-label"><div><?=Text::t($filter['label'])?></div></div>
+            <div class="input-inputs">
+            <?php       foreach ($filter['options'] as $key => $options) { ?>
+                <label for="<?=Text::h($filterId)?>-<?=Text::h($key)?>" class="btn btn-pill btn-checkbox <?=Text::h($options['cssClass'])?><?=($options['checked']) ? ' active' : ''?>">
+                    <?=Text::t($options['label'])?>
+                    <input class="filterChange" name="filterInts[<?=$filterId?>][<?=Text::h($key)?>]" type="checkbox" value="1" id="<?=Text::h($filterId)?>-<?=Text::h($key)?>" title="<?=Text::t($options['label'])?>" <?=($options['checked']) ? ' checked' : ''?>>
+                </label>
 <?php       } ?>
+            </div>
         </div>
 <?php       } ?>
 <?php   } ?>
     </div>
 
 
-<?php ViewPagination::renderHeader($pagination) ?>
+<?php ViewPagination::renderHeader(E::$pagination) ?>
 
 
     <div class="load">
@@ -76,7 +89,7 @@ InputRender::form('', 'image-list', 'paper pad');?>
     </div>
 
 
-<?php ViewPagination::renderFooter($pagination) ?>
+<?php ViewPagination::renderFooter(E::$pagination) ?>
 
 
 <?php   InputRender::renderFormEnd(); ?>

@@ -22,7 +22,7 @@ if (G::$req->xhr) {
 
 // get images using cache
 
-$items = Cache::imageListItems(function() {
+E::$imgItems = Cache::imageListItems(function() {
     $items = [];
     $imageList = AppImage::list(G::dirImage());
 
@@ -53,12 +53,12 @@ $inUse = Load::imagesInUse();
 
 switch ($_POST['imageListType'] ?? '') {
     case 'image-select':
-        $rows = Cache::imageListRowsSelect(function() use ($items, $inUse) {
+        E::$imgRows = Cache::imageListRowsSelect(function() use ($inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
 
-            foreach ($items as $imgSlug => $img) {
+            foreach (E::$imgItems as $imgSlug => $img) {
                 if (isset($img['extra']['type']))
                     if (!isset($imgTypes[$img['extra']['type']])) $imgTypes[$img['extra']['type']] = $currentColor++;
 
@@ -90,12 +90,12 @@ $ht .= '</button>' . PHP_EOL;
         break;
 
     default:
-        $rows = Cache::imageListRows(function() use ($items, $inUse) {
+        E::$imgRows = Cache::imageListRows(function() use ($inUse) {
             $rows = [];
             $imgTypes = [];
             $currentColor = 0;
 
-            foreach ($items as $imgSlug => $img) {
+            foreach (E::$imgItems as $imgSlug => $img) {
                 if (isset($img['extra']['type']))
                     if (!isset($imgTypes[$img['extra']['type']])) $imgTypes[$img['extra']['type']] = $currentColor++;
 $ht = '';
@@ -155,7 +155,7 @@ $ht .= '</a>';
         });
         break;
 }
-$rowsTotal = count($rows);
+$rowsTotal = count(E::$imgRows);
 
 
 
@@ -196,15 +196,16 @@ if ($textFiltersActive) {
         if (!$filterInput) continue;
         $filterInput = explode('+', $filterInput);
 
-        $itemsToFilter = Cache::imageListFilterText($filterId, function() use ($items, $inUse, $filterId) {
+        $itemsToFilter = Cache::imageListFilterText($filterId, function() use ($inUse, $filterId) {
+            $return = [];
             switch ($filterId) {
                 case 'slug':
-                    foreach ($items as $imgSlug => $img)
+                    foreach (E::$imgItems as $imgSlug => $img)
                         $return[$imgSlug] = true;
                     break;
 
                 case 'alt':
-                    foreach ($items as $imgSlug => $img) {
+                    foreach (E::$imgItems as $imgSlug => $img) {
                         $return[$imgSlug] = '';
                         $emptyFound = empty($img['alt']);
                         foreach ($img['alt'] as $lang => $alt) {
@@ -217,7 +218,7 @@ if ($textFiltersActive) {
                     break;
 
                 case 'inuse':
-                    foreach ($items as $imgSlug => $img) {
+                    foreach (E::$imgItems as $imgSlug => $img) {
                         $emptyFound = false;
                         if (!isset($inUse[$imgSlug])) {
                             $return[$imgSlug] = '{{empty}}';
@@ -239,13 +240,11 @@ if ($textFiltersActive) {
                     break;
 
                 case 'type':
-                    foreach ($items as $imgSlug => $img) {
-                        $emptyFound = false;
+                    foreach (E::$imgItems as $imgSlug => $img) {
                         if (!isset($img['extra']['type'])) {
                             $return[$imgSlug] = '{{empty}}';
                             continue;
                         }
-                        if ($emptyFound) $return[$imgSlug] = '{{empty}}' . $return[$imgSlug];
                         $return[$imgSlug] = Text::formatSearch(Text::t($img['extra']['type']));
                     }
 
@@ -284,7 +283,7 @@ if ($textFiltersActive) {
             if (!$filterFound) $itemsFiltered[$itemId] = true;
         }
     }
-    if ($itemsFiltered) $rows = array_diff_key($rows, $itemsFiltered);
+    if ($itemsFiltered) E::$imgRows = array_diff_key(E::$imgRows, $itemsFiltered);
 }
 
 
@@ -292,14 +291,10 @@ if ($textFiltersActive) {
 
 // pagination
 
-$pagination = new Pagination((int) ($_POST['page'] ?? 1), (int) ($_POST['itemsPerPage'] ?? 100));
-$rowsFiltered = count($rows);
-$pagination->setItemsTotal($rowsFiltered);
-$offset = $pagination->itemFirst - 1;
-$length = $pagination->itemsPerPage;
-if ($length >= $pagination->itemsTotal) $length = null;
+E::$pagination = new Pagination($_POST['page'] ?? 1, $_POST['itemsPerPage'] ?? 100);
+E::$pagination->setItemCounts(count(E::$imgRows), $rowsTotal);
 
-$rows = array_slice($rows, $offset, $length, true);
+E::$imgRows = E::$pagination->sliceRows(E::$imgRows);
 
 
 

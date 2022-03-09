@@ -8,8 +8,8 @@ InputRender::form('', 'item-new', 'item item-new paper pad'); ?>
     <div class="paper-header pad">
         <h1><?=Text::st(E::$pgTitle)?></h1>
 
-<?php   if (isset($item['inputs']['status'])) { ?>
-<?php       echo InputRender::status($item['inputs']['status']); ?>
+<?php   if (isset(E::$item['inputs']['status'])) { ?>
+<?php       echo InputRender::status(E::$item['inputs']['status']); ?>
 <?php   } ?>
     </div>
 
@@ -17,7 +17,7 @@ InputRender::form('', 'item-new', 'item item-new paper pad'); ?>
     <div class="item-row">
 <?php   $firstTime = true; ?>
 <?php   $prefixPrev = null; ?>
-<?php   foreach ($item['inputs'] as $input) { ?>
+<?php   foreach (E::$item['inputs'] as $input) { ?>
 <?php       if ($input['nameFromDb'] == 'status') continue; ?>
 <?php       if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
     </div>

@@ -14,16 +14,17 @@
  */
 
 
+use GalaxiaEditor\E;
 use GalaxiaEditor\stats\Stats;
 
 
 $statFiles = Stats::getGoaccessStats();
 
-$stats = [];
+E::$statsGoaccess = [];
 
 foreach ($statFiles as $path) {
     $fileName = pathinfo($path, PATHINFO_FILENAME);
     $date = substr($fileName, 0, 10);
-    $stats[$date] = true;
+    E::$statsGoaccess[$date] = true;
 }
-$stats = array_keys($stats);
+E::$statsGoaccess = array_keys(E::$statsGoaccess);

@@ -15,13 +15,13 @@ G::$editor->view = 'item/new/new';
 // item validation
 
 foreach ($_POST['item'] ?? [] as $name => $value) {
-    if (!isset($item['inputs'][$name])) continue;
+    if (!isset(E::$item['inputs'][$name])) continue;
 
-    $input = Input::validate($item['inputs'][$name], $value);
+    $input = Input::validate(E::$item['inputs'][$name], $value);
 
     if ($input['dbUnique']) {
-        $query = Sql::selectOne($item['gcInsert']);
-        $query .= Sql::selectWhere([$item['gcTable'] => [$input['nameFromDb'] => '=']]);
+        $query = Sql::selectOne(E::$item['gcInsert']);
+        $query .= Sql::selectWhere([E::$item['gcTable'] => [$input['nameFromDb'] => '=']]);
         $query .= Sql::selectLimit(0, 1);
 
         $stmt = G::prepare($query);
@@ -38,14 +38,14 @@ foreach ($_POST['item'] ?? [] as $name => $value) {
     foreach ($input['errors'] as $msg) {
         Flash::error($msg, 'form', $input['name']);
         if ($input['lang']) {
-            $langSelectClass[$input['lang']] = 'btn-red';
+            E::$langSelectClass[$input['lang']] = 'btn-red';
         }
     }
 
     if ($input['value'] !== $input['valueFromDb'])
         E::$itemChanges[$input['nameFromDb']] = $input['valueToDb'];
 
-    $item['inputs'][$name] = $input;
+    E::$item['inputs'][$name] = $input;
 }
 
 if (Flash::hasError()) return;
@@ -62,7 +62,7 @@ if (!E::$itemChanges) {
 
 $values = array_values(E::$itemChanges);
 try {
-    $query = Sql::queryInsert($item['gcInsert'], E::$itemChanges);
+    $query = Sql::queryInsert(E::$item['gcInsert'], E::$itemChanges);
 
     $stmt = G::prepare($query);
     $types = str_repeat('s', count($values));
@@ -88,7 +88,7 @@ try {
 //  history
 
 foreach (E::$itemChanges as $key => $value)
-    History::insert($uniqueId, $item['gcTable'], $itemIdNew, $key, '', 3, $value, G::$me->id);
+    History::insert(E::$uniqueId, E::$item['gcTable'], $itemIdNew, $key, '', 3, $value, G::$me->id);
 
 
 

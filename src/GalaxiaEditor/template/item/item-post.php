@@ -21,10 +21,10 @@ include G::$editor->dirView . 'item/item-validation.php';
 
 // module validation
 
-foreach ($_POST['modules'] ?? [] as $moduleKey => $postModule) {
-    if (!isset($modules[$moduleKey])) continue;
+foreach ($_POST['modules'] ?? [] as E::$itemPostModuleKey => E::$itemPostModule) {
+    if (!isset(E::$modules[E::$itemPostModuleKey])) continue;
 
-    if ($modules[$moduleKey]['gcModuleType'] == 'fields') {
+    if (E::$modules[E::$itemPostModuleKey]['gcModuleType'] == 'fields') {
         include G::$editor->dirView . 'item/modules/fields-validation.php';
     }
 }
@@ -35,7 +35,7 @@ foreach ($_POST['modules'] ?? [] as $moduleKey => $postModule) {
 // finish validation
 
 if (Flash::hasError()) return;
-if (!E::$itemChanges && !$fieldsNew && !$fieldsDel && !$fieldsUpd) {
+if (!E::$itemChanges && !E::$fieldsNew && !E::$fieldsDel && !E::$fieldsUpd) {
     Flash::warning(Text::t('No changes were made.'));
     if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
     return;
@@ -54,7 +54,7 @@ if (E::$itemChanges)
 
 // update modules
 
-if ($fieldsNew || $fieldsDel || $fieldsUpd)
+if (E::$fieldsNew || E::$fieldsDel || E::$fieldsUpd)
     include G::$editor->dirView . 'item/modules/fields-update.php';
 
 
@@ -63,9 +63,9 @@ if ($fieldsNew || $fieldsDel || $fieldsUpd)
 // update timstampModified
 
 $params = [date('Y-m-d G:i:s'), E::$itemId];
-$query = Sql::update($item['gcUpdate']);
+$query = Sql::update(E::$item['gcUpdate']);
 $query .= Sql::updateSet(['timestampModified']);
-$query .= Sql::updateWhere([$item['gcTable'] => [$item['gcTable'] . 'Id']]);
+$query .= Sql::updateWhere([E::$item['gcTable'] => [E::$item['gcTable'] . 'Id']]);
 $stmt = G::prepare($query);
 $stmt->bind_param('sd', ...$params);
 $stmt->execute();
@@ -78,19 +78,19 @@ $stmt->close();
 // finish
 
 if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
-    $slugs = [$item['gcTable'] . 'Slug'];
-    foreach (G::langs() as $lang) $slugs[] = $item['gcTable'] . 'Slug_' . $lang;
+    $slugs = [E::$item['gcTable'] . 'Slug'];
+    foreach (G::langs() as $lang) $slugs[] = E::$item['gcTable'] . 'Slug_' . $lang;
 
-    if ($item['gcRedirect']) {
-        $redirectTable     = $item["gcTable"] . 'Redirect';
-        $redirectTableId   = $item["gcTable"] . 'Id';
+    if (E::$item['gcRedirect']) {
+        $redirectTable     = E::$item["gcTable"] . 'Redirect';
+        $redirectTableId   = E::$item["gcTable"] . 'Id';
         $redirectTableSlug = $redirectTable . 'Slug';
         $redirectFieldKey  = 'Redirect';
 
         foreach ($slugs as $slug) {
             if (!isset(E::$itemChanges[$slug])) continue;
 
-            $oldSlug = $item['inputs'][$slug]['valueFromDb'] ?? '';
+            $oldSlug = E::$item['inputs'][$slug]['valueFromDb'] ?? '';
             $newSlug = E::$itemChanges[$slug] ?? '';
             if (!$oldSlug || !$newSlug) continue;
 
@@ -130,12 +130,12 @@ if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
     }
 
 
-    if (E::$itemChanges || $fieldsNew || $fieldsDel || $fieldsUpd) {
+    if (E::$itemChanges || E::$fieldsNew || E::$fieldsDel || E::$fieldsUpd) {
         G::cacheDelete(['app', 'fastroute']);
         G::cacheDelete('editor');
 
         if (
-            isset(E::$itemChanges[$item['gcTable'] . 'Status']) ||
+            isset(E::$itemChanges[E::$item['gcTable'] . 'Status']) ||
             count(array_intersect(array_keys(E::$itemChanges), $slugs)) > 0
         ) {
             G::routeSitemap(G::$req->schemeHost());

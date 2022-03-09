@@ -1,36 +1,37 @@
 <?php
 
 use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 
 
 ?>
-<div id="module-<?=$moduleKey?>" class="module">
-<?php   if ($module['gcModuleTitle']) { ?>
-    <h2 class="pad"><?=Text::t($module['gcModuleTitle'])?></h2>
+<div id="module-<?=E::$moduleKey?>" class="module">
+<?php   if (E::$module['gcModuleTitle']) { ?>
+    <h2 class="pad"><?=Text::t(E::$module['gcModuleTitle'])?></h2>
 <?php   } ?>
-<?php   foreach ($module['inputs'] as $fieldKey => $fields) {
+<?php   foreach (E::$module['inputs'] as $fieldKey => $fields) {
 
             $moduleFieldCss = 'module-field';
             $multi = $reorder = $unique = false;
             $gallery = false;
-            if (isset($module['gcModuleMultiple'][$fieldKey])) {
+            if (isset(E::$module['gcModuleMultiple'][$fieldKey])) {
                 $multi = true;
-                $reorder = $module['gcModuleMultiple'][$fieldKey]['reorder'];
-                $unique = $module['gcModuleMultiple'][$fieldKey]['unique'];
-                $gallery = $module['gcModuleMultiple'][$fieldKey]['gallery'] ?? false;
+                $reorder = E::$module['gcModuleMultiple'][$fieldKey]['reorder'];
+                $unique = E::$module['gcModuleMultiple'][$fieldKey]['unique'];
+                $gallery = E::$module['gcModuleMultiple'][$fieldKey]['gallery'] ?? false;
                 $moduleFieldCss .= ' module-field-multi';
                 if ($gallery) $moduleFieldCss .= ' module-field-gallery';
             }
 
-            $modKeyField = 'module-' . $moduleKey . '-' . $fieldKey;
-            $modKeyFieldArr = 'modules[' . $moduleKey . '][' . $fieldKey . ']';
+            $modKeyField = 'module-' . E::$moduleKey . '-' . $fieldKey;
+            $modKeyFieldArr = 'modules[' . E::$moduleKey . '][' . $fieldKey . ']';
 ?>
 <?php
             if ($multi) {
 ?>
     <div id="<?=$modKeyField?>-header" class="module-field-multi-header pad" data-target="<?=$modKeyField?>">
-        <h2><?=Text::t($module['gcModuleMultiple'][$fieldKey]['label'] ?? $fieldKey)?>: <span class="module-field-count"><?=count($fields) - 2?></span></h2>
+        <h2><?=Text::t(E::$module['gcModuleMultiple'][$fieldKey]['label'] ?? $fieldKey)?>: <span class="module-field-count"><?=count($fields) - 2?></span></h2>
 <?php               if ($gallery) { ?>
         <div class="btn-group">
             <button type="button" class="ev-gallery-delete-none btn-new btn-new-text active" id="empty-<?=$modKeyField?>"><?=Text::t('Remove None')?></button>
@@ -110,8 +111,8 @@ use GalaxiaEditor\input\InputRender;
                     }
                 }
 
-                $modKeyFieldVal = 'module-' . $moduleKey . '-' . $fieldKey . '-' . $fieldVal;
-                $modKeyFieldValArr = 'modules[' . $moduleKey . '][' . $fieldKey . '][' . $fieldVal . ']';
+                $modKeyFieldVal = 'module-' . E::$moduleKey . '-' . $fieldKey . '-' . $fieldVal;
+                $modKeyFieldValArr = 'modules[' . E::$moduleKey . '][' . $fieldKey . '][' . $fieldVal . ']';
 
 ?>
         <div id="<?=$modKeyFieldVal?>" class="<?=($moduleGroupCss)?>"<?=($deleteChecked) ? ' data-disabled="true"' : ''?>>

@@ -28,7 +28,10 @@ if (!isset($filterTexts)) {
             'filterEmpty' => true,
         ],
     ];
-} ?>
+}
+
+// @formatter:off
+?>
 <?php   InputRender::form('/edit/' . G::$editor->imageSlug, 'image-select', 'hide');?>
 
     <div class="image-select-header pad">
@@ -53,18 +56,20 @@ if (!isset($filterTexts)) {
 <?php   if (!empty($filterTexts)) { ?>
 <?php       foreach ($filterTexts as $filterId => $filter) { ?>
         <div class="input-wrap pad">
-            <div class="input-label"><?=Text::t($filter['label'])?></div>
+            <div class="input-label"><div><?=Text::t($filter['label'])?></div></div>
+            <div class="input-inputs">
 <?php           if (empty($filter['filterEmpty'])) { ?>
-            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
+                <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search br" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
 <?php           } else { ?>
-            <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
-            <label for="<?=Text::h($filterId)?>-empty" class="btn btn-pill btn-checkbox rr">
-                <?=Text::t('Empty')?>
-                <input class="filterChangeEmpty" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=Text::h($filterId)?>-empty" title="<?=Text::t('Empty')?>">
-            </label>
+                <input name="filterTexts[<?=$filterId?>]" class="input-text input-filter-text input-search rl" type="search" value="<?=Text::h($_POST['filterTexts'][$filterId] ?? '')?>">
+                <label for="<?=Text::h($filterId)?>-empty" class="btn btn-pill btn-checkbox rr">
+                    <?=Text::t('Empty')?>
+                    <input class="filterChangeEmpty" type="checkbox" name="filterTexts[<?=$filterId?>]" value="{{empty}}" id="<?=Text::h($filterId)?>-empty" title="<?=Text::t('Empty')?>">
+                </label>
 <?php           } ?>
+            </div>
 <?php           if ($filterId == 'type') { ?>
-            <p class="small"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(E::$conf[G::$editor->imageSlug]['gcImageTypes']))))?></p>
+                <div class="input-footer"><?=implode(', ', array_map(['\Galaxia\Text', 't'], array_filter(array_keys(E::$conf[G::$editor->imageSlug]['gcImageTypes']))))?></div>
 <?php           } ?>
         </div>
 <?php       } ?>
@@ -73,7 +78,7 @@ if (!isset($filterTexts)) {
 
 
 <?php   $pagination = new Pagination(1, 100); ?>
-<?php   $pagination->setItemsTotal(200); ?>
+<?php   $pagination->setItemCounts(200); ?>
 <?php ViewPagination::renderHeader($pagination) ?>
 
 

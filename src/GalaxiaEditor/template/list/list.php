@@ -24,9 +24,8 @@ $list        = E::$section['gcList'];
 $firstTable  = key($list['gcSelect']);
 $firstColumn = $list['gcSelect'][$firstTable][0];
 
-$order = '';
 if (E::$itemId ?? '') {
-    $order                 = 'order-';
+    E::$listOrder                 = 'order-';
     $list['gcFilterInts']  = [];
     $list['gcFilterTexts'] = [];
     $_POST['itemsPerPage'] = 10000;
@@ -88,7 +87,7 @@ foreach ($list['gcFilterInts'] as $filterId => $filter) {
 
 // get items from database using cache
 
-$items = Cache::listItems($order, function() use ($list, $firstTable, $firstColumn, $dbSchema, $order) {
+$items = Cache::listItems(E::$listOrder, function() use ($list, $firstTable, $firstColumn, $dbSchema) {
     // // add key columns to joined tables (used to group joins in columns)
     // $selectQueryWithJoinKeys = $list['gcSelect'];
     // foreach ($selectQueryWithJoinKeys as $table => $columns) {
@@ -132,7 +131,7 @@ $items = Cache::listItems($order, function() use ($list, $firstTable, $firstColu
             $query     = Sql::select($queryMain);
 
 
-            if ($order && isset($list['gcLinks']['order']['gcSelectOrderBy'][$table])) {
+            if (E::$listOrder && isset($list['gcLinks']['order']['gcSelectOrderBy'][$table])) {
                 $query .= Sql::selectOrderBy([$table => $list['gcLinks']['order']['gcSelectOrderBy'][$table]]);
             } else if (isset($list['gcSelectOrderBy'][$table])) {
                 $query .= Sql::selectOrderBy([$table => $list['gcSelectOrderBy'][$table]]);
@@ -166,7 +165,7 @@ $items = Cache::listItems($order, function() use ($list, $firstTable, $firstColu
             }
             $query .= Sql::selectLeftJoinUsing($joins);
 
-            if ($order && isset($list['gcLinks']['order']['gcSelectOrderBy'])) {
+            if (E::$listOrder && isset($list['gcLinks']['order']['gcSelectOrderBy'])) {
                 foreach ($list['gcLinks']['order']['gcSelectOrderBy'] ?? [] as $orderTable => $orderCols) {
                     if (isset($joins[$orderTable])) {
                         $query .= Sql::selectOrderBy([$orderTable => $orderCols]);
@@ -236,22 +235,22 @@ foreach ($list['gcColumns'] as $columnKey => $column) {
     }
 }
 
-$columns = $list['gcColumns'];
-foreach ($columns as $columnId => $column) {
+E::$listColumns = $list['gcColumns'];
+foreach (E::$listColumns as $columnId => $column) {
     if (!$column) {
-        unset($columns[$columnId]);
+        unset(E::$listColumns[$columnId]);
         continue;
     }
 
     if (is_array($column['label'] ?? '')) {
-        $columns[$columnId]['label'] = substr($column['label'][0], 0, -3);
+        E::$listColumns[$columnId]['label'] = substr($column['label'][0], 0, -3);
     }
 }
 
 
 // make html for all rows, using cache
 
-$rows = Cache::listRows($order, function() use ($firstTable, $items, $columns, $tags, $order) {
+E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $items, $tags) {
     $rows         = [];
     $currentColor = 0;
     $thumbsToShow = 3;
@@ -259,13 +258,13 @@ $rows = Cache::listRows($order, function() use ($firstTable, $items, $columns, $
         $statusClass = '';
         if (isset($item[$firstTable][$itemId][$firstTable . 'Status'])) $statusClass = ' status-' . (int)($item[$firstTable][$itemId][$firstTable . 'Status'] ?? 0);
 
-        if ($order) {
+        if (E::$listOrder) {
             $ht = '<div id="order-' . $itemId . '" class="row' . $statusClass . '">' . PHP_EOL;
         } else {
             $ht = '<a class="row' . $statusClass . '" href="/edit/' . E::$pgSlug . '/' . $itemId . '">' . PHP_EOL;
         }
 
-        foreach ($columns as $columnId => $column) {
+        foreach (E::$listColumns as $column) {
             if (!$column) continue;
             $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
             foreach ($column['tablesAndCols'] as $dbTable => $dbColumns) {
@@ -384,7 +383,7 @@ $rows = Cache::listRows($order, function() use ($firstTable, $items, $columns, $
             $ht .= '    </div>' . PHP_EOL;
 
         }
-        if ($order) {
+        if (E::$listOrder) {
             ob_start();
 
 // @formatter:off ?>
@@ -406,7 +405,7 @@ $rows = Cache::listRows($order, function() use ($firstTable, $items, $columns, $
             $ht .= ob_get_clean();
         }
 
-        if ($order) {
+        if (E::$listOrder) {
             $ht .= '</div>' . PHP_EOL;
         } else {
             $ht .= '</a>' . PHP_EOL;
@@ -418,7 +417,7 @@ $rows = Cache::listRows($order, function() use ($firstTable, $items, $columns, $
     return $rows;
 });
 
-$rowsTotal = count($rows);
+$rowsTotal = count(E::$listRows);
 
 
 
@@ -491,7 +490,7 @@ foreach ($intFiltersActive as $filterId) {
             }
         }
     }
-    $rows = array_intersect_key($rows, $filteredInts);
+    E::$listRows = array_intersect_key(E::$listRows, $filteredInts);
 
 }
 G::timerStop('Filter Ints');
@@ -514,8 +513,9 @@ foreach ($textFiltersActive as $filterId) {
     if (!$filterInput) continue;
     $filterInput = explode('+', $filterInput);
 
-    $textFilterItems = Cache::listItemsFilterText($filterId, function() use ($rows, $items, $filterTexts, $filterId) {
-        foreach ($rows as $itemId => $row) {
+    $textFilterItems = Cache::listItemsFilterText($filterId, function() use ($items, $filterTexts, $filterId) {
+        $textFilterItems = [];
+        foreach (E::$listRows as $itemId => $row) {
             $textFilterItems[$itemId] = '';
             $emptyFound               = false;
             foreach ($filterTexts[$filterId]['filterWhat'] as $dbTable => $dbColumns) {
@@ -556,7 +556,7 @@ foreach ($textFiltersActive as $filterId) {
         }
         if (!$filterFound) $itemsFiltered[$itemId] = true;
     }
-    if ($itemsFiltered) $rows = array_diff_key($rows, $itemsFiltered);
+    if ($itemsFiltered) E::$listRows = array_diff_key(E::$listRows, $itemsFiltered);
 }
 G::timerStop('Filter Texts');
 
@@ -565,14 +565,10 @@ G::timerStop('Filter Texts');
 
 // pagination
 
-$pagination   = new Pagination((int)($_POST['page'] ?? 1), (int)($_POST['itemsPerPage'] ?? 50));
-$rowsFiltered = count($rows);
-$pagination->setItemsTotal($rowsFiltered);
-$offset = $pagination->itemFirst - 1;
-$length = $pagination->itemsPerPage;
-if ($length >= $pagination->itemsTotal) $length = null;
+E::$pagination = new Pagination($_POST['page'] ?? 1, $_POST['itemsPerPage'] ?? 50);
+E::$pagination->setItemCounts(count(E::$listRows), $rowsTotal);
 
-$rows = array_slice($rows, $offset, $length, true);
+E::$listRows = E::$pagination->sliceRows(E::$listRows);
 
 
 
@@ -582,7 +578,7 @@ $rows = array_slice($rows, $offset, $length, true);
 E::$hdTitle = Text::t(E::$section['gcTitlePlural']) . ' - ' . E::$hdTitle;
 E::$pgTitle = Text::t(E::$section['gcTitlePlural']);
 
-if ($order) {
+if (E::$listOrder) {
     E::$hdTitle = sprintf(Text::t('Order %s'), E::$hdTitle);
     E::$pgTitle = sprintf(Text::t('Order %s'), E::$pgTitle);
 }

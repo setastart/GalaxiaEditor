@@ -15,7 +15,7 @@ if (E::$section['gcImageTypes']) {
     }
 }
 
-$inputs = [
+E::$imgInputs = [
     'images' => [
         'label'   => 'Images',
         'name'    => 'images[]',
@@ -32,6 +32,6 @@ $inputs = [
     ],
 ];
 
-foreach ($inputs as $key => $input) {
-    $inputs[$key] = array_merge(Input::PROTO_INPUT, $input);
+foreach (E::$imgInputs as $key => $input) {
+    E::$imgInputs[$key] = array_merge(Input::PROTO_INPUT, $input);
 }

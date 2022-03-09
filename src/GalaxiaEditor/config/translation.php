@@ -125,7 +125,7 @@ return [
     'Image Slug' => [
         'en' => 'Image Slug',
         'pt' => 'Slug da Imagem',
-        'es' => 'Slug le la Imagen',
+        'es' => 'Slug de la Imagen',
     ],
     'Image Slugs' => [
         'en' => 'Image Slugs',
@@ -868,10 +868,10 @@ return [
         'pt' => 'Modificado',
         'es' => 'Modificado',
     ],
-    'Translate' => [
-        'en' => 'Translate',
-        'pt' => 'Traduzir',
-        'es' => 'Traducir',
+    'translate' => [
+        'en' => 'translate',
+        'pt' => 'traduzir',
+        'es' => 'traducir',
     ],
     'Mod.' => [
         'en' => 'Mod.',
@@ -982,6 +982,11 @@ return [
         'en' => 'Footers',
         'pt' => 'Pés de página',
         'es' => 'Piés de página',
+    ],
+    'Position' => [
+        'en' => 'Position',
+        'pt' => 'Posição',
+        'es' => 'Posición',
     ],
 
 

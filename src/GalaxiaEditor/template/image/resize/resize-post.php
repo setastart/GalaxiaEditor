@@ -12,21 +12,21 @@ G::$editor->view = 'image/resize/resize';
 
 // item validation
 
-foreach ($inputs as $inputKey => $input) {
+foreach (E::$imgInputs as $inputKey => $input) {
     if (!isset($_POST[$input['name']])) {
         $input['errors'][] = 'Required.';
         continue;
     }
     $value = $_POST[$input['name']];
     $input = Input::validate($input, $value);
-    $inputs[$inputKey] = $input;
+    E::$imgInputs[$inputKey] = $input;
 }
 
-foreach ($inputs as $input) {
+foreach (E::$imgInputs as $input) {
     foreach ($input['errors'] as $msg) {
         Flash::error($msg, 'form', $input['name']);
         if ($input['lang']) {
-            $langSelectClass[$input['lang']] = 'btn-red';
+            E::$langSelectClass[$input['lang']] = 'btn-red';
         }
     }
 }
@@ -39,7 +39,7 @@ if (Flash::hasError()) return;
 // resize images
 
 $files = [[
-    'tmp_name' => G::dirImage() . E::$imgSlug . '/' . E::$imgSlug . $img['ext'],
+    'tmp_name' => G::dirImage() . E::$imgSlug . '/' . E::$imgSlug . E::$img['ext'],
     'name' => E::$imgSlug,
 ]];
 $uploaded = G::imageUpload($files, true, $_POST['resize']);

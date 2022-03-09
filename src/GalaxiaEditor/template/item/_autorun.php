@@ -11,17 +11,14 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
 
-$uniqueId        = uniqid(true);
-$item            = &E::$section['gcItem'];
-$langSelectClass = [];
+E::$uniqueId     = uniqid(true);
+E::$item         = &E::$section['gcItem'];
+
 foreach (G::locales() as $lang => $locale) {
-    $langSelectClass[$lang] = '';
+    E::$langSelectClass[$lang] = '';
 }
-E::$includeTrix      = true;
-$querySelectWhere = [$item['gcTable'] => [$item['gcTable'] . 'Id' => '=']];
-$fieldsNew        = [];
-$fieldsDel        = [];
-$fieldsUpd        = [];
+E::$includeTrix   = true;
+$querySelectWhere = [E::$item['gcTable'] => [E::$item['gcTable'] . 'Id' => '=']];
 
 
 
@@ -35,7 +32,7 @@ if (E::$itemId == 'new') return;
 
 // restrict edit acces to only own user
 
-if ($item['gcUpdateOnlyOwn'] ?? false) {
+if (E::$item['gcUpdateOnlyOwn'] ?? false) {
     if (!G::isDev() && G::$me->id != E::$itemId) {
         Flash::error(Text::t('Redirected. You don\'t have access to that page.'));
         G::redirect('/edit/' . G::$editor->homeSlug);
@@ -47,7 +44,7 @@ if ($item['gcUpdateOnlyOwn'] ?? false) {
 
 // item validation
 
-$query = Sql::selectOne($item['gcSelect']);
+$query = Sql::selectOne(E::$item['gcSelect']);
 $query .= Sql::selectWhere($querySelectWhere);
 $query .= Sql::selectLimit(0, 1);
 
@@ -68,8 +65,8 @@ if (!$itemExists) {
 
 // query item
 
-$query = Sql::select($item['gcSelect']);
-$query .= Sql::selectLeftJoinUsing($item['gcSelectLJoin'] ?? []);
+$query = Sql::select(E::$item['gcSelect']);
+$query .= Sql::selectLeftJoinUsing(E::$item['gcSelectLJoin'] ?? []);
 $query .= Sql::selectWhere($querySelectWhere);
 
 $stmt = G::prepare($query);
@@ -79,7 +76,7 @@ $result = $stmt->get_result();
 $data   = $result->fetch_assoc();
 $stmt->close();
 
-$item['data'] = array_map(function($value) {
+E::$item['data'] = array_map(function($value) {
     return ($value === null) ? null : strval($value);
 }, $data);
 
@@ -89,7 +86,7 @@ $item['data'] = array_map(function($value) {
 // query extras
 
 $extras = [];
-foreach ($item['gcSelectExtra'] as $table => $cols) {
+foreach (E::$item['gcSelectExtra'] as $table => $cols) {
     $query = Sql::select([$table => $cols]);
     $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
     $stmt  = G::prepare($query);
@@ -105,22 +102,21 @@ foreach ($item['gcSelectExtra'] as $table => $cols) {
 
 
 
-foreach ($item['gcInputsWhere'] as $colKey => $col) {
-    if (!isset($item['data'][$colKey])) continue;
+foreach (E::$item['gcInputsWhere'] as $colKey => $col) {
+    if (!isset(E::$item['data'][$colKey])) continue;
     foreach ($col as $colVal => $inputs) {
-        if ($item['data'][$colKey] != $colVal) continue;
+        if (E::$item['data'][$colKey] != $colVal) continue;
         foreach ($inputs as $inputKey => $input) {
-            if (!isset($item['gcInputs'][$inputKey])) continue;
-            $item['gcInputs'][$inputKey] = array_merge($item['gcInputs'][$inputKey], $input);
+            if (!isset(E::$item['gcInputs'][$inputKey])) continue;
+            E::$item['gcInputs'][$inputKey] = array_merge(E::$item['gcInputs'][$inputKey], $input);
         }
     }
 }
 
 
-$firstStatus = '';
-foreach ($item['gcInputs'] as $inputKey => $input) {
+foreach (E::$item['gcInputs'] as $inputKey => $input) {
     if (empty($input)) continue;
-    if ($input['type'] == 'status' && !isset($input['options'][$item['data'][$inputKey]])) continue;
+    if ($input['type'] == 'status' && !isset($input['options'][E::$item['data'][$inputKey]])) continue;
 
     $input = Input::prepare($input, $extras);
 
@@ -133,45 +129,45 @@ foreach ($item['gcInputs'] as $inputKey => $input) {
         'nameFromDb' => $inputKey,
     ];
 
-    if (!$firstStatus && $input['type'] == 'status') $firstStatus = $inputKey;
+    if (!E::$firstStatus && $input['type'] == 'status') E::$firstStatus = $inputKey;
 
-    if (array_key_exists($inputKey, $item['data'])) {
-        $value = $item['data'][$inputKey];
-        if ($input['type'] == 'timestamp') $value = date('Y-m-d H:i:s', $item['data'][$inputKey]);
+    if (array_key_exists($inputKey, E::$item['data'])) {
+        $value = E::$item['data'][$inputKey];
+        if ($input['type'] == 'timestamp') $value = date('Y-m-d H:i:s', E::$item['data'][$inputKey]);
         if (str_starts_with($inputKey, 'password')) $value = '';
         $inputNew['value']       = $value;
         $inputNew['valueFromDb'] = $value;
     }
 
-    $item['inputs'][$inputKey] = array_merge($input, $inputNew);
+    E::$item['inputs'][$inputKey] = array_merge($input, $inputNew);
 }
 
 
 
 
-foreach ($item['gcInfo'] as $inputKey => $input) {
-    $item['gcInfo'][$inputKey]['label'] = E::$section['gcColNames'][$inputKey] ?? $inputKey;
+foreach (E::$item['gcInfo'] as $inputKey => $input) {
+    E::$item['gcInfo'][$inputKey]['label'] = E::$section['gcColNames'][$inputKey] ?? $inputKey;
 
-    $value = $item['data'][$inputKey];
+    $value = E::$item['data'][$inputKey];
     if ($input['type'] == 'timestamp')
-        if (!empty($value)) $value = Text::formatDate($item['data'][$inputKey], 'd MMM y - HH:mm');
-    $item['gcInfo'][$inputKey]['value'] = $value;
+        if (!empty($value)) $value = Text::formatDate(E::$item['data'][$inputKey], 'd MMM y - HH:mm');
+    E::$item['gcInfo'][$inputKey]['value'] = $value;
 }
 
 
 $titleTemp = 'Item';
-if (is_array($item['gcColKey'])) {
-    foreach ($item['gcColKey'] as $i => $val) {
-        if (empty($item['data'][$val] ?? '')) continue;
-        $item['gcColKey'] = $item['gcColKey'][$i];
+if (is_array(E::$item['gcColKey'])) {
+    foreach (E::$item['gcColKey'] as $i => $val) {
+        if (empty(E::$item['data'][$val] ?? '')) continue;
+        E::$item['gcColKey'] = E::$item['gcColKey'][$i];
         break;
     }
-    if (is_array($item['gcColKey'])) $item['gcColKey'] = $item['gcColKey'][array_key_first($item['gcColKey'])];
+    if (is_array(E::$item['gcColKey'])) E::$item['gcColKey'] = E::$item['gcColKey'][array_key_first(E::$item['gcColKey'])];
 }
 
-$titleTemp = $item['data'][$item['gcColKey']];
+$titleTemp = E::$item['data'][E::$item['gcColKey']];
 if (empty($titleTemp)) $titleTemp = E::$itemId;
-if (str_starts_with($item['gcColKey'], 'timestamp')) $titleTemp = Text::formatDate($titleTemp, 'd MMM y - HH:mm');
+if (str_starts_with(E::$item['gcColKey'], 'timestamp')) $titleTemp = Text::formatDate($titleTemp, 'd MMM y - HH:mm');
 E::$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . $titleTemp;
 E::$hdTitle = Text::t('Editing') . ': ' . E::$pgTitle;
 
@@ -180,7 +176,7 @@ E::$hdTitle = Text::t('Editing') . ': ' . E::$pgTitle;
 
 // add redirect module
 
-if ($item['gcRedirect']) {
+if (E::$item['gcRedirect']) {
     $table = E::$section['gcItem']['gcTable'];
 
     E::$section['gcItem']['gcModules'][] = [
@@ -210,10 +206,10 @@ if ($item['gcRedirect']) {
 
 // query modules
 
-$modules = &E::$section['gcItem']['gcModules'];
+E::$modules = &E::$section['gcItem']['gcModules'];
 
-foreach ($modules as $moduleKey => &$module) {
-    switch ($module['gcModuleType']) {
+foreach (E::$modules as E::$moduleKey => &E::$module) {
+    switch (E::$module['gcModuleType']) {
         case 'fields':
             include G::$editor->dirView . 'item/modules/fields.php';
             break;
@@ -222,4 +218,4 @@ foreach ($modules as $moduleKey => &$module) {
             break;
     }
 }
-unset($module);
+

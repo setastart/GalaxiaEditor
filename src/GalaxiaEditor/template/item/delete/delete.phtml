@@ -14,7 +14,7 @@ InputRender::form('', 'item-delete', 'item item-delete paper pad'); ?>
         <div class="item-row">
 <?php   $firstTime = true; ?>
 <?php   $prefixPrev = null; ?>
-<?php   foreach ($item['inputs'] as $input) { ?>
+<?php   foreach (E::$item['inputs'] as $input) { ?>
 <?php       if (!$firstTime && ($prefixPrev == null || !isset($input['prefix']) || $input['prefix'] !== $prefixPrev)) { ?>
         </div>
         <div class="item-row">
@@ -26,7 +26,7 @@ InputRender::form('', 'item-delete', 'item item-delete paper pad'); ?>
         </div>
 
         <div class="item-row">
-<?php   foreach ($modules as $module) { ?>
+<?php   foreach (E::$modules as $module) { ?>
 <?php       foreach ($module['inputs'] as $fieldName => $field) { ?>
 <?php           $prefixPrev = null; ?>
 <?php           foreach ($field as $input) { ?>

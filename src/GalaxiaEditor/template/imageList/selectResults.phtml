@@ -1,13 +1,16 @@
-<?php use Galaxia\Text;
+<?php
+
+use Galaxia\Text;
+use GalaxiaEditor\E;
 use GalaxiaEditor\render\view\ViewPagination;
 
 
-ViewPagination::renderHiddenData($pagination, $rowsFiltered, $rowsTotal) ?>
+ViewPagination::renderHiddenData(E::$pagination) ?>
 
 <?php
 $yearMonthPrev = '';
-foreach ($rows as $imgSlug => $html) {
-    $mtime = $items[$imgSlug]['mtime'];
+foreach (E::$imgRows as $imgSlug => $html) {
+    $mtime     = E::$imgItems[$imgSlug]['mtime'];
     $yearMonth = date('Ym', $mtime);
     if ($yearMonth != $yearMonthPrev) {
         echo '<h2>' . Text::formatDate($mtime, 'MMMM y') . '</h2>' . PHP_EOL;
