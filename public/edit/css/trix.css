@@ -129,7 +129,7 @@ trix-toolbar {
     background: linear-gradient(180deg, rgba(238, 221, 221, 1.0) 50%, rgba(238, 221, 221, 0.0));
 }
 .module-field-group-new trix-toolbar {
-    background: linear-gradient(180deg, rgba(221, 238, 204, 1.0) 50%, rgba(221, 238, 204, 0.0));
+    background: linear-gradient(180deg, rgba(204, 221, 187, 1.0) 50%, rgba(204, 221, 187, 0.0));
 }
 .module-field-group-delete trix-toolbar {
     background: linear-gradient(180deg, rgba(255, 187, 187, 1.0) 50%, rgba(255, 187, 187, 0.0));
