@@ -567,9 +567,10 @@ a.btn-small {
     /*border-bottom-right-radius: 4px;*/
 }
 
-label.btn-checkbox:focus-within,
-label.input-radio:focus-within,
-*:focus, input:focus {
+.show-focus-outlines label.btn-checkbox:focus-within,
+.show-focus-outlines label.input-radio:focus-within,
+.show-focus-outlines *:focus,
+.show-focus-outlines input:focus {
     outline: 2px dashed #f0c;
     z-index: 50;
     outline-offset: 3px;
@@ -579,9 +580,6 @@ label.input-radio:focus-within,
     border: 0;
 }
 
-body:not(.show-focus-outlines) *:focus {
-    outline: none;
-}
 
 
 .module-field-group-delete .btn-group:nth-child(n+2) {
