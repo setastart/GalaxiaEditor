@@ -75,7 +75,7 @@ foreach ($list['gcFilterInts'] as $filterId => $filter) {
     switch ($filter['filterType']) {
         case 'tag':
             $tags[$table] = [];
-            foreach ($filter['options'] as $val => $option) {
+            foreach ($filter['options'] ?? [] as $val => $option) {
                 $tags[$table][$col][$val] = $currentColor++;
             }
             break;
@@ -432,7 +432,7 @@ foreach ($filterInts as $filterId => $filter) {
 
         switch ($filter['filterType']) {
             case 'tag':
-                foreach ($filter['options'] as $val => $option) {
+                foreach ($filter['options'] ?? [] as $val => $option) {
                     if (!isset($tags[$table][$col][$val])) continue;
                     $filterInts[$filterId]['options'][$val]['cssClass'] .= ' brewer-' . Text::h(1 + ($tags[$table][$col][$val] % 9));
                 }
@@ -456,7 +456,7 @@ foreach ($filterInts as $filterId => $filter) {
 
 $intFiltersActive = [];
 foreach ($filterInts as $filterId => $filter) {
-    foreach ($filter['options'] as $int => $value) {
+    foreach ($filter['options'] ?? [] as $int => $value) {
         if (!$filter['options'][$int]['checked']) {
             $intFiltersActive[] = $filterId;
             // break 2;
