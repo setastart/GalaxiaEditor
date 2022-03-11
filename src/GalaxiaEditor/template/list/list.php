@@ -439,7 +439,7 @@ foreach ($filterInts as $filterId => $filter) {
                 break;
         }
     }
-    foreach ($filter['options'] as $int => $value) {
+    foreach ($filter['options'] ?? [] as $int => $value) {
 
         $filterInts[$filterId]['options'][$int]['checked'] = false;
         if (str_contains($filterInts[$filterId]['options'][$int]['cssClass'] ?? '', 'active')) {
