@@ -37,10 +37,10 @@ foreach ($list['gcLinks'] ?? [] as $href => $link) {
             break;
     }
     $links[] = [
-        'label' => $label,
-        'href'  => $href,
-        'css'   => $css,
-        'padCss'   => $padCss,
+        'label'  => $label,
+        'href'   => $href,
+        'css'    => $css,
+        'padCss' => $padCss,
     ];
 }
 
@@ -49,8 +49,8 @@ InputRender::form('', 'item-list', 'paper pad');
 
 // @formatter:off ?>
 
-    <div class="paper-header pad">
-        <h1><span class="rowsFiltered"><?=E::$pagination->itemsFiltered?></span> &#8725; <span class="rowsTotal"><?=E::$pagination->itemsTotal?></span> <?=Text::t(E::$pgTitle);?></h1>
+    <div class="paper-header">
+        <h1 class="pad"><span class="rowsFiltered"><?=E::$pagination->itemsFiltered?></span> &#8725; <span class="rowsTotal"><?=E::$pagination->itemsTotal?></span> <?=Text::t(E::$pgTitle);?></h1>
 
         <div class="list-links">
 <?php   foreach ($links as $link) { ?>
@@ -61,8 +61,13 @@ InputRender::form('', 'item-list', 'paper pad');
 
     <div class="filters filters-list">
 <?php   if (!empty($filterTexts)) { ?>
-<?php       foreach ($filterTexts as $filterId => $filter) { ?>
-        <div class="input-wrap pad">
+<?php       foreach ($filterTexts as $filterId => $filter) {
+                $filterCss = '';
+                foreach ($filter['gcPerms'] ?? [] as $perm) {
+                    $filterCss .= ' hide-perm-' . Text::h($perm);
+                }
+        ?>
+        <div class="input-wrap pad<?=$filterCss?>">
             <div class="input-label"><div><?=Text::t($filter['label'])?></div></div>
             <div class="input-inputs">
 <?php           if (empty($filter['filterEmpty'])) { ?>
@@ -80,8 +85,13 @@ InputRender::form('', 'item-list', 'paper pad');
 <?php   } ?>
 
 <?php   if (!empty($filterInts)) { ?>
-<?php       foreach ($filterInts as $filterId => $filter) { ?>
-        <div class="input-wrap input-filter-int pad">
+<?php       foreach ($filterInts as $filterId => $filter) {
+                $filterCss = '';
+                foreach ($filter['gcPerms'] ?? [] as $perm) {
+                    $filterCss .= ' hide-perm-' . Text::h($perm);
+                }
+?>
+        <div class="input-wrap input-filter-int pad<?=$filterCss?>">
             <div class="input-label"><div><?=Text::t($filter['label'])?></div></div>
             <div class="input-inputs">
 <?php       foreach ($filter['options'] as $key => $options) { ?>

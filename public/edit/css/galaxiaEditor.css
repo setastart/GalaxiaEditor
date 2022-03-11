@@ -271,9 +271,6 @@ a.paper {
     display: flex;
     flex-wrap: wrap;
 }
-.paper-header .list-links > a + a {
-    margin-left: 10px;
-}
 .paper-header-status,
 .paper-header-actions,
 .paper-footer-actions {
@@ -456,10 +453,6 @@ a.paper {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
     align-items: start;
-}
-.filters-list > .input-wrap {
-    padding-top: 4px;
-    padding-bottom: 4px;
 }
 .row-head {
     margin-top: 10px;
