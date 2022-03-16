@@ -101,7 +101,7 @@ class G {
         set_exception_handler(function(Throwable $e) {
             self::errorPage(
                 $e->getCode(),
-                'exc ' . $e->getFile() . ' ' . $e->getLine() .  ' ' . $e->getMessage(),
+                'exc ' . $e->getFile() . ' ' . $e->getLine() . ' ' . $e->getMessage(),
                 $e->getTraceAsString());
         });
 
@@ -424,6 +424,7 @@ class G {
         http_response_code($code);
 
         if (self::isCli()) {
+            ob_get_clean();
             echo "$codeOriginal - $msg" . PHP_EOL;
             echo(' ' . $debugText . PHP_EOL);
             if (self::isDev()) {
@@ -446,6 +447,15 @@ class G {
                 include self::$editor->dirLayout . 'layout-error.phtml';
                 exit();
             }
+        }
+
+        if (self::isDevEnv()) {
+            if (!self::isCli()) echo '<pre>' . PHP_EOL;
+            d($msg, $codeOriginal, $code, $errors[$code]);
+            d($debugText);
+            db();
+            if (!self::isCli()) echo '</pre>' . PHP_EOL;
+            exit();
         }
 
         $errorFile = '';
@@ -517,6 +527,8 @@ class G {
             $fBuild();
 
             foreach ($tests as $url => $code) {
+                // echo $url . PHP_EOL;
+                echo '.';
                 $cmd    = escapeshellcmd("php $script $url");
                 $result = shell_exec($cmd) ?? '';
 
@@ -530,7 +542,7 @@ class G {
 
             $prefix = ($testsPassed == count($tests)) ? '[OK]' : '[FAIL]';
 
-            exit("$prefix $testsPassed/$testsTotal tests passed." . PHP_EOL);
+            exit(PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed." . PHP_EOL);
         }
 
         if ($argc == 2) {

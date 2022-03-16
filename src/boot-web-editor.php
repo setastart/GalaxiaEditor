@@ -39,7 +39,7 @@ G::timerStart('editor');
 G::initEditor(dirname(__DIR__));
 E::$conf = require G::dir() . 'config/editor.php';
 
-G::$editor->version = '5.8.6';
+G::$editor->version = '5.9.0';
 
 G::timerStop('editor');
 
@@ -221,16 +221,16 @@ if (G::isLoggedIn()) {
 
         if (G::isDev()) {
             $r->get('/edit/{pgSlug:dev}', 'dev/dev');
-            $r->get('/edit/dev/{pgSlug:sitemap}', 'dev/sitemap');
-            $r->get('/edit/dev/{pgSlug:urls}', 'dev/urls');
-            $r->get('/edit/dev/{pgSlug:cacheDeleteApp}', 'dev/cache-delete-app');
-            $r->get('/edit/dev/{pgSlug:cacheDeleteAll}', 'dev/cache-delete-all');
-            $r->get('/edit/dev/{pgSlug:info}', 'dev/info');
+            $r->get('/edit/{pgSlug:dev}/sitemap', 'dev/sitemap');
+            $r->get('/edit/{pgSlug:dev}/urls', 'dev/urls');
+            $r->get('/edit/{pgSlug:dev}/cacheDeleteApp', 'dev/cache-delete-app');
+            $r->get('/edit/{pgSlug:dev}/cacheDeleteAll', 'dev/cache-delete-all');
+            $r->get('/edit/{pgSlug:dev}/info', 'dev/info');
         }
-        $r->get('/edit/dev/{pgSlug:cacheDeleteEditor}', 'dev/cache-delete-editor');
-        $r->get('/edit/dev/{pgSlug:imageListDeleteResizes}', 'dev/image-list-delete-resizes');
-        $r->get('/edit/dev/{pgSlug:imageListDeleteWebp}', 'dev/image-list-delete-webp');
-        $r->get('/edit/dev/{pgSlug:imageListReorder}', 'dev/image-list-reorder');
+        $r->get('/edit/{pgSlug:dev}/cacheDeleteEditor', 'dev/cache-delete-editor');
+        $r->get('/edit/{pgSlug:dev}/imageListDeleteResizes', 'dev/image-list-delete-resizes');
+        $r->get('/edit/{pgSlug:dev}/imageListDeleteWebp', 'dev/image-list-delete-webp');
+        $r->get('/edit/{pgSlug:dev}/imageListReorder', 'dev/image-list-reorder');
 
         $r->get('/edit/importer/{pgSlug:jsonld}', 'importer/jsonld');
         $r->get('/edit/importer/{pgSlug:youtube}', 'importer/youtube');

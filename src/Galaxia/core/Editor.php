@@ -476,8 +476,10 @@ class Editor {
         string $conT,
         string $tarT,
         array  $extra,
-        string $tarLabel,
+        string $multiLabel,
+        string $tarLabel = '',
         bool   $multi = true,
+        array  $order = null,
     ): array {
         $souId    = $souT . 'Id';
         $conId    = $conT . 'Id';
@@ -490,11 +492,11 @@ class Editor {
             'gcModuleTitle'         => '',
             'gcModuleShowUnused'    => ['gcPerms' => ['dev']],
             'gcModuleDeleteIfEmpty' => [$tarId],
-            'gcModuleMultiple'      => $multi ? [$conT => ['reorder' => true, 'unique' => [$tarId], 'label' => $tarLabel]] : [],
+            'gcModuleMultiple'      => $multi ? [$conT => ['reorder' => true, 'unique' => [$tarId], 'label' => $multiLabel]] : [],
 
             'gcSelect'        => [$conT => [$conId, $souId, $conField, 'position', $tarId]],
             'gcSelectLJoin'   => [],
-            'gcSelectOrderBy' => [$conT => [$tarId => 'ASC']],
+            'gcSelectOrderBy' => $order ?? [$conT => [$tarId => 'ASC']],
             'gcSelectExtra'   => [$tarT => [$tarId, ...$extra]],
             'gcUpdate'        => [$conT => [$tarId, 'position']],
 
@@ -507,12 +509,36 @@ class Editor {
             ],
 
             'gcInputsWhereCol' => [
-                $conT => [$tarId => ['type' => 'select']],
+                $conT => [
+                    $tarId => [
+                        'type'     => 'select',
+                        'label'    => 'Page',
+                        'nullable' => true,
+                    ],
+                ],
             ],
 
             'gcInputsWhereParent' => [],
         ];
     }
 
+
+    static function routeSitemap(
+        string $priority,
+        array  $select = [],
+        array  $join = [],
+        array  $where = [],
+        array  $groupBy = [],
+        array  $loc = [],
+    ): array {
+        return [
+            'priority'        => $priority,
+            'gcSelect'        => $select,
+            'gcSelectLJoin'   => $join,
+            'gcSelectWhere'   => $where,
+            'gcSelectGroupBy' => $groupBy,
+            'loc'             => $loc,
+        ];
+    }
 
 }

@@ -43,7 +43,7 @@ class AppRoute {
                         ArrayShape::languify($sm, $activeLangs);
                         if (!isset($sm['priority'])) continue;
 
-                        if (isset($sm['gcSelect'])) {
+                        if ($sm['gcSelect'] ?? []) {
                             $statusFound = false;
                             foreach ($sm['gcSelect'][key($sm['gcSelect'])] as $fieldName) {
                                 if (is_string($fieldName) && str_ends_with($fieldName, 'Status')) $statusFound = $fieldName;
@@ -51,12 +51,13 @@ class AppRoute {
                             $query = Sql::select($sm['gcSelect'], $activeLangs);
                             $query .= Sql::selectLeftJoinUsing($sm['gcSelectLJoin'], $activeLangs);
                             if ($statusFound) $query .= 'WHERE ' . $statusFound . ' > 1' . PHP_EOL;
-                            if (isset($sm['gcSelectWhere'])) {
+                            if ($sm['gcSelectWhere'] ?? []) {
                                 if ($statusFound) $query .= 'AND' . PHP_EOL;
                                 $query .= Sql::selectWhereRaw($sm['gcSelectWhere']);
                             }
                             $query .= Sql::selectGroupBy($sm['gcSelectGroupBy'], $activeLangs);
 
+                            // geD($query);
                             $stmt = G::prepare($query);
                             $stmt->execute();
                             $result = $stmt->get_result();

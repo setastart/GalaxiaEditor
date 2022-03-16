@@ -38,11 +38,21 @@ if (G::isDevEnv()) {
     function s(...$vars):void { d(...$vars); }
     function dd(...$vars):never { d(...$vars); exit; }
     function db():void {
-        ob_start();
-        debug_print_backtrace();
-        $trace = ob_get_clean();
-        $trace = str_replace(G::dir(), '', $trace);
-        print $trace;
+        $e = new Exception();
+        $i = 0;
+        foreach ($e->getTrace() as $frame) {
+            echo str_replace(dirname(__DIR__, 2) . '/', '', sprintf(
+                "#%s %s:%d\n      %s%s%s(%s)\n",
+                str_pad($i, 2),
+                $frame["file"] ?? '',
+                $frame["line"] ?? '',
+                $frame["class"] ?? '',
+                $frame["type"] ?? '',
+                $frame["function"] ?? '',
+                implode(", ", array_map(function ($e) { return str_replace('\/', '/', json_encode($e)); }, $frame["args"] ?? []))
+            ));
+            $i++;
+        }
     }
 } else if (G::isCli() || G::isDevDebug()) {
     function d(...$vars):void {
