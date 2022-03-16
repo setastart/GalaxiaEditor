@@ -116,7 +116,6 @@ trix-toolbar {
     display: block;
     width: 100%;
     min-height: 36px;
-    background: linear-gradient(180deg, rgba(251, 244, 236, 1.0) 50%, rgba(251, 244, 236, 0.0));
     background: linear-gradient(180deg, rgba(255, 248, 231, 1.0) 50%, rgba(255, 248, 231, 0.0)); /* cosmic latte */
     position: -webkit-sticky;
     position: sticky;
@@ -126,7 +125,7 @@ trix-toolbar {
     z-index: 60;
 }
 .module-field-group trix-toolbar {
-    background: linear-gradient(180deg, rgba(238, 221, 221, 1.0) 50%, rgba(238, 221, 221, 0.0));
+    background: linear-gradient(180deg, rgba(238, 228, 228, 1.0) 50%, rgba(238, 228, 228, 0.0));
 }
 .module-field-group-new trix-toolbar {
     background: linear-gradient(180deg, rgba(204, 221, 187, 1.0) 50%, rgba(204, 221, 187, 0.0));
