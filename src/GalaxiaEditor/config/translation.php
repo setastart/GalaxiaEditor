@@ -346,12 +346,12 @@ return [
     'Team' => [
         'en' => 'Team',
         'pt' => 'Equipa',
-        'es' => 'Equipa',
+        'es' => 'Equipo',
     ],
     'Teams' => [
         'en' => 'Teams',
         'pt' => 'Equipas',
-        'es' => 'Equipas',
+        'es' => 'Equipos',
     ],
     'Page Field' => [
         'en' => 'Page Field',
