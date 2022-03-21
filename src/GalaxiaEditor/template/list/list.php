@@ -25,7 +25,7 @@ $firstTable  = key($list['gcSelect']);
 $firstColumn = $list['gcSelect'][$firstTable][0];
 
 if (E::$itemId ?? '') {
-    E::$listOrder                 = 'order-';
+    E::$listOrder          = 'order-';
     $list['gcFilterInts']  = [];
     $list['gcFilterTexts'] = [];
     $_POST['itemsPerPage'] = 10000;
@@ -267,9 +267,21 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
         foreach (E::$listColumns as $column) {
             if (!$column) continue;
             $ht .= '    <div class="col ' . $column['cssClass'] . '">' . PHP_EOL;
+            $i  = 0;
+
+            $thumbCount = 0;
+            foreach ($column['tablesAndCols'] as $dbTable => $dbColumns) {
+                foreach ($dbColumns as $columnData) {
+                    if ($columnData['type'] != 'thumb') continue;
+                    foreach ($item[$dbTable] as $data) {
+                        if ($data[$columnData['col']]) $thumbCount++;
+                    }
+                }
+            }
+
             foreach ($column['tablesAndCols'] as $dbTable => $dbColumns) {
                 $countFound = false;
-                $i          = 0;
+
                 foreach ($item[$dbTable] as $itemId2 => $data) {
                     if ($countFound) continue;
                     $tagFound = false;
@@ -286,8 +298,9 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
 
                         $isHomeSlug = (E::$pgSlug == G::$editor->homeSlug && $value == '' && str_starts_with($dbColumn, 'pageSlug_'));
 
+                        $langLabel = '';
                         if (count(G::langs()) > 1 && substr($dbColumn, -3, 1) == '_' && in_array(substr($dbColumn, -2), G::langs())) {
-                            $r .= '<span class="input-label-lang">' . substr($dbColumn, -2) . '</span> ';
+                            $langLabel = '<span class="input-label-lang">' . substr($dbColumn, -2) . '</span> ';
                         }
 
 
@@ -308,8 +321,9 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
                         switch ($columnData['type']) {
                             case 'thumb':
                                 if ($i > $thumbsToShow) continue 2;
+                                if (!$value) continue 2;
                                 if ($i == $thumbsToShow) {
-                                    $r .= count($item[$dbTable]) . PHP_EOL;
+                                    $r .= $thumbCount . PHP_EOL;
                                 } else {
                                     $img = G::imageGet($value, ['w' => 256, 'h' => 256, 'version' => 'mtime', 'loading' => false], false);
                                     if ($img) {
@@ -332,6 +346,16 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
                                 if (!isset($tags[$dbTable][$dbColumn][$value])) $tags[$dbTable][$dbColumn][$value] = $currentColor++;
                                 $colRowItemClass .= ' brewer-' . Text::h(1 + ($tags[$dbTable][$dbColumn][$value] % 9));
                                 $r               .= Text::t($value);
+                                $langLabel       = '';
+                                break;
+
+                            case 'color':
+                                if (!$value) break;
+                                $tagFound = true;
+                                if (!isset($tags[$dbTable][$dbColumn][$value])) $tags[$dbTable][$dbColumn][$value] = $currentColor++;
+                                $colRowItemClass .= ' brewer-dark-' . Text::h(1 + ($tags[$dbTable][$dbColumn][$value] % 9));
+                                $r               .= Text::t($value);
+                                $langLabel       = '';
                                 break;
 
                             case 'slug':
@@ -340,7 +364,7 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
 
                             case 'timestamp':
                             case 'datetime':
-                                $r .= Text::h(Text::formatDate($value, 'd MMM y H:m'));
+                                $r .= Text::h(Text::formatDate($value, 'd MMM y H:mm'));
                                 break;
 
                             case 'date':
@@ -374,7 +398,7 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
                             $r               .= $value . Text::t('Empty');
                         }
 
-                        $ht .= '        <div class="' . $colRowItemClass . '">' . $r . '</div>' . PHP_EOL;
+                        $ht .= '        <div class="' . $colRowItemClass . '">' . $langLabel . $r . '</div>' . PHP_EOL;
                         $i++;
                     }
                 }

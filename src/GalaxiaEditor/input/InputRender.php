@@ -130,12 +130,12 @@ $ht .= '</div>' . PHP_EOL;
         $maxlen = $input['options']['maxlength'] ?? 0;
         $minlen = $minlen ?: '';
         $maxlen = $maxlen ?: '';
-        if ($minlen) $minlen = '<span class="input-min">' . Text::h($minlen) . '</span> < ';
-        if ($maxlen) $maxlen = ' < <span class="input-max">' . Text::h($maxlen) . '</span> ';
+        if ($minlen) $minlen = '<span class="input-min">' . Text::h($minlen) . '</span><span class="tiny">﹤</span>';
+        if ($maxlen) $maxlen = '<span class="tiny">﹤</span><span class="input-max">' . Text::h($maxlen) . '</span> ';
         if ($input['type'] == 'trix') {
-            $len = '<span class="input-len" title="' . Text::t('Number of letters ❖ Number of words') . '">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'] ?? '')) . '</span> ';
+            $len = '<span class="input-len" title="' . Text::t('Number of letters ❖ Number of words') . '">' . ($input['type'] == 'trix' ? '' : mb_strlen($input['value'] ?? '')) . '</span>';
         } else if ($minlen || $maxlen) {
-            $len = '<span class="input-len">' . mb_strlen($input['value'] ?? '') . '</span> ';
+            $len = '<span class="input-len">' . mb_strlen($input['value'] ?? '') . '</span>';
         }
 
         $titleTitle = (G::isDev()) ? (Text::h($input['prefix']) ?? Text::h($input['name'])) : '';
