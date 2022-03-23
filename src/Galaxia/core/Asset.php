@@ -135,9 +135,13 @@ class Asset {
                     $srces[] = "local('" . Text::h($local) . "')";
                 }
                 foreach ($descriptors['ext'] ?? ['woff2'] as $ext) {
-                    $srces[] = "url('" . Text::h($file) . "." . Text::h($ext) . "') format('" . Text::h($ext) . "')";
+                    if ($descriptors['variable'] ?? '') {
+                        $srces[] = "url('" . Text::h($file) . "." . Text::h($ext) . "') format('" . Text::h($ext) . " supports variations')";
+                    } else {
+                        $srces[] = "url('" . Text::h($file) . "." . Text::h($ext) . "') format('" . Text::h($ext) . "')";
+                    }
                 }
-                unset($descriptors['local'], $descriptors['ext']);
+                unset($descriptors['local'], $descriptors['ext'], $descriptors['variable']);
 
                 $r .= '@font-face {' . PHP_EOL;
                 $r .= "    font-family: '" . Text::h($family) . "';" . PHP_EOL;

@@ -9,6 +9,33 @@ use DateTime;
 
 class SchemaOrg {
 
+    static function itemList(
+        array  $items,
+        string $type = 'ItemList'
+    ): array {
+        $list = [];
+        $i    = 1;
+        foreach ($items as $item) {
+            if (!is_array($item)) continue;
+
+            $list[] = [
+                '@type'    => 'ListItem',
+                'position' => $i,
+                'item'     => $item,
+            ];
+            $i++;
+        }
+
+        if (!$list) return [];
+
+        return [
+            '@context'        => 'https://schema.org',
+            '@type'           => $type,
+            'itemListElement' => $list,
+        ];
+    }
+
+
     static function breadcrumbs(array $pages): array {
         $list = [];
         $i    = 1;
@@ -60,10 +87,10 @@ class SchemaOrg {
     static function product(
         string $name,
         string $desc,
-        array $img,
+        array  $img,
         string $sku,
         string $url,
-        int $price,
+        int    $price,
         string $availability,
         string $brand,
         string $review,
@@ -91,11 +118,88 @@ class SchemaOrg {
     }
 
 
+    static function organization(
+        string $name,
+        string $url,
+        string $logo,
+        string $type = 'Organization'
+    ): array {
+        return [
+            '@context' => 'https://schema.org',
+            '@type'    => $type,
+            'name'     => $name,
+            'url'      => $url,
+            'logo'     => $logo,
+        ];
+    }
+
+
+    static function review(
+        string $rating,
+        string $author,
+        string $body,
+    ): array {
+        return [
+            '@type'        => 'Review',
+            'reviewRating' => [
+                '@type'       => 'Rating',
+                'ratingValue' => $rating,
+            ],
+            'author'       => [
+                '@type' => 'Person',
+                'name'  => $author,
+            ],
+            'reviewBody'   => $body,
+        ];
+    }
+
+
+    static function aggregateRating(
+        string $value,
+        string $count,
+        int    $best = 5,
+        int    $worst = 1,
+    ): array {
+        return [
+            '@type'       => 'AggregateRating',
+            'ratingValue' => $value,
+            'bestRating'  => $best,
+            'worstRating' => $worst,
+            'ratingCount' => $count,
+        ];
+    }
+
+
+    static function course(
+        string $name,
+        string $desc,
+        string $url,
+        array  $organization,
+        array  $review = [],
+        array  $aggregateRating = [],
+    ): array {
+        $r = [
+            '@context'    => 'https://schema.org',
+            '@type'       => 'Course',
+            'name'        => $name,
+            'url'         => $url,
+            'description' => $desc,
+            'provider'    => $organization,
+        ];
+        if (!$review) return $r;
+
+        $r['review']          = $review;
+        $r['aggregateRating'] = $aggregateRating;
+
+        return $r;
+    }
+
+
     static function article(
-        string $headline,
+        string   $headline,
         DateTime $dtCreate,
         DateTime $dtModify,
-        array $images
+        array    $images
     ): array {
         return [
             '@context'      => 'https://schema.org',
