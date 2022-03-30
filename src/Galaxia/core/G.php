@@ -714,7 +714,7 @@ class G {
 
     public static function versionQuery(): string {
         if (G::$req->cacheBypass || G::isDevEnv()) {
-            return '?ver=' . time();
+            return '?ver=' . $_SERVER['REQUEST_TIME'];
         } else if (file_exists(G::dir() . '.git/refs/heads/main')) {
             $gitHash = file_get_contents(G::dir() . '.git/refs/heads/main');
             return '?ver=' . substr($gitHash, 8, 5);

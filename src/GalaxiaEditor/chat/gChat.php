@@ -58,7 +58,7 @@ Chat::$redis->cmd('HSET', G::$app->mysqlDb . ':usersLastSeen', G::$me->id, subst
 
 // routing
 
-switch (G::$req->host) {
+switch (G::$req->path) {
     case '/edit/chat/listen':
         require __DIR__ . '/gChatListener.php';
         break;

@@ -20,6 +20,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 
     const geVars = ['myId', 'clientId', 'csrf'];
     for (let varName in geVars) {
+        if (varName === 'contains') continue;
         if (gchat[geVars[varName]] === undefined) {
             console.error('variable ' + geVars[varName] + ' missing');
             return;
@@ -65,6 +66,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
         var elsRequired = ['title', 'users', 'messagesWrapper', 'messages', 'publishStatus', 'send'];
         var elsMissing = false;
         for (el in elsRequired) {
+            if (el === 'contains') continue;
             if (!gchat.rooms[room].els[elsRequired[el]]) {
                 console.error('missing element ' + elsRequired[el] + ' from room: ' + room);
                 elsMissing = true;
@@ -120,10 +122,12 @@ function gjcListen() {
             return;
         }
 
-        var localDateFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        var localDateFormatter = new Intl.DateTimeFormat(gchat.lang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
         for (let room in json.rooms) {
+            if (room === 'contains') continue;
             for (msgId in json.rooms[room].messages) {
+                if (msgId === 'contains') continue;
                 var entry = '';
                 var msg = json.rooms[room].messages[msgId];
                 var msgDate = new Date(parseInt(msg.timestamp));
@@ -142,8 +146,10 @@ function gjcListen() {
             }
 
             var roomUsers = ''
-            for (user in json.rooms[room].users)
+            for (user in json.rooms[room].users) {
+                if (user === 'contains') continue;
                 roomUsers += '<span class="brewer-dark-' + ((user % 10) + 1) + '">' + json.users[user].name + ((json.rooms[room].users[user] > 1) ? ' (' + json.rooms[room].users[user] + ')' : '') + '</span>';
+            }
             gchat.rooms[room].els.users.innerHTML = roomUsers;
 
             if (gchat.listenReq.rooms[room].lastId) {
@@ -174,7 +180,7 @@ function gjcListen() {
             }
             gchat.listenReq.rooms[room].users = json.rooms[room].users;
 
-            gjcScrollToBottom(room);
+            // gjcScrollToBottom(room);
             if (json.rooms[room].lastId) gchat.listenReq.rooms[room].lastId = json.rooms[room].lastId;
         }
 
@@ -336,7 +342,7 @@ function gjcLeaveRooms() {
 
 
 function gjcScrollToBottom(room) {
-    // console.log('scrolol ' + room);
+    console.log('scrolol ' + room);
     if (!gchat.enabled) return;
     if (gchat.rooms[room] === undefined) return;
     gchat.rooms[room].els.messagesWrapper.scrollTop = gchat.rooms[room].els.messagesWrapper.scrollHeight;

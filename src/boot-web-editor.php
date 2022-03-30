@@ -39,7 +39,7 @@ G::timerStart('editor');
 G::initEditor(dirname(__DIR__));
 E::$conf = require G::dir() . 'config/editor.php';
 
-G::$editor->version = '5.12.0';
+G::$editor->version = '5.13.0';
 
 G::timerStop('editor');
 
@@ -82,7 +82,7 @@ if (G::isLoggedIn()) {
 
 
     // galaxia chat
-    if (isset(E::$conf['chat']) && G::$req->method == 'POST' && in_array(G::$req->host, ['/edit/chat/listen', '/edit/chat/publish']))
+    if (isset(E::$conf['chat']) && G::$req->method == 'POST' && in_array(G::$req->path, ['/edit/chat/listen', '/edit/chat/publish']))
         require_once __DIR__ . '/GalaxiaEditor/chat/gChat.php';
 
 

@@ -13,6 +13,7 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     height: 100%;
+    scrollbar-color: #98b transparent;
 }
 body {
     background-color: #cfe9ef;

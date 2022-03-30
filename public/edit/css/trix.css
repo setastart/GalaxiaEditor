@@ -122,7 +122,7 @@ trix-toolbar {
     top: -1px;
     padding-top: 5px;
     margin-top: -5px;
-    z-index: 60;
+    z-index: 20;
 }
 .module-field-group trix-toolbar {
     background: linear-gradient(180deg, rgba(238, 228, 228, 1.0) 50%, rgba(238, 228, 228, 0.0));
