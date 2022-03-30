@@ -270,9 +270,12 @@ class G {
     static function timerPrint(
         bool $comments = false,
         bool $memory = false,
-        bool $includes = false
+        bool $includes = false,
+        bool $force = false,
     ): void {
-        if (!self::isCli() && !self::isDevEnv() && !self::isDev()) return;
+        if (!$force) {
+            if (!self::isCli() && !self::isDevEnv() && !self::isDev()) return;
+        }
 
         $timeEnd = microtime(true);
 
