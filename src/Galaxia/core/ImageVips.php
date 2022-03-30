@@ -78,7 +78,7 @@ class ImageVips {
      */
     function save(string $outWithoutExt, bool $overwrite = false, int $toFit = 0): void {
         if ($toFit > 0 && ($this->w > $toFit || $this->h > $toFit)) {
-            if ($img = AppImage::fit(array_merge(AppImage::PROTO_IMAGE, ['wOriginal' => $this->w, 'hOriginal' => $this->h, 'w' => $toFit, 'h' => $toFit]))) {
+            if ($img = AppImage::fit(array_merge(AppImage::proto, ['wOriginal' => $this->w, 'hOriginal' => $this->h, 'w' => $toFit, 'h' => $toFit]))) {
                 $this->w = $img['w'];
                 $this->h = $img['h'];
 
@@ -94,7 +94,7 @@ class ImageVips {
         try {
             self::write($this->vips, $this->ext, $outWithoutExt . $this->ext, $overwrite);
         } catch (Exception $e) {
-            throw $e;
+            Flash::devlog($e->getMessage());
         }
 
     }
@@ -143,7 +143,7 @@ class ImageVips {
         try {
             self::write($vips, $outExt, $out, $overwite);
         } catch (Exception $e) {
-            throw $e;
+            Flash::devlog($e->getMessage());
         }
 
         if ($ext == self::EXT_PNG) {
@@ -155,7 +155,7 @@ class ImageVips {
                     Flash::devlog('Could not pngquant image.');
                 }
             } catch (Exception $e) {
-                throw $e;
+                Flash::devlog($e->getMessage());
             }
         }
     }
@@ -222,12 +222,22 @@ class ImageVips {
             throw new Exception('File does not exist: ' . $path_to_png_file);
         }
 
+        $min = self::$qualityPngMin;
+        $max = self::$qualityPngMax;
+
         // '-' makes it use stdout, required to save to $compressed variable
         // '<' makes it read from the given file path
-        // escapeshellarg() makes this safe to use with any path
-        $compressed = shell_exec('pngquant --quality=' . self::$qualityPngMin . '-' . self::$qualityPngMax . ' - < ' . escapeshellarg($path_to_png_file)) ?? '';
+        $cmd = "pngquant --quality=$min-$max - < " . escapeshellarg($path_to_png_file);
+
+        $compressed = shell_exec($cmd) ?? '';
+
 
         if (!$compressed) {
+            $ver = shell_exec('pngquant --version') ?? '';
+            geD(
+                'pngquant --version: ' . $ver,
+                'command: ' . $cmd
+            );
             throw new Exception('Conversion to compressed PNG failed. Is pngquant 1.8+ installed on the server?');
         }
 
