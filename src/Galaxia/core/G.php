@@ -540,7 +540,7 @@ class G {
                     continue;
                 }
 
-                echo 'Error: ' . $url . " -- expected: $code -- returned: $result";
+                echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $result";
             }
 
             $prefix = ($testsPassed == count($tests)) ? '[OK]' : '[FAIL]';

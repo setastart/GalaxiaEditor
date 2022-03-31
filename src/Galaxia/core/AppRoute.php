@@ -410,19 +410,29 @@ class AppRoute {
 
 
 
-    static function page(callable $f, string $cacheFile, bool $cacheDisabled): void {
+    static function page(
+        callable $f,
+        string   $cacheFile,
+        bool     $cacheDisabled,
+        callable $notFoundFun = null,
+    ): void {
         G::timerStart(__CLASS__ . '::' . __FUNCTION__);
 
         $dispatcher = cachedDispatcher($f, ['cacheFile' => $cacheFile, 'cacheDisabled' => $cacheDisabled]);
         $routeInfo  = $dispatcher->dispatch(G::$req->method, G::$req->path);
 
+        $renderErrorPage = false;
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                G::errorPage(404, 'Route not found.');
+                if ($notFoundFun) {
+                    $notFoundFun();
+                } else {
+                    $renderErrorPage = true;
+                }
                 break;
 
             case Dispatcher::METHOD_NOT_ALLOWED:
-                G::errorPage(403, 'Method not allowed.');
+                $renderErrorPage = true;
                 break;
 
             case Dispatcher::FOUND:
@@ -435,6 +445,8 @@ class AppRoute {
         }
 
         G::timerStop(__CLASS__ . '::' . __FUNCTION__);
+
+        if ($renderErrorPage) G::errorPage(404, 'Route not found.');
     }
 
 }

@@ -180,7 +180,7 @@ function gjcListen() {
             }
             gchat.listenReq.rooms[room].users = json.rooms[room].users;
 
-            // gjcScrollToBottom(room);
+            gjcScrollToBottom(room);
             if (json.rooms[room].lastId) gchat.listenReq.rooms[room].lastId = json.rooms[room].lastId;
         }
 
@@ -342,7 +342,7 @@ function gjcLeaveRooms() {
 
 
 function gjcScrollToBottom(room) {
-    console.log('scrolol ' + room);
+    // console.log('scrolol ' + room);
     if (!gchat.enabled) return;
     if (gchat.rooms[room] === undefined) return;
     gchat.rooms[room].els.messagesWrapper.scrollTop = gchat.rooms[room].els.messagesWrapper.scrollHeight;
