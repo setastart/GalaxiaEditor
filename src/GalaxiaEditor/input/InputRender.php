@@ -175,10 +175,10 @@ $ht .= InputRender::getRawInput($input) . PHP_EOL;
                 break;
 
             case 'text':
-            case 'url':
 $ht .= InputRender::getTextInput($input) . PHP_EOL;
                 break;
 
+            case 'url':
             case 'email':
             case 'number':
 $ht .= InputRender::getBasicInput($input) . PHP_EOL;

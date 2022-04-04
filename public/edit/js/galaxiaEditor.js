@@ -95,8 +95,7 @@ function gjLoad() {
     //     form.fdOld = new FormData(form);
     // }
     // document.addEventListener('submit', function(ev) {
-    //
-    //     for (input of ev.target) {
+    //     for (let input of ev.target) {
     //         console.log(input);
     //         if (input.value === input.defaultValue) input.disabled = true;
     //         if (input.options && input.options[input.selectedIndex].defaultSelected) input.disabled = true;
@@ -295,7 +294,6 @@ function handleEventClick(ev) {
 
 
     if (ev.target.matches('.ev-module-add')) {
-        let pos     = ev.target.closest('.module-field-group')?.querySelector('.module-position') ?? 0;
         let fieldId = ev.target.closest('.module-field-group')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
 
         gjField.cloneNew(fieldId, 0);
@@ -379,7 +377,7 @@ function handleEventKeydown(ev) {
 }
 
 
-function handleEventBeforeunload(ev) {
+function handleEventBeforeunload() {
     gjImage.close();
 }
 
