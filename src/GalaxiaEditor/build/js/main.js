@@ -21,6 +21,17 @@ function gjLoad() {
     window.addEventListener('error', handleEventError, true);
     window.addEventListener('beforeunload', handleEventBeforeunload, true);
 
+    // for (let form of document.forms) {
+    //     form.fdOld = new FormData(form);
+    // }
+    // document.addEventListener('submit', function(ev) {
+    //
+    //     for (input of ev.target) {
+    //         console.log(input);
+    //         if (input.value === input.defaultValue) input.disabled = true;
+    //         if (input.options && input.options[input.selectedIndex].defaultSelected) input.disabled = true;
+    //     }
+    // });
 
     gjImage.init();
     gjTextareas = document.getElementsByTagName('textarea');

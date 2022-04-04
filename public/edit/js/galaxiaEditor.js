@@ -91,6 +91,17 @@ function gjLoad() {
     window.addEventListener('error', handleEventError, true);
     window.addEventListener('beforeunload', handleEventBeforeunload, true);
 
+    // for (let form of document.forms) {
+    //     form.fdOld = new FormData(form);
+    // }
+    // document.addEventListener('submit', function(ev) {
+    //
+    //     for (input of ev.target) {
+    //         console.log(input);
+    //         if (input.value === input.defaultValue) input.disabled = true;
+    //         if (input.options && input.options[input.selectedIndex].defaultSelected) input.disabled = true;
+    //     }
+    // });
 
     gjImage.init();
     gjTextareas = document.getElementsByTagName('textarea');
@@ -928,7 +939,7 @@ let gjField = {
         let selects   = group.getElementsByTagName('select');
         let textareas = group.getElementsByTagName('textarea');
         let buttons   = group.getElementsByTagName('button');
-        let trixes    = group.getElementsByTagName('trix-editor');
+        let trixes    = group.getElementsByTagName('trix-editor-new');
         let i;
         for (i = inputs.length - 1; i >= 0; i--) {
             inputs[i].name     = inputs[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
@@ -938,6 +949,7 @@ let gjField = {
         }
         for (i = trixes.length - 1; i >= 0; i--) {
             trixes[i].setAttribute('input', trixes[i].attributes.input.value.replace('\]\[new-0\]\[', '][new-' + groupId + ']['));
+            trixes[i].outerHTML = trixes[i].outerHTML.replace(/trix-editor-new/, 'trix-editor');
         }
         for (i = selects.length - 1; i >= 0; i--) {
             selects[i].name     = selects[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');

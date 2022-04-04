@@ -494,6 +494,10 @@ $r = '    <input type="hidden" class="input-trix" name="' . $input['name'] . '" 
 
 $r .= '>';
 
+        if ($input['value'] == '' && str_contains($input['name'], '][new-0][')) {
+            return $r . '    <trix-editor-new lang="' . $input['lang'] . '" input="' . $input['name'] . '"></trix-editor-new>';
+        }
+
         return $r . '    <trix-editor lang="' . $input['lang'] . '" input="' . $input['name'] . '"></trix-editor>';
     }
 

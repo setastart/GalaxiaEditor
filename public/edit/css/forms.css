@@ -585,6 +585,21 @@ a.btn-small {
 .module-field-group-delete .btn-group:nth-child(n+2) {
     border-color: #ccc !important;
 }
+.module-field-group-delete trix-toolbar .trix-button {
+    background: transparent !important;
+}
+.module-field-group-delete trix-toolbar .trix-button-group,
+.module-field-group-delete trix-editor {
+    background: rgba(0, 0, 0, 0.1) !important;
+    pointer-events: none;
+}
+.module-field-group-delete trix-editor * {
+    color: #666 ;
+}
+.module-field-group-delete .trix-dialog {
+    opacity: 0.5;
+}
+
 :disabled,
 button:disabled,
 button.active:disabled {
