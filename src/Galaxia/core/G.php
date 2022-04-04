@@ -17,6 +17,8 @@ namespace Galaxia;
 
 use mysqli;
 use Throwable;
+use function curl_close;
+use function substr;
 
 
 class G {
@@ -519,7 +521,11 @@ class G {
 
 
     static function test(
-        string $script, array $tests, string $host, int $argc, callable $fBuild, callable $fTest
+        array    $tests,
+        string   $host,
+        int      $argc,
+        callable $fBuild,
+        bool     $exitOnError = false,
     ): never {
         if ($argc == 1) {
             $testsPassed = 0;
@@ -529,18 +535,34 @@ class G {
 
             $fBuild();
 
+            $i = 0;
             foreach ($tests as $url => $code) {
-                // echo $url . PHP_EOL;
-                echo '.';
-                $cmd    = escapeshellcmd("php $script $url");
-                $result = shell_exec($cmd) ?? '';
+                echo ($i % 100 == 0) ? $i : '.';
+                $i++;
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                $result = curl_exec($ch);
+                curl_close($ch);
+
+                $info   = curl_getinfo($ch);
+                $result = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH) . $result;
+
 
                 if (str_starts_with($result, $code)) {
                     $testsPassed++;
                     continue;
                 }
 
+                $result = substr($result, 0, 80);
+
                 echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $result";
+
+                if ($exitOnError) {
+                    break;
+                }
             }
 
             $prefix = ($testsPassed == count($tests)) ? '[OK]' : '[FAIL]';
@@ -548,17 +570,9 @@ class G {
             exit(PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed." . PHP_EOL);
         }
 
-        if ($argc == 2) {
-            $page = $fTest();
-            // echo $page;
-            if (empty(trim($page))) self::errorPage(500, 'Empty.');
-            self::errorPage(200, 'OK.');
-        }
-
         echo 'Usage:' . PHP_EOL;
         echo 'run tests: php test.php' . PHP_EOL;
         echo 'test single page: php test.php /example-url' . PHP_EOL;
-
         exit();
     }
 

@@ -21,7 +21,7 @@ if (!Element.prototype.matches) {
 
 
 if (!Element.prototype.closest) {
-    Element.prototype.closest = function (selectors) {
+    Element.prototype.closest = function(selectors) {
         let el = this;
         do {
             if (el.matches(selectors)) return el;
@@ -56,7 +56,3 @@ function getChildren(n, skipMe) {
 function getSiblings(n) {
     return getChildren(n.parentNode.firstChild, n);
 }
-
-
-
-

@@ -15,9 +15,8 @@ function geD(): void {
     }
     foreach (func_get_args() as $arg) {
         ob_start();
-        var_dump($arg);
+        s($arg);
         $dumpTemp = ob_get_clean();
-        $dumpTemp = preg_replace('/=>\n\s+/m', ' => ', $dumpTemp);
         $dumpTemp = highlight_string('<?php ' . $dumpTemp, true);
         $dumpTemp = str_replace('&lt;?php&nbsp;', '', $dumpTemp);
         $dump     .= $dumpTemp . PHP_EOL;
@@ -31,5 +30,3 @@ function geD(): void {
 function geErrorPage($code, $msg = ''): void {
     G::errorPage($code, $msg);
 }
-
-

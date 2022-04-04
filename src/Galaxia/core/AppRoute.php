@@ -439,7 +439,7 @@ class AppRoute {
                 G::$req->pagId      = $routeInfo[1]['pageId'] ?? 0;
                 G::$req->isRoot     = $routeInfo[1]['isRoot'] ?? false;
                 G::$req->route      = $routeInfo[1]['template'] ?? '';
-                G::$req->redirectId = $routeInfo[1]['redirect'] ?? 0;
+                G::$req->redirectId = $routeInfo[1]['redirect'] ?? false;
                 G::$req->vars       = $routeInfo[2];
                 break;
         }

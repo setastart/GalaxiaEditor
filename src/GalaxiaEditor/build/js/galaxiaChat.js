@@ -1,7 +1,7 @@
 
 // initialize gchat
 
-window.addEventListener("DOMContentLoaded", function(event) {
+window.addEventListener("DOMContentLoaded", function() {
     gchat.roomNodes = document.querySelectorAll('.gchat-room');
     if (!gchat.roomNodes.length) {
         console.error('no rooms found');
@@ -15,10 +15,9 @@ window.addEventListener("DOMContentLoaded", function(event) {
     }
 
     const geVars = ['myId', 'clientId', 'csrf'];
-    for (let varName in geVars) {
-        if (varName === 'contains') continue;
-        if (gchat[geVars[varName]] === undefined) {
-            console.error('variable ' + geVars[varName] + ' missing');
+    for (let varName of geVars) {
+        if (gchat[varName] === undefined) {
+            console.error('variable ' + varName + ' missing');
             return;
         }
     }
@@ -59,12 +58,11 @@ window.addEventListener("DOMContentLoaded", function(event) {
             'lastId' : '0'
         };
 
-        var elsRequired = ['title', 'users', 'messagesWrapper', 'messages', 'publishStatus', 'send'];
-        var elsMissing = false;
-        for (el in elsRequired) {
-            if (el === 'contains') continue;
-            if (!gchat.rooms[room].els[elsRequired[el]]) {
-                console.error('missing element ' + elsRequired[el] + ' from room: ' + room);
+        let elsRequired = ['title', 'users', 'messagesWrapper', 'messages', 'publishStatus', 'send'];
+        let elsMissing = false;
+        for (let el of elsRequired) {
+            if (!gchat.rooms[room].els[el]) {
+                console.error('missing element ' + el + ' from room: ' + room);
                 elsMissing = true;
             }
         }
@@ -73,7 +71,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
             gchat.rooms[room].name = gchat.rooms[room].els.title.innerText;
             gchat.rooms[room].els.title.addEventListener('click', function(ev) {
                 ev.target.parentNode.classList.toggle('active');
-                var targetRoom = ev.target.parentNode.dataset.room;
+                let targetRoom = ev.target.parentNode.dataset.room;
                 window.setTimeout(gjcScrollToBottom, 150, targetRoom);
                 gchat.rooms[targetRoom].els.sendTextarea.focus();
             });
@@ -83,7 +81,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     if (roomsFound) gchat.enabled = true;
 });
 
-window.addEventListener("load", function (e) {
+window.addEventListener("load", function () {
     if (sessionStorage.getItem("clientId")) gchat.clientId = sessionStorage.getItem("clientId");
     else sessionStorage.setItem("clientId", gchat.clientId);
     gjcListen();
@@ -109,31 +107,31 @@ function gjcListen() {
             return;
         }
 
-        var json = JSON.parse(gchat.listenXhr.response);
+        let json = JSON.parse(gchat.listenXhr.response);
 
-        if (json.status != 'ok') {
+        if (json.status !== 'ok') {
             console.error(json);
             gchat.listenStatus.innerHTML = 'error ' + json.error;
             gchat.listenStatus.classList.value = 'red';
             return;
         }
 
-        var localDateFormatter = new Intl.DateTimeFormat(gchat.lang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        let localDateFormatter = new Intl.DateTimeFormat(gchat.lang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-        for (let room in json.rooms) {
-            if (room === 'contains') continue;
-            for (msgId in json.rooms[room].messages) {
+        let msgDate;
+        let entry;
+        for (let [room, roomEl] of Object.entries(json.rooms)) {
+            for (let [msgId, msg] of Object.entries(roomEl.messages)) {
                 if (msgId === 'contains') continue;
-                var entry = '';
-                var msg = json.rooms[room].messages[msgId];
-                var msgDate = new Date(parseInt(msg.timestamp));
-                var date = msgDate.getDate() + '-' + msgDate.getDate() + '-' + msgDate.getDate();
-                if (date != gchat.rooms[room].datePrev) {
+                let entry = '';
+                msgDate   = new Date(parseInt(msg.timestamp));
+                let date  = msgDate.getDate() + '-' + msgDate.getDate() + '-' + msgDate.getDate();
+                if (date !== gchat.rooms[room].datePrev) {
                     entry += '<div style="order: ' + msg.timestamp + '" class="gchat-room-date"><span class="date">' + localDateFormatter.format(msgDate) + '</span></div>';
                     gchat.rooms[room].datePrev = date;
                 }
 
-                entry += '<div style="order: ' + msg.timestamp + '" class="gchat-room-msg ' + msg.type + ' s0i s1i' + ((msg.user == gchat.myId) ? ' me' : '') + '" data-filter-text-0="' + gjInput.removeDiacritics(json.users[msg.user].name) + '" data-filter-text-1="' + gjInput.removeDiacritics(msg.content) + '">';
+                entry += '<div style="order: ' + msg.timestamp + '" class="gchat-room-msg ' + msg.type + ' s0i s1i' + ((msg.user === gchat.myId) ? ' me' : '') + '" data-filter-text-0="' + gjInput.removeDiacritics(json.users[msg.user].name) + '" data-filter-text-1="' + gjInput.removeDiacritics(msg.content) + '">';
                 entry += '    <span class="user brewer-dark-' + ((msg.user % 10) + 1) + '">' + json.users[msg.user].name + '</span>';
                 entry += '    <span class="msg">' + msg.content + '</span>';
                 entry += '    <small class="time grey">' + msgDate.toTimeString().slice(0, 5) + '</small>';
@@ -141,43 +139,43 @@ function gjcListen() {
                 gchat.rooms[room].els.messages.insertAdjacentHTML('beforeend', entry);
             }
 
-            var roomUsers = ''
-            for (user in json.rooms[room].users) {
+            let roomUsers = '';
+            for (let user in roomEl.users) {
                 if (user === 'contains') continue;
-                roomUsers += '<span class="brewer-dark-' + ((user % 10) + 1) + '">' + json.users[user].name + ((json.rooms[room].users[user] > 1) ? ' (' + json.rooms[room].users[user] + ')' : '') + '</span>';
+                roomUsers += '<span class="brewer-dark-' + ((user % 10) + 1) + '">' + json.users[user].name + ((roomEl.users[user] > 1) ? ' (' + roomEl.users[user] + ')' : '') + '</span>';
             }
             gchat.rooms[room].els.users.innerHTML = roomUsers;
 
             if (gchat.listenReq.rooms[room].lastId) {
-                var i;
+                let i;
 
-                var enterUsers = difference(Object.keys(json.rooms[room].users), Object.keys(gchat.listenReq.rooms[room].users));
+                let enterUsers = difference(Object.keys(roomEl.users), Object.keys(gchat.listenReq.rooms[room].users));
                 for (i = 0; i < enterUsers.length; i++) {
                     // if (enterUsers[i] == gchat.myId) continue;
                     // console.log('entered room ' + room + ': ', json.users[enterUsers[i]].name);
-                    var msgDate = new Date(parseInt(json.users[enterUsers[i]].lastSeen));
-                    entry  = '<div style="order: ' + json.users[enterUsers[i]].lastSeen + '" class="gchat-room-msg enter">';
+                    msgDate = new Date(parseInt(json.users[enterUsers[i]].lastSeen));
+                    entry   = '<div style="order: ' + json.users[enterUsers[i]].lastSeen + '" class="gchat-room-msg enter">';
                     entry += '    <small class="time grey">' + json.users[enterUsers[i]].name + ' entrou 🙋🏻‍♀️ ' + msgDate.toTimeString().slice(0, 5) + '</small>';
                     entry += '</div>';
                     gchat.rooms[room].els.messages.insertAdjacentHTML('beforeend', entry);
                 }
 
-                var leaveUsers = difference(Object.keys(gchat.listenReq.rooms[room].users), Object.keys(json.rooms[room].users));
+                let leaveUsers = difference(Object.keys(gchat.listenReq.rooms[room].users), Object.keys(roomEl.users));
                 for (i = 0; i < leaveUsers.length; i++) {
                     // if (leaveUsers[i] == gchat.myId) continue;
                     // console.log('left: ', json.users[leaveUsers[i]].name);
-                    var msgDate = new Date(parseInt(json.users[leaveUsers[i]].lastSeen));
-                    entry  = '<div style="order: ' + json.users[leaveUsers[i]].lastSeen + '" class="gchat-room-msg enter">';
+                    msgDate = new Date(parseInt(json.users[leaveUsers[i]].lastSeen));
+                    entry   = '<div style="order: ' + json.users[leaveUsers[i]].lastSeen + '" class="gchat-room-msg enter">';
                     entry += '    <small class="time grey">' + json.users[leaveUsers[i]].name + ' saiu 💤 ' + msgDate.toTimeString().slice(0, 5) + '</small>';
                     entry += '</div>';
                     gchat.rooms[room].els.messages.insertAdjacentHTML('beforeend', entry);
                 }
 
             }
-            gchat.listenReq.rooms[room].users = json.rooms[room].users;
+            gchat.listenReq.rooms[room].users = roomEl.users;
 
             gjcScrollToBottom(room);
-            if (json.rooms[room].lastId) gchat.listenReq.rooms[room].lastId = json.rooms[room].lastId;
+            if (roomEl.lastId) gchat.listenReq.rooms[room].lastId = roomEl.lastId;
         }
 
         gchat.listenStatus.innerHTML = gchat.listenXhr.status;
@@ -188,14 +186,14 @@ function gjcListen() {
         // gchat.listenTimeout = window.setTimeout(gjcListen, 1000);
         gjcListen();
     };
-    gchat.listenXhr.onerror = function(event) {
+    gchat.listenXhr.onerror = function() {
         console.log("An error occurred while transferring the file.");
         gchat.listenStatus.innerHTML = 'error, reconnecting...';
         gchat.listenStatus.classList.value = 'red';
         // window.clearTimeout(gchat.listenTimeout);
         // gchat.listenTimeout = window.setTimeout(gjcListen, 2000);
     };
-    gchat.listenXhr.onabort = function(event) {
+    gchat.listenXhr.onabort = function() {
         console.log("Canceled by the user.");
         gchat.listenStatus.innerHTML = 'canceled';
         gchat.listenStatus.classList.value = 'yellow';
@@ -238,20 +236,20 @@ function msgSend(room, type, msg, eText, eBtn) {
     eText.disabled = true;
     eBtn.disabled = true;
 
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open('POST', '/edit/chat/publish');
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onprogress = function(event) {
         if (!event.lengthComputable) return; // size unknown
-        var percentComplete = event.loaded / event.total * 100;
+        let percentComplete = event.loaded / event.total * 100;
         gchat.rooms[room].els.publishStatus.innerHTML = percentComplete + '%';
         gchat.rooms[room].els.publishStatus.classList.value = 'status-publish blue';
     };
 
     xhr.onload = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            var json = JSON.parse(xhr.response);
+            let json = JSON.parse(xhr.response);
             if (json.status === 'ok') {
                 eText.value = '';
                 eText.focus();
@@ -272,23 +270,23 @@ function msgSend(room, type, msg, eText, eBtn) {
         }
     };
 
-    xhr.onerror = function(event) {
+    xhr.onerror = function() {
         console.log("An error occurred while transferring the file.");
         gchat.rooms[room].els.publishStatus.innerHTML = 'error';
         gchat.rooms[room].els.publishStatus.classList.value = 'status-publish red';
     };
 
-    xhr.onabort = function(event) {
+    xhr.onabort = function() {
         console.log("The transfer has been canceled by the user.");
         gchat.rooms[room].els.publishStatus.innerHTML = 'canceled';
         gchat.rooms[room].els.publishStatus.classList.value = 'status-publish yellow';
     };
 
-    gjcPostRequest = {
+    let gjcPostRequest = {
         'csrf': gchat.listenReq.csrf,
         'clientId': gchat.listenReq.clientId,
         'type': type,
-        'msg':  msg,
+        'msg': msg,
         'room': room
     };
     xhr.send(JSON.stringify(gjcPostRequest));
@@ -307,7 +305,7 @@ function gjcLeaveRooms() {
 
     gchat.listenXhr.abort();
 
-    var leaveRequest = {
+    let leaveRequest = {
         'csrf': gchat.listenReq.csrf,
         'clientId': gchat.listenReq.clientId,
         'type': 'leave',
@@ -315,7 +313,7 @@ function gjcLeaveRooms() {
         'rooms': Object.keys(gchat.rooms),
     };
 
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open('POST', '/edit/chat/publish', false);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(leaveRequest));

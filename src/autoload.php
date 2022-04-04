@@ -22,22 +22,21 @@ require_once __DIR__ . '/Galaxia/fastroute/src/functions.php';
 
 
 
-// todo: improve
-// @formatter:off
-if (G::isDevEnv()) {
-    function d(...$vars):void {
+if (G::isDevEnv() || G::isCli() || G::isDevDebug()) {
+
+    function s(...$vars): void {
         foreach ($vars as $var) {
             ob_start();
             var_dump($var);
             $dump = ob_get_clean();
-            $dump = preg_replace('/=>\n\s+/m', ' => ', (string)$dump);
+            $dump = preg_replace('~=>\n\s+~m', ' => ', (string)$dump);
+            $dump = preg_replace('~ array\(0\) {\n\s+}~m', ' array(0) {}', (string)$dump);
             $dump = str_replace('<?php ', '', (string)$dump);
             echo $dump;
         }
     }
-    function s(...$vars):void { d(...$vars); }
-    function dd(...$vars):never { d(...$vars); exit; }
-    function db():void {
+
+    function db(): void {
         $e = new Exception();
         $i = 0;
         foreach ($e->getTrace() as $frame) {
@@ -49,42 +48,40 @@ if (G::isDevEnv()) {
                 $frame["class"] ?? '',
                 $frame["type"] ?? '',
                 $frame["function"] ?? '',
-                implode(", ", array_map(function ($e) { return str_replace('\/', '/', json_encode($e)); }, $frame["args"] ?? []))
+                implode(", ", array_map(function($e) { return str_replace('\/', '/', json_encode($e)); }, $frame["args"] ?? []))
             ));
             $i++;
         }
     }
-} else if (G::isCli() || G::isDevDebug()) {
-    function d(...$vars):void {
-        foreach ($vars as $var) {
+
+    if (G::isCli()) {
+        function d(...$vars): void { s(...$vars); }
+    } else {
+        function d(...$vars): void {
             ob_start();
-            var_dump($var);
+            s(...$vars);
             $dump = ob_get_clean();
-            $dump = preg_replace('/=>\n\s+/m', ' => ', (string)$dump);
-            $dump = str_replace('<?php ', '', (string)$dump);
+            $dump = highlight_string('<?php ' . $dump, true);
+            $dump = str_replace('&lt;?php&nbsp;', '', $dump);
             echo $dump . PHP_EOL;
         }
     }
-    function s(...$vars):void { d(...$vars); }
-    function dd(...$vars):never { d(...$vars); exit; }
-    function db():void {
-        $backtrace = array_reverse(debug_backtrace());
-        $r = '';
-        foreach ($backtrace as $trace) {
-            foreach (['file', 'class', 'function', 'line', 'type'] as $property) {
-                if ($trace[$property] ?? '') $r .= ' - ' . $trace[$property];
-            }
-            $r .= PHP_EOL;
-        }
-        echo $r . PHP_EOL;
+
+    function dd(...$vars): never {
+        d(...$vars);
+        exit;
     }
+
+    return;
+
 } else {
-    function d():void {}
-    function s():void {}
-    function dd():void {}
-    function db():void {}
+
+    function s(): void { }
+
+    function db(): void { }
+
+    function d(): void { }
+
+    function dd(): void { }
+
 }
-// @formatter:on
-
-
-

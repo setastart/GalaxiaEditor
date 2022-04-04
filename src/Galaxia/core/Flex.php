@@ -9,7 +9,7 @@ class Flex {
     const fixed = [
         0 => [
             '.flex { display: flex; flex-wrap: wrap; }',
-            '.flex-col { display: flex; flex-direction: column; }',
+            '.flex-col { display: flex; -moz-flex-direction: column; flex-direction: column; }',
             '.flex-nowrap { display: flex; flex-wrap: nowrap; }',
 
             '.flex-1 { flex: 1 1 0%; }',
@@ -39,8 +39,8 @@ class Flex {
         ],
 
         640 => [
-            '.mob-flex { display: flex; flex-direction: row; }',
-            '.mob-flex-col { display: flex; flex-direction: column; }',
+            '.mob-flex { display: flex; -moz-flex-direction: row; flex-direction: row; }',
+            '.mob-flex-col { display: flex; -moz-flex-direction: column; flex-direction: column; }',
 
             '.mob-order-first { order: -1; }',
             '.mob-order-last { order: 9999; }',
@@ -53,7 +53,6 @@ class Flex {
             '.flex.' => [
                 'h' => [
                     'justify-content' => ['stretch', 'center', 'start', 'end', 'between', 'around', 'evenly'],
-
                 ],
                 'v' => [
                     'align-items' => ['stretch', 'center', 'start', 'end', 'baseline'],

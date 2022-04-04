@@ -39,11 +39,11 @@ class Request {
     public bool $cacheBypassHtml;
     public bool $cacheWrite;
 
-    public int    $pagId;
-    public bool   $isRoot;
-    public string $route;
-    public int    $redirectId;
-    public array  $vars;
+    public int      $pagId;
+    public bool     $isRoot;
+    public string   $route;
+    public bool|int $redirectId;
+    public array    $vars;
 
 
     function __construct(
@@ -54,17 +54,17 @@ class Request {
         string $scheme = null,
         string $method = null,
 
-        bool $xhr = null,
-        bool $json = null,
+        bool   $xhr = null,
+        bool   $json = null,
 
-        array $get = null,
-        array $post = null,
-        array $cookie = null,
+        array  $get = null,
+        array  $post = null,
+        array  $cookie = null,
 
-        int $minStatus = null,
-        bool $cacheBypass = null,
-        bool $cacheBypassHtml = null,
-        bool $cacheWrite = null
+        int    $minStatus = null,
+        bool   $cacheBypass = null,
+        bool   $cacheBypassHtml = null,
+        bool   $cacheWrite = null
     ) {
         $this->host = $host;
         $this->uri  = $uri ?? $_SERVER['REQUEST_URI'] ?? '/';
