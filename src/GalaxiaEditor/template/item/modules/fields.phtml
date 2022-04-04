@@ -58,6 +58,7 @@ use GalaxiaEditor\input\InputRender;
             </div>
             <div class="item-row">
 <?php               } ?>
+<?php               $input['trix-new'] = true; ?>
 <?php               echo InputRender::renderInput($input); ?>
 <?php               $firstTime = false; ?>
 <?php               $prefixPrev = $input['prefix'] ?? null; ?>
