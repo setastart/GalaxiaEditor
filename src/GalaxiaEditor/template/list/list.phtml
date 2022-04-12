@@ -62,6 +62,7 @@ InputRender::form('', 'item-list', 'paper pad');
     <div class="filters filters-list">
 <?php   if (!empty($filterTexts)) { ?>
 <?php       foreach ($filterTexts as $filterId => $filter) {
+                if (!$filter) continue;
                 $filterCss = '';
                 foreach ($filter['gcPerms'] ?? [] as $perm) {
                     $filterCss .= ' hide-perm-' . Text::h($perm);
@@ -86,6 +87,7 @@ InputRender::form('', 'item-list', 'paper pad');
 
 <?php   if (!empty($filterInts)) { ?>
 <?php       foreach ($filterInts as $filterId => $filter) {
+                if (!$filter) continue;
                 $filterCss = '';
                 foreach ($filter['gcPerms'] ?? [] as $perm) {
                     $filterCss .= ' hide-perm-' . Text::h($perm);

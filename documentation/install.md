@@ -8,6 +8,9 @@ brew install vips
 Prevent updates with ```brew pin vips```
 
 ### Linux
+sudo apt install build-essential
+
+
 First download vips, extract, check dependencies with ./configure
 ```
 wget https://github.com/libvips/libvips/releases/download/v8.10.1/vips-8.10.1.tar.gz

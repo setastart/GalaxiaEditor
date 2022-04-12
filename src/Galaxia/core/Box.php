@@ -43,6 +43,15 @@ class Box {
         'pl' => ['padding-left'],
     ];
 
+    const dimensions = [
+        'w'    => ['width'],
+        'wmin' => ['min-width'],
+        'wmax' => ['max-width'],
+        'h'    => ['height'],
+        'hmin' => ['min-height'],
+        'hmax' => ['max-height'],
+    ];
+
     const s1  = [1, 3];
     const s2  = [2, 6];
     const s3  = [3, 9];
@@ -103,8 +112,8 @@ class Box {
         string $htmlDir,
         string $htmlGlob = '{/,/*/,/*/*/}*.php',
         string $buildName = 'gen-box',
-        array $templates = self::templates,
-        array $sizes = self::sizes
+        array  $templates = self::templates,
+        array  $sizes = self::sizes
     ): string {
         G::timerStart(__CLASS__ . '::' . __FUNCTION__);
 

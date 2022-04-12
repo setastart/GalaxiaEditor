@@ -15,6 +15,8 @@
 namespace Galaxia;
 
 
+use function str_starts_with;
+
 trait Style {
 
     public static int $viewportMaxDefault = 1000;
@@ -87,6 +89,32 @@ trait Style {
         $m = ($y2 - $y1) / ($x2 - $x1);
 
         return round($y1 - ($m * $x1), $round, PHP_ROUND_HALF_UP);
+    }
+
+
+
+
+    static function hex2rgba(string $hex, float $alpha = 1): string {
+        $color = str_starts_with($hex, '#') ? substr($hex, 1) : $hex;
+
+        if (strlen($color) == 6) {
+            $hexArray = [$color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5]];
+        } else if (strlen($color) == 3) {
+            $hexArray = [$color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2]];
+        } else {
+            return $hex;
+        }
+
+        $rgb = implode(', ', array_map('hexdec', $hexArray));
+
+        $alpha = round(max(0, min(1, $alpha)), 3);
+        $alpha = match($alpha) {
+            1.0 => '1.0',
+            0.0 => '0.0',
+            default => round(number_format($alpha, 3, '.', ''), 3)
+        };
+
+        return "rgba({$rgb}, {$alpha})";
     }
 
 }
