@@ -39,7 +39,7 @@ G::timerStart('editor');
 G::initEditor(dirname(__DIR__));
 E::$conf = require G::dir() . 'config/editor.php';
 
-G::$editor->version = '5.18.1';
+G::$editor->version = '5.19.0';
 
 G::timerStop('editor');
 
@@ -226,6 +226,7 @@ if (G::isLoggedIn()) {
             $r->get('/edit/{pgSlug:dev}/cacheDeleteApp', 'dev/cache-delete-app');
             $r->get('/edit/{pgSlug:dev}/cacheDeleteAll', 'dev/cache-delete-all');
             $r->get('/edit/{pgSlug:dev}/info', 'dev/info');
+            $r->get('/edit/{pgSlug:dev}/opcache', 'dev/opcache');
         }
         $r->get('/edit/{pgSlug:dev}/cacheDeleteEditor', 'dev/cache-delete-editor');
         $r->get('/edit/{pgSlug:dev}/imageListDeleteResizes', 'dev/image-list-delete-resizes');

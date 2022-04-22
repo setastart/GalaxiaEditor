@@ -1,0 +1,222 @@
+<?php
+/*
+ Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
+
+  - Licensed under the EUPL, Version 1.2 only (the "Licence");
+  - You may not use this work except in compliance with the Licence.
+
+  - You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
+
+  - Unless required by applicable law or agreed to in writing, software distributed
+    under the Licence is distributed on an "AS IS" basis,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the Licence for the specific language governing permissions and limitations under the Licence.
+ */
+
+use Galaxia\G;
+use Galaxia\Text;
+
+$opStatus = opcache_get_status();
+
+function boolToText(bool $bool) {
+    return $bool ? 'True' : 'False';
+}
+
+$scriptGalaxia = [];
+$scriptEditor  = [];
+$scriptWebsite = [];
+$scriptCache   = [];
+$scriptOther   = [];
+
+
+foreach ($opStatus['scripts'] as $script) {
+    if (str_starts_with($script['full_path'], G::$editor->dir . 'src/Galaxia/')) {
+        $scriptGalaxia[] = $script;
+        continue;
+    }
+    if (str_starts_with($script['full_path'], G::$editor->dir . 'src/GalaxiaEditor/')) {
+        $scriptEditor[] = $script;
+        continue;
+    }
+    if (str_starts_with($script['full_path'], G::$app->dir)) {
+        if (str_ends_with($script['full_path'], '.cache')) {
+            $scriptCache[] = $script;
+        } else {
+            $scriptWebsite[] = $script;
+        }
+        continue;
+    }
+    $scriptOther[] = $script;
+}
+
+
+?>
+
+<div id="dev" class="paper pad opcache">
+
+    <div class="paper-header pad">
+        <h1>PHP OPCache Status</h1>
+    </div>
+
+    <table class="pad">
+        <thead>
+        <tr>
+            <th>Opcache Enabled</th>
+            <th>Cache Full</th>
+            <th>Restart Pending</th>
+            <th>Restart In Progress</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><?=boolToText($opStatus['opcache_enabled'])?></td>
+            <td><?=boolToText($opStatus['cache_full'])?></td>
+            <td><?=boolToText($opStatus['restart_pending'])?></td>
+            <td><?=boolToText($opStatus['restart_in_progress'])?></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="pad">
+        <caption>Memory Usage</caption>
+        <thead>
+        <tr>
+            <th>Total Memory</th>
+            <th>Used Memory</th>
+            <th>Free Memory</th>
+            <th>Wasted Memory</th>
+            <th>Current Wasted Percentage</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><?=Text::bytesIntToAbbr($opStatus['memory_usage']['used_memory'] + $opStatus['memory_usage']['free_memory'] + $opStatus['memory_usage']['wasted_memory'])?></td>
+            <td>
+                <?=Text::bytesIntToAbbr($opStatus['memory_usage']['used_memory'])?><br>
+                <meter value="<?=$opStatus['memory_usage']['used_memory']?>" min="0"
+                       max="<?=$opStatus['memory_usage']['used_memory'] + $opStatus['memory_usage']['free_memory'] + $opStatus['memory_usage']['wasted_memory']?>"></meter>
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr($opStatus['memory_usage']['free_memory'])?><br>
+                <meter value="<?=$opStatus['memory_usage']['free_memory']?>" min="0"
+                       max="<?=$opStatus['memory_usage']['used_memory'] + $opStatus['memory_usage']['free_memory'] + $opStatus['memory_usage']['wasted_memory']?>"></meter>
+
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr($opStatus['memory_usage']['wasted_memory'])?><br>
+                <meter value="<?=$opStatus['memory_usage']['wasted_memory']?>" min="0"
+                       max="<?=$opStatus['memory_usage']['used_memory'] + $opStatus['memory_usage']['free_memory'] + $opStatus['memory_usage']['wasted_memory']?>"></meter>
+            </td>
+            <td>
+                <?=number_format($opStatus['memory_usage']['current_wasted_percentage'], 3)?> %<br>
+                <meter value="<?=$opStatus['memory_usage']['current_wasted_percentage']?>" min="0" max="100"></meter>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="pad">
+        <caption>Interned Strings Usage</caption>
+        <thead>
+        <tr>
+            <th>Buffer Size</th>
+            <th>Used Memory</th>
+            <th>Free Memory</th>
+            <th>Number Of Strings</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <?=Text::bytesIntToAbbr($opStatus['interned_strings_usage']['buffer_size'])?><br>
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr($opStatus['interned_strings_usage']['used_memory'])?><br>
+                <meter value="<?=$opStatus['interned_strings_usage']['used_memory']?>" min="0" max="<?=$opStatus['interned_strings_usage']['buffer_size']?>"></meter>
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr($opStatus['interned_strings_usage']['free_memory'])?><br>
+                <meter value="<?=$opStatus['interned_strings_usage']['free_memory']?>" min="0" max="<?=$opStatus['interned_strings_usage']['buffer_size']?>"></meter>
+            </td>
+            <td><?=$opStatus['interned_strings_usage']['number_of_strings']?></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="pad">
+        <caption>Script Overview</caption>
+        <thead>
+        <tr>
+            <th></th>
+            <th>Galaxia</th>
+            <th>Editor</th>
+            <th>Website Code</th>
+            <th>Website Cache</th>
+            <th>Other</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>Count</th>
+            <td>
+                <?=count($scriptGalaxia)?><br>
+                <meter value="<?=count($scriptGalaxia)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+            </td>
+            <td>
+                <?=count($scriptEditor)?><br>
+                <meter value="<?=count($scriptEditor)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+
+            </td>
+            <td>
+                <?=count($scriptWebsite)?><br>
+                <meter value="<?=count($scriptWebsite)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+            </td>
+            <td>
+                <?=count($scriptCache)?><br>
+                <meter value="<?=count($scriptCache)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+
+            </td>
+            <td>
+                <?=count($scriptOther)?><br>
+                <meter value="<?=count($scriptOther)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+            </td>
+            <td>
+                <?=count($opStatus['scripts'])?>
+            </td>
+        </tr>
+        <tr>
+            <th>Memory</th>
+            <td>
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptGalaxia)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptGalaxia))?>" min="0"
+                       max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptEditor)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptEditor))?>" min="0"
+                       max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
+
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebsite)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebsite))?>" min="0"
+                       max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptCache)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptCache))?>" min="0"
+                       max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
+
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOther)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOther))?>" min="0"
+                       max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
+            </td>
+            <td><?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts'])))?></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>

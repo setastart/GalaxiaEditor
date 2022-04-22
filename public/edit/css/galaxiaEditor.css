@@ -1133,3 +1133,18 @@ a.row:hover, .row a:hover {
 .phpinfo .v i { color: #999; }
 .phpinfo img { float: right; border: 0; }
 .phpinfo hr { width: 100%; background-color: #cab; border: 0; height: 1px; margin: 2em 0; }
+
+
+.opcache table {
+    border-collapse: collapse;
+    margin-bottom: 1.6em;
+}
+.opcache th {
+    border: 1px solid #a78;
+    background: rgba(255, 255, 255, 0.5);
+}
+.opcache td {
+    border: 1px solid #a78;
+    text-align: center;
+    background: #fff;
+}
