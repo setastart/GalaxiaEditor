@@ -480,11 +480,13 @@ class Editor {
         string $tarLabel = '',
         bool   $multi = true,
         array  $order = null,
+        string $field = null,
     ): array {
         $souId    = $souT . 'Id';
         $conId    = $conT . 'Id';
         $conField = $conT . 'Field';
         $tarId    = $tarT . 'Id';
+        $field    ??= $conT;
 
         return [
             'gcTable'               => $conT,
@@ -492,7 +494,7 @@ class Editor {
             'gcModuleTitle'         => '',
             'gcModuleShowUnused'    => ['gcPerms' => ['dev']],
             'gcModuleDeleteIfEmpty' => [$tarId],
-            'gcModuleMultiple'      => $multi ? [$conT => ['reorder' => true, 'unique' => [$tarId], 'label' => $multiLabel]] : [],
+            'gcModuleMultiple'      => $multi ? [$field => ['reorder' => true, 'unique' => [$tarId], 'label' => $multiLabel]] : [],
 
             'gcSelect'        => [$conT => [$conId, $souId, $conField, 'position', $tarId]],
             'gcSelectLJoin'   => [],
@@ -503,16 +505,16 @@ class Editor {
             'gcInputs' => [
                 $tarId => [
                     'type'           => 'select',
+                    'label'          => $tarLabel,
                     'geExtraOptions' => [$tarT => [$tarId => [...$extra]]],
                     'nullable'       => true,
                 ],
             ],
 
             'gcInputsWhereCol' => [
-                $conT => [
+                $field => [
                     $tarId => [
                         'type'     => 'select',
-                        'label'    => 'Page',
                         'nullable' => true,
                     ],
                 ],
