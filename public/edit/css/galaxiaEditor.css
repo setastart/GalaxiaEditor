@@ -1145,6 +1145,9 @@ a.row:hover, .row a:hover {
 }
 .opcache td {
     border: 1px solid #a78;
-    text-align: center;
     background: #fff;
 }
+
+.text-l { text-align: left; }
+.text-r { text-align: right; }
+.text-c { text-align: center; }

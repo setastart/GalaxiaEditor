@@ -13,6 +13,8 @@
   - See the Licence for the specific language governing permissions and limitations under the Licence.
  */
 
+namespace GalaxiaEditor\dev\opcache;
+
 use Galaxia\G;
 use Galaxia\Text;
 
@@ -22,23 +24,43 @@ function boolToText(bool $bool) {
     return $bool ? 'True' : 'False';
 }
 
-$scriptGalaxia = [];
-$scriptEditor  = [];
-$scriptWebsite = [];
-$scriptCache   = [];
-$scriptOther   = [];
+const gala = 'Galaxia';
+const edit = 'Editor';
+const webs = 'Website';
+const cach = 'Cache';
+const othr = 'Other';
 
+$scripts = [
+    gala => [],
+    edit => [],
+    webs => [],
+    cach => [],
+    othr => [],
+];
+
+$scriptGalaxia = &$scripts[gala];
+$scriptEditor  = &$scripts[edit];
+$scriptWebsite = &$scripts[webs];
+$scriptCache   = &$scripts[cach];
+$scriptOther   = &$scripts[othr];
+
+$galaDir = dirname(G::$editor->dir) . '/';
+
+uasort($opStatus['scripts'], fn($a, $b) => $a['full_path'] <=> $b['full_path']);
 
 foreach ($opStatus['scripts'] as $script) {
-    if (str_starts_with($script['full_path'], G::$editor->dir . 'src/Galaxia/')) {
-        $scriptGalaxia[] = $script;
-        continue;
-    }
     if (str_starts_with($script['full_path'], G::$editor->dir . 'src/GalaxiaEditor/')) {
+        $script['full_path'] = substr($script['full_path'], strlen($galaDir));
         $scriptEditor[] = $script;
         continue;
     }
+    if (str_starts_with($script['full_path'], G::$editor->dir)) {
+        $script['full_path'] = substr($script['full_path'], strlen($galaDir));
+        $scriptGalaxia[] = $script;
+        continue;
+    }
     if (str_starts_with($script['full_path'], G::$app->dir)) {
+        $script['full_path'] = substr($script['full_path'], strlen($galaDir));
         if (str_ends_with($script['full_path'], '.cache')) {
             $scriptCache[] = $script;
         } else {
@@ -46,6 +68,7 @@ foreach ($opStatus['scripts'] as $script) {
         }
         continue;
     }
+    $script['full_path'] = substr($script['full_path'], strlen($galaDir));
     $scriptOther[] = $script;
 }
 
@@ -218,5 +241,20 @@ foreach ($opStatus['scripts'] as $script) {
         </tr>
         </tbody>
     </table>
+
+<?php foreach ($scripts as $title => $scrArr) { ?>
+    <table class="pad">
+        <caption><?=$title?></caption>
+        <tbody>
+<?php foreach ($scrArr as $scr) { ?>
+        <tr>
+            <td class="pad"><?=$scr['full_path']?></td>
+            <td class="text-r pad"><?=$scr['hits']?></td>
+            <td class="text-r pad"><?=Text::bytesIntToAbbr($scr['memory_consumption'])?></td>
+        </tr>
+<?php } ?>
+        </tbody>
+    </table>
+<?php } ?>
 
 </div>
