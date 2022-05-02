@@ -142,6 +142,7 @@ class Config {
             'dbCols'    => 'stringArray',
             'colType'   => 'string',
             '?gcParent' => 'stringArray',
+            '?gcOther'  => 'tableWithCols',
         ],
 
         'gcpFilterTexts' => [
@@ -535,7 +536,7 @@ class Config {
 
 
 
-    private static function geConfigParseError():void {
+    private static function geConfigParseError(): void {
         geD(func_get_args());
         geErrorPage(500, 'config error');
     }

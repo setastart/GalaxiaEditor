@@ -165,20 +165,21 @@ $items = Cache::listItems(E::$listOrder, function() use ($list, $firstTable, $fi
             }
             $query .= Sql::selectLeftJoinUsing($joins);
 
+            $orders = [];
             if (E::$listOrder && isset($list['gcLinks']['order']['gcSelectOrderBy'])) {
                 foreach ($list['gcLinks']['order']['gcSelectOrderBy'] ?? [] as $orderTable => $orderCols) {
                     if (isset($joins[$orderTable])) {
-                        $query .= Sql::selectOrderBy([$orderTable => $orderCols]);
+                        $orders[$orderTable] = $orderCols;
                     }
                 }
             } else if (isset($list['gcSelectOrderBy'])) {
                 foreach ($list['gcSelectOrderBy'] ?? [] as $orderTable => $orderCols) {
                     if (isset($joins[$orderTable])) {
-                        $query .= Sql::selectOrderBy([$orderTable => $orderCols]);
+                        $orders[$orderTable] = $orderCols;
                     }
                 }
             }
-
+            $query .= Sql::selectOrderBy($orders);
 
 
             $done       = 0;
@@ -230,6 +231,7 @@ foreach ($list['gcColumns'] as $columnKey => $column) {
                 'col'    => $dbCol,
                 'type'   => $colContent['colType'],
                 'parent' => $colContent['gcParent'] ?? '',
+                'other'  => $colContent['gcOther'] ?? '',
             ];
         }
     }
@@ -305,16 +307,32 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
 
 
                         if ($columnData['parent']) {
+
                             $value = '';
                             foreach ($columnData['parent'] as $parent) {
-                                // geD($parent);
                                 $text = $item[$firstTable][$itemId][$parent] ?? false;
                                 if (!$text) continue;
 
                                 $value .= Text::t($text) . ' / ';
-                                // if ($value) break;
                             }
                             $value = rtrim($value, ' /');
+
+                        } else if ($columnData['other']) {
+
+                            $value = '';
+                            foreach ($columnData['other'] as $otherTable => $others) {
+                                foreach ($others as $otherKey => $otherVal) {
+                                    if (is_array($otherVal)) {
+                                        $otherVal = substr($otherVal[0], 0, -2) . G::lang();
+                                    }
+                                    $text = $item[$otherTable][$data[$otherKey]][$otherVal] ?? false;
+                                    if (!$text) continue;
+
+                                    $value .= Text::t($text) . ' / ';
+                                }
+                            }
+                            $value = rtrim($value, ' /');
+
                         }
 
 
