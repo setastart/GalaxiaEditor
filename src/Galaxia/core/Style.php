@@ -93,7 +93,12 @@ trait Style {
 
 
 
-
+    /**
+     * @param string $hex   fa0, ffaa00, #fa0 or #ffaa00
+     * @param float  $alpha 0.0 - 1.0
+     *
+     * @return string rgba(123, 123, 123, 0.5)
+     */
     static function hex2rgba(string $hex, float $alpha = 1): string {
         $color = str_starts_with($hex, '#') ? substr($hex, 1) : $hex;
 
@@ -108,13 +113,51 @@ trait Style {
         $rgb = implode(', ', array_map('hexdec', $hexArray));
 
         $alpha = round(max(0, min(1, $alpha)), 3);
-        $alpha = match($alpha) {
-            1.0 => '1.0',
-            0.0 => '0.0',
+        $alpha = match ($alpha) {
+            1.0     => '1.0',
+            0.0     => '0.0',
             default => round(number_format($alpha, 3, '.', ''), 3)
         };
 
         return "rgba({$rgb}, {$alpha})";
+    }
+
+
+
+    /**
+     * @param string $fg    fa0, ffaa00, #fa0 or #ffaa00
+     * @param float  $fgMix 0.0-1.0
+     * @param string $bg    fa0, ffaa00, #fa0 or #ffaa00
+     *
+     * @return string #123456
+     */
+    static function hexMix(string $fg, float $fgMix = 1, string $bg = 'ffffff'): string {
+        $color1 = str_starts_with($fg, '#') ? substr($fg, 1) : $fg;
+
+        if (strlen($color1) == 6) {
+            $hexArray1 = [$color1[0] . $color1[1], $color1[2] . $color1[3], $color1[4] . $color1[5]];
+        } else if (strlen($color1) == 3) {
+            $hexArray1 = [$color1[0] . $color1[0], $color1[1] . $color1[1], $color1[2] . $color1[2]];
+        } else {
+            return $fg;
+        }
+        $rgb1 = array_map('hexdec', $hexArray1);
+
+        $color2 = str_starts_with($bg, '#') ? substr($bg, 1) : $bg;
+        if (strlen($color2) == 6) {
+            $hexArray2 = [$color2[0] . $color2[1], $color2[2] . $color2[3], $color2[4] . $color2[5]];
+        } else if (strlen($color2) == 3) {
+            $hexArray2 = [$color2[0] . $color2[0], $color2[1] . $color2[1], $color2[2] . $color2[2]];
+        } else {
+            return $fg;
+        }
+        $rgb2 = array_map('hexdec', $hexArray2);
+
+        $r = str_pad(dechex(round($rgb1[0] + (($rgb2[0] - $rgb1[0]) * (1.0 - $fgMix)))), 2, '0', STR_PAD_LEFT);
+        $g = str_pad(dechex(round($rgb1[1] + (($rgb2[1] - $rgb1[1]) * (1.0 - $fgMix)))), 2, '0', STR_PAD_LEFT);
+        $b = str_pad(dechex(round($rgb1[2] + (($rgb2[2] - $rgb1[2]) * (1.0 - $fgMix)))), 2, '0', STR_PAD_LEFT);
+
+        return "#{$r}{$g}{$b}";
     }
 
 }
