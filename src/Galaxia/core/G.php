@@ -18,6 +18,8 @@ namespace Galaxia;
 use mysqli;
 use Throwable;
 use function curl_close;
+use function debug_backtrace;
+use function str_starts_with;
 use function substr;
 
 
@@ -34,6 +36,7 @@ class G {
     private static int   $timerLevel  = 0;
     private static int   $timerMaxLen = 0;
     private static int   $timerMaxLev = 0;
+    static array         $explains    = [];
 
     public static int    $errorCode = 0;
     public static string $error     = '';
@@ -694,6 +697,9 @@ class G {
     }
 
     static function execute(string $query, $types = '', ...$vars) {
+        if (G::isDev() && preg_match("~^\W*select\W~i", $query)) {
+            G::$explains[] = G::explain($query, $types, ...$vars);
+        }
         $stmt = self::getMysqli()->prepare($query);
         if ($types) {
             $stmt->bind_param($types, ...$vars);
@@ -702,6 +708,24 @@ class G {
         return $stmt;
     }
 
+    static function explain(string $query, $types = '', ...$vars): array {
+        $db = debug_backtrace();
+        $source = $db[0]['file'] . ':' . $db[0]['line'];
+        $r = [$source];
+
+        $stmt = self::getMysqli()->prepare('EXPLAIN ' . $query);
+        if ($types) {
+            $stmt->bind_param($types, ...$vars);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($data = $result->fetch_assoc()) {
+            $r[] = $data;
+        }
+        $stmt->close();
+        return $r;
+    }
 
 
 
