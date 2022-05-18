@@ -66,9 +66,9 @@ class Head {
         string $title,
         string $image,
         string $url,
-        array $description,
+        array  $description,
         string $locale,
-        int $descLength = 300
+        int    $descLength = 300
     ): void {
 // @formatter:off ?>
 
@@ -93,21 +93,19 @@ class Head {
 
 
     static function css(
-        array $builds,
+        array  $builds,
         string $buildName,
-        string $extSource,
         string $extBuild,
         string $version
     ): void {
         echo PHP_EOL;
         Asset::linkBuild(
-            $builds,
-            $buildName,
-            'css',
-            $extSource,
-            $extBuild,
-            $version,
-            'stylesheet'
+            builds: $builds,
+            buildName: $buildName,
+            publicSubdir: 'css',
+            extBuild: $extBuild,
+            version: $version,
+            rel: 'stylesheet'
         );
     }
 
@@ -124,21 +122,20 @@ class Head {
 
 
     static function js(
-        array $builds,
+        array  $builds,
         string $buildName,
-        string $extSource,
         string $extBuild,
         string $version
     ): void {
         echo PHP_EOL;
         Asset::linkBuild(
-            $builds,
-            $buildName,
-            'js',
-            $extSource,
-            $extBuild,
-            $version,
-            'script');
+            builds: $builds,
+            buildName: $buildName,
+            publicSubdir: 'js',
+            extBuild: $extBuild,
+            version: $version,
+            rel: 'script'
+        );
     }
 
 

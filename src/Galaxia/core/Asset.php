@@ -26,7 +26,6 @@ class Asset {
         array  $builds,
         string $publicDir,
         string $publicSubdir,
-        string $extSource,
         string $extBuild
     ): void {
         G::timerStart(__CLASS__ . '::' . __FUNCTION__ . ' ' . $publicSubdir);
@@ -72,7 +71,6 @@ class Asset {
         array  $builds,
         string $buildName,
         string $publicSubdir,
-        string $extSource,
         string $extBuild,
         string $version,
         string $rel = 'stylesheet'
@@ -102,7 +100,6 @@ class Asset {
         array  $builds,
         string $buildName,
         string $publicSubdir,
-        string $extSource,
         string $extBuild,
         string $version,
         string $attributes = 'async defer',
