@@ -19,6 +19,9 @@ namespace Galaxia;
 class Asset {
 
 
+    public static int $viewportMinDefault = 320;
+    public static int $viewportMaxDefault = 1000;
+
     static function build(
         array  $builds,
         string $publicDir,
@@ -41,7 +44,7 @@ class Asset {
 
             // build development files
             foreach ($fileList as $fileName) {
-                $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($extSource));
+                $sourceName = pathinfo(pathinfo($fileName, PATHINFO_FILENAME), PATHINFO_FILENAME);
                 $output     = "${dirDev}${buildName}-${sourceName}${extBuild}";
 
 
@@ -81,7 +84,7 @@ class Asset {
         if (G::isDevEnv() && G::isDev()) {
             $links = [];
             foreach ($builds[$buildName] as $fileName) {
-                $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($extSource));
+                $sourceName = pathinfo(pathinfo($fileName, PATHINFO_FILENAME), PATHINFO_FILENAME);
                 $links[]    = "/dev/{$publicSubdir}/{$buildName}-{$sourceName}{$extBuild}{$version}";
             }
         }
@@ -110,7 +113,7 @@ class Asset {
         if (G::isDevEnv() && G::isDev()) {
             $links = [];
             foreach ($builds[$buildName] as $fileName) {
-                $sourceName = substr(pathinfo($fileName, PATHINFO_BASENAME), 0, -strlen($extSource));
+                $sourceName = pathinfo(pathinfo($fileName, PATHINFO_FILENAME), PATHINFO_FILENAME);
                 $links[]    = Text::h("/dev/{$publicSubdir}/{$buildName}-{$sourceName}{$extBuild}{$version}");
             }
         }

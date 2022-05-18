@@ -50,6 +50,7 @@ class Box {
         'h'    => ['height'],
         'hmin' => ['min-height'],
         'hmax' => ['max-height'],
+        'mh'   => ['margin-left: auto; margin-right: auto; max-width'],
     ];
 
     const s1  = [1, 3];

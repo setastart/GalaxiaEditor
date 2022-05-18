@@ -19,9 +19,6 @@ use function str_starts_with;
 
 trait Style {
 
-    public static int $viewportMaxDefault = 1000;
-    public static int $viewportMinDefault = 320;
-
 
 
     static function fontSize(array $size): string {
@@ -43,13 +40,9 @@ trait Style {
      */
     static function min(array $size): string {
         if ($size[0] > $size[1]) {
-            $min = min($size[0], $size[1]);
-
-            return 'max(' . $min . 'px, ' . self::calc($size) . ')';
+            return 'max(' . min($size[0], $size[1]) . 'px, ' . self::calc(size: $size, excludeFn: true) . ')';
         } else {
-            $max = max($size[0], $size[1]);
-
-            return 'min(' . $max . 'px, ' . self::calc($size) . ')';
+            return 'min(' . max($size[0], $size[1]) . 'px, ' . self::calc(size: $size, excludeFn: true) . ')';
         }
     }
 
@@ -63,11 +56,15 @@ trait Style {
 
 
 
-    static function calc(array $size): string {
-        $m = self::slope($size[2] ?? self::$viewportMinDefault, $size[0], $size[3] ?? self::$viewportMaxDefault, $size[1]);
-        $b = self::yIntersect($size[0], $size[1], $size[2] ?? self::$viewportMinDefault, $size[3] ?? self::$viewportMaxDefault);
+    static function calc(array $size, bool $excludeFn = false): string {
+        $m = self::slope($size[2] ?? Asset::$viewportMinDefault, $size[0], $size[3] ?? Asset::$viewportMaxDefault, $size[1]);
+        $b = self::yIntersect($size[0], $size[1], $size[2] ?? Asset::$viewportMinDefault, $size[3] ?? Asset::$viewportMaxDefault);
 
-        return 'calc(' . round($m * 100, 3, PHP_ROUND_HALF_UP) . 'vw + ' . round($b, 3, PHP_ROUND_HALF_UP) . 'px)';
+        if ($excludeFn) {
+            return round($m * 100, 3, PHP_ROUND_HALF_UP) . 'vw + ' . round($b, 3, PHP_ROUND_HALF_UP) . 'px';
+        } else {
+            return 'calc(' . round($m * 100, 3, PHP_ROUND_HALF_UP) . 'vw + ' . round($b, 3, PHP_ROUND_HALF_UP) . 'px)';
+        }
     }
 
 
