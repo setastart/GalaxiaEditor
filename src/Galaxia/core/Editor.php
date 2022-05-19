@@ -189,6 +189,30 @@ class Editor {
 
 
 
+    static function column(
+        string $label = '',
+        string $class = '',
+        array  $content = [],
+    ): array {
+        return [
+            'label'        => $label,
+            'cssClass'     => $class,
+            'gcColContent' => $content,
+        ];
+    }
+
+    static function columnContent(
+        string $table,
+        string $type,
+        array  $cols = [],
+        array  $other = [],
+        array  $parent = [],
+    ): array {
+        if ($other) return ['dbTab' => $table, 'dbCols' => $cols, 'colType' => $type, 'gcOther' => $other];
+        if ($parent) return ['dbTab' => $table, 'dbCols' => $cols, 'colType' => $type, 'gcParent' => $parent];
+        return ['dbTab' => $table, 'dbCols' => $cols, 'colType' => $type];
+    }
+
     static function columnThumb(
         string $table,
         array  $cols = ['imgSlug'],

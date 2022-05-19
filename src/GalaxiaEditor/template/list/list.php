@@ -250,6 +250,32 @@ foreach (E::$listColumns as $columnId => $column) {
 }
 
 
+
+function formatField(string $value, string $type): string {
+    switch ($type) {
+        case 'slug':
+            return '/&puncsp;' . Text::h($value);
+
+        case 'timestamp':
+        case 'datetime':
+            return Text::h(Text::formatDate($value, 'd MMM y H:mm'));
+
+        case 'date':
+            return Text::h(Text::formatDate(strtotime($value), 'd MMM y'));
+
+        case 'time':
+            if (str_ends_with($value, ':00')) $value = substr($value, 0, 5);
+            return Text::h($value);
+
+        case 'month':
+            $dt = DateTime::createFromFormat('!m', $value);
+            return Text::h(ucfirst(Text::formatDate($dt, 'MMM')));
+
+        default:
+            return Text::h($value);
+    }
+}
+
 // make html for all rows, using cache
 
 E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $items, $tags) {
@@ -322,13 +348,20 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
                             $value = '';
                             foreach ($columnData['other'] as $otherTable => $others) {
                                 foreach ($others as $otherKey => $otherVal) {
-                                    if (is_array($otherVal)) {
-                                        $otherVal = substr($otherVal[0], 0, -2) . G::lang();
+                                    if (!is_array($otherVal)) $otherVal = [$otherVal];
+                                    foreach ($otherVal as $otherFieldKey => $otherFieldVal) {
+                                        $type = $columnData['type'];
+                                        if (is_int($otherFieldKey)) {
+                                            $field = $otherFieldVal;
+                                        } else {
+                                            $type = $otherFieldVal;
+                                            $field = $otherFieldKey;
+                                        }
+                                        if (substr($field, -3, 1) == '_' && substr($field, -2) != G::lang()) continue;
+                                        $text = $item[$otherTable][$data[$otherKey]][$field] ?? false;
+                                        if (!$text) continue;
+                                        $value .= Text::t(formatField($text, $type)) . ' / ';
                                     }
-                                    $text = $item[$otherTable][$data[$otherKey]][$otherVal] ?? false;
-                                    if (!$text) continue;
-
-                                    $value .= Text::t($text) . ' / ';
                                 }
                             }
                             $value = rtrim($value, ' /');

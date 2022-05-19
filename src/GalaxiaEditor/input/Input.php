@@ -115,6 +115,9 @@ class Input {
                 if ($input['value'] == '') $input['value'] = date('Y-m-d');
 
                 $formatted      = date_create_from_format('!Y#m#d', $input['value']);
+                ($formatted = date_create_from_format('!Y', $input['value'])) ||
+                ($formatted = date_create_from_format('!Y#m', $input['value'])) ||
+                ($formatted = date_create_from_format('!Y#m#d', $input['value']));
                 $dateTimeErrors = date_get_last_errors();
                 if (!$formatted)
                     $input['errors'][] = 'Invalid date / time format.';

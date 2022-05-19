@@ -132,7 +132,10 @@ class Box {
                     $rules[$root] = '';
                     foreach ($properties as $property) {
                         $size = $sizes[$sizeId];
-                        if (is_array($size)) $size = self::min($size);
+                        if (is_array($size)) {
+                            $rules[$root] .= "$property: {$size[0]}px; ";
+                            $size = self::min($size);
+                        }
                         $rules[$root] .= "$property: {$size}; ";
                     }
                 }
@@ -141,7 +144,10 @@ class Box {
                     $rules[$root] = '';
                     foreach ($properties as $property) {
                         $size = $sizes[$sizeId];
-                        if (is_array($size)) $size = self::minNeg($size);
+                        if (is_array($size)) {
+                            $rules[$root] .= "$property: -{$size[0]}px; ";
+                            $size = self::minNeg($size);
+                        }
                         $rules[$root] .= "$property: {$size}; ";
                     }
                 }
@@ -152,7 +158,10 @@ class Box {
                         $rules[$root] = '';
                         foreach ($properties as $property) {
                             $size = [$sizes[$sizeIdMin][0], $sizes[$sizeIdMax][1]];
-                            if (is_array($size)) $size = self::min($size);
+                            if (is_array($size)) {
+                                $rules[$root] .= "$property: {$size[0]}px; ";
+                                $size = self::min($size);
+                            }
                             $rules[$root] .= "$property: {$size}; ";
                         }
                     }

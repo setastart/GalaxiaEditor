@@ -142,7 +142,7 @@ class Config {
             'dbCols'    => 'stringArray',
             'colType'   => 'string',
             '?gcParent' => 'stringArray',
-            '?gcOther'  => 'tableWithCols',
+            '?gcOther'  => 'tableWithColsRandom',
         ],
 
         'gcpFilterTexts' => [
@@ -305,6 +305,19 @@ class Config {
                     foreach ($val as $key2 => $val2)
                         if (!is_string($val2))
                             Config::geConfigParseError($errorString . '/' . $key . '/' . $key2 . ' should be a string.', $schema, $config);
+                }
+                break;
+
+
+            case 'tableWithColsRandom':
+                if (!is_array($config))
+                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+
+                foreach ($config as $key => $val) {
+                    if (is_array($val) && count($val) == 1 && isset($val['gcPerms'])) continue;
+
+                    if (!is_array($val))
+                        Config::geConfigParseError($errorString . '/' . $key . ' should be an array.', $schema, $config);
                 }
                 break;
 
