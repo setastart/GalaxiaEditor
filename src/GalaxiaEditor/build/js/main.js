@@ -14,6 +14,7 @@ window.addEventListener('DOMContentLoaded', function() {
 function gjLoad() {
     document.addEventListener('input', handleEventInput, true);
     document.addEventListener('change', handleEventChange, true);
+    // document.addEventListener('focus', handleEventFocus, true);
     document.addEventListener('blur', handleEventBlur, true);
     document.addEventListener('click', handleEventClick, true);
     document.addEventListener('mousedown', handleEventMousedown, true);
@@ -52,7 +53,7 @@ function gjLoad() {
     window.onresize = function() {
         if (gjResizeTimeout != null) clearTimeout(gjResizeTimeout);
         gjResizeTimeout = setTimeout(gjInput.textareaResize, 100);
-    }
+    };
 }
 
 
@@ -135,6 +136,9 @@ function handleEventBlur(ev) {
     }
 }
 
+function handleEventFocus(ev) {
+}
+
 
 function handleEventClick(ev) {
     if (ev.target.matches('.slugImage')) {
@@ -158,8 +162,11 @@ function handleEventClick(ev) {
     if (ev.target.matches('.input-translate')) {
         gjTranslate.input(ev.target);
     }
+    if (ev.target.matches('.input-calendar')) {
+        gjInput.calendar(ev.target);
+    }
 
-    // checkbox alk key
+    // checkbox alt key
     if (ev.target.matches('.btn-checkbox input')) {
         if (ev.altKey) {
             ev.target.closest('.input-wrap')?.querySelectorAll('.btn-checkbox input')?.forEach(function(el) {
@@ -213,13 +220,13 @@ function handleEventClick(ev) {
         let fieldId = ev.target.closest('.module-field')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
         if (!fieldId) return;
         const imgType = document.querySelector('#' + fieldId + '-new .slugImage')?.dataset.imgtype ?? '';
-        gjImage.openGallery(fieldId, imgType, pos)
+        gjImage.openGallery(fieldId, imgType, pos);
     }
 
     if (ev.target.matches('.imageList-delete')) {
         let fieldId = ev.target.closest('.module-field')?.id ?? ev.target.closest('.module-field-multi-header')?.nextElementSibling.id;
         if (!fieldId) return;
-        gjImage.openGallery(fieldId, '', 0)
+        gjImage.openGallery(fieldId, '', 0);
     }
 
 

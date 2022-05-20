@@ -149,7 +149,8 @@ $ht .= '    <div class="input-label">' .
                '<div class="input-changed" title="' . Text::t('Modified') . '">' . Text::t('Mod.') . '</div> ' .
                '<button type="button" class="input-initial fake">' . Text::t('initial') . '</button> ' .
                '<button type="button" class="input-initial-undo fake">' . Text::t('undo') . '</button> ' .
-        ($translate ? '<button type="button" class="input-translate fake">' . Text::t('translate') . '</button> ' : '') .
+                ($translate ? '<button type="button" class="input-translate fake">' . Text::t('translate') . '</button> ' : '') .
+                ($input['type'] == 'date' ? '<button type="button" class="input-calendar fake">' . Text::t('calendar') . '</button> ' : '') .
        // '</div>' .
        '</div>' . PHP_EOL;
 

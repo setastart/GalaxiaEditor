@@ -110,6 +110,24 @@ let gjInput = {
     },
 
 
+    calendar: function(el) {
+        let elWrap = el.closest('.input-wrap');
+        if (!elWrap) return;
+
+        let elInput = elWrap.querySelector('input');
+        if (!elInput) return;
+
+        console.log(elInput.type);
+        if (elInput.type === 'text') {
+            elInput.type = 'date';
+            el.innerText = 'text';
+        } else if (elInput.type === 'date') {
+            elInput.type = 'text';
+            el.innerText = 'calendar';
+        }
+    },
+
+
     setCaretPosition: function(el, pos) {
         el.setSelectionRange(pos, pos);
     },
@@ -553,4 +571,3 @@ let gjInput = {
     },
 
 }
-
