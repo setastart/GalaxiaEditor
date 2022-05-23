@@ -199,12 +199,17 @@ class Flex {
 
 
     private static function findClasses(array $rules, array &$classesFound, array $htmlFiles): void {
+        $fileContents = [];
+        foreach ($htmlFiles as $file) {
+            $fileContents[$file] = file_get_contents($file);
+        }
+
         foreach ($rules as $prefix => $classes) {
             foreach ($classes as $class => $rule) {
                 if (isset($classesFound[$class])) continue;
 
-                foreach ($htmlFiles as $file) {
-                    if (preg_match('~["\' ]' . $class . '["\' ]~m', file_get_contents($file))) {
+                foreach ($fileContents as $file) {
+                    if (preg_match('~["\' ]' . $class . '["\' ]~m', $file)) {
                         $classesFound[$class] = true;
                         break;
                     }

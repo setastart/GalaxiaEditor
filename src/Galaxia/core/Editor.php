@@ -505,6 +505,7 @@ class Editor {
         bool   $multi = true,
         array  $order = null,
         string $field = null,
+        bool   $reorder = true,
     ): array {
         $souId    = $souT . 'Id';
         $conId    = $conT . 'Id';
@@ -518,7 +519,7 @@ class Editor {
             'gcModuleTitle'         => '',
             'gcModuleShowUnused'    => ['gcPerms' => ['dev']],
             'gcModuleDeleteIfEmpty' => [$tarId],
-            'gcModuleMultiple'      => $multi ? [$field => ['reorder' => true, 'unique' => [$tarId], 'label' => $multiLabel]] : [],
+            'gcModuleMultiple'      => $multi ? [$field => ['reorder' => $reorder, 'unique' => [$tarId], 'label' => $multiLabel]] : [],
 
             'gcSelect'        => [$conT => [$conId, $souId, $conField, 'position', $tarId]],
             'gcSelectLJoin'   => [],

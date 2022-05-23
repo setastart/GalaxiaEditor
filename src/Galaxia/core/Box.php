@@ -134,7 +134,7 @@ class Box {
                         $size = $sizes[$sizeId];
                         if (is_array($size)) {
                             $rules[$root] .= "$property: {$size[0]}px; ";
-                            $size = self::min($size);
+                            $size         = self::min($size);
                         }
                         $rules[$root] .= "$property: {$size}; ";
                     }
@@ -146,7 +146,7 @@ class Box {
                         $size = $sizes[$sizeId];
                         if (is_array($size)) {
                             $rules[$root] .= "$property: -{$size[0]}px; ";
-                            $size = self::minNeg($size);
+                            $size         = self::minNeg($size);
                         }
                         $rules[$root] .= "$property: {$size}; ";
                     }
@@ -160,7 +160,7 @@ class Box {
                             $size = [$sizes[$sizeIdMin][0], $sizes[$sizeIdMax][1]];
                             if (is_array($size)) {
                                 $rules[$root] .= "$property: {$size[0]}px; ";
-                                $size = self::min($size);
+                                $size         = self::min($size);
                             }
                             $rules[$root] .= "$property: {$size}; ";
                         }
@@ -172,12 +172,17 @@ class Box {
 
         $css       = '';
         $cssUnused = '';
+
+        $fileContents = [];
+        foreach ($searchFiles as $file) {
+            $fileContents[$file] = file_get_contents($file);
+        }
+
         foreach ($rules as $rule => $properties) {
             if (!$properties) continue;
-
             $found = false;
-            foreach ($searchFiles as $file) {
-                if (preg_match('~["\' ]' . $rule . '["\' ]~m', file_get_contents($file))) {
+            foreach ($fileContents as $file) {
+                if (preg_match('~["\' ]' . $rule . '["\' ]~m', $file)) {
                     $css   .= '.' . $rule . ' { ' . $properties . '}' . PHP_EOL;
                     $found = true;
                     break;
