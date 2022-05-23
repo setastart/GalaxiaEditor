@@ -160,14 +160,6 @@ let gjInput = {
                     caretNew = caretOld - 1;
                 break;
 
-            case 'date':
-                valNew = slugifyString(valNew, '-');
-                valNew = valNew.replace(/[^0-9\-]+/g, '');
-
-                if (valOld[firstDiffInStrings(valOld, valNew) - 1] === '-')
-                    caretNew = caretOld - 1;
-                break;
-
             case 'time':
                 valNew = slugifyString(valNew, ':');
                 valNew = valNew.replace(/[^0-9\:]+/g, '');

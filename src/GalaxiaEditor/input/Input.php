@@ -8,6 +8,7 @@ use DateTime;
 use Galaxia\Flash;
 use Galaxia\Text;
 use Normalizer;
+use function preg_replace;
 
 
 class Input {
@@ -58,7 +59,36 @@ class Input {
         'importerVimeo',
     ];
 
+    static public array $monthsLong = [
+        'jan' => ['january', 'enero', 'janeiro'],
+        'feb' => ['february', 'febrero', 'fevereiro'],
+        'mar' => ['march', 'marzo', 'março'],
+        'apr' => ['april', 'abril', 'abril'],
+        'may' => ['may', 'mayo', 'maio'],
+        'jun' => ['june', 'junio', 'junho'],
+        'jul' => ['july', 'julio', 'julho'],
+        'aug' => ['august', 'agosto', 'agosto'],
+        'sep' => ['september', 'septiembre', 'setembro'],
+        'oct' => ['october', 'octubre', 'outubro'],
+        'nov' => ['november', 'noviembre', 'novembro'],
+        'dec' => ['december', 'diciembre', 'dezembro'],
+    ];
 
+    static public array $monthsShort = [
+        'jan' => ['ene', 'jan'],
+        'feb' => ['feb', 'fev'],
+        'mar' => ['mar', 'mar'],
+        'apr' => ['abr', 'abr'],
+        'may' => ['may', 'mai'],
+        'jun' => ['jun', 'jun'],
+        'jul' => ['jul', 'jul'],
+        'aug' => ['ago', 'ago'],
+        'sep' => ['sep', 'set'],
+        'oct' => ['oct', 'out'],
+        'nov' => ['nov', 'nov'],
+        'dec' => ['dic', 'dez'],
+        ''    => ['de'],
+    ];
 
     // todo: FILTER_UNSAFE_RAW does nothing
 
@@ -114,10 +144,10 @@ class Input {
 
                 if ($input['value'] == '') $input['value'] = date('Y-m-d');
 
-                $formatted      = date_create_from_format('!Y#m#d', $input['value']);
                 ($formatted = date_create_from_format('!Y', $input['value'])) ||
                 ($formatted = date_create_from_format('!Y#m', $input['value'])) ||
-                ($formatted = date_create_from_format('!Y#m#d', $input['value']));
+                ($formatted = date_create_from_format('!Y#m#d', $input['value'])) ||
+                ($formatted = date_create(Input::strtotimeLocale($input['value'])));
                 $dateTimeErrors = date_get_last_errors();
                 if (!$formatted)
                     $input['errors'][] = 'Invalid date / time format.';
@@ -416,6 +446,21 @@ class Input {
         }
 
         return $input;
+    }
+
+
+    private static function strtotimeLocale(string $date): string {
+        foreach (Input::$monthsLong as $dest => $sources) {
+            foreach ($sources as $source) {
+                $date = preg_replace("~[\s\d]($source)[\s\d]?~", " $dest ", $date);
+            }
+        }
+        foreach (Input::$monthsShort as $dest => $sources) {
+            foreach ($sources as $source) {
+                $date = preg_replace("~[\s\d]($source)[\s\d]?~", " $dest ", $date);
+            }
+        }
+        return $date;
     }
 
 }
