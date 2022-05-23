@@ -7,5 +7,5 @@ vendor/
 
 # App
 design/
-
 .idea/
+*.private.*

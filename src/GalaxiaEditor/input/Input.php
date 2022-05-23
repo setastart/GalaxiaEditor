@@ -75,19 +75,23 @@ class Input {
     ];
 
     static public array $monthsShort = [
-        'jan' => ['ene', 'jan'],
-        'feb' => ['feb', 'fev'],
-        'mar' => ['mar', 'mar'],
-        'apr' => ['abr', 'abr'],
-        'may' => ['may', 'mai'],
-        'jun' => ['jun', 'jun'],
-        'jul' => ['jul', 'jul'],
-        'aug' => ['ago', 'ago'],
-        'sep' => ['sep', 'set'],
-        'oct' => ['oct', 'out'],
-        'nov' => ['nov', 'nov'],
-        'dec' => ['dic', 'dez'],
-        ''    => ['de'],
+        'jan'   => ['ene', 'jan'],
+        'feb'   => ['feb', 'fev'],
+        'mar'   => ['mar', 'mar'],
+        'apr'   => ['abr', 'abr'],
+        'may'   => ['may', 'mai'],
+        'jun'   => ['jun', 'jun'],
+        'jul'   => ['jul', 'jul'],
+        'aug'   => ['ago', 'ago'],
+        'sep'   => ['sep', 'set'],
+        'oct'   => ['oct', 'out'],
+        'nov'   => ['nov', 'nov'],
+        'dec'   => ['dic', 'dez'],
+        'now'   => ['agora', 'ahora'],
+        'day'   => ['día', 'dia'],
+        'month' => ['mes', 'mês'],
+        'year'  => ['año', 'ano'],
+        ''      => ['de'],
     ];
 
     // todo: FILTER_UNSAFE_RAW does nothing
@@ -149,8 +153,10 @@ class Input {
                 ($formatted = date_create_from_format('!Y#m#d', $input['value'])) ||
                 ($formatted = date_create(Input::strtotimeLocale($input['value'])));
                 $dateTimeErrors = date_get_last_errors();
-                if (!$formatted)
+                if (!$formatted) {
+                    geD(Input::strtotimeLocale($input['value']));
                     $input['errors'][] = 'Invalid date / time format.';
+                }
 
                 if (!empty($dateTimeErrors['warning_count']))
                     foreach ($dateTimeErrors['warnings'] as $warning)
@@ -452,12 +458,12 @@ class Input {
     private static function strtotimeLocale(string $date): string {
         foreach (Input::$monthsLong as $dest => $sources) {
             foreach ($sources as $source) {
-                $date = preg_replace("~[\s\d]($source)[\s\d]?~", " $dest ", $date);
+                $date = preg_replace("~[\s\d]($source)[\s\d]?~i", " $dest ", $date);
             }
         }
         foreach (Input::$monthsShort as $dest => $sources) {
             foreach ($sources as $source) {
-                $date = preg_replace("~[\s\d]($source)[\s\d]?~", " $dest ", $date);
+                $date = preg_replace("~[\s\d]($source)[\s\d]?~i", " $dest ", $date);
             }
         }
         return $date;
