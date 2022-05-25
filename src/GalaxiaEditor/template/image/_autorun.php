@@ -13,7 +13,7 @@ use GalaxiaEditor\render\Load;
 E::$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . E::$imgSlug;
 E::$hdTitle = Text::t('Editing') . ' ' . E::$pgTitle;
 
-$item   = E::$section['gcImage'];
+$item = E::$section['gcImage'];
 
 
 // skip for new item page
@@ -36,12 +36,12 @@ $inUse = Load::imagesInUse()[E::$imgSlug] ?? [];
 
 // load image and build inputs
 
-E::$img = G::imageGet(E::$imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
+E::$img            = G::imageGet(E::$imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
 E::$img['resizes'] = AppImage::resizes(G::dirImage(), E::$imgSlug) ?? [];
 
 
 E::$imgInputs = [
-    'imgSlug'     => [
+    'imgSlug' => [
         'label'       => 'Slug',
         'name'        => 'imgSlug',
         'type'        => 'slug',
@@ -83,6 +83,7 @@ if (E::$section['gcImageTypes']) {
 
 
 $mtime = date('Y-m-d H:i:s', E::$img['mtime']);
+
 E::$imgInputs['timestampM'] = [
     'label'       => 'Date and Time',
     'name'        => 'timestampM',
@@ -96,4 +97,3 @@ E::$showSwitchesLang = count(G::langs()) > 1;
 foreach (G::langs() as $lang) {
     E::$langSelectClass[$lang] = '';
 }
-

@@ -59,6 +59,10 @@ class Cache {
         return G::cache('editor', 4, 'list-' . E::$pgSlug . '-filterText-' . $filterId, $f, G::$req->cacheBypass);
     }
 
+    static function itemList(callable $f): array {
+        return G::cache('editor', 2, 'item-' . E::$pgSlug . '-items', $f, G::$req->cacheBypass);
+    }
+
 
 
 

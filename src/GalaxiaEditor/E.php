@@ -75,6 +75,10 @@ class E {
     static array  $itemPostModule    = [];
     static int    $itemPostModuleKey = 0;
 
+    static array $siblings = [];
+    static int   $prev     = 0;
+    static int   $next     = 0;
+
     // image
     static array $img        = [];
     static array $imgChanges = [];
