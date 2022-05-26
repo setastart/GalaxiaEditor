@@ -186,10 +186,13 @@ class SchemaOrg {
             'description' => $desc,
             'provider'    => $organization,
         ];
-        if (!$review) return $r;
 
-        $r['review']          = $review;
-        $r['aggregateRating'] = $aggregateRating;
+        if ($review) {
+            $r['review'] = $review;
+            if ($aggregateRating) {
+                $r['aggregateRating'] = $aggregateRating;
+            }
+        }
 
         return $r;
     }

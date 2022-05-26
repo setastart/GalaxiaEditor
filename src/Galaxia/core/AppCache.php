@@ -6,7 +6,7 @@ namespace Galaxia;
 
 class AppCache {
 
-    static function get(
+    static function array(
         string $dirCache, string $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): array {
@@ -61,6 +61,64 @@ class AppCache {
         G::timerStop($timerName);
 
         return $result ?? [];
+    }
+
+
+    static function string(
+        string $dirCache, string $scope, int $level, string $key,
+        callable $f, bool $bypass = null, bool $write = null
+    ): string {
+
+        $subdir = 'app';
+        if ($scope == 'editor') $subdir = 'editor';
+
+        $cacheName = $scope . '-' . $level . '-' . $key;
+
+        $dir = $dirCache . trim($subdir, '/') . '/';
+        if (!is_dir($dir)) mkdir($dir);
+
+        if (is_null($write)) $write = !$bypass;
+        if (!$bypass) $write = true;
+
+        $cacheFile = $dir . $cacheName . '.cache';
+
+        if (!$bypass && file_exists($cacheFile)) {
+
+            $timerName = 'Cache raw HIT: ' . $cacheName;
+            G::timerStart($timerName);
+
+            $result = file_get_contents($cacheFile);
+
+        } else {
+
+            $cacheType = $bypass ? 'BYPASS' : 'MISS';
+            $timerName = 'Cache raw ' . $cacheType . ': ' . $cacheName;
+            G::timerStart($timerName);
+
+            $fCache = function() use ($f, $write, $cacheFile) {
+                $r = $f();
+                if ($write && is_string($r)) {
+                    file_put_contents($cacheFile, $r);
+                }
+
+                return $r;
+            };
+
+            if ($bypass) {
+                $result = $fCache();
+            } else {
+                $result = File::lock($dirCache . 'flock', $cacheName . '.lock', $fCache);
+            }
+
+        }
+
+        if (!is_string($result)) {
+            Flash::error('Cache raw: invalid result');
+        }
+
+        G::timerStop($timerName);
+
+        return $result ?? '';
     }
 
 
