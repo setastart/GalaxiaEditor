@@ -88,7 +88,7 @@ if (E::$siblings) {
         $prev = $id;
     }
 }
-geD(E::$prev, E::$next, E::$siblings);
+// geD(E::$prev, E::$next, E::$siblings);
 
 
 // restrict edit acces to only own user

@@ -75,29 +75,31 @@ class Input {
     ];
 
     static public array $monthsShort = [
-        'jan'       => ['ene', 'jan'],
-        'feb'       => ['feb', 'fev'],
-        'mar'       => ['mar', 'mar'],
-        'apr'       => ['abr', 'abr'],
-        'may'       => ['may', 'mai'],
-        'jun'       => ['jun', 'jun'],
-        'jul'       => ['jul', 'jul'],
-        'aug'       => ['ago', 'ago'],
-        'sep'       => ['sep', 'set'],
-        'oct'       => ['oct', 'out'],
-        'nov'       => ['nov', 'nov'],
-        'dec'       => ['dic', 'dez'],
-        'now'       => ['agora', 'ahora'],
-        'today'     => ['hoy', 'hoje'],
-        'tomorrow'  => ['mañana', 'amanhã'],
-        'yesterday' => ['ayer', 'ontem'],
-        'day'       => ['día', 'dia'],
-        'month'     => ['mes', 'mês'],
-        'year'      => ['año', 'ano'],
-        'last'      => ['ultimo', 'último'],
-        'next'      => ['siguiente', 'seguinte', 'próximo'],
-        'previous'  => ['anterior', 'prévio'],
-        ''          => ['de'],
+        'jan'          => ['ene', 'jan'],
+        'feb'          => ['feb', 'fev'],
+        'mar'          => ['mar', 'mar'],
+        'apr'          => ['abr', 'abr'],
+        'may'          => ['may', 'mai'],
+        'jun'          => ['jun', 'jun'],
+        'jul'          => ['jul', 'jul'],
+        'aug'          => ['ago', 'ago'],
+        'sep'          => ['sep', 'set'],
+        'oct'          => ['oct', 'out'],
+        'nov'          => ['nov', 'nov'],
+        'dec'          => ['dic', 'dez'],
+        'first day of' => ['primer de', 'primer día de', 'primeiro de', 'primeiro dia de'],
+        'last day of'  => ['ultimo de', 'ultimo día de', 'último de', 'último dia de'],
+        'now'          => ['agora', 'ahora'],
+        'today'        => ['hoy', 'hoje'],
+        'tomorrow'     => ['mañana', 'amanhã'],
+        'yesterday'    => ['ayer', 'ontem'],
+        'day'          => ['día', 'dia'],
+        'month'        => ['mes', 'mês'],
+        'year'         => ['año', 'ano'],
+        'last'         => ['ultimo', 'último'],
+        'next'         => ['siguiente', 'seguinte', 'próximo'],
+        'previous'     => ['anterior', 'prévio'],
+        ''             => ['de'],
     ];
 
     // todo: FILTER_UNSAFE_RAW does nothing
@@ -157,11 +159,10 @@ class Input {
                 ($formatted = date_create_from_format('!Y', $input['value'])) ||
                 ($formatted = date_create_from_format('!Y#m', $input['value'])) ||
                 ($formatted = date_create_from_format('!Y#m#d', $input['value'])) ||
-                ($formatted = date_create(Input::strtotimeLocale($input['value']))) ||
-                ($formatted = date_create(Input::strtotimeLocale('1 ' . $input['value'])));
+                ($formatted = date_create(Input::strtotimeLocale($input['value'])));
                 $dateTimeErrors = date_get_last_errors();
                 if (!$formatted) {
-                    geD(Input::strtotimeLocale($input['value']));
+                    // geD(Input::strtotimeLocale($input['value']));
                     $input['errors'][] = 'Invalid date / time format.';
                 }
 
@@ -463,14 +464,17 @@ class Input {
 
 
     private static function strtotimeLocale(string $date): string {
+        $date = Text::translit($date);
         foreach (Input::$monthsLong as $dest => $sources) {
             foreach ($sources as $source) {
-                $date = preg_replace("~[\s\d]($source)[\s\d]?~i", " $dest ", $date);
+                $source = Text::translit($source);
+                $date   = preg_replace("~(?>^|[\s\d])($source)[\s\d]?~ius", " $dest ", $date);
             }
         }
         foreach (Input::$monthsShort as $dest => $sources) {
             foreach ($sources as $source) {
-                $date = preg_replace("~[\s\d]($source)[\s\d]?~i", " $dest ", $date);
+                $source = Text::translit($source);
+                $date   = preg_replace("~(?>^|[\s\d])($source)[\s\d]?~ius", " $dest ", $date);
             }
         }
         return $date;
