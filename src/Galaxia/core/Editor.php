@@ -506,6 +506,7 @@ class Editor {
         array  $order = null,
         string $field = null,
         bool   $reorder = true,
+        array $inputsWhereParent = [],
     ): array {
         $souId    = $souT . 'Id';
         $conId    = $conT . 'Id';
@@ -513,21 +514,31 @@ class Editor {
         $tarId    = $tarT . 'Id';
         $field    ??= $conT;
 
-        return [
-            'gcTable'               => $conT,
-            'gcModuleType'          => 'fields',
-            'gcModuleTitle'         => '',
-            'gcModuleShowUnused'    => ['gcPerms' => ['dev']],
-            'gcModuleDeleteIfEmpty' => [$tarId],
-            'gcModuleMultiple'      => $multi ? [$field => ['reorder' => $reorder, 'unique' => [$tarId], 'label' => $multiLabel]] : [],
+        $inputsWhereCol = [
+            $field => [
+                $tarId => [
+                    'type'     => 'select',
+                    'nullable' => true,
+                ],
+            ],
+        ];
 
-            'gcSelect'        => [$conT => [$conId, $souId, $conField, 'position', $tarId]],
-            'gcSelectLJoin'   => [],
-            'gcSelectOrderBy' => $order ?? [$conT => [$tarId => 'ASC']],
-            'gcSelectExtra'   => [$tarT => [$tarId, ...$extra]],
-            'gcUpdate'        => [$conT => [$tarId, 'position']],
+        if ($inputsWhereParent) {
+            foreach ($inputsWhereParent as $parentCol => $parentValue) {
+                $inputsWhereParent[$parentCol] = [$parentValue => $inputsWhereCol];
+            }
+            $inputsWhereCol = [];
+        }
 
-            'gcInputs' => [
+        return Editor::field(
+            table: $conT,
+            deleteIfEmpty: [$tarId],
+            multiple: $multi ? [$field => ['reorder' => $reorder, 'unique' => [$tarId], 'label' => $multiLabel]] : [],
+            select: [$conT => [$conId, $souId, $conField, 'position', $tarId]],
+            order: $order ?? [$conT => [$tarId => 'ASC']],
+            extra: [$tarT => [$tarId, ...$extra]],
+            update: [$conT => [$tarId, 'position']],
+            inputs: [
                 $tarId => [
                     'type'           => 'select',
                     'label'          => $tarLabel,
@@ -535,18 +546,9 @@ class Editor {
                     'nullable'       => true,
                 ],
             ],
-
-            'gcInputsWhereCol' => [
-                $field => [
-                    $tarId => [
-                        'type'     => 'select',
-                        'nullable' => true,
-                    ],
-                ],
-            ],
-
-            'gcInputsWhereParent' => [],
-        ];
+            inputsWhereCol: $inputsWhereCol,
+            inputsWhereParent: $inputsWhereParent,
+        );
     }
 
 
