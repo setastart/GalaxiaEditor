@@ -16,9 +16,12 @@ namespace Galaxia;
 
 
 use mysqli;
+use mysqli_result;
+use mysqli_stmt;
 use Throwable;
 use function curl_close;
 use function debug_backtrace;
+use function preg_match;
 use function str_starts_with;
 use function substr;
 
@@ -170,7 +173,7 @@ class G {
 
 
     static function isCli(): bool {
-        return php_sapi_name() == 'cli';
+        return PHP_SAPI == 'cli';
     }
 
 
@@ -278,9 +281,7 @@ class G {
         bool $includes = false,
         bool $force = false,
     ): void {
-        if (!$force) {
-            if (!self::isCli() && !self::isDevEnv() && !self::isDev()) return;
-        }
+        if (!$force && !self::isCli() && !self::isDevEnv() && !self::isDev()) return;
 
         $timeEnd = microtime(true);
 
@@ -351,7 +352,7 @@ class G {
         $r .= $prefix;
         foreach ($colLen as $col => $len) {
             if ($col == 'label') {
-                $r .= str_pad($col ?? '', $len, ' ', STR_PAD_RIGHT) . ' ';
+                $r .= str_pad($col, $len, ' ', STR_PAD_RIGHT) . ' ';
             } else {
                 if (is_int($col)) {
                     if ($col < 2) continue;
@@ -441,20 +442,17 @@ class G {
             exit();
         }
 
-        if (self::insideEditor()) {
-            if (isset(self::$me) && self::$me->loggedIn) {
+        if (isset(self::$me) && self::$me->loggedIn && self::insideEditor()) {
+            self::$errorCode = $code;
+            self::$error     = $errors[$code] . '<br><br>';
+            // if (self::isDev()) {
+            self::$error .= 'Original error code: ' . $codeOriginal . '<br>';
+            self::$error .= nl2br($msg) . '<br><br>';
+            self::$error .= nl2br($debugText) . '<br>';
+            // }
 
-                self::$errorCode = $code;
-                self::$error     = $errors[$code] . '<br><br>';
-                // if (self::isDev()) {
-                self::$error .= 'Original error code: ' . $codeOriginal . '<br>';
-                self::$error .= nl2br($msg) . '<br><br>';
-                self::$error .= nl2br($debugText) . '<br>';
-                // }
-
-                include self::$editor->dirLayout . 'layout-error.phtml';
-                exit();
-            }
+            include self::$editor->dirLayout . 'layout-error.phtml';
+            exit();
         }
 
         if (self::isDevEnv()) {
@@ -509,10 +507,13 @@ class G {
 
     static function redirect($location = '', int $code = 302): never {
         $location = Text::h(trim($location, "/ \t\n\r\0\x0B"));
+
         if (self::isCli()) {
             echo "$code - /$location" . PHP_EOL;
             exit();
-        } else if (headers_sent()) {
+        }
+
+        if (headers_sent()) {
             echo 'headers already sent. redirect: <a href="' . $location . '">' . $location . '</a>' . PHP_EOL;
             exit();
         }
@@ -534,7 +535,7 @@ class G {
             $testsPassed = 0;
             $testsTotal  = count($tests);
 
-            if ($argc < 3) echo 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
+            echo 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
 
             $fBuild();
 
@@ -706,40 +707,38 @@ class G {
 
 
 
-    static function prepare(string $query) {
+    static function prepare(string $query): mysqli_stmt {
         return self::getMysqli()->prepare($query);
     }
 
-    static function execute(string $query, $types = '', ...$vars) {
-        if (G::isDev() && preg_match("~^\W*select\W~i", $query)) {
-            G::$explains[] = G::explain($query, $types, ...$vars);
+    static function execute(string $query, array $params = null): mysqli_result {
+        if (G::isDevEnv() && G::isDevDebug() && preg_match("~^\W*select\W~i", $query)) {
+            G::$explains[] = G::explain($query, $params);
         }
         $stmt = self::getMysqli()->prepare($query);
-        if ($types) {
-            $stmt->bind_param($types, ...$vars);
-        }
-        $stmt->execute();
-        return $stmt;
+        $stmt->execute($params);
+        $result = $stmt->get_result();
+        $stmt->close();
+        return $result;
     }
 
-    static function explain(string $query, $types = '', ...$vars): array {
+    static function explain(string $query, array $params = null): array {
         $db = debug_backtrace();
         $source = $db[0]['file'] . ':' . $db[0]['line'];
         $r = [$source];
 
         $stmt = self::getMysqli()->prepare('EXPLAIN ' . $query);
-        if ($types) {
-            $stmt->bind_param($types, ...$vars);
-        }
-        $stmt->execute();
+        $stmt->execute($params);
         $result = $stmt->get_result();
+        $stmt->close();
 
         while ($data = $result->fetch_assoc()) {
             $r[] = $data;
         }
-        $stmt->close();
         return $r;
     }
+
+
 
 
 
@@ -767,12 +766,14 @@ class G {
     public static function versionQuery(): string {
         if (G::$req->cacheBypass || G::isDevEnv()) {
             return '?ver=' . $_SERVER['REQUEST_TIME'];
-        } else if (file_exists(G::dir() . '.git/refs/heads/main')) {
+        }
+
+        if (file_exists(G::dir() . '.git/refs/heads/main')) {
             $gitHash = file_get_contents(G::dir() . '.git/refs/heads/main');
             return '?ver=' . substr($gitHash, 8, 5);
-        } else {
-            return '?ver=' . date('Y-m');
         }
+
+        return '?ver=' . date('Y-m');
     }
 
 }
