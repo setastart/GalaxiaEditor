@@ -569,7 +569,7 @@ class G {
                 }
             }
 
-            $prefix = ($testsPassed == count($tests)) ? '[OK]' : '[FAIL]';
+            $prefix = ($testsPassed == count($tests)) ? '[OK] ✅ ' : '[FAIL] ❌ ';
 
             exit(PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed." . PHP_EOL);
         }
@@ -707,11 +707,11 @@ class G {
 
 
 
-    static function prepare(string $query): mysqli_stmt {
+    static function prepare(string $query): false|mysqli_stmt {
         return self::getMysqli()->prepare($query);
     }
 
-    static function execute(string $query, array $params = null): mysqli_result {
+    static function execute(string $query, array $params = null): false|mysqli_result {
         if (G::isDevEnv() && G::isDevDebug() && preg_match("~^\W*select\W~i", $query)) {
             G::$explains[] = G::explain($query, $params);
         }
