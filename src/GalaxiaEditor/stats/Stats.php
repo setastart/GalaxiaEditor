@@ -53,8 +53,6 @@ class Stats {
     }
 
     static function getGoaccessTemp(string $log, string $dir): ?string {
-        $stats = null;
-
         if (!file_exists($log)) return null;
 
         if (!is_dir($dir)) return null;

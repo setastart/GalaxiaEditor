@@ -227,6 +227,7 @@ HTML;
         return $text;
     }
 
+    /** @deprecated  */
     static function trix(string $text, array $transforms = []): ?string {
         // if (G::$dev) $text = TEST_HTML;
         $text = trim(strip_tags($text, self::ALLOWED_TAGS));
@@ -264,6 +265,7 @@ HTML;
         return $text;
     }
 
+    /** @deprecated  */
     static function trixg(array $arr, string $key = null, array $transforms = [], string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';

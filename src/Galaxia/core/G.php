@@ -21,6 +21,7 @@ use mysqli_stmt;
 use Throwable;
 use function curl_close;
 use function debug_backtrace;
+use function escapeshellcmd;
 use function preg_match;
 use function str_starts_with;
 use function substr;
@@ -531,53 +532,61 @@ class G {
         callable $fBuild,
         bool     $exitOnError = false,
     ): never {
-        if ($argc == 1) {
-            $testsPassed = 0;
-            $testsTotal  = count($tests);
 
-            echo 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
-
-            $fBuild();
-
-            $i = 0;
-            foreach ($tests as $url => $code) {
-                echo ($i % 100 == 0) ? $i : '.';
-                $i++;
-
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                $result = curl_exec($ch);
-                curl_close($ch);
-
-                $info   = curl_getinfo($ch);
-                $result = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH) . $result;
-
-
-                if (str_starts_with($result, $code)) {
-                    $testsPassed++;
-                    continue;
-                }
-
-                $result = substr($result, 0, 80);
-
-                echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $result";
-
-                if ($exitOnError) {
-                    break;
-                }
-            }
-
-            $prefix = ($testsPassed == count($tests)) ? '[OK] ✅ ' : '[FAIL] ❌ ';
-
-            exit(PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed." . PHP_EOL);
+        if ($argc > 2 || $argc < 1) {
+            echo 'Usage:' . PHP_EOL;
+            echo 'run tests: php test.php' . PHP_EOL;
+            echo 'test single page: php test.php http://example.com/url' . PHP_EOL;
+            exit();
         }
 
-        echo 'Usage:' . PHP_EOL;
-        echo 'run tests: php test.php' . PHP_EOL;
-        echo 'test single page: php test.php /example-url' . PHP_EOL;
-        exit();
+        if ($argc == 2) {
+            global $argv;
+            $tests = [$argv[1] => '200'];
+        }
+
+        $testsPassed = 0;
+        $testsTotal  = count($tests);
+
+        echo 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
+
+        $fBuild();
+
+        $i = 0;
+        foreach ($tests as $url => $code) {
+            echo ($i % 100 == 0) ? $i : '.';
+            $i++;
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            $info   = curl_getinfo($ch);
+            $result = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH) . $result;
+
+
+            if (str_starts_with($result, $code)) {
+                $testsPassed++;
+                continue;
+            }
+
+            $result = escapeshellcmd($result);
+            // $result = substr($result, 0, 80);
+
+            echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $result";
+
+            if ($exitOnError) {
+                break;
+            }
+        }
+
+        $prefix = ($testsPassed == count($tests)) ? '[OK] ✅ ' : '[FAIL] ❌ ';
+
+        exit(PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed." . PHP_EOL);
+
     }
 
 
@@ -723,9 +732,14 @@ class G {
     }
 
     static function explain(string $query, array $params = null): array {
-        $db = debug_backtrace();
-        $source = $db[0]['file'] . ':' . $db[0]['line'];
-        $r = [$source];
+        $db     = debug_backtrace();
+        $source = $db[1]['file'] . ':' . $db[1]['line'];
+        $r      = [
+            'src'     => $source,
+            'query'   => $query,
+            'params'  => $params,
+            'explain' => [],
+        ];
 
         $stmt = self::getMysqli()->prepare('EXPLAIN ' . $query);
         $stmt->execute($params);
@@ -733,8 +747,9 @@ class G {
         $stmt->close();
 
         while ($data = $result->fetch_assoc()) {
-            $r[] = $data;
+            $r['explain'][] = $data;
         }
+
         return $r;
     }
 
