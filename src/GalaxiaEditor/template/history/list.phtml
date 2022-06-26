@@ -1,4 +1,8 @@
 <?php
+// Copyright 2017-2022 Ino Detelić & Zaloa G. Ramos
+// Licensed under the European Union Public License, version 1.2 (EUPL-1.2)
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
 use Galaxia\G;
 use Galaxia\Text;
@@ -6,15 +10,16 @@ use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
 use GalaxiaEditor\render\view\ViewPagination;
 
-
-InputRender::form('', 'history-list', 'paper pad');?>
+// @formatter:off
+?>
+<?php   InputRender::form('', 'history-list', 'paper pad');?>
 
     <div class="paper-header">
         <h1 class="pad"><span class="nrFiltered"><?=Text::h(E::$pagination->itemsFiltered)?></span> &#8725; <?=Text::h(E::$pagination->itemsTotal)?> <?=Text::t(E::$pgTitle);?></h1>
     </div>
 
 
-<?php ViewPagination::renderHeader(E::$pagination) ?>
+<?php   ViewPagination::renderHeader(E::$pagination) ?>
 
 
     <div class="load">
@@ -22,8 +27,7 @@ InputRender::form('', 'history-list', 'paper pad');?>
     </div>
 
 
-<?php ViewPagination::renderFooter(E::$pagination) ?>
+<?php   ViewPagination::renderFooter(E::$pagination) ?>
 
 
 <?php   InputRender::renderFormEnd(); ?>
-

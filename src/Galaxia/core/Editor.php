@@ -1,21 +1,11 @@
 <?php
-/* Copyright 2017-2021 Ino Detelić & Zaloa G. Ramos
-
- - Licensed under the EUPL, Version 1.2 only (the "Licence");
- - You may not use this work except in compliance with the Licence.
-
- - You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
-
- - Unless required by applicable law or agreed to in writing, software distributed
-   under the Licence is distributed on an "AS IS" basis,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- - See the Licence for the specific language governing permissions and limitations under the Licence.
-*/
+// Copyright 2017-2022 Ino Detelić & Zaloa G. Ramos
+// Licensed under the European Union Public License, version 1.2 (EUPL-1.2)
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
 namespace Galaxia;
 
-
-use JetBrains\PhpStorm\ArrayShape;
 
 class Editor {
 
@@ -54,7 +44,12 @@ class Editor {
     }
 
     static function linkUser(): array {
-        return require dirname(__DIR__, 2) . '/GalaxiaEditor/config/default/gcDefaultUser.php';
+        return [
+            'gcPageType'   => 'gcpLinkToItem',
+            'gcMenuTitle'  => 'User',
+            'gcMenuShow'   => true,
+            'geLinkToUser' => 'users',
+        ];
     }
 
     static function pagePasswords(): array {
@@ -62,11 +57,23 @@ class Editor {
     }
 
     static function linkPassword(): array {
-        return require dirname(__DIR__, 2) . '/GalaxiaEditor/config/default/gcDefaultPassword.php';
+        return [
+            'gcPageType'   => 'gcpLinkToItem',
+            'gcMenuTitle'  => 'Password',
+            'gcMenuShow'   => true,
+            'geLinkToUser' => 'passwords',
+        ];
+
     }
 
     static function pageHistory(): array {
-        return require dirname(__DIR__, 2) . '/GalaxiaEditor/config/default/gcDefaultHistory.php';
+        return [
+            'gcPageType'    => 'gcpHistory',
+            'gcMenuTitle'   => 'History',
+            'gcTitleSingle' => 'Item',
+            'gcTitlePlural' => 'Items',
+            'gcMenuShow'    => true,
+        ];
     }
 
     static function pageDev(): array {
@@ -115,19 +122,6 @@ class Editor {
 
 
 
-    const shapeSectionListItem = [
-        'gcPerms'       => 'array',
-        'gcPageType'    => 'string',
-        'gcMenuTitle'   => 'string',
-        'gcTitleSingle' => 'string',
-        'gcTitlePlural' => 'string',
-        'gcMenuShow'    => 'array|bool',
-        'gcColNames'    => 'array',
-        'gcList'        => 'array',
-        'gcItem'        => 'array',
-    ];
-
-    #[ArrayShape(Editor::shapeSectionListItem)]
     static function sectionListItem(
         ?array     $perms = null,
         array|bool $showOnMenu = true,
@@ -153,17 +147,6 @@ class Editor {
 
 
 
-    const shapeList = [
-        'gcSelect'        => 'array',
-        'gcSelectLJoin'   => 'array',
-        'gcSelectOrderBy' => 'array',
-        'gcLinks'         => 'array',
-        'gcColumns'       => 'array',
-        'gcFilterInts'    => 'array',
-        'gcFilterTexts'   => 'array',
-    ];
-
-    #[ArrayShape(Editor::shapeList)]
     static function list(
         array $select,
         array $join,
@@ -315,25 +298,6 @@ class Editor {
 
 
 
-    const shapeItem = [
-        'gcTable'         => 'string',
-        'gcColKey'        => 'string',
-        'gcVisit'         => 'bool|int|array',
-        'gcUpdateOnlyOwn' => 'bool',
-        'gcRedirect'      => 'bool',
-        'gcInsert'        => 'array',
-        'gcSelect'        => 'array',
-        'gcSelectLJoin'   => 'array',
-        'gcSelectExtra'   => 'array',
-        'gcUpdate'        => 'array',
-        'gcDelete'        => 'array',
-        'gcInputs'        => 'array',
-        'gcInputsWhere'   => 'array',
-        'gcModules'       => 'array',
-        'gcInfo'          => 'array',
-    ];
-
-    #[ArrayShape(Editor::shapeItem)]
     static function item(
         string         $table,
         string         $titleCol,
@@ -372,20 +336,6 @@ class Editor {
 
 
 
-    const shapeSectionListImage = [
-        'gcPerms'       => 'array',
-        'gcPageType'    => 'string',
-        'gcMenuTitle'   => 'string',
-        'gcTitleSingle' => 'string',
-        'gcTitlePlural' => 'string',
-        'gcMenuShow'    => 'bool',
-        'gcImageTypes'  => 'array',
-        'gcImagesInUse' => 'array',
-        'gcImageList'   => 'array',
-        'gcImage'       => 'array',
-    ];
-
-    #[ArrayShape(Editor::shapeSectionListImage)]
     static function sectionListImage(
         ?array     $perms = null,
         array|bool $showOnMenu = true,
@@ -414,25 +364,6 @@ class Editor {
 
 
 
-    const shapeField = [
-        'gcTable'               => 'string',
-        'gcModuleType'          => 'string',
-        'gcModuleTitle'         => 'string',
-        'gcModuleShowUnused'    => 'bool',
-        'gcModuleDeleteIfEmpty' => 'array',
-        'gcModuleMultiple'      => 'array',
-        'gcSelect'              => 'array',
-        'gcSelectLJoin'         => 'array',
-        'gcSelectOrderBy'       => 'array',
-        'gcSelectExtra'         => 'array',
-        'gcUpdate'              => 'array',
-        'gcFieldOrder'          => 'array',
-        'gcInputs'              => 'array',
-        'gcInputsWhereCol'      => 'array',
-        'gcInputsWhereParent'   => 'array',
-    ];
-
-    #[ArrayShape(Editor::shapeField)]
     static function field(
         string $table = '',
         string $title = '',
@@ -471,14 +402,6 @@ class Editor {
 
 
 
-    const shapeFieldMulti = [
-        'reorder' => 'bool',
-        'unique'  => 'array',
-        'label'   => 'string',
-        'gallery' => 'bool',
-    ];
-
-    #[ArrayShape(Editor::shapeFieldMulti)]
     static function fieldMulti(
         bool    $reorder = false,
         array   $unique = [],

@@ -1,10 +1,15 @@
 <?php
+// Copyright 2017-2022 Ino Detelić & Zaloa G. Ramos
+// Licensed under the European Union Public License, version 1.2 (EUPL-1.2)
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
 use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\E;
 
 
+// @formatter:off
 ?>
 <div class="item-info">
     <div><?=Text::t('Original')?>: <a target="_blank" href="/media/image/<?=E::$imgSlug?>/<?=Text::h(E::$imgSlug . E::$img['ext'])?>"><?=Text::h(E::$img['wOriginal'] . 'x' . E::$img['hOriginal'])?></a><?=Text::h(E::$img['ext'])?>  (<?=Text::bytesIntToAbbr(filesize(G::dirImage() . E::$imgSlug . '/' . E::$imgSlug . E::$img['ext']))?>)</div>

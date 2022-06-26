@@ -4,21 +4,10 @@
 // You may not use this work except in compliance with the Licence.
 // You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
-ob_start();
-phpinfo();
-preg_match('~.*?<body>(.*)</body>~s', ob_get_clean(), $matches);
+use GalaxiaEditor\build\Js;
 
-// @formatter:off
-?>
 
-<div id="dev" class="paper pad">
+if (PHP_SAPI == 'cli') require_once dirname(__DIR__) . '/src/boot-cli-editor.php';
 
-    <div class="paper-header pad">
-        <h1>PHP Information</h1>
-    </div>
 
-    <div class="pad phpinfo">
-        <?=$matches[1] ?? ''?>
-    </div>
-
-</div>
+Js::build();

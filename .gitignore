@@ -1,7 +1,9 @@
 # Composer
-vendor/
+/vendor/
+/composer.json
+/composer.lock
 
 # Editor
-design/
-.idea/
+/design/
+/.idea/
 *.private.*
