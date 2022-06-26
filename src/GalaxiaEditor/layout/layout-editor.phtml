@@ -8,6 +8,8 @@ use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\E;
+use GalaxiaEditor\frag\FragMenu;
+use GalaxiaEditor\frag\FragMsgBoxes;
 
 
 $permColors = [
@@ -141,16 +143,16 @@ var gchat = {
 <?php   } ?>
 </div>
 
-<?php   if (!$menuRight) include 'menu.phtml'; ?>
+<?php   if (!$menuRight) FragMenu::render(); ?>
 
 <div id="page">
-<?php   include 'messageBoxes.phtml'; ?>
+<?php   FragMsgBoxes::render(); ?>
 <?php   G::timerStart('View: ' . G::$editor->view . '.phtml'); ?>
-<?php   include G::$editor->dirView . G::$editor->view . '.phtml'; ?>
+<?php   require G::$editor->dirView . G::$editor->view . '.phtml'; ?>
 <?php   G::timerStop('View: ' . G::$editor->view . '.phtml'); ?>
 </div>
 
-<?php   if ($menuRight) include 'menu.phtml'; ?>
+<?php   if ($menuRight) FragMenu::render(); ?>
 
 <div id="footer">
     <div class="links">

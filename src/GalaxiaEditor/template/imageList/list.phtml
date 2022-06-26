@@ -8,7 +8,7 @@ use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
-use GalaxiaEditor\render\view\ViewPagination;
+use GalaxiaEditor\frag\FragPagination;
 
 $classDel = 'pad padv';
 foreach (E::$section['gcImage']['gcDelete']['gcPerms'] ?? [] as $perm) {
@@ -89,7 +89,7 @@ foreach (E::$section['gcImage']['gcInsert']['gcPerms'] ?? [] as $perm) {
     </div>
 
 
-<?php ViewPagination::renderHeader(E::$pagination) ?>
+<?php FragPagination::renderHeader(E::$pagination) ?>
 
 
     <div class="load">
@@ -97,7 +97,7 @@ foreach (E::$section['gcImage']['gcInsert']['gcPerms'] ?? [] as $perm) {
     </div>
 
 
-<?php ViewPagination::renderFooter(E::$pagination) ?>
+<?php FragPagination::renderFooter(E::$pagination) ?>
 
 
 <?php   InputRender::renderFormEnd(); ?>

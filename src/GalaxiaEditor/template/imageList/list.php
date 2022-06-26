@@ -10,7 +10,7 @@ use Galaxia\Pagination;
 use Galaxia\Text;
 use GalaxiaEditor\Cache;
 use GalaxiaEditor\E;
-use GalaxiaEditor\render\Load;
+use GalaxiaEditor\model\ModelImage;
 
 
 // ajax
@@ -48,7 +48,7 @@ E::$imgItems = Cache::imageListItems(function() {
 
 // get in use items using cache
 
-$inUse = Load::imagesInUse();
+$inUse = ModelImage::imagesInUse();
 
 
 

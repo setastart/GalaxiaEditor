@@ -9,6 +9,7 @@ namespace GalaxiaEditor\model;
 use Galaxia\G;
 use Galaxia\Sql;
 use Galaxia\Text;
+use GalaxiaEditor\Cache;
 use GalaxiaEditor\E;
 
 
@@ -84,6 +85,12 @@ class ModelImage {
 
         return $inUse;
 
+    }
+
+    public static function imagesInUse(): array {
+        return Cache::imageListInUse(function() {
+            return ModelImage::inUse();
+        });
     }
 
 }

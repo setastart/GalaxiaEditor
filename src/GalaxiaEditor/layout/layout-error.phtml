@@ -7,12 +7,14 @@
 use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Text;
+use GalaxiaEditor\frag\FragMenu;
+use GalaxiaEditor\frag\FragMsgBoxes;
 
 
 // @formatter:off
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?=Text::h(G::lang())?>">
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -35,10 +37,10 @@ use Galaxia\Text;
 <div id="openboxes">
 </div>
 
-<?php   include 'menu.phtml'; ?>
+<?php   FragMenu::render(); ?>
 
 <div id="page">
-<?php   include 'messageBoxes.phtml'; ?>
+<?php   FragMsgBoxes::render(); ?>
     <div class="paper pad">
         <div class="paper-header pad">
             <h1>Error <?=Text::h(G::$errorCode)?></h1>

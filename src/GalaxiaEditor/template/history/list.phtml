@@ -8,7 +8,7 @@ use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
-use GalaxiaEditor\render\view\ViewPagination;
+use GalaxiaEditor\frag\FragPagination;
 
 // @formatter:off
 ?>
@@ -19,7 +19,7 @@ use GalaxiaEditor\render\view\ViewPagination;
     </div>
 
 
-<?php   ViewPagination::renderHeader(E::$pagination) ?>
+<?php   FragPagination::renderHeader(E::$pagination) ?>
 
 
     <div class="load">
@@ -27,7 +27,7 @@ use GalaxiaEditor\render\view\ViewPagination;
     </div>
 
 
-<?php   ViewPagination::renderFooter(E::$pagination) ?>
+<?php   FragPagination::renderFooter(E::$pagination) ?>
 
 
 <?php   InputRender::renderFormEnd(); ?>

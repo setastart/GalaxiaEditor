@@ -9,7 +9,7 @@ use Galaxia\Pagination;
 use Galaxia\Text;
 use GalaxiaEditor\E;
 use GalaxiaEditor\input\InputRender;
-use GalaxiaEditor\render\view\ViewPagination;
+use GalaxiaEditor\frag\FragPagination;
 
 
 
@@ -83,13 +83,13 @@ if (!isset($filterTexts)) {
 
 <?php   $pagination = new Pagination(1, 100); ?>
 <?php   $pagination->setItemCounts(200); ?>
-<?php ViewPagination::renderHeader($pagination) ?>
+<?php FragPagination::renderHeader($pagination) ?>
 
 
     <div id="imageSelector" class="load">
     </div>
 
 
-<?php ViewPagination::renderFooter($pagination) ?>
+<?php FragPagination::renderFooter($pagination) ?>
 
 <?php   InputRender::renderFormEnd(); ?>

@@ -37,7 +37,7 @@ G::timerStop('Locales');
 G::timerStart('Editor');
 G::initEditor(dirname(__DIR__));
 
-G::$editor->version = '5.40.2';
+G::$editor->version = '5.41.0';
 
 G::timerStop('Editor');
 

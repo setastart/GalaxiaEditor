@@ -11,7 +11,7 @@ use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\E;
-use GalaxiaEditor\render\Load;
+use GalaxiaEditor\model\ModelImage;
 
 
 E::$pgTitle = Text::t(E::$section['gcTitleSingle']) . ': ' . E::$imgSlug;
@@ -35,7 +35,7 @@ if (!AppImage::valid(G::dirImage(), E::$imgSlug)) {
 }
 
 
-$inUse = Load::imagesInUse()[E::$imgSlug] ?? [];
+$inUse = ModelImage::imagesInUse()[E::$imgSlug] ?? [];
 // geD($inUse);
 
 // load image and build inputs
