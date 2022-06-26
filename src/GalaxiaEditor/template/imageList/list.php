@@ -12,7 +12,7 @@ use GalaxiaEditor\render\Load;
 // ajax
 
 if (G::$req->xhr) {
-    G::$editor->layout = 'none';
+    G::$editor->layout = 'layout-none';
     G::$editor->view = 'imageList/results';
     if (($_POST['imageListType'] ?? '') == 'image-select') G::$editor->view = 'imageList/selectResults';
 }

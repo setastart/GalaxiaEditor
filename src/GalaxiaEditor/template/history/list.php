@@ -13,7 +13,7 @@ use GalaxiaEditor\E;
 // ajax
 
 if (G::$req->xhr) {
-    G::$editor->layout = 'none';
+    G::$editor->layout = 'layout-none';
     G::$editor->view   = 'history/results';
 }
 

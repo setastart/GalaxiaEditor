@@ -5,7 +5,7 @@ use Galaxia\G;
 use Galaxia\Scrape\Scrape;
 
 
-G::$editor->layout = 'none';
+G::$editor->layout = 'layout-none';
 
 $url = $_GET['url'] ?? '';
 $url = preg_replace('~\?.*~', '', $url);

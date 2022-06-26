@@ -128,7 +128,7 @@ foreach (E::$modules as E::$moduleKey => &E::$module) {
             include G::$editor->dirView . 'item/modules/fields.phtml';
             break;
         default:
-            geErrorPage(500, 'invalid phtml module');
+            G::errorPage(500, 'invalid phtml module');
             break;
     }
 }

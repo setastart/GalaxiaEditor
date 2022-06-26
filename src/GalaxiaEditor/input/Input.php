@@ -398,7 +398,7 @@ class Input {
 
 
 
-    public static function prepare($input, $extras): array {
+    static function prepare($input, $extras): array {
 
         if ($input['type'] == 'select' && isset($input['geExtraOptions'])) {
             foreach ($input['geExtraOptions'] as $key => $val) {

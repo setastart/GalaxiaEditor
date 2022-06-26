@@ -23,7 +23,7 @@ foreach (E::$modules as $module) {
             }
             break;
         default:
-            geErrorPage(500, 'delete post - invalid module');
+            G::errorPage(500, 'delete post - invalid module');
             break;
     }
 }

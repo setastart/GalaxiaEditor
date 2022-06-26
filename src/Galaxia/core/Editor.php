@@ -29,7 +29,7 @@ class Editor {
 
     public string $logic     = '';
     public string $view      = '';
-    public string $layout    = 'layout-default';
+    public string $layout    = 'layout-logged-out';
     public string $homeSlug  = 'page';
     public string $imageSlug = 'image';
 

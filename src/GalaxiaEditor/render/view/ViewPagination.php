@@ -10,7 +10,7 @@ use Galaxia\Text;
 
 class ViewPagination {
 
-    public static function renderHeader(Pagination $pagination): void {
+    static function renderHeader(Pagination $pagination): void {
         if (!$pagination->active) return;
 
 // @formatter:off ?>
@@ -44,7 +44,7 @@ class ViewPagination {
 
 
 
-    public static function renderFooter(Pagination $pagination): void {
+    static function renderFooter(Pagination $pagination): void {
         if (!$pagination->active) return;
 
 // @formatter:off ?>
@@ -71,7 +71,7 @@ class ViewPagination {
 
 
 
-    public static function renderHiddenData(Pagination $pagination): void {
+    static function renderHiddenData(Pagination $pagination): void {
 
 // @formatter:off ?>
     <div class="results hide"

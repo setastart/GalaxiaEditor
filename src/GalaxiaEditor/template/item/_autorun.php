@@ -275,7 +275,7 @@ foreach (E::$modules as E::$moduleKey => &E::$module) {
             include G::$editor->dirView . 'item/modules/fields.php';
             break;
         default:
-            geErrorPage(500, 'invalid module');
+            G::errorPage(500, 'invalid module');
             break;
     }
 }

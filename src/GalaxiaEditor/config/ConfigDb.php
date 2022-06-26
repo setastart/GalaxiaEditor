@@ -62,12 +62,12 @@ class ConfigDb {
                 if (in_array($col, self::RESERVED_COLUMNS)) {
                     Flash::error('schema: ' . $table . '/' . $col . ' - Reserved column name. Reserved names: [' . implode(', ', self::RESERVED_COLUMNS) . ']');
                     geD($table);
-                    geErrorPage(500, 'config schema error');
+                    G::errorPage(500, 'config schema error');
                 }
                 if ($colSchema['DATA_TYPE'] == 'text' && $colSchema['IS_NULLABLE'] == 'NO') {
                     Flash::error('schema: ' . $table . '/' . $col . ' - TEXT column should have IS_NULLABLE set');
                     geD($table);
-                    geErrorPage(500, 'config schema error');
+                    G::errorPage(500, 'config schema error');
                 }
             }
         }
@@ -286,17 +286,17 @@ class ConfigDb {
             if ($input['nullable'] && $dbSchema[$table][$col]['IS_NULLABLE'] == 'NO') {
                 Flash::error($errorString . ': input IS nullable but db table column is NOT.');
                 geD($table, $col);
-                geErrorPage(500, 'config schema error');
+                G::errorPage(500, 'config schema error');
             } else if (!$input['nullable'] && $dbSchema[$table][$col]['IS_NULLABLE'] == 'YES') {
                 Flash::error($errorString . ': input is NOT nullable but db table column IS.');
                 geD($table, $col);
-                geErrorPage(500, 'config schema error');
+                G::errorPage(500, 'config schema error');
             }
         } else {
             if ($dbSchema[$table][$col]['IS_NULLABLE'] == 'YES') {
                 Flash::error($errorString . ': input is NOT nullable but db table column IS.');
                 geD($table, $col);
-                geErrorPage(500, 'config schema error');
+                G::errorPage(500, 'config schema error');
             }
         }
     }
@@ -306,7 +306,7 @@ class ConfigDb {
         if (!isset($dbSchema[$table])) {
             Flash::error($errorString . ': db table missing.');
             geD($table);
-            geErrorPage(500, 'config schema error');
+            G::errorPage(500, 'config schema error');
         }
     }
 
@@ -326,7 +326,7 @@ class ConfigDb {
             $errorString .= '/' . $table . '/' . $col;
             Flash::error($errorString . ': db column missing.');
             geD('Table: ' . $table, 'Col: ' . $col);
-            geErrorPage(500, 'config schema error');
+            G::errorPage(500, 'config schema error');
         }
     }
 
@@ -346,7 +346,7 @@ class ConfigDb {
             $errorString .= '/' . $table . '/' . $col;
             Flash::error($errorString . ': query column missing.');
             geD('Table: ' . $table, 'Col: ' . $col);
-            geErrorPage(500, 'config schema error');
+            G::errorPage(500, 'config schema error');
         }
     }
 

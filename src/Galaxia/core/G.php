@@ -213,17 +213,42 @@ class G {
 
 
 
-    static function loadTranslations(): void {
+    static function loadTranslations(bool $withEditor = false): void {
         self::timerStart('Translations');
 
-        if (isset(self::$editor) && file_exists(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'))
-            Text::$translation = array_merge(Text::$translation, include(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'));
+        if ($withEditor) {
+            Text::$translation = self::cacheArray(
+                scope: 'app',
+                level: 1,
+                key: 'translation-with-editor',
+                f: function(): array {
+                    return array_merge(
+                        include(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'),
+                        include(self::$app->dir . 'config/translation.php')
+                    );
+                },
+                bypass: self::$req->cacheBypass,
+                write: self::$req->cacheWrite,
+            );
+        } else {
+            Text::$translation = self::cacheArray(
+                scope: 'app',
+                level: 1,
+                key: 'translation-without-editor',
+                f: fn(): array => include(self::$app->dir . 'config/translation.php'),
+                bypass: self::$req->cacheBypass,
+                write: self::$req->cacheWrite,
+            );
+        }
 
-        if (isset(self::$app) && file_exists(self::$app->dir . 'config/translation.php'))
-            Text::$translation = array_merge(Text::$translation, include(self::$app->dir . 'config/translation.php'));
-
-        if (isset(self::$app) && file_exists(self::$app->dir . 'config/translationAlias.php'))
-            Text::$translationAlias = array_merge(Text::$translationAlias, include(self::$app->dir . 'config/translationAlias.php'));
+        Text::$translation = self::cacheArray(
+            scope: 'app',
+            level: 1,
+            key: 'translationAlias',
+            f: fn(): array => include(self::$app->dir . 'config/translationAlias.php'),
+            bypass: self::$req->cacheBypass,
+            write: self::$req->cacheWrite,
+        );
 
         self::timerStop('Translations');
     }
@@ -778,7 +803,7 @@ class G {
         return self::$me->loggedIn ?? false;
     }
 
-    public static function versionQuery(): string {
+    static function versionQuery(): string {
         if (G::$req->cacheBypass || G::isDevEnv()) {
             return '?ver=' . $_SERVER['REQUEST_TIME'];
         }

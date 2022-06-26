@@ -8,7 +8,7 @@ use Galaxia\Scrape\Vimeo;
 use Galaxia\Text;
 
 
-G::$editor->layout = 'none';
+G::$editor->layout = 'layout-none';
 
 $id = Text::h($_GET['id']) ?? '';
 $r  = Vimeo::getVideoFromId($id);

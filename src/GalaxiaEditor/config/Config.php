@@ -4,17 +4,23 @@
 namespace GalaxiaEditor\config;
 
 
+use Galaxia\ArrayShape;
 use Galaxia\Flash;
+use Galaxia\G;
 use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
+use function array_intersect;
+use function array_key_first;
 
 
 class Config {
 
-    // GalaxiaEditor config proto array
-    // defines an array schema the website config must follow
-    // gcExample:  galaxia config
-    // gcpExample: galaxia config proto
+    /** GalaxiaEditor config proto array
+     * defines an array schema the website config must follow
+     * prefixes:
+     *   gc:  galaxia config
+     *   gcp: galaxia config proto
+     */
     public const PROTO_GC = [
         'gcpSeparator' => [
             'gcPageType' => 'string',
@@ -169,14 +175,14 @@ class Config {
             'gcSelect'        => 'tableWithCols',
             'gcSelectLJoin'   => 'tableWithCols',
             'gcSelectOrderBy' => 'tableWithColsOrder',
-            'gcSelectExtra'   => 'tableWithCols',
-            'gcUpdate'        => 'tableWithCols',
+            'gcSelectExtra' => 'tableWithCols',
+            'gcUpdate'      => 'tableWithCols',
 
             '?gcFieldOrder' => 'stringArray',
 
-            'gcInputs'            => 'inputs',
-            'gcInputsWhereCol'    => 'inputsWhereCol',
-            'gcInputsWhereParent' => 'inputsWhereParent',
+            'gcInputs'              => 'inputs',
+            'gcInputsWhereCol'      => 'inputsWhereCol',
+            'gcInputsWhereParent'   => 'inputsWhereParent',
         ],
 
         'gcpModuleMultiple' => [
@@ -189,9 +195,11 @@ class Config {
 
 
 
+    static function load(): array {
+        $r = require G::dir() . 'config/editor.php';
 
-    static function validate(): void {
-        foreach (E::$conf as $key => $confPage) {
+        G::timerStart('Config validation');
+        foreach ($r as $key => $confPage) {
             if (!isset($confPage['gcPageType']))
                 Config::geConfigParseError($key . '/gcPageType missing.');
 
@@ -204,6 +212,90 @@ class Config {
 
             Config::geConfigParse($key, Config::PROTO_GC[$confPage['gcPageType']], $confPage, '');
         }
+        G::timerStop('Config validation');
+
+
+        // disable input modifiers(gcInputsWhere, gcInputsWhereCol, gcInputsWhereParent) without perms by setting their type to 'none'
+        foreach ($r as $rootSlug => $confPage) {
+            foreach ($confPage['gcItem']['gcInputsWhere'] ?? [] as $whereKey => $where) {
+                foreach ($where as $whereVal => $inputs) {
+                    foreach ($inputs as $inputKey => $input) {
+                        if (!isset($input['gcPerms'])) continue;
+                        if (!array_intersect($input['gcPerms'] ?? [], G::$me->perms)) {
+                            $r[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
+                        }
+                    }
+                }
+            }
+            foreach ($confPage['gcItem']['gcModules'] ?? [] as $moduleKey => $module) {
+                foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
+                    foreach ($inputs as $inputKey => $input) {
+                        if (!isset($input['gcPerms'])) continue;
+                        if (!array_intersect($input['gcPerms'] ?? [], G::$me->perms)) {
+                            $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
+                        }
+                    }
+                }
+                foreach ($module['gcInputsWhereParent'] as $parentKey => $parent) {
+                    foreach ($parent as $parentVal => $fields) {
+                        foreach ($fields as $fieldKey => $inputs) {
+                            foreach ($inputs as $inputKey => $input) {
+                                if (!isset($input['gcPerms'])) continue;
+                                if (!array_intersect($input['gcPerms'] ?? [], G::$me->perms)) {
+                                    $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        G::timerStart('removePermsRecursive()');
+        ArrayShape::removePermsRecursive($r, G::$me->perms);
+        G::timerStop('removePermsRecursive()');
+
+        G::timerStart('languify');
+        ArrayShape::languify($r, array_keys(G::locales()), G::$me->perms);
+        G::timerStop('languify');
+
+
+        // Remove inputs without a type
+        foreach ($r as $rootSlug => $confPage) {
+            foreach ($confPage['gcItem']['gcInputs'] ?? [] as $inputKey => $input) {
+                if (!isset($input['type'])) unset($r[$rootSlug]['gcItem']['gcInputs'][$inputKey]);
+            }
+            foreach ($confPage['gcItem']['gcInputsWhere'] ?? [] as $whereKey => $where) {
+                foreach ($where as $whereVal => $inputs) {
+                    foreach ($inputs as $inputKey => $input) {
+                        if (!isset($input['type'])) $r[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
+                    }
+                }
+            }
+
+            foreach ($confPage['gcItem']['gcModules'] ?? [] as $moduleKey => $module) {
+                foreach ($module['gcInputs'] as $inputKey => $input) {
+                    if (!isset($input['type'])) $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputs'][$inputKey]['type'] = 'none';
+                }
+                foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
+                    foreach ($inputs as $inputKey => $input) {
+                        if (!isset($input['type'])) $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
+                    }
+                }
+                foreach ($module['gcInputsWhereParent'] as $parentKey => $parent) {
+                    foreach ($parent as $parentVal => $fields) {
+                        foreach ($fields as $fieldKey => $inputs) {
+                            foreach ($inputs as $inputKey => $input) {
+                                if (!isset($input['type'])) $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $r;
     }
 
 
@@ -551,7 +643,7 @@ class Config {
 
     private static function geConfigParseError(): void {
         geD(func_get_args());
-        geErrorPage(500, 'config error');
+        G::errorPage(500, 'config error');
     }
 
 
@@ -565,5 +657,18 @@ class Config {
 
         return null;
     }
+
+
+    static function loadSlugs(): void {
+        G::$editor->homeSlug ??= array_key_first(E::$conf);
+        foreach (E::$conf as $rootSlug => $confPage) {
+            if ($confPage['gcPageType'] == 'gcpImages') {
+                G::$editor->imageSlug = $rootSlug;
+                break;
+            }
+        }
+    }
+
+
 
 }

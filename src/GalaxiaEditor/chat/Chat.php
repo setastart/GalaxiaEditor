@@ -17,7 +17,7 @@ class Chat {
     public static mixed    $post;
     public static RedisCli $redis;
 
-    public static function exitArrayToJson($r): never {
+    static function exitArrayToJson($r): never {
         header('Content-Type: application/json');
         exit(json_encode($r, JSON_PRETTY_PRINT));
     }

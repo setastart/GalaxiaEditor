@@ -1,11 +1,7 @@
-# OSX #
-.DS_Store
-Icon
-
 # Composer
 vendor/
 
-# App
+# Editor
 design/
 .idea/
 *.private.*

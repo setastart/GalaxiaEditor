@@ -759,7 +759,7 @@ HTML;
      * @param string $size
      * @return int
      */
-    public static function bytesAbbrToInt(string $size): int {
+    static function bytesAbbrToInt(string $size): int {
         $unit = preg_replace('/[^bkmgtpezy]/i', '', $size);
 
         $size = preg_replace('/[^0-9\\.]/', '', $size);

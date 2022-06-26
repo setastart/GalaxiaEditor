@@ -20,6 +20,14 @@ use Galaxia\G;
 
 class Cache {
 
+    static function route(): string {
+        return G::$app->dir . 'editor-99-fastroute-' . G::$me->id;
+    }
+
+    static function config(callable $f): array {
+        return G::cacheArray('editor', 1, 'config', $f, G::$req->cacheBypass);
+    }
+
     static function imageListItems(callable $f): array {
         return G::cacheArray('editor', 2, 'imageList-' . E::$pgSlug . '-items', $f, G::$req->cacheBypass);
     }

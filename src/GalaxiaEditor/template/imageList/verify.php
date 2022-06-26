@@ -5,7 +5,7 @@ use Galaxia\G;
 use Galaxia\Text;
 
 
-G::$editor->layout = 'none';
+G::$editor->layout = 'layout-none';
 
 $fileNameRaw = $_GET['filename'];
 

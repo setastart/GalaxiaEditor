@@ -11,7 +11,7 @@ use Galaxia\Sql;
 
 class History {
 
-    public static function insert($uniqueId, $tabName, $tabId, $inputKey, $fieldKey, $action, $content, $userId): ?bool {
+    static function insert($uniqueId, $tabName, $tabId, $inputKey, $fieldKey, $action, $content, $userId): ?bool {
         // $action == 0: delete
         // $action == 1: save
         // $action == 2: update

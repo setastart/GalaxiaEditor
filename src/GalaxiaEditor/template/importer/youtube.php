@@ -7,7 +7,7 @@ use Galaxia\Scrape\Youtube;
 use Galaxia\Text;
 
 
-G::$editor->layout = 'none';
+G::$editor->layout = 'layout-none';
 
 
 // $r = Youtube::getPlaylistVideos('https://www.youtube.com/playlist?list=PLi5BhhFIMLyjhkd2Vj-VjHXtWUM2oQNIm');
