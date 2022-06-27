@@ -12,7 +12,7 @@ use Galaxia\G;
 class Cache {
 
     static function route(): string {
-        return G::$app->dir . 'editor-99-fastroute-' . G::$me->id;
+        return G::$app->dirCache . 'editor/editor-99-fastroute-' . G::$me->id;
     }
 
     static function config(callable $f): array {

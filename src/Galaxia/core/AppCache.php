@@ -29,7 +29,7 @@ class AppCache {
 
         if (!$bypass && file_exists($cacheFile)) {
 
-            $timerName = 'Cache HIT: ' . $cacheName;
+            $timerName = 'Cache arr HIT: ' . $cacheName;
             G::timerStart($timerName);
 
             $result = include $cacheFile;
@@ -37,7 +37,7 @@ class AppCache {
         } else {
 
             $cacheType = $bypass ? 'BYPASS' : 'MISS';
-            $timerName = 'Cache ' . $cacheType . ': ' . $cacheName;
+            $timerName = 'Cache arr ' . $cacheType . ': ' . $cacheName;
             G::timerStart($timerName);
 
             $fCache = function() use ($f, $write, $cacheFile) {
@@ -58,7 +58,7 @@ class AppCache {
         }
 
         if (!is_array($result)) {
-            Flash::error('Cache: invalid result');
+            Flash::error('Cache arr: invalid result');
         }
 
         G::timerStop($timerName);
@@ -95,7 +95,7 @@ class AppCache {
         } else {
 
             $cacheType = $bypass ? 'BYPASS' : 'MISS';
-            $timerName = 'Cache raw ' . $cacheType . ': ' . $cacheName;
+            $timerName = 'Cache str ' . $cacheType . ': ' . $cacheName;
             G::timerStart($timerName);
 
             $fCache = function() use ($f, $write, $cacheFile) {
@@ -116,7 +116,7 @@ class AppCache {
         }
 
         if (!is_string($result)) {
-            Flash::error('Cache raw: invalid result');
+            Flash::error('Cache str: invalid result');
         }
 
         G::timerStop($timerName);

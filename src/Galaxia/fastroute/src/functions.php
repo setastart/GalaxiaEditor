@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Galaxia\FastRoute;
 
+use Galaxia\G;
 use LogicException;
 use RuntimeException;
 use function assert;
@@ -53,13 +54,17 @@ if (! function_exists('Galaxia\FastRoute\simpleDispatcher')) {
         }
 
         if (! $options['cacheDisabled'] && file_exists($options['cacheFile'])) {
+            G::timerStart('FastRoute HIT');
             $dispatchData = require $options['cacheFile'];
             if (! is_array($dispatchData)) {
                 throw new RuntimeException('Invalid cache file "' . $options['cacheFile'] . '"');
             }
-
+            G::timerStop('FastRoute HIT');
             return new $options['dispatcher']($dispatchData);
         }
+
+        $timerName = $options['cacheDisabled'] ? 'FastRoute BYPASS' : 'FastRoute MISS';
+        G::timerStart($timerName);
 
         $routeCollector = new $options['routeCollector'](
             new $options['routeParser'](),
@@ -76,6 +81,7 @@ if (! function_exists('Galaxia\FastRoute\simpleDispatcher')) {
             );
         }
 
+        G::timerStart($timerName);
         return new $options['dispatcher']($dispatchData);
     }
 }

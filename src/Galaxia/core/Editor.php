@@ -6,7 +6,6 @@
 
 namespace Galaxia;
 
-
 class Editor {
 
     public bool   $debug   = false;
@@ -104,7 +103,6 @@ class Editor {
         ];
     }
 
-
     static function linkToItem(string $title, string $root, string $id): array {
         return [
             'gcPageType'   => 'gcpLinkToItem',
@@ -114,8 +112,7 @@ class Editor {
         ];
     }
 
-
-    static function separator() {
+    static function separator(): array {
         return ['gcPageType' => 'gcpSeparator'];
     }
 

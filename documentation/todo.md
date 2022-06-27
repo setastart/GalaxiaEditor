@@ -1,4 +1,6 @@
-# Editor
+# GalaxiaEditor todo list
+- check for missing and unused translations
+- gcVisit for sub sub pages
 - input
     - checkbox
     - color picker
@@ -10,21 +12,10 @@
     - item tabs (when gcItem is and array of gcItems)
 - files/file
     - uploaded files (pdf, others?)
-
-
-# Galaxia
-## Errors and messages
-- move error.php into Msg class 
-    - ??? static methods receive $user as parameter?
-- use fallback when $_SESSION is unavailable
-    - work in CLI 
-        - messages are only available until end of current script
-        - display messages on script end
-    - work on logged out user
-        - messages are only available until end of current script
-        - ??? make fallback for redirects storing messages in a cookie?
-        
-
-- ??? gcSelectLJoin[$table][$cols] could be gcSelectLJoin[$table] = $col because I'm never using more than one col
-
+- ajax - slug on input check if unique constrain exists (existing image or page)
+    - check for unique in field module (not only unique for current page, but for all pages)
+- statistics by parsing daily logs and writing to host_yyyy-mm-dd.json
+    - parse logs, use get_browser() and geoip
+- filters for chat (using js)
+- filters for history (using file cache as other lists)
 - Remove dependence on $_SERVER everywhere, so everything it works on CLI.

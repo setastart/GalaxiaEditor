@@ -681,14 +681,6 @@ class G {
 
 
 
-    /** @deprecated  */
-    static function cache(
-        string   $scope, int $level, string $key,
-        callable $f, bool $bypass = null, bool $write = null
-    ): array {
-        return AppCache::array(self::dirCache(), $scope, $level, $key, $f, $bypass, $write);
-    }
-
     static function cacheArray(
         string   $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null

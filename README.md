@@ -11,6 +11,54 @@ Galaxia is a web publishing platform designed for:
 
 
 
+# Philosophy
+The general idea is to separate the editor from the website.
+
+
+# Theory of operation
+When a person uses GalaxiaEditor to edit the content of the website, the following may happen:
+- The MySQL database of the website is updated
+- Images are uploaded, resized, or deleted from website/var/media/image directory of the website
+- Cache files are generated or deleted from website/var/cache
+- The Redis database is updated
+
+
+# Dependencies
+GalaxiaEditor is built on PHP and tested on the latest active PHP version (currently PHP 8.1)
+MySQL 8.0
+Redis
+LibVips
+A working web server such as NGINX
+
+
+
+# Prerequisites to build a website that uses GalaxiaEditor to edit the content
+- Know PHP
+- Know Linux server administration
+- 
+
+# Installation
+- 
+
+# Screenshots
+
+# Websites that use GalaxiaEditor
+Visit setastart.com
+
+
+#  
+
+
+
+# Caching
+
+
+# Licenses
+GalaxiaEditor is licensed under the European Union Public License version 1.2 (EUPL-1.2)
+It contains code from  
+
+
+
 # 2. Glossary
 
 - Reader:

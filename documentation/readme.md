@@ -1,24 +1,3 @@
-# todo galaxia
-
-
-
-# todo GalaxiaEditor
-
-- check for missing and unused translations
-- gcVisit for sub sub pages
-- ajax - slug on input check if unique constrain exists (existing image or page)
-    - check for unique in field module (not only unique for current page, but for all pages)
-- page previews
-- login password reset and email confirmations
-    - https://github.com/WICG/change-password-url
-- statistics by parsing daily logs and writing to host_yyyy-mm-dd.json
-    - parse logs, use get_browser() and geoip
-- filters for chat (using js)
-- filters for history (using file cache as other lists)
-
-
-
-
 
 
 # 1. About Galaxia
