@@ -13,6 +13,7 @@ use mysqli_stmt;
 use Throwable;
 use function curl_close;
 use function debug_backtrace;
+use function dirname;
 use function escapeshellcmd;
 use function preg_match;
 use function str_starts_with;
@@ -215,7 +216,7 @@ class G {
                 key: 'translation-with-editor',
                 f: function(): array {
                     return array_merge(
-                        include(self::$editor->dir . 'src/GalaxiaEditor/config/translation.php'),
+                        include(dirname(__DIR__, 2) . '/GalaxiaEditor/config/translation.php'),
                         include(self::$app->dir . 'config/translation.php')
                     );
                 },

@@ -147,7 +147,12 @@ foreach (E::$module['gcInputsWhereParent'] as $parentName => $parent) {
                 $input = array_replace_recursive(E::$module['gcInputsWhereCol'][$fieldKey][$inputKey] ?? E::$module['gcInputs'][$inputKey], $inputOriginal);
                 $input = Input::prepare($input, $extras);
 
-                $input['label']      = $inputOriginal['label'] ?? E::$module['gcInputsWhereCol'][$fieldKey][$inputKey]['label'] ?? E::$module['gcInputs'][$inputKey]['label'] ?? E::$section['gcColNames'][$inputKey] ?? $fieldKey ?? $inputKey;
+                if (isset(E::$module['gcModuleMultiple'][$fieldKey])) {
+                    $input['label'] = $inputOriginal['label'] ?? E::$module['gcInputsWhereCol'][$fieldKey][$inputKey]['label'] ?? E::$module['gcInputs'][$inputKey]['label'] ?? E::$section['gcColNames'][$inputKey] ?? $inputKey;
+                } else {
+                    $input['label'] = $inputOriginal['label'] ?? E::$module['gcInputsWhereCol'][$fieldKey][$inputKey]['label'] ?? E::$module['gcInputs'][$inputKey]['label'] ?? E::$section['gcColNames'][$inputKey] ?? $fieldKey ?? $inputKey;
+                }
+
                 $input['nameFromDb'] = $inputKey;
                 $input['value']      = '';
                 $input['name']       = 'modules[' . E::$moduleKey . '][' . $fieldKey . '][new-0][' . $inputKey . ']';
