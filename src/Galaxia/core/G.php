@@ -233,7 +233,7 @@ class G {
             );
         }
 
-        Text::$translation = self::cacheArray(
+        Text::$translationAlias = self::cacheArray(
             scope: 'app',
             level: 1,
             key: 'translationAlias',
