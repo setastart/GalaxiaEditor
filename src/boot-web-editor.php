@@ -37,7 +37,7 @@ G::timerStop('Locales');
 G::timerStart('Editor');
 G::initEditor(dirname(__DIR__));
 
-G::$editor->version = '5.44.3';
+G::$editor->version = '5.45.0';
 
 G::timerStop('Editor');
 
@@ -48,6 +48,7 @@ G::timerStop('Editor');
 // init me
 
 G::login();
+G::$me->updateLastOnline();
 
 if (G::isDevDebug()) {
     G::$req->cacheBypass = true;

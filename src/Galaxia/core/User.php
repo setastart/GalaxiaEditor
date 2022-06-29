@@ -86,6 +86,7 @@ class User {
         $timeLastOnline = '';
         $timeCreated    = '';
 
+        $table = Text::q($this->tableName);
         $stmt = G::prepare("
             SELECT
                 _geUserId,
@@ -94,7 +95,7 @@ class User {
                 perms,
                 UNIX_TIMESTAMP(timestampLastOnline),
                 UNIX_TIMESTAMP(timestampCreated)
-            FROM $this->tableName
+            FROM $table
             WHERE _geUserId = ?
         ");
         $stmt->bind_param('d', $this->id);
@@ -114,14 +115,6 @@ class User {
             $this->timeLastOnline = $timeLastOnline ?? '';
             $this->timeCreated    = $timeCreated;
 
-            $stmt = G::prepare("
-                UPDATE $this->tableName
-                SET timestampLastOnline = NOW()
-                WHERE _geUserId = ?
-            ");
-            $stmt->bind_param('d', $userId);
-            $stmt->execute();
-            $stmt->close();
 
             $this->loadOptions();
         }
@@ -129,12 +122,28 @@ class User {
         return $return;
     }
 
+    public function updateLastOnline(): void {
+        if (!$this->loggedIn) return;
+
+        $this->timeLastOnline = time();
+
+        $table = Text::q($this->tableName);
+        $stmt = G::prepare("
+            UPDATE $table
+            SET timestampLastOnline = FROM_UNIXTIME(?)
+            WHERE _geUserId = ?
+        ");
+        $stmt->bind_param('sd', $this->timeLastOnline, $this->id);
+        $stmt->execute();
+        $stmt->close();
+    }
 
     public function setName($name): void {
         if (!$this->loggedIn) return;
 
+        $table = Text::q($this->tableName);
         $stmt = G::prepare("
-            UPDATE $this->tableName
+            UPDATE $table
             SET name = ?
             WHERE _geUserId = ?
         ");
@@ -149,13 +158,13 @@ class User {
 
         $optionName       = '';
         $optionValue      = '';
-        $optionsTableName = $this->tableName . 'Option';
+        $optionsTable = Text::q($this->tableName . 'Option');
 
         $stmt = G::prepare("
             SELECT
                 fieldKey,
                 value
-            FROM $optionsTableName
+            FROM $optionsTable
             WHERE _geUserId = ?
         ");
         $stmt->bind_param('d', $this->id);
@@ -177,10 +186,10 @@ class User {
             exit();
         }
 
-        $optionsTableName = $this->tableName . 'Option';
+        $optionsTable = Text::q($this->tableName . 'Option');
 
         $stmt = G::prepare("
-            INSERT INTO $optionsTableName (
+            INSERT INTO $optionsTable (
                 _geUserId,
                 fieldKey,
                 value

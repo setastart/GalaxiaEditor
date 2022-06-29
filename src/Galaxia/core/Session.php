@@ -44,7 +44,7 @@ class Session implements SessionHandlerInterface {
     private string $tableName;
 
     function __construct($tableName) {
-        $this->tableName = $tableName . 'Session';
+        $this->tableName = Text::q($tableName . 'Session');
     }
 
     public function open($savePath, $sessionName): bool {
