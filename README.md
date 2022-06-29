@@ -1,18 +1,18 @@
 # <img style="margin-right: 0.2em;" src="public/edit/favicon.png" alt="Setastart Logo" width="48" height="48"> GalaxiaEditor 
 
-GalaxiaEditor is a **Content Management System** (CMS) or a Website **Content Editor**.  
+GalaxiaEditor is a **Content Management System** (CMS) or a Website **Content Editor**.
 
-It is designed to be **easy to use**, **_very fast_**, and to make content editing a **great** and **effortless experience**. 
+It is designed to be **easy to use**, **_very fast_**, and to make content editing a **great** and **effortless experience**.
 
 ---
 
 GalaxiaEditor is developed by [**Setastart**](https://setastart.com) in Spain and Portugal.
 
-We make **multilingual**, **_super fast_**, **accessible**, 100% **custom** websites with **proven SEO results** that our clients edit with GalaxiaEditor.  
+We make **multilingual**, **_super fast_**, **accessible**, 100% **custom** websites with **proven SEO results** that our clients edit with GalaxiaEditor.
 
 Visit our website to read more about our work and to hire our services:  
 
-[<img src="public/edit/gfx/icon/icon-setastart-64.png" alt="Setastart Logo" width="24" height="24"> setastart.com](https://setastart.com)
+[<img src="public/edit/gfx/icon/icon-setastart-64.png" alt="Setastart Logo" width="32" height="32"> setastart.com](https://setastart.com)
 
 ---
 
@@ -26,7 +26,8 @@ Visit our website to read more about our work and to hire our services:
   - Integrated in the editor, without needing external tools.
   - Everything is localisable, including image alt text and slugs.
 - Upload, reorder and connect **hundreds of images in minutes**.
-- **WYSIWYG** text editor based on [Basecamp Trix](https://trix-editor.org/). The editor expands automatically to fit the text, so there is only one scrollbar in the page and all the content text is always visible.
+- **WYSIWYG** text editor based on [Basecamp Trix](https://trix-editor.org/).  
+  The editor expands automatically to fit the text, so there is only one scrollbar in the page and all the content text is always visible.
 - **Simple**, **fast** and **intuitive navigation** designed for each website.
 - **Instant** and **powerful content filtering**.
 - Diversify your content and connect all kinds of things easily with **multiple fields**.
@@ -88,12 +89,13 @@ In order to develop websites for **GalaxiaEditor**, you are required to know pro
 Tested operating systems are **MacOS** for development, and **Linux** for development and production.  
 GalaxiaEditor is built on **PHP 8** and tested on the latest active PHP version (currently PHP 8.1).
 
+
 ### Requirements and dependencies
 
 - PHP 8
 - MySQL 8.0
 - Redis
-- libvips
+- [libvips](https://github.com/libvips/php-vips-ext)
 - [php-vips-ext](https://github.com/libvips/php-vips-ext)
 - NGINX
 
@@ -108,5 +110,17 @@ When a person uses GalaxiaEditor to edit the content of a website, **one** or **
 - The Redis database is updated. Each website uses its own prefix;
 
 
+## License
 
-© Copyright 2017-2022 Ino Detelić & Zaloa G. Ramos (setastart.com)
+GalaxiaEditor is licensed under the European Union Public License version 1.2 (EUPL-1.2)
+
+It contains open source code from:
+- [PHP Redis implementation](https://github.com/ziogas/PHP-Redis-implementation)
+- [FastRoute](https://github.com/nikic/FastRoute)
+- [Basecamp Trix](https://github.com/basecamp/trix)
+
+
+
+## Copyright
+
+© 2017-2022 Ino Detelić & Zaloa G. Ramos (setastart.com)
