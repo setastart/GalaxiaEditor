@@ -197,8 +197,8 @@ a.menu-item:focus {
     border: 1px solid #878;
 }
 #footer .icon {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
     margin-right: 6px;
     filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
     vertical-align: -5px;
@@ -629,7 +629,7 @@ a.row:hover, .row a:hover {
     height: 4vw;
     min-height: 30px;
     max-height: 50px;
-    background: url('/edit/gfx/bg-transparency.png') center;
+    background: url('/edit/gfx/btn/bg-checkers.png') center;
     background-size: 15px;
     border-radius: 3px;
 }
@@ -663,7 +663,7 @@ a.row:hover, .row a:hover {
     max-width: 300px;
     width: initial;
     height: auto;
-    background: #fff url('/edit/gfx/bg-transparency.png') center;
+    background: #fff url('/edit/gfx/btn/bg-checkers.png') center;
     background-size: 15px;
 }
 .row .col-thumb:not(.single):not(:hover) > img {
@@ -690,7 +690,7 @@ a.row:hover, .row a:hover {
 .imageSelectItem > figure {
     width: 244px;
     height: 165px;
-    background: url('/edit/gfx/bg-transparency.png') center;
+    background: url('/edit/gfx/btn/bg-checkers.png') center;
     background-size: 15px;
 }
 .imageSelectItem > .waiting img,
@@ -960,7 +960,7 @@ a.row:hover, .row a:hover {
     height: 165px;
     max-height: 165px;
     border: none;
-    background: url('/edit/gfx/bg-transparency.png') center;
+    background: url('/edit/gfx/btn/bg-checkers.png') center;
     background-size: 15px;
 }
 

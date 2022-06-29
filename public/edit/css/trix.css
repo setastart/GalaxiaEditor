@@ -26,6 +26,7 @@ trix-editor > div,
 trix-editor > p,
 trix-editor > h1,
 trix-editor > h2,
+trix-editor > h3,
 trix-editor > pre,
 trix-editor > blockquote,
 trix-editor > ul,
@@ -47,6 +48,7 @@ trix-editor > *:last-child {
 trix-editor > p::before,
 trix-editor > h1::before,
 trix-editor > h2::before,
+trix-editor > h3::before,
 trix-editor > pre::before,
 trix-editor > blockquote::before,
 trix-editor > ul::before,
@@ -63,10 +65,13 @@ trix-editor > p::before {
     content: 'P';
 }
 trix-editor > h1::before {
-    content: 'H1';
+    content: 'T1';
 }
 trix-editor > h2::before {
-    content: 'H2';
+    content: 'T2';
+}
+trix-editor > h3::before {
+    content: 'T3';
 }
 trix-editor pre {
     font-family: monospace;
@@ -246,6 +251,7 @@ trix-toolbar .trix-button--icon-redo::before                   { background-imag
 
 trix-toolbar .trix-button--icon-heading-1::before              { background-image: url(/edit/gfx/gtrix/gtrix-h1.png); }
 trix-toolbar .trix-button--icon-heading-2::before              { background-image: url(/edit/gfx/gtrix/gtrix-h2.png); }
+trix-toolbar .trix-button--icon-heading-3::before              { background-image: url(/edit/gfx/gtrix/gtrix-h3.png); }
 trix-toolbar .trix-button--icon-quote::before                  { background-image: url(/edit/gfx/gtrix/gtrix-quote.png); }
 trix-toolbar .trix-button--icon-code::before                   { background-image: url(/edit/gfx/gtrix/gtrix-code.png); }
 trix-toolbar .trix-button--icon-bullet-list::before            { background-image: url(/edit/gfx/gtrix/gtrix-list-bullet.png); }

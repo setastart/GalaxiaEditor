@@ -115,7 +115,6 @@ class User {
             $this->timeLastOnline = $timeLastOnline ?? '';
             $this->timeCreated    = $timeCreated;
 
-
             $this->loadOptions();
         }
 

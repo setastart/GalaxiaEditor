@@ -1,5 +1,19 @@
 
 
+
+
+
+
+# favicon
+convert -verbose favicon.png -define icon:auto-resize=16,32,64 -compress zip favicon.ico
+
+# pngquant
+pngquant --force --speed 1 --verbose --ext .png 256 -- ./public/edit/gfx/icon/*
+pngquant --force --speed 1 --verbose --ext .png 256 -- ./public/edit/gfx/btn/*
+pngquant --force --speed 1 --verbose --ext .png 256 -- ./public/edit/gtrix/btn/*
+
+
+
 # 1. About Galaxia
 
 Galaxia is a web publishing platform designed for:

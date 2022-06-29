@@ -1,23 +1,16 @@
-<h1 style="display: flex; justify-content: center; align-items: center">
-  <img style="margin-right: 0.3em;" src="public/edit/gfx/icon-galaxia.png" alt="Setastart Logo" width="64" height="64"> 
-  <span style="font-size: 1.3em">GalaxiaEditor</span>
-</h1>
+# <img style="margin-right: 0.2em;" src="public/edit/favicon.png" alt="Setastart Logo" width="48" height="48"> GalaxiaEditor 
 
 GalaxiaEditor is a **Content Management System** (CMS) or a Website **Content Editor**.  
 It is designed to be **easy to use**, **_very fast_**, and to make content editing a **great** and **effortless experience**. 
+
 
 ---
 
 GalaxiaEditor is developed by [**Setastart**](https://setastart.com) in Spain.  
 We make **multilingual**, **_super fast_**, **accessible**, 100% **custom** websites with **proven SEO results** that our clients edit with GalaxiaEditor.  
 Visit our website to read more about our work and to hire our services:
-<div style="display: flex; justify-content: center">
-  <a href="https://setastart.com" target="_blank" style="display: block; text-align: center; border: 1px solid #aaa; border-radius: 10px; padding: 6px 0.8em 2px;">
-    <img src="public/edit/gfx/icon-setastart-green-64.png" alt="Setastart Logo" width="32" height="32" style="margin-bottom: -0.5em">
-    <br>
-    setastart.com
-  </a>
-</div>
+
+[<img src="public/edit/gfx/icon/icon-setastart-64.png" alt="Setastart Logo" width="32" height="32"> setastart.com](https://setastart.com)
 
 ---
 

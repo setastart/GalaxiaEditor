@@ -110,7 +110,7 @@
     cursor: pointer;
     border: 1px solid #b9a;
     padding: 0;
-    background: transparent url('/edit/gfx/bg-transparency.png') center;
+    background: transparent url('/edit/gfx/btn/bg-checkers.png') center;
     background-size: 15px;
 }
 .input-wrap-slugImage .slugImage img {
@@ -287,7 +287,7 @@ trix-editor:invalid,
 .input-select {
     position: relative;
     cursor: pointer;
-    background-image: url(/edit/gfx/buttons/input-select-arrow.png);
+    background-image: url(/edit/gfx/btn/input-select-arrow.png);
     background-size: 32px 32px;
     background-repeat: no-repeat;
     background-position: right 6px top 3px;
@@ -309,7 +309,7 @@ select:-moz-focusring {
 }
 
 .input-search {
-    background-image: url(/edit/gfx/buttons/input-search.png);
+    background-image: url(/edit/gfx/btn/input-search.png);
     background-size: 32px 32px;
     background-repeat: no-repeat;
     background-position: right center;
@@ -686,7 +686,7 @@ button.fake:hover { color: #00a; }
     white-space: nowrap;
     padding: 0;
     margin: 0;
-    background-image: url(/edit/gfx/buttons/overlay.png);
+    background-image: url(/edit/gfx/btn/overlay.png);
     background-color: #ece6ef;
     background-size: 100% 100%, 16px 16px;
     background-position: center center;
@@ -711,76 +711,76 @@ button.fake:hover { color: #00a; }
     padding: 0 6px;
 }
 .btn-new-x {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/general-close-red.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/general-close-red.png);
 }
 .btn-new-x-text {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/general-close-red.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/general-close-red.png);
     background-position: center center, 4px center;
     padding: 0 6px 0 22px;
 }
 .btn-new-plus {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/general-add-green.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/general-add-green.png);
 }
 .btn-new-plus-text {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/general-add-green.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/general-add-green.png);
     background-position: center center, 4px center;
     padding: 0 6px 0 22px;
 }
 .btn-new-check {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/general-check.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/general-check.png);
 }
 .btn-new-check-text {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/general-check.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/general-check.png);
     background-position: center center, 4px center;
     padding: 0 6px 0 22px;
 }
 
 .btn-new.reorder-first {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/reorder-first.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/reorder-first.png);
 }
 
 .btn-new.reorder-prev {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/reorder-prev.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/reorder-prev.png);
 }
 
 .btn-new.reorder-next {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/reorder-next.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/reorder-next.png);
 }
 
 .btn-new.reorder-last {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/reorder-last.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/reorder-last.png);
 }
 
 .module-field-gallery .btn-new.reorder-first {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/pagination-first.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/pagination-first.png);
 }
 
 .module-field-gallery .btn-new.reorder-prev {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/pagination-prev.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/pagination-prev.png);
 }
 
 .module-field-gallery .btn-new.reorder-next {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/pagination-next.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/pagination-next.png);
 }
 
 .module-field-gallery .btn-new.reorder-last {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/pagination-last.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/pagination-last.png);
 }
 
 .btn-new.pagination-first {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/pagination-first.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/pagination-first.png);
 }
 
 .btn-new.pagination-prev {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/pagination-prev.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/pagination-prev.png);
 }
 
 .btn-new.pagination-next {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/pagination-next.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/pagination-next.png);
 }
 
 .btn-new.pagination-last {
-    background-image: url(/edit/gfx/buttons/overlay.png), url(/edit/gfx/buttons/pagination-last.png);
+    background-image: url(/edit/gfx/btn/overlay.png), url(/edit/gfx/btn/pagination-last.png);
 }
 
 
@@ -843,4 +843,3 @@ button.fake:hover { color: #00a; }
     -ms-user-select: none;
     user-select: none;
 }
-

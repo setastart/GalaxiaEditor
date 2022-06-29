@@ -384,7 +384,7 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
                                     if ($img) {
                                         $r .= G::image($img) . PHP_EOL;
                                     } else {
-                                        $r .= '<div class="nophoto" style="background-image:url(/edit/gfx/no-photo.png);"></div>' . PHP_EOL;
+                                        $r .= '<div class="nophoto" style="background-image:url(/edit/gfx/btn/no-photo.png);"></div>' . PHP_EOL;
                                     }
                                 }
                                 $colRowItemClass .= ' figure';

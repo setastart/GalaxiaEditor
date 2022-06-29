@@ -4,6 +4,5 @@
 /composer.lock
 
 # Editor
-/design/
 /.idea/
 *.private.*

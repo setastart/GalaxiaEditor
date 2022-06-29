@@ -248,7 +248,7 @@ $ht .= '        ' . G::image($img) . PHP_EOL;
 $ht .= '    </button>' . PHP_EOL;
             } else {
 $ht .= '    <button type="button" class="slugImage figure empty" data-imgtype="' . Text::h($imgType) . '">' . PHP_EOL;
-$ht .= '        <img alt="" src="/edit/gfx/no-photo-add.png">' . PHP_EOL;
+$ht .= '        <img alt="" src="/edit/gfx/btn/no-photo-add.png">' . PHP_EOL;
 $ht .= '    </button>' . PHP_EOL;
             }
         }
