@@ -1,27 +1,20 @@
-<p align="center">
-
 # <img style="margin-right: 0.2em;" src="public/edit/favicon.png" alt="Setastart Logo" width="48" height="48"> GalaxiaEditor 
-
-</p>
 
 GalaxiaEditor is a **Content Management System** (CMS) or a Website **Content Editor**.  
 It is designed to be **easy to use**, **_very fast_**, and to make content editing a **great** and **effortless experience**. 
 
----
-
-<p align="center">
-
-GalaxiaEditor is developed by [**Setastart**](https://setastart.com) in Spain and Portugal.
-
-We make **multilingual**, **_super fast_**, **accessible**, 100% **custom** websites with **proven SEO results** that our clients edit with GalaxiaEditor.  
-
-Visit our website to read more about our work and to hire our services:  
-
-[<img src="public/edit/gfx/icon/icon-setastart-64.png" alt="Setastart Logo" width="32" height="32"> setastart.com](https://setastart.com)
-
-</p>
-
----
+>
+> ---
+>
+> GalaxiaEditor is developed by [**Setastart**](https://setastart.com) in Spain and Portugal.
+>
+> We make **multilingual**, **_super fast_**, **accessible**, 100% **custom** websites with **proven SEO results** that our clients edit with GalaxiaEditor.  
+>
+> Visit our website to read more about our work and to hire our services:  
+>
+> [<img src="public/edit/gfx/icon/icon-setastart-64.png" alt="Setastart Logo" width="32" height="32"> setastart.com](https://setastart.com)
+>
+> ---
 
 ## Features and benefits for editors
 
