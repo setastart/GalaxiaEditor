@@ -1,10 +1,27 @@
-# ![GalaxiaEditor Logo](public/edit/gfx/icon-galaxia.png) GalaxiaEditor
+<h1 style="display: flex; justify-content: center; align-items: center">
+  <img style="margin-right: 0.3em;" src="public/edit/gfx/icon-galaxia.png" alt="Setastart Logo" width="64" height="64"> 
+  <span style="font-size: 1.3em">GalaxiaEditor</span>
+</h1>
 
 GalaxiaEditor is a **Content Management System** (CMS) or a Website **Content Editor**.  
 It is designed to be **easy to use**, **_very fast_**, and to make content editing a **great** and **effortless experience**. 
 
+---
 
-## Benefits for editors
+GalaxiaEditor is developed by [**Setastart**](https://setastart.com) in Spain.  
+We make **multilingual**, **_super fast_**, **accessible**, 100% **custom** websites with **proven SEO results** that our clients edit with GalaxiaEditor.  
+Visit our website to read more about our work and to hire our services:
+<div style="display: flex; justify-content: center">
+  <a href="https://setastart.com" target="_blank" style="display: block; text-align: center; border: 1px solid #aaa; border-radius: 10px; padding: 6px 0.8em 2px;">
+    <img src="public/edit/gfx/icon-setastart-green-64.png" alt="Setastart Logo" width="32" height="32" style="margin-bottom: -0.5em">
+    <br>
+    setastart.com
+  </a>
+</div>
+
+---
+
+## Features and benefits for editors
 
 - **Side-by-side translations**.
   - Simplify translating by showing localised content in the same view.  
@@ -15,9 +32,12 @@ It is designed to be **easy to use**, **_very fast_**, and to make content editi
   - Everything is localisable, including image alt text and slugs.
 - Upload, reorder and connect **hundreds of images in minutes**.
 - **WYSIWYG** text editor based on [Basecamp Trix](https://trix-editor.org/).
-- **Simple**, **fast** and **intuitive navigation**.
+- **Simple**, **fast** and **intuitive navigation** designed for each website.
 - **Instant** and **powerful content filtering**.
 - Diversify your content and connect all kinds of things easily with **multiple fields**.
+
+
+## Screenshots
 
 
 ## Benefits for developers
@@ -26,7 +46,7 @@ It is designed to be **easy to use**, **_very fast_**, and to make content editi
 - Develop each of your PHP 8 websites **any way you like**, using your favorite tools and packages that best suit for each different website needs.
 - Use one GalaxiaEditor for **multiple websites** on the same server, simplifying upgrades, optimizing server resources, reducing memory usage and taking advantage of PHP OPCache and preloading.
 - Each of your websites uses its own MySQL database and stores its code, asset and uploaded images **separately from one another**.
-- Update your GalaxiaEditor using `git pull`
+- Update GalaxiaEditor using `git pull` as all the code and functionality for your website is outside of GalaxiaEditor directory.
 
 ### Autoloaders and dependencies included.
 - Allowing you to use a different [Composer](https://getcomposer.org/) for every website you build.
@@ -45,6 +65,12 @@ It is designed to be **easy to use**, **_very fast_**, and to make content editi
 - Allows you to increase your project longevity by simplifying upgrades and being always ready for whatever future may bring.
 - Allows you to build the fastest dynamic PHP websites by including only what you need.
 
+### Editor configuration in PHP
+- No more yaml, xml, toml, ini or other configuration formats or external dependencies. GalaxiaEditor expects the configuration to be a PHP array.
+- Use your website constants, functions, models and code in the configuration.
+- Configuration array builders help you build the array with type safety, code hinting and completion (in an IDE like PhpStorm). 
+- Performant loading by caching a configuration file for every user.
+- Built-in advanced permission management.
 
 ### Core helper classes under `Galaxia` namespace include:
 

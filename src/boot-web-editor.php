@@ -37,7 +37,7 @@ G::timerStop('Locales');
 G::timerStart('Editor');
 G::initEditor(dirname(__DIR__));
 
-G::$editor->version = '5.44.2';
+G::$editor->version = '5.44.3';
 
 G::timerStop('Editor');
 
@@ -74,14 +74,13 @@ if (G::isLoggedIn()) {
 // - logic can modify which layout and template are going to be used
 
 G::timerStart('Logic');
+G::timerStart('_autorun.php');
+require __DIR__ . '/GalaxiaEditor/template/_autorun.php';
+G::timerStop('_autorun.php');
+
 $logicExploded  = explode('/', G::$editor->logic);
 $logicPathCount = count($logicExploded);
 $logicPath      = '';
-if (file_exists(G::$editor->dirLogic . '_autorun.php')) {
-    G::timerStart('_autorun.php');
-    include G::$editor->dirLogic . '_autorun.php';
-    G::timerStop('_autorun.php');
-}
 for ($i = 0; $i < $logicPathCount - 1; $i++) {
     $logicPath .= ($logicExploded[$i] . '/');
     if (file_exists(G::$editor->dirLogic . $logicPath . '_autorun.php')) {
