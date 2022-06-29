@@ -13,32 +13,6 @@ pngquant --force --speed 1 --verbose --ext .png 256 -- ./public/edit/gfx/btn/*
 pngquant --force --speed 1 --verbose --ext .png 256 -- ./public/edit/gtrix/btn/*
 
 
-
-# 1. About Galaxia
-
-Galaxia is a web publishing platform designed for:
-    - multilanguage everywhere
-    - easy publishing
-    - rapid development
-    - feature versatility
-    - correct HTML5, RSS, SITEMAP code generation
-    - great performance
-
-
-
-# 2. Glossary
-
-- Reader:
-    - Public that visits the website.
-- Editor:
-    - Creates, edits and publishes the content and metadata.
-- Developer
-    - Person who creates the functionality and design of the websites.
-    - Has access to edit the Galaxia templates, css.
-    - Has access to edit the database schema directly (to add languages, specialized fields)
-    - Has privileged access to GalaxiaEditor, to setup special functionality to be used or not by editors.
-
-
 # 3. Features
 
 - Multilanguage capabilities (localization).

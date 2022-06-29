@@ -1,4 +1,5 @@
 # GalaxiaEditor todo list
+
 - check for missing and unused translations
 - gcVisit for sub sub pages
 - input
