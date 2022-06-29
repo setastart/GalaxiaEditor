@@ -26,7 +26,7 @@ It is designed to be **easy to use**, **_very fast_**, and to make content editi
   - Integrated in the editor, without needing external tools.
   - Everything is localisable, including image alt text and slugs.
 - Upload, reorder and connect **hundreds of images in minutes**.
-- **WYSIWYG** text editor based on [Basecamp Trix](https://trix-editor.org/).
+- **WYSIWYG** text editor based on [Basecamp Trix](https://trix-editor.org/). The editor expands automatically to fit the text, so there is only one scrollbar in the page and all the content text is always visible.
 - **Simple**, **fast** and **intuitive navigation** designed for each website.
 - **Instant** and **powerful content filtering**.
 - Diversify your content and connect all kinds of things easily with **multiple fields**.
@@ -66,6 +66,7 @@ It is designed to be **easy to use**, **_very fast_**, and to make content editi
 - Configuration array builders help you build the array with type safety, code hinting and completion (in an IDE like PhpStorm). 
 - Performant loading by caching a configuration file for every user.
 - Built-in advanced permission management.
+- Lists with joins from other tables, all filtrable.
 
 ### Core helper classes under `Galaxia` namespace include:
 
