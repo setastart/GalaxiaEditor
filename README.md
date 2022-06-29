@@ -4,11 +4,13 @@ GalaxiaEditor is a **Content Management System** (CMS) or a Website **Content Ed
 
 It is designed to be **easy to use**, **_very fast_**, and to make content editing a **great** and **effortless experience**.
 
+Editing your website will never again feel like a chore.
+
 ---
 
 GalaxiaEditor is developed by [**Setastart**](https://setastart.com) in Spain and Portugal.
 
-We make **multilingual**, **_super fast_**, **accessible**, 100% **custom** websites with **proven SEO results** that our clients edit with GalaxiaEditor.
+We make **multilingual**, **_super fast_**, **accessible**, 100% **custom** websites with **proven SEO results** that our clients edit with GalaxiaEditor (this software).
 
 Visit our website to read more about our work and to hire our services:  
 
@@ -26,7 +28,7 @@ Visit our website to read more about our work and to hire our services:
   - Integrated in the editor, without needing external tools.
   - Everything is localisable, including image alt text and slugs.
 - Upload, reorder and connect **hundreds of images in minutes**.
-- **WYSIWYG** text editor based on [Basecamp Trix](https://trix-editor.org/).  
+- **WYSIWYG** rich text text editor based on [Basecamp Trix](https://trix-editor.org/).  
   The editor expands automatically to fit the text, so there is only one scrollbar in the page and all the content text is always visible.
 - **Simple**, **fast** and **intuitive navigation** designed for each website.
 - **Instant** and **powerful content filtering**.
@@ -35,6 +37,12 @@ Visit our website to read more about our work and to hire our services:
 
 ## Screenshots
 
+Todo: Add following screenshots:
+
+- list view with filters, tags, joined content from other tables
+- side-by-side translations with wysiwyg rich text editor
+- multiple image selector 
+- multiple fields
 
 ## Benefits for developers
 
@@ -81,18 +89,27 @@ Visit our website to read more about our work and to hire our services:
 - CSS helpers and generators.
 - Future proof and lightweight [PHP Redis implementation](https://github.com/ziogas/PHP-Redis-implementation) from [ziogas](https://github.com/ziogas).
 
+> **Warning**  
+> **Only** allow access to the editor to **the people you trust**, like the members of your organization or employees.   
+>
+> GalaxiaEditor is **not** designed to accept **public** user registrations or logins.  
+> 
+> All functionality that accepts **user registrations** (user comments, shopping and ecommerce, etc.) **should be done outside GalaxiaEditor**, in your website's code and not use GalaxiaEditor user or session tables.  
 
-## Developing GalaxiaEditor websites 
+## Developing GalaxiaEditor Websites 
 
-In order to develop websites for **GalaxiaEditor**, you are required to know programming in the **PHP 8** language, have **MySQL** language, database design and administration knowledge, **nginx** server configuration, and various software installation and configuration on your operating system.
+In order to develop websites for **GalaxiaEditor**, you are required to know programming in the **PHP 8** language, have **MySQL** language, database design and administration knowledge, **nginx** server configuration, and general shell knowledge (know how to use a terminal) for software installation and configuration.
 
-Tested operating systems are **MacOS** for development, and **Linux** for development and production.  
-GalaxiaEditor is built on **PHP 8** and tested on the latest active PHP version (currently PHP 8.1).
+Supported operating systems are **MacOS** and **Linux**.  
+Other operating systems where you can meet the software requirements could also work but are untested and unsupported.  
 
 
-### Requirements and dependencies
+### Software requirements and dependencies
 
-- PHP 8
+GalaxiaEditor is built on **PHP 8** and developed on the latest active PHP version (currently PHP 8.1).  
+Older versions may work 
+
+- PHP 8.1
 - MySQL 8.0
 - Redis
 - [libvips](https://github.com/libvips/php-vips-ext)
@@ -100,7 +117,75 @@ GalaxiaEditor is built on **PHP 8** and tested on the latest active PHP version 
 - NGINX
 
 
-## Theory of operation
+## Instalation instructions
+
+Todo: add the following instructions - .md files under ./doc 
+
+- Setup the Development environment and install required software.
+- Install GalaxiaEditor.
+- Creating your first Galaxia website.
+  - Code setup
+  - MySQL database setup
+  - Redis database setup
+  - Web server setup
+- Configure GalaxiaEditor for your website.
+- Updating GalaxiaEditor.
+- Deploying GalaxiaEditor on a production server.
+
+Todo: create an example website with basic functionality in a new repository and add a link to it.
+
+
+## Theory of Operation
+
+In order to explain how GalaxiaEditor works, Let's suppose we have a server with 2 websites that use GalaxiaEditor: `example1.com` and `example2.net`.
+
+### Directory setup
+
+GalaxiaEditor and your websites reside in separate directories inside your web serving directory, `/var/www/galaxia` in this example:
+
+    /var/www/galaxia
+    ├── _GalaxiaEditor
+    ├── example1.com
+    └── example2.net
+
+In this setup, the 3 example websites will share the same GalaxiaEditor code 
+
+No data is ever stored inside `_GalaxiaEditor` and each website stores and manages its own data independently.
+
+In this example the GalaxiaEditor directory starts with an `_` (underscore) to appear first in directory listings, this is a convention to make development easier, but it could have any other name.
+
+> **note**  
+> You are not supposed to change anything inside _GalaxiaEditor directory.  
+> This way you can update GalaxiaEditor with just a `git pull`.
+
+### Request entry points or front controllers (index.php)
+
+Each website has a separate entry point or front controller:  
+`example1.com/public/index.php`  
+`example2.net/public/index.php`
+
+GalaxiaEditor has its own front controller in  `_GalaxiaEditor/public/edit/index.php`
+
+Your web server (nginx) directs all visitors of the url `example1.com/edit` and all urls that that start with `example1.com/edit/` to the GalaxiaEditor front controller.
+
+All the other pages of the website are directed to the `example1.com` front controller.
+
+The same happens with example2.net and any other number of websites.
+
+
+### Request handling, initialization, loading and routing
+
+GalaxiaEditor knows for which website the request came for, so it can load that website's configuration file (`example1.com/config/app.php`), containing database credentials, languages, timezone and other data.
+
+Then if it finds a session, it loads it, authenticates the user and loads the user's data.  
+If there isn't a session or the user fails to authenticate, it shows the login page.
+
+With the user data loaded, GalaxiaEditor parses the website's editor configuration (`example1.com/config/editor.php`), strips all parts of it that the user hasn't permission to, and validates it in order to give developers hints of what is misconfigured.
+
+With the editor configuration loaded, it proceeds to route and serve the request.
+
+
+### Side effects
 
 When a person uses GalaxiaEditor to edit the content of a website, **one** or **more** of the following **side effects** may happen:
 
@@ -110,13 +195,22 @@ When a person uses GalaxiaEditor to edit the content of a website, **one** or **
 - The Redis database is updated. Each website uses its own prefix;
 
 
+## Thank you for reading
+
+If you like what you've read and are looking for a professionally made website that you can manage with ease for your organization or business, contact us.
+
+Visit [<img src="public/edit/gfx/icon/icon-setastart-64.png" alt="Setastart Logo" width="16" height="16"> setastart.com](https://setastart.com) for more info and contacts.
+
+Rest assured your website is in good hands while you focus on your business or mission.
+
+
 ## License
 
 GalaxiaEditor is licensed under the European Union Public License version 1.2 (EUPL-1.2)
 
 It contains open source code from:
-- [PHP Redis implementation](https://github.com/ziogas/PHP-Redis-implementation)
 - [FastRoute](https://github.com/nikic/FastRoute)
+- [PHP Redis implementation](https://github.com/ziogas/PHP-Redis-implementation)
 - [Basecamp Trix](https://github.com/basecamp/trix)
 
 
