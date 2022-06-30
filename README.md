@@ -89,12 +89,27 @@ Todo: Add following screenshots:
 - CSS helpers and generators.
 - Future proof and lightweight [PHP Redis implementation](https://github.com/ziogas/PHP-Redis-implementation) from [ziogas](https://github.com/ziogas).
 
+
+## Who is this software for?
+
+**GalaxiaEditor** is made for **web developers** who whish to **build custom websites** the way they prefer, and to provide an editor to make content management easy for themselves, their organization members or clients.
+
 > **Warning**  
 > **Only** allow access to the editor to **the people you trust**, like the members of your organization or employees.   
 >
 > GalaxiaEditor is **not** designed to accept **public** user registrations or logins.  
 > 
 > All functionality that accepts **user registrations** (user comments, shopping and ecommerce, etc.) **should be done outside GalaxiaEditor**, in your website's code and not use GalaxiaEditor user or session tables.  
+
+### What GalaxiaEditor is NOT designed for:
+
+- Real-time colaborative editing.
+- Plugins where the users can install or manage website or editor functionality.
+- Low code needs. GalaxiaEditor is configured through code and meant to be programmed by developers.
+- Public user registrations and logins into the editor. Read Warning above.  
+
+If anything mentioned above is necessary for your needs, you might consider other software better suited for your case.
+
 
 ## Developing GalaxiaEditor Websites 
 
@@ -132,7 +147,8 @@ Todo: add the following instructions - .md files under ./doc
 - Updating GalaxiaEditor.
 - Deploying GalaxiaEditor on a production server.
 
-Todo: create an example website with basic functionality in a new repository and add a link to it.
+Todo: create a minimal website in a new repository and add a link to it.
+Todo: create a general example website with basic functionality in a new repository and add a link to it.
 
 
 ## Theory of Operation

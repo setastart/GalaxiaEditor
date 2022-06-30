@@ -24,23 +24,17 @@ G::$req->redirectRemoveSlashes();
 
 G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(__DIR__, 2) . '/' . (G::$req->host ?? '')));
 
-G::timerStart('Locales');
 G::langAddInactive();
 G::langSet();
-G::timerStop('Locales');
 
 
 
 
 // init editor
 
-G::timerStart('Editor');
 G::initEditor(dirname(__DIR__));
 
-G::$editor->version = '5.47.5';
-
-G::timerStop('Editor');
-
+G::$editor->version = '5.47.6';
 
 
 
@@ -48,7 +42,7 @@ G::timerStop('Editor');
 // init me
 
 G::login();
-G::$me->updateLastOnline();
+// G::$me->updateLastOnline();
 
 if (G::isDevDebug()) {
     G::$req->cacheBypass = true;
@@ -68,6 +62,7 @@ if (G::isLoggedIn()) {
 } else {
     require __DIR__ . '/route-logged-out.php';
 }
+
 
 
 
