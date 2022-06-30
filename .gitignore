@@ -1,7 +1,6 @@
 # Composer
-vendor/
 composer.json
-composer.lock
+src/Galaxia/fastroute/composer.json
 
 # Editor
 /.idea/
