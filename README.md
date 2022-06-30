@@ -49,14 +49,14 @@ Todo: Add following screenshots:
 ### Total separation of the editor code from your website code.
 - Develop each of your PHP 8 websites **any way you like**, using your favorite tools and packages that best suit for each different website needs.
 - Use one GalaxiaEditor for **multiple websites** on the same server, simplifying upgrades, optimizing server resources, reducing memory usage and taking advantage of PHP OPCache and preloading.
-- Each of your websites uses its own MySQL database and stores its code, asset and uploaded images **separately from one another**.
+- Each of your websites uses its own MySQL database and stores its code, assets, cache files and uploaded images **separately from one another**.
 - Update GalaxiaEditor using `git pull` as all the code and functionality for your website is outside of GalaxiaEditor directory.
 
 ### Autoloaders and dependencies included.
 - Allowing you to use a different [Composer](https://getcomposer.org/) for every website you build.
 - An autoloader with `Galaxia` and `GalaxiaEditor` namespaces used by GalaxiaEditor.
 - An autoloader with just the `Galaxia` core helper classes to be used by your website code.
-- Automatic High quality fast image resizing and great image compression using [libvips](https://github.com/libvips/libvips)
+- Automatic High quality and fast image resizing and great image compression using [libvips](https://github.com/libvips/libvips)
 
 ### Design your database schema according to your website needs
 - Be consistent using foreign keys.
@@ -178,7 +178,7 @@ The same happens with example2.net and any other number of websites.
 GalaxiaEditor knows for which website the request came for, so it can load that website's configuration file (`example1.com/config/app.php`), containing database credentials, languages, timezone and other data.
 
 Then if it finds a session, it loads it, authenticates the user and loads the user's data.  
-If there isn't a session or the user fails to authenticate, it shows the login page.
+If there isn't a session or the user fails to authenticate, it shows the login page or the website's error page.
 
 With the user data loaded, GalaxiaEditor parses the website's editor configuration (`example1.com/config/editor.php`), strips all parts of it that the user hasn't permission to, and validates it in order to give developers hints of what is misconfigured.
 

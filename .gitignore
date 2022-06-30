@@ -1,7 +1,7 @@
 # Composer
-/vendor/
-/composer.json
-/composer.lock
+vendor/
+composer.json
+composer.lock
 
 # Editor
 /.idea/
