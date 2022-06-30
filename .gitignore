@@ -1,7 +1,3 @@
-# Composer
-composer.json
-src/Galaxia/fastroute/composer.json
-
-# Editor
 /.idea/
 *.private.*
+composer.json
