@@ -154,7 +154,7 @@ No data is ever stored inside `_GalaxiaEditor` and each website stores and manag
 
 In this example the GalaxiaEditor directory starts with an `_` (underscore) to appear first in directory listings, this is a convention to make development easier, but it could have any other name.
 
-> **note**  
+> **Note**  
 > You are not supposed to change anything inside _GalaxiaEditor directory.  
 > This way you can update GalaxiaEditor with just a `git pull`.
 
