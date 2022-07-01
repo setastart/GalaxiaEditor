@@ -5,6 +5,7 @@
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
 use Galaxia\Flash;
+use Galaxia\G;
 
 
 
@@ -22,6 +23,15 @@ spl_autoload_register(function($className) {
 function geD(): void {
     $dump      = '';
     $backtrace = array_reverse(debug_backtrace());
+
+    if (G::isCli()) {
+        foreach ($backtrace as $trace) {
+            echo ($trace['file'] ?? $trace['function'] ?? '??') . ':' . ($trace['line'] ?? $trace['args'][0] ?? '??') . PHP_EOL;
+        }
+        d(func_get_args());
+        return;
+    }
+
 
     foreach ($backtrace as $trace) {
         $dump .= '<span class="select-on-click">' . ($trace['file'] ?? $trace['function'] ?? '??') . ':' . ($trace['line'] ?? $trace['args'][0] ?? '??') . '</span><br>';

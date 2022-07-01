@@ -157,30 +157,29 @@ class Flash {
 
     static function printCli(): void {
         if (Flash::hasError()) {
-            echo '🍎 errors: ' . PHP_EOL;
+            echo '🔴 errors: ' . PHP_EOL;
             foreach (Flash::errors() as $key => $msgs) {
                 d($key, $msgs);
             }
         }
         if (Flash::hasWarning()) {
-            echo '🍋 warnings: ' . PHP_EOL;
+            echo '🟡 warnings: ' . PHP_EOL;
             foreach (Flash::warnings() as $key => $msgs) {
                 d($key, $msgs);
             }
         }
         if (Flash::hasInfo()) {
-            echo '🍐 infos: ' . PHP_EOL;
+            echo '🟢 infos: ' . PHP_EOL;
             foreach (Flash::infos() as $key => $msgs) {
                 d($key, $msgs);
             }
         }
         if (Flash::hasDevlog()) {
-            echo '🥔 devlogs: ' . PHP_EOL;
+            echo '🟣️ devlogs: ' . PHP_EOL;
             foreach (Flash::devlogs() as $key => $msgs) {
                 d($key, $msgs);
             }
         }
-        G::timerPrint();
     }
 
 }

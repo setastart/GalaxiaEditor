@@ -16,7 +16,7 @@ class Cache {
     }
 
     static function config(callable $f): array {
-        return G::cacheArray('editor', 1, 'config', $f, G::$req->cacheBypass);
+        return G::cacheArray('editor', 1, 'config-' . G::$me->id, $f, G::$req->cacheBypass);
     }
 
     static function imageListItems(callable $f): array {

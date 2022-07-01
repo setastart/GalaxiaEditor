@@ -198,18 +198,22 @@ class Config {
 
 
 
-    static function load(): array {
+    static function load(array $perms = null): array {
+        $perms ??= G::$me->perms;
+
         $r = require G::dir() . 'config/editor.php';
 
         G::timerStart('Config validation');
-        foreach ($r as $key => $confPage) {
-            if (!isset($confPage['gcPageType']))
-                Config::geConfigParseError($key . '/gcPageType missing.');
+        foreach ($r as $rootSlug => $confPage) {
+            if (!isset($confPage['gcPageType'])) {
+                Config::error($rootSlug . '/gcPageType missing.');
+            }
 
-            if (!in_array($confPage['gcPageType'], ['gcpListItem', 'gcpHistory', 'gcpChat', 'gcpImages', 'gcpLinkToItem', 'gcpGoaccessStats', 'gcpSeparator', 'gcpHooks']))
-                Config::geConfigParseError($key . '/gcPageType missing.');
+            if (!in_array($confPage['gcPageType'], ['gcpListItem', 'gcpHistory', 'gcpChat', 'gcpImages', 'gcpLinkToItem', 'gcpGoaccessStats', 'gcpSeparator', 'gcpHooks'])) {
+                Config::error($rootSlug . '/gcPageType missing.');
+            }
 
-            Config::geConfigParse($key, Config::PROTO_GC[$confPage['gcPageType']], $confPage, '');
+            Config::parse($rootSlug, Config::PROTO_GC[$confPage['gcPageType']], $confPage, '');
         }
         G::timerStop('Config validation');
 
@@ -220,7 +224,7 @@ class Config {
                 foreach ($where as $whereVal => $inputs) {
                     foreach ($inputs as $inputKey => $input) {
                         if (!isset($input['gcPerms'])) continue;
-                        if (!array_intersect($input['gcPerms'] ?? [], G::$me->perms)) {
+                        if (!array_intersect($input['gcPerms'] ?? [], $perms)) {
                             $r[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
                         }
                     }
@@ -230,7 +234,7 @@ class Config {
                 foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
                     foreach ($inputs as $inputKey => $input) {
                         if (!isset($input['gcPerms'])) continue;
-                        if (!array_intersect($input['gcPerms'] ?? [], G::$me->perms)) {
+                        if (!array_intersect($input['gcPerms'] ?? [], $perms)) {
                             $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
                         }
                     }
@@ -240,7 +244,7 @@ class Config {
                         foreach ($fields as $fieldKey => $inputs) {
                             foreach ($inputs as $inputKey => $input) {
                                 if (!isset($input['gcPerms'])) continue;
-                                if (!array_intersect($input['gcPerms'] ?? [], G::$me->perms)) {
+                                if (!array_intersect($input['gcPerms'] ?? [], $perms)) {
                                     $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
                                 }
                             }
@@ -252,11 +256,11 @@ class Config {
 
 
         G::timerStart('removePermsRecursive()');
-        ArrayShape::removePermsRecursive($r, G::$me->perms);
+        ArrayShape::removePermsRecursive($r, $perms);
         G::timerStop('removePermsRecursive()');
 
         G::timerStart('languify');
-        ArrayShape::languify($r, array_keys(G::locales()), G::$me->perms);
+        ArrayShape::languify($r, array_keys(G::locales()), $perms);
         G::timerStop('languify');
 
 
@@ -268,25 +272,33 @@ class Config {
             foreach ($confPage['gcItem']['gcInputsWhere'] ?? [] as $whereKey => $where) {
                 foreach ($where as $whereVal => $inputs) {
                     foreach ($inputs as $inputKey => $input) {
-                        if (!isset($input['type'])) $r[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
+                        if (!isset($input['type'])) {
+                            $r[$rootSlug]['gcItem']['gcInputsWhere'][$whereKey][$whereVal][$inputKey]['type'] = 'none';
+                        }
                     }
                 }
             }
 
             foreach ($confPage['gcItem']['gcModules'] ?? [] as $moduleKey => $module) {
                 foreach ($module['gcInputs'] as $inputKey => $input) {
-                    if (!isset($input['type'])) $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputs'][$inputKey]['type'] = 'none';
+                    if (!isset($input['type'])) {
+                        $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputs'][$inputKey]['type'] = 'none';
+                    }
                 }
                 foreach ($module['gcInputsWhereCol'] as $fieldKey => $inputs) {
                     foreach ($inputs as $inputKey => $input) {
-                        if (!isset($input['type'])) $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
+                        if (!isset($input['type'])) {
+                            $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereCol'][$fieldKey][$inputKey]['type'] = 'none';
+                        }
                     }
                 }
                 foreach ($module['gcInputsWhereParent'] as $parentKey => $parent) {
                     foreach ($parent as $parentVal => $fields) {
                         foreach ($fields as $fieldKey => $inputs) {
                             foreach ($inputs as $inputKey => $input) {
-                                if (!isset($input['type'])) $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
+                                if (!isset($input['type'])) {
+                                    $r[$rootSlug]['gcItem']['gcModules'][$moduleKey]['gcInputsWhereParent'][$parentKey][$parentVal][$fieldKey][$inputKey]['type'] = 'none';
+                                }
                             }
                         }
                     }
@@ -300,7 +312,7 @@ class Config {
 
 
 
-    private static function geConfigParse($schemaKey, $schema, $config, $errorString): void {
+    private static function parse($schemaKey, $schema, $config, $errorString): void {
         $errorString .= $schemaKey . '/';
 
         foreach ($schema as $key => $val) {
@@ -310,22 +322,22 @@ class Config {
             }
 
             if (!isset($config[$key])) {
-                Config::geConfigParseError($errorString . $key . ' missing.');
+                Config::error($errorString . $key . ' missing.');
             }
 
             if (is_string($val)) { // is terminal
-                Config::geConfigParseFine($val, $config[$key], $errorString . $key);
+                Config::parseFine($val, $config[$key], $errorString . $key);
                 continue;
             }
 
             if (empty($config[$key])) continue;
 
             if (is_array($val)) {
-                Config::geConfigParse($key, $schema[$key], $config[$key], $errorString);
+                Config::parse($key, $schema[$key], $config[$key], $errorString);
                 continue;
             }
 
-            Config::geConfigParseError($errorString . ' - should not reach this: ' . $key, $schema, $config);
+            Config::error("$errorString - should not reach this: $key", [$schema, $config]);
         }
 
         $extraKeys = array_diff_key($config, $schema);
@@ -334,167 +346,197 @@ class Config {
             if (str_starts_with($key, '?')) continue;
             if (isset($schema['?' . $key])) continue;
 
-            Flash::devlog($errorString . ' - extra keys: ' . $key);
+            Flash::devlog("$errorString - extra keys: $key");
         }
     }
 
 
 
 
-    private static function geConfigParseFine($schema, $config, $errorString): void {
+    private static function parseFine($schema, $config, $errorString): void {
         switch ($schema) {
 
             case 'boolean':
                 if (is_bool($config)) break;
                 if (is_array($config) && count($config) == 1 && isset($config['gcPerms'])) break;
-                Config::geConfigParseError($errorString . ' should be "true" or "gePerms".', $schema, $config);
-                break;
+                Config::error("$errorString should be 'true' or 'gePerms'.", [$schema, $config]);
 
 
             case 'int':
-                if (!is_bool($config) && !is_int($config))
-                    Config::geConfigParseError($errorString . ' should be an integer.', $schema, $config);
+                if (!is_bool($config) && !is_int($config)) {
+                    Config::error("$errorString should be an integer.", [$schema, $config]);
+                }
                 break;
 
 
             case 'string':
-                if (!is_string($config))
-                    Config::geConfigParseError($errorString . ' should be a string.', $schema, $config);
+                if (!is_string($config)) {
+                    Config::error("$errorString should be a string.", [$schema, $config]);
+                }
                 break;
 
 
             case 'intArray':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array of ints.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array of ints.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    if (!is_int($val))
-                        Config::geConfigParseError($errorString . '/' . $key . ' should be an int.', $schema, $config);
+                foreach ($config as $key => $val) {
+                    if (!is_int($val)) {
+                        Config::error("$errorString/$key should be an int.", [$schema, $config]);
+                    }
+                }
                 break;
 
 
             case 'stringArray':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array of strings.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array of strings.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    if (!is_string($val))
-                        Config::geConfigParseError($errorString . '/' . $key . ' should be a string.', $schema, $config);
+                foreach ($config as $key => $val) {
+                    if (!is_string($val)) {
+                        Config::error("$errorString/$key should be a string.", [$schema, $config]);
+                    }
+                }
                 break;
 
 
             case 'tableWithCols':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
                 foreach ($config as $key => $val) {
                     if (is_array($val) && count($val) == 1 && isset($val['gcPerms'])) continue;
 
-                    if (!is_array($val))
-                        Config::geConfigParseError($errorString . '/' . $key . ' should be an array.', $schema, $config);
+                    if (!is_array($val)) {
+                        Config::error("$errorString/$key should be an array.", [$schema, $config]);
+                    }
 
-                    foreach ($val as $key2 => $val2)
-                        if (!is_string($val2))
-                            Config::geConfigParseError($errorString . '/' . $key . '/' . $key2 . ' should be a string.', $schema, $config);
+                    foreach ($val as $key2 => $val2) {
+                        if (!is_string($val2)) {
+                            Config::error("$errorString/$key/$key2 should be a string.", [$schema, $config]);
+                        }
+                    }
                 }
                 break;
 
 
             case 'tableWithColsRandom':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
                 foreach ($config as $key => $val) {
                     if (is_array($val) && count($val) == 1 && isset($val['gcPerms'])) continue;
 
-                    if (!is_array($val))
-                        Config::geConfigParseError($errorString . '/' . $key . ' should be an array.', $schema, $config);
+                    if (!is_array($val)) {
+                        Config::error("$errorString/$key should be an array.", [$schema, $config]);
+                    }
                 }
                 break;
 
 
             case 'tableWithColsOrder':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
                 foreach ($config as $key => $val) {
-                    if (!is_array($val))
-                        Config::geConfigParseError($errorString . '/' . $key . ' should be an array.', $schema, $config);
+                    if (!is_array($val)) {
+                        Config::error("$errorString/$key should be an array.", [$schema, $config]);
+                    }
 
-                    foreach ($val as $key2 => $val2)
-                        if (!is_string($val2) || !in_array($val2, ['ASC', 'DESC']))
-                            Config::geConfigParseError($errorString . '/' . $key . '/' . $key2 . ' should be ASC or DESC.', $schema, $config);
+                    foreach ($val as $key2 => $val2) {
+                        if (!is_string($val2) || !in_array($val2, ['ASC', 'DESC'])) {
+                            Config::error("$errorString/$key/$key2 should be ASC or DESC.", [$schema, $config]);
+                        }
+                    }
                 }
                 break;
 
 
             case 'gcpLinks':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpLinks'], $val, $errorString);
+                foreach ($config as $key => $val) {
+                    Config::parse('/' . $key, Config::PROTO_GC['gcpLinks'], $val, $errorString);
+                }
                 break;
 
 
             case 'gcpColumns':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpColumns'], $val, $errorString);
+                foreach ($config as $key => $val) {
+                    Config::parse('/' . $key, Config::PROTO_GC['gcpColumns'], $val, $errorString);
+                }
                 break;
 
 
             case 'gcpRowData':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpRowData'], $val, $errorString);
+                foreach ($config as $key => $val) {
+                    Config::parse('/' . $key, Config::PROTO_GC['gcpRowData'], $val, $errorString);
+                }
                 break;
 
 
             case 'gcpFilterTexts':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpFilterTexts'], $val, $errorString);
+                foreach ($config as $key => $val) {
+                    Config::parse("/$key", Config::PROTO_GC['gcpFilterTexts'], $val, $errorString);
+                }
                 break;
 
 
             case 'gcpFilterInts':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpFilterInts'], $val, $errorString);
+                foreach ($config as $key => $val) {
+                    Config::parse('/' . $key, Config::PROTO_GC['gcpFilterInts'], $val, $errorString);
+                }
                 break;
 
 
             case 'inputs':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
                 foreach ($config as $inputCol => $input) {
                     if (!isset($input['type']) ||
                         !is_string($input['type']) ||
                         !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)
                     ) {
-                        Config::geConfigParseError($errorString . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
+                        Config::error("$errorString/$inputCol should be a valid input type.", [$schema, $config]);
                     }
                 }
                 break;
 
 
             case 'inputsWhereCol':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
                 foreach ($config as $whereVal => $inputs) {
-                    if (!is_array($config))
-                        Config::geConfigParseError($errorString . '/' . $whereVal . ' should be an array.', $schema, $config);
+                    if (!is_array($config)) {
+                        Config::error("$errorString/$whereVal should be an array.", [$schema, $config]);
+                    }
 
                     foreach ($inputs as $inputCol => $input) {
                         if ($inputCol == 'gcMulti') continue;
@@ -502,7 +544,7 @@ class Config {
                             !is_string($input['type']) ||
                             !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)
                         ) {
-                            Config::geConfigParseError($errorString . '/' . $whereVal . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
+                            Config::error("$errorString/$whereVal/$inputCol should be a valid input type.", [$schema, $config]);
                         }
                     }
                 }
@@ -510,23 +552,26 @@ class Config {
 
 
             case 'inputsWhere':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
                 foreach ($config as $whereKey => $where) {
-                    if (!is_array($config))
-                        Config::geConfigParseError($errorString . '/' . $whereKey . ' should be an array.', $schema, $config);
+                    if (!is_array($config)) {
+                        Config::error("$errorString/$whereKey should be an array.", [$schema, $config]);
+                    }
 
                     foreach ($where as $whereVal => $inputs) {
-                        if (!is_array($config))
-                            Config::geConfigParseError($errorString . '/' . $whereKey . '/' . $whereVal . ' should be an array.', $schema, $config);
+                        if (!is_array($config)) {
+                            Config::error("$errorString/$whereKey/$whereVal should be an array.", [$schema, $config]);
+                        }
 
                         foreach ($inputs as $inputCol => $input) {
                             if (!isset($input['type']) ||
                                 !is_string($input['type']) ||
                                 !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)
                             ) {
-                                Config::geConfigParseError($errorString . '/' . $whereKey . '/' . $whereVal . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
+                                Config::error("$errorString/$whereKey/$whereVal/$inputCol should be a valid input type.", [$schema, $config]);
                             }
                         }
                     }
@@ -535,20 +580,24 @@ class Config {
 
 
             case 'inputsWhereParent':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
                 foreach ($config as $parentKey => $parent) {
-                    if (!is_array($config))
-                        Config::geConfigParseError($errorString . '/' . $parentKey . ' should be an array.', $schema, $config);
+                    if (!is_array($config)) {
+                        Config::error("$errorString/$parentKey should be an array.", [$schema, $config]);
+                    }
 
                     foreach ($parent as $parentVal => $where) {
-                        if (!is_array($config))
-                            Config::geConfigParseError($errorString . '/' . $parentKey . '/' . $parentVal . ' should be an array.', $schema, $config);
+                        if (!is_array($config)) {
+                            Config::error("$errorString/$parentKey/$parentVal should be an array.", [$schema, $config]);
+                        }
 
                         foreach ($where as $whereVal => $inputs) {
-                            if (!is_array($config))
-                                Config::geConfigParseError($errorString . '/' . $parentKey . '/' . $parentVal . '/' . $whereVal . ' should be an array.', $schema, $config);
+                            if (!is_array($config)) {
+                                Config::error("$errorString/$parentKey/$parentVal/$whereVal should be an array.", [$schema, $config]);
+                            }
 
                             foreach ($inputs as $inputCol => $input) {
                                 if ($inputCol == 'gcMulti') continue;
@@ -556,7 +605,7 @@ class Config {
                                     !is_string($input['type']) ||
                                     !in_array($input['type'], Input::ALLOWED_INPUT_TYPES)
                                 ) {
-                                    Config::geConfigParseError($errorString . '/' . $parentKey . '/' . $parentVal . '/' . $whereVal . '/' . $inputCol . ' should be a valid input type.', $schema, $config);
+                                    Config::error("$errorString/$parentKey/$parentVal/$whereVal/$inputCol should be a valid input type.", [$schema, $config]);
                                 }
                             }
                         }
@@ -566,45 +615,54 @@ class Config {
 
 
             case 'moduleMultiple':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpModuleMultiple'], $val, $errorString);
+                foreach ($config as $key => $val) {
+                    Config::parse('/' . $key, Config::PROTO_GC['gcpModuleMultiple'], $val, $errorString);
+                }
 
                 break;
 
 
             case 'options':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
                 foreach ($config as $key => $val) {
-                    if (!is_array($val))
-                        Config::geConfigParseError($errorString . '/' . $key . ' should be an array.', $schema, $config);
+                    if (!is_array($val)) {
+                        Config::error("$errorString/$key should be an array.", [$schema, $config]);
+                    }
 
-                    if (!isset($val['label']))
-                        Config::geConfigParseError($errorString . '/' . $key . '/label missing.', $schema, $config);
+                    if (!isset($val['label'])) {
+                        Config::error("$errorString/$key/label missing.", [$schema, $config]);
+                    }
                 }
                 break;
 
 
             case 'gcpModules':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpModules'], $val, $errorString);
+                foreach ($config as $key => $val) {
+                    Config::parse("/$key", Config::PROTO_GC['gcpModules'], $val, $errorString);
+                }
 
                 break;
 
 
             case 'gcpImagesInUse':
-                if (!is_array($config))
-                    Config::geConfigParseError($errorString . ' should be an array.', $schema, $config);
+                if (!is_array($config)) {
+                    Config::error("$errorString should be an array.", [$schema, $config]);
+                }
 
-                foreach ($config as $key => $val)
-                    Config::geConfigParse('/' . $key, Config::PROTO_GC['gcpImagesInUse'], $val, $errorString);
+                foreach ($config as $key => $val) {
+                    Config::parse("/$key", Config::PROTO_GC['gcpImagesInUse'], $val, $errorString);
+                }
 
                 break;
 
@@ -617,33 +675,38 @@ class Config {
 
                     case 'array':
                         foreach ($config as $key => $val) {
-                            if (!isset($val['id']))
-                                Config::geConfigParseError($errorString . '/' . $val . ' should have an id.', $schema, $config);
-                            if (!isset($val['prefix']))
-                                Config::geConfigParseError($errorString . '/' . $val . ' should have a prefix.', $schema, $config);
+                            if (!isset($val['id'])) {
+                                Config::error("$errorString/$key/$val should have an id.", [$schema, $config]);
+                            }
+                            if (!isset($val['prefix'])) {
+                                Config::error("$errorString/$key/$val should have a prefix.", [$schema, $config]);
+                            }
                         }
                         break;
 
                     default:
-                        Config::geConfigParseError($errorString . ' should be false, int or array.', $schema, $config);
-                        break;
+                        Config::error("$errorString should be false, int or array.", [$schema, $config]);
                 }
                 break;
 
 
             default:
-                Config::geConfigParseError($errorString . ' invalid config type.', $schema, $config);
-                break;
+                Config::error("$errorString invalid config type.", [$schema, $config]);
         }
     }
 
 
 
-
-    private static function geConfigParseError(): void {
-        geD(func_get_args());
-        G::errorPage(500, 'config error');
+    private static function error(
+        string $errorString,
+        array $debug = []
+    ): never {
+        Flash::error('Config error');
+        Flash::error($errorString);
+        geD($errorString, $debug);
+        G::errorPage(500, 'Config error');
     }
+
 
 
 
