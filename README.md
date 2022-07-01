@@ -41,9 +41,9 @@ Visit our website to read more about our work and to hire our services:
 
 ![Screenshot - Item edit](documentation/screenshot/screenshot-item.png) Item edit with side-by-side translations, wysiwyg rich text editor.
 
-![Screenshot - Image selecto](documentation/screenshot/screenshot-imageselect.png) Image selector with instant filters, multiple selection and showing images that are already in use.
-
 ![Screenshot - Multiple field](documentation/screenshot/screenshot-fields.png)  Multiple fields customized for each website.
+
+![Screenshot - Image selecto](documentation/screenshot/screenshot-imageselect.png) Image selector with instant filters, multiple selection and showing images that are already in use.
 
 
 ## Benefits for developers
