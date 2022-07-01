@@ -82,15 +82,18 @@ Visit our website to read more about our work and to hire our services:
 
 ### Core helper classes under `Galaxia` namespace include:
 
+- Initialization, environment setup and configuration loading and validation.
 - Automatic Image resizing of only used sizes helps to save disk space and reduce computation time.
 - PHP `array` and `string` file caching, taking advantage of PHP OPCache.
-- Initialization, environment setup and configuration loading.
-- User session and authentication.
+- GalaxiaEditor user session and authentication for debugging and draft page previewing.
 - Routing using [FastRoute](https://github.com/nikic/FastRoute) from [Nikic](https://github.com/nikic).
 - Text transformation, normalisation, transliteration and translation.
+- SQL query building helpers.
 - Asset generators and builders. 
 - CSS helpers and generators.
 - Future proof and lightweight [PHP Redis implementation](https://github.com/ziogas/PHP-Redis-implementation) from [ziogas](https://github.com/ziogas).
+- Timing functions for performance measuring.
+- Test functions for Continuous Integration (CI) of your website code.
 
 
 ## Who is this software for?
