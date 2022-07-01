@@ -58,6 +58,11 @@ if (isset(G::$me->options['Language'])) {
 // editor configuration
 
 E::$conf = Cache::config(fn() => Config::load());
+foreach (E::$conf as $confPage) {
+    if ($confPage['gcPageType'] == 'gcpHooks') {
+        E::$hookTranslate = $confPage['gcHookTranslate'] ?? '';
+    }
+}
 
 if (G::isDevDebug()) {
     G::timerStart('Database validation');

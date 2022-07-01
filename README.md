@@ -75,6 +75,7 @@ Todo: Add following screenshots:
 - Configuration array builders help you build the array with type safety, code hinting and completion (in an IDE like PhpStorm). 
 - Performant loading by caching a configuration file for every user.
 - Built-in advanced permission management.
+- Special `dev` permission to access dev tools and info.
 - Lists with joins from other tables, all filtrable.
 
 ### Core helper classes under `Galaxia` namespace include:
@@ -105,15 +106,15 @@ Todo: Add following screenshots:
 
 - Real-time colaborative editing.
 - Plugins where the users can install or manage website or editor functionality.
-- Low code needs. GalaxiaEditor is configured through code and meant to be programmed by developers.
-- Public user registrations and logins into the editor. Read Warning above.  
+- Low code needs. GalaxiaEditor is made to be programmed by developers and configured through code.
+- Public user registrations and logins into the editor. Please read the Warning above.
 
 If anything mentioned above is necessary for your needs, you might consider other software better suited for your case.
 
 
 ## Developing GalaxiaEditor Websites 
 
-In order to develop websites for **GalaxiaEditor**, you are required to know programming in the **PHP 8** language, have **MySQL** language, database design and administration knowledge, **nginx** server configuration, and general shell knowledge (know how to use a terminal) for software installation and configuration.
+In order to develop websites for **GalaxiaEditor**, you are required to know programming in the **PHP 8** language, have **MySQL** language, database design and administration knowledge, **nginx** server configuration, **git** and general **shell** knowledge (know how to use a terminal) for software installation and configuration.
 
 Supported operating systems are **MacOS** and **Linux**.  
 Other operating systems where you can meet the software requirements could also work but are untested and unsupported.  

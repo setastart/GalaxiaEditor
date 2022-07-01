@@ -16,11 +16,10 @@ require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/autoload-editor.php';
 
 
+// init app
+
 G::$req = new Request($_SERVER['SERVER_NAME']);
 G::$req->redirectRemoveSlashes();
-
-
-// init app
 
 G::init($_SERVER['GALAXIA_DIR_APP'] ?? (dirname(__DIR__, 2) . '/' . (G::$req->host ?? '')));
 
@@ -34,7 +33,7 @@ G::langSet();
 
 G::initEditor(dirname(__DIR__));
 
-G::$editor->version = '5.47.6';
+G::$editor->version = '5.48.0';
 
 
 

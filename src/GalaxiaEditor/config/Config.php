@@ -209,10 +209,6 @@ class Config {
             if (!in_array($confPage['gcPageType'], ['gcpListItem', 'gcpHistory', 'gcpChat', 'gcpImages', 'gcpLinkToItem', 'gcpGoaccessStats', 'gcpSeparator', 'gcpHooks']))
                 Config::geConfigParseError($key . '/gcPageType missing.');
 
-            if ($confPage['gcPageType'] == 'gcpHooks') {
-                E::$hookTranslate = $confPage['gcHookTranslate'] ?? '';
-            }
-
             Config::geConfigParse($key, Config::PROTO_GC[$confPage['gcPageType']], $confPage, '');
         }
         G::timerStop('Config validation');
