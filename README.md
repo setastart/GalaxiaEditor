@@ -37,12 +37,14 @@ Visit our website to read more about our work and to hire our services:
 
 ## Screenshots
 
-Todo: Add following screenshots:
+![Screenshot - List view](documentation/screenshot/screenshot-list.png) List view with instant filters, tags and connections to other content.
 
-- list view with filters, tags, joined content from other tables
-- side-by-side translations with wysiwyg rich text editor
-- multiple image selector 
-- multiple fields
+![Screenshot - Item edit](documentation/screenshot/screenshot-item.png) Item edit with side-by-side translations, wysiwyg rich text editor.
+
+![Screenshot - Image selecto](documentation/screenshot/screenshot-imageselect.png) Image selector with instant filters, multiple selection and showing images that are already in use.
+
+![Screenshot - Multiple field](documentation/screenshot/screenshot-fields.png)  Multiple fields customized for each website.
+
 
 ## Benefits for developers
 
