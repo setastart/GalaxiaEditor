@@ -33,7 +33,7 @@ G::langSet();
 
 G::initEditor(dirname(__DIR__));
 
-G::$editor->version = '5.48.0';
+G::$editor->version = '5.48.1';
 
 
 
