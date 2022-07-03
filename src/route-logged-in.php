@@ -59,7 +59,7 @@ if (isset(G::$me->options['Language'])) {
 
 E::$conf = Cache::config(fn() => Config::load());
 foreach (E::$conf as $confPage) {
-    if ($confPage['gcPageType'] == 'gcpHooks') {
+    if ($confPage['gcPageType'] ?? '' == 'gcpHooks') {
         E::$hookTranslate = $confPage['gcHookTranslate'] ?? '';
     }
 }
