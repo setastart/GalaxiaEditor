@@ -130,6 +130,19 @@ class G {
 
         self::$editor = new Editor($dir);
 
+        self::$editor->version = self::cacheString(
+            scope: 'editor',
+            level: 0,
+            key: 'version',
+            f: function(): string {
+                $ver = shell_exec('git log --oneline -n 1 --pretty=format:%s');
+                if (preg_match('/GalaxiaEditor Version ([\d.]+)/', $ver, $matches)) {
+                    $ver = $matches[1] ?? 'Unknown';
+                }
+                return $ver;
+            }
+        );
+
         return self::$editor;
     }
 

@@ -494,14 +494,4 @@ class Editor {
         ];
     }
 
-
-    function loadVersionFromGit(): void {
-        $gitMsgFile = $this->dir . '.git/COMMIT_EDITMSG';
-        if ($ver = file_get_contents($gitMsgFile)) {
-            if (preg_match('/GalaxiaEditor Version ([\d.]+)/', $ver, $matches)) {
-                $this->version = $matches[1] ?? 'Unknown';
-            }
-        }
-    }
-
 }

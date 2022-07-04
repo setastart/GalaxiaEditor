@@ -33,8 +33,6 @@ G::langSet();
 
 G::initEditor(dirname(__DIR__));
 
-G::$editor->loadVersionFromGit();
-
 
 
 

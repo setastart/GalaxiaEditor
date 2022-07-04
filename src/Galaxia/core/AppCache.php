@@ -87,7 +87,7 @@ class AppCache {
 
         if (!$bypass && file_exists($cacheFile)) {
 
-            $timerName = 'Cache raw HIT: ' . $cacheName;
+            $timerName = 'Cache str HIT: ' . $cacheName;
             G::timerStart($timerName);
 
             $result = file_get_contents($cacheFile);
