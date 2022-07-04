@@ -47,9 +47,6 @@ class G {
 
         if (!isset(self::$req)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req = new Request() before G::init()');
         if (isset(self::$app)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
-        if (!$dir) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is empty');
-        if (!is_dir($dir)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
-        if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' config/app.php');
 
         libxml_use_internal_errors(true);
 
@@ -58,8 +55,8 @@ class G {
 
         $app = new App($dir);
 
-        include $app->dir . 'config/app.php';
-        if (file_exists($app->dir . 'config/app.private.php')) include $app->dir . 'config/app.private.php';
+        require $app->dir . 'config/app.php';
+        require $app->dir . 'config/app.private.php';
 
         self::$app = $app;
         self::timerStart('Total', $_SERVER['REQUEST_TIME_FLOAT']);
@@ -75,8 +72,6 @@ class G {
 
         if (!isset(self::$req)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req = new Request() before G::initCLI()');
         if (isset(self::$app)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
-        if (!$dir || !is_dir($dir)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
-        if (!file_exists($dir . '/config/app.php')) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App config not found');
 
         libxml_use_internal_errors(true);
 
@@ -85,8 +80,8 @@ class G {
 
         $app = new App($dir);
 
-        include $app->dir . 'config/app.php';
-        if (file_exists($app->dir . 'config/app.private.php')) include $app->dir . 'config/app.private.php';
+        require $app->dir . 'config/app.php';
+        require $app->dir . 'config/app.private.php';
 
         self::$app = $app;
         self::timerStart('Total', $_SERVER['REQUEST_TIME_FLOAT']);
@@ -132,7 +127,6 @@ class G {
     static function initEditor(string $dir): Editor {
         if (!isset(self::$app)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
         if (isset(self::$editor)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' Editor was already initialized');
-        if (!$dir || !is_dir($dir)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' $dir is not a directory');
 
         self::$editor = new Editor($dir);
 

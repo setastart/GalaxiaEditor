@@ -6,6 +6,10 @@
 
 namespace Galaxia;
 
+use function dirname;
+use function file_get_contents;
+use function preg_match;
+
 class Editor {
 
     public bool   $debug   = false;
@@ -426,7 +430,7 @@ class Editor {
         array  $order = null,
         string $field = null,
         bool   $reorder = true,
-        array $inputsWhereParent = [],
+        array  $inputsWhereParent = [],
     ): array {
         $souId    = $souT . 'Id';
         $conId    = $conT . 'Id';
@@ -488,6 +492,16 @@ class Editor {
             'gcSelectGroupBy' => $groupBy,
             'loc'             => $loc,
         ];
+    }
+
+
+    function loadVersionFromGit(): void {
+        $gitMsgFile = $this->dir . '.git/COMMIT_EDITMSG';
+        if ($ver = file_get_contents($gitMsgFile)) {
+            if (preg_match('/GalaxiaEditor Version ([\d.]+)/', $ver, $matches)) {
+                $this->version = $matches[1] ?? 'Unknown';
+            }
+        }
     }
 
 }

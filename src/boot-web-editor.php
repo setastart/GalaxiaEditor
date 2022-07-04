@@ -33,7 +33,7 @@ G::langSet();
 
 G::initEditor(dirname(__DIR__));
 
-G::$editor->version = '5.50.0';
+G::$editor->loadVersionFromGit();
 
 
 
@@ -41,7 +41,7 @@ G::$editor->version = '5.50.0';
 // init me
 
 G::login();
-// G::$me->updateLastOnline();
+G::$me->updateLastOnline();
 
 if (G::isDevDebug()) {
     G::$req->cacheBypass = true;
