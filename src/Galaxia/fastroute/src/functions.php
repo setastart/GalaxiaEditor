@@ -81,7 +81,7 @@ if (! function_exists('Galaxia\FastRoute\simpleDispatcher')) {
             );
         }
 
-        G::timerStart($timerName);
+        G::timerStop($timerName);
         return new $options['dispatcher']($dispatchData);
     }
 }

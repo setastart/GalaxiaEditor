@@ -7,11 +7,15 @@
 namespace Galaxia;
 
 
+use GalaxiaEditor\config\Config;
+use GalaxiaEditor\config\ConfigDb;
+use GalaxiaEditor\E;
 use mysqli;
 use mysqli_result;
 use mysqli_stmt;
 use Throwable;
-use function curl_close;
+use function curl_multi_add_handle;
+use function curl_multi_init;
 use function debug_backtrace;
 use function dirname;
 use function escapeshellcmd;
@@ -125,9 +129,11 @@ class G {
 
 
 
-    static function initEditor(string $dir): Editor {
+    static function initEditor(string $dir): void {
         if (!isset(self::$app)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (isset(self::$editor)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' Editor was already initialized');
+        if (isset(self::$editor)) return;
+
+        require_once dirname(__DIR__, 2) . '/autoload-editor.php';
 
         self::$editor = new Editor($dir);
 
@@ -135,16 +141,14 @@ class G {
             scope: 'editor',
             level: 0,
             key: 'version',
-            f: function(): string {
-                $ver = shell_exec('git log --oneline -n 1 --pretty=format:%s');
+            f: function() use ($dir): string {
+                $ver = shell_exec("cd $dir; " . 'git log --oneline -n 1 --pretty=format:%s');
                 if (preg_match('/GalaxiaEditor Version ([\d.]+)/', $ver, $matches)) {
                     $ver = $matches[1] ?? 'Unknown';
                 }
                 return $ver;
             }
         );
-
-        return self::$editor;
     }
 
 
@@ -577,12 +581,13 @@ class G {
         int      $argc,
         callable $fBuild,
         bool     $exitOnError = false,
+        int      $multi = 8,
     ): never {
 
         if ($argc > 2 || $argc < 1) {
             echo 'Usage:' . PHP_EOL;
             echo 'run tests: php test.php' . PHP_EOL;
-            echo 'test single page: php test.php http://example.com/url' . PHP_EOL;
+            echo 'test single page: php test.php http://example.test/url' . PHP_EOL;
             exit();
         }
 
@@ -596,36 +601,87 @@ class G {
 
         echo 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
 
+        G::cacheDeleteAll();
+
         $fBuild();
 
-        $i = 0;
+        G::initEditor(dirname(__DIR__, 2));
+        echo 'Validating config for perms: ';
+        foreach ([[], ['dev']] as $perms) {
+            echo "'" . implode(',', $perms) . "' ";
+            E::$conf = Config::load($perms);
+            ConfigDb::validate();
+        }
+        echo PHP_EOL;
+
+
+        $mTests = [];
+        $i      = 0;
         foreach ($tests as $url => $code) {
-            echo ($i % 100 == 0) ? $i : '.';
+            $mTests[floor($i / $multi)][$url] = $code;
             $i++;
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            $result = curl_exec($ch);
-            curl_close($ch);
-
-            $info   = curl_getinfo($ch);
-            $result = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH) . $result;
+        }
 
 
-            if (str_starts_with($result, $code)) {
-                $testsPassed++;
-                continue;
+        $i = 0;
+        foreach ($mTests as $urls) {
+            $ch  = [];
+            $res = [];
+            $j   = 0;
+            foreach ($urls as $url => $code) {
+                $ch[$j] = curl_init();
+                curl_setopt($ch[$j], CURLOPT_URL, $url);
+                curl_setopt($ch[$j], CURLOPT_HEADER, 0);
+                curl_setopt($ch[$j], CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch[$j], CURLOPT_FRESH_CONNECT, TRUE);
+                $j++;
             }
 
-            $result = escapeshellcmd($result);
-            // $result = substr($result, 0, 80);
+            $mh = curl_multi_init();
 
-            echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $result";
+            $j = 0;
+            foreach ($urls as $url => $code) {
+                curl_multi_add_handle($mh, $ch[$j]);
+                $j++;
+            }
 
-            if ($exitOnError) {
-                break;
+            //execute the multi handle
+            do {
+                $status = curl_multi_exec($mh, $active);
+                if ($active) {
+                    curl_multi_select($mh);
+                }
+                while (false !== ($info = curl_multi_info_read($mh))) {
+                    echo ($i % 100 == 0) ? $i : '.';
+                    $i++;
+                    $info              = curl_getinfo($info['handle']);
+                    $res[$info['url']] = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH);
+                }
+            } while ($active && $status == CURLM_OK);
+
+            $j = 0;
+            foreach ($urls as $url => $code) {
+                $res[$url] .= curl_multi_getcontent($ch[$j]);
+                curl_multi_remove_handle($mh, $ch[$j]);
+                $j++;
+            }
+            curl_multi_close($mh);
+
+
+            foreach ($urls as $url => $code) {
+                if (str_starts_with($res[$url], $code)) {
+                    $testsPassed++;
+                    continue;
+                }
+
+                $res[$url] = escapeshellcmd($res[$url]);
+                $res[$url] = substr($res[$url], 0, 80);
+
+                echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $res[$url]";
+
+                if ($exitOnError) {
+                    break 2;
+                }
             }
         }
 
