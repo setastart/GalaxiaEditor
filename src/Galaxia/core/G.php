@@ -27,7 +27,8 @@ class G {
     public static Editor  $editor;
     public static User    $me;
 
-    private static mysqli $mysqli;
+    private static mysqli   $mysqli;
+    private static RedisCli $redis;
 
     private static array $timers      = [];
     private static int   $timerLevel  = 0;
@@ -208,6 +209,26 @@ class G {
         }
 
         return self::$mysqli;
+    }
+
+
+
+
+    static function redis(): RedisCli {
+        if (!isset(self::$app)) self::errorPage(500, 'G db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!isset(self::$redis)) {
+            self::timerStart('Redis Connection');
+
+            self::$redis = new RedisCli(host: 'localhost', port: '6379', silent_fail: true, timeout: 60);
+            self::$redis->set_error_function(function($error) {
+                self::errorPage(500, 'G redis Error' . __METHOD__ . ':' . __LINE__ . ' ' . $error);
+            });
+
+
+            self::timerStop('Redis Connection');
+        }
+
+        return self::$redis;
     }
 
 

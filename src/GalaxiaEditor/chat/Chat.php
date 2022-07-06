@@ -7,8 +7,6 @@
 namespace GalaxiaEditor\chat;
 
 
-use Galaxia\RedisCli;
-
 class Chat {
 
     public const timeoutXread        = 1000;    // milliseconds
@@ -18,7 +16,6 @@ class Chat {
     public const timeoutRoomInactive = 60 * 30; // seconds
 
     public static mixed    $post;
-    public static RedisCli $redis;
 
     static function exitArrayToJson($r): never {
         header('Content-Type: application/json');

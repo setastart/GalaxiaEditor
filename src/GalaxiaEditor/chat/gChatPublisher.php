@@ -31,8 +31,8 @@ switch (Chat::$post['type']) {
     case 'speak':
         $room = Chat::$post['room'];
         // send message to room
-        if (Chat::$redis->cmd('XADD', G::$app->mysqlDb . ':rooms:' . $room, '*', 'user', G::$me->id, 'speak', Text::h(trim($msg)))->set()) {
-            Chat::$redis->cmd('SET', G::$app->mysqlDb . ':editing:' . $room . ':' . $clientId, G::$me->id, 'EX', Chat::timeoutAlive)->set();
+        if (G::redis()->cmd('XADD', G::$app->mysqlDb . ':rooms:' . $room, '*', 'user', G::$me->id, 'speak', Text::h(trim($msg)))->set()) {
+            G::redis()->cmd('SET', G::$app->mysqlDb . ':editing:' . $room . ':' . $clientId, G::$me->id, 'EX', Chat::timeoutAlive)->set();
             Chat::exitArrayToJson(['status' => 'ok']);
         } else {
             Chat::exitArrayToJson(['status' => 'error', 'error' => 'could not store message']);
@@ -41,10 +41,10 @@ switch (Chat::$post['type']) {
     case 'leave':
         // leave rooms in X seconds
         foreach (Chat::$post['rooms'] as $roomToLeave) {
-            Chat::$redis->cmd('EXPIRE', G::$app->mysqlDb . ':editing:' . $roomToLeave . ':' . $clientId, Chat::timeoutLeave)->set();
+            G::redis()->cmd('EXPIRE', G::$app->mysqlDb . ':editing:' . $roomToLeave . ':' . $clientId, Chat::timeoutLeave)->set();
         }
 
-        // Chat::$redis->cmd('SET', G::$app->mysqlDb . ':leaving:' . $roomToLeave . ':' . $clientId, G::$me->id, 'EX', TIMEOUT_ALIVE)->set();
+        // G::redis()->cmd('SET', G::$app->mysqlDb . ':leaving:' . $roomToLeave . ':' . $clientId, G::$me->id, 'EX', TIMEOUT_ALIVE)->set();
         Chat::exitArrayToJson(['status' => 'ok', 'type' => 'leaving ' . $clientId]);
 
     default:

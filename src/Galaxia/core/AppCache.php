@@ -7,6 +7,9 @@
 namespace Galaxia;
 
 
+use function file_exists;
+use function file_get_contents;
+
 class AppCache {
 
     static function array(
@@ -52,7 +55,19 @@ class AppCache {
             if ($bypass) {
                 $result = $fCache();
             } else {
-                $result = File::lock($dirCache . 'flock', $cacheName . '.lock', $fCache);
+                $result = File::lock(
+                    dir: $dirCache . 'flock',
+                    fileName: $cacheName . '.lock',
+                    f: $fCache,
+                    fOnUnlock: function() use ($cacheFile) {
+                        if (file_exists($cacheFile)) {
+                            return include $cacheFile;
+                        }
+                        return [];
+                    },
+                    fOnFail: $f
+                );
+
             }
 
         }
@@ -110,7 +125,18 @@ class AppCache {
             if ($bypass) {
                 $result = $fCache();
             } else {
-                $result = File::lock($dirCache . 'flock', $cacheName . '.lock', $fCache);
+                $result = File::lock(
+                    dir: $dirCache . 'flock',
+                    fileName: $cacheName . '.lock',
+                    f: $fCache,
+                    fOnUnlock: function() use ($cacheFile) {
+                        if (file_exists($cacheFile)) {
+                            return file_get_contents($cacheFile);
+                        }
+                        return '';
+                    },
+                    fOnFail: $f
+                );
             }
 
         }
