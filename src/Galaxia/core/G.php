@@ -44,7 +44,7 @@ class G {
     public static string $error     = '';
 
 
-    static function init(string $dir, Request $request = null, string $userTable = '_geUser'): App {
+    static function init(string $dir, Request $request = null, string $userTable = '_geUser'): void {
         self::initEnv();
 
         header('Content-Type: text/html; charset=utf-8');
@@ -65,14 +65,12 @@ class G {
 
         self::$app = $app;
         self::timerStart('Total', $_SERVER['REQUEST_TIME_FLOAT']);
-
-        return self::$app;
     }
 
 
 
 
-    static function initCLI(string $dir, Request $request = null, string $userTable = '_geUser'): App {
+    static function initCLI(string $dir, Request $request = null, string $userTable = '_geUser'): void {
         self::initEnv();
 
         if (!isset(self::$req)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req = new Request() before G::initCLI()');
@@ -90,8 +88,6 @@ class G {
 
         self::$app = $app;
         self::timerStart('Total', $_SERVER['REQUEST_TIME_FLOAT']);
-
-        return self::$app;
     }
 
 
@@ -104,7 +100,8 @@ class G {
             self::errorPage(
                 $e->getCode(),
                 'exc ' . $e->getFile() . ' ' . $e->getLine() . ' ' . $e->getMessage(),
-                $e->getTraceAsString());
+                $e->getTraceAsString()
+            );
         });
 
         set_error_handler(function($code, $msg, $file = '', $line = 0) {
@@ -129,11 +126,13 @@ class G {
 
 
 
-    static function initEditor(string $dir): void {
+    static function initEditor(): void {
         if (!isset(self::$app)) self::errorPage(500, 'G editor initialization', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
         if (isset(self::$editor)) return;
 
-        require_once dirname(__DIR__, 2) . '/autoload-editor.php';
+        $dir = dirname(__DIR__, 3) . '/';
+
+        require_once $dir . 'src/autoload-editor.php';
 
         self::$editor = new Editor($dir);
 
@@ -248,8 +247,8 @@ class G {
                 key: 'translation-with-editor',
                 f: function(): array {
                     return array_merge(
-                        include(dirname(__DIR__, 2) . '/GalaxiaEditor/config/translation.php'),
-                        include(self::$app->dir . 'config/translation.php')
+                        include dirname(__DIR__, 2) . '/GalaxiaEditor/config/translation.php',
+                        include self::$app->dir . 'config/translation.php',
                     );
                 },
                 bypass: self::$req->cacheBypass,
@@ -260,7 +259,7 @@ class G {
                 scope: 'app',
                 level: 1,
                 key: 'translation-without-editor',
-                f: fn(): array => include(self::$app->dir . 'config/translation.php'),
+                f: fn(): array => include self::$app->dir . 'config/translation.php',
                 bypass: self::$req->cacheBypass,
                 write: self::$req->cacheWrite,
             );
@@ -270,7 +269,7 @@ class G {
             scope: 'app',
             level: 1,
             key: 'translationAlias',
-            f: fn(): array => include(self::$app->dir . 'config/translationAlias.php'),
+            f: fn(): array => include self::$app->dir . 'config/translationAlias.php',
             bypass: self::$req->cacheBypass,
             write: self::$req->cacheWrite,
         );
@@ -605,7 +604,7 @@ class G {
 
         $fBuild();
 
-        G::initEditor(dirname(__DIR__, 2));
+        G::initEditor();
         echo 'Validating config for perms: ';
         foreach ([[], ['dev']] as $perms) {
             echo "'" . implode(',', $perms) . "' ";

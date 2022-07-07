@@ -30,7 +30,7 @@ G::langSet();
 
 // init editor
 
-G::initEditor(dirname(__DIR__));
+G::initEditor();
 
 
 
