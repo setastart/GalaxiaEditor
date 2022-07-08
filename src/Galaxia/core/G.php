@@ -14,6 +14,8 @@ use mysqli;
 use mysqli_result;
 use mysqli_stmt;
 use Throwable;
+use function array_slice;
+use function asort;
 use function curl_multi_add_handle;
 use function curl_multi_init;
 use function debug_backtrace;
@@ -21,7 +23,9 @@ use function dirname;
 use function escapeshellcmd;
 use function file_exists;
 use function microtime;
+use function number_format;
 use function preg_match;
+use function str_pad;
 use function str_starts_with;
 use function substr;
 
@@ -570,24 +574,34 @@ class G {
         callable $fBuild,
         bool     $exitOnError = false,
         int      $simultaneous = 7,
-    ): never {
+    ): void {
+        global $argv;
+
+        $isBench = false;
+        foreach ($argv as $argn => $val) {
+            if ($val == '--bench') {
+                unset($argv[$argn]);
+                $argc--;
+                $isBench = true;
+            }
+        }
 
         if ($argc > 2 || $argc < 1) {
             echo 'Usage:' . PHP_EOL;
-            echo 'run tests: php test.php' . PHP_EOL;
+            echo 'run tests: php test.php [--bench]' . PHP_EOL;
             echo 'test single page: php test.php http://example.test/url' . PHP_EOL;
+            echo '  --bench runs performance benchmark after test' . PHP_EOL;
             exit();
         }
 
         if ($argc == 2) {
-            global $argv;
             $tests = [$argv[1] => '200'];
         }
 
         $testsPassed = 0;
         $testsTotal  = count($tests);
 
-        echo 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
+        echo PHP_EOL . 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
 
         G::cacheDeleteAll();
 
@@ -613,8 +627,8 @@ class G {
 
         $timeTotal = 0.0;
         $timeStart = microtime(true);
-        $timeMin = 1000.0;
-        $timeMax = 0.0;
+        $timeMin   = 1000.0;
+        $timeMax   = 0.0;
         $i         = 0;
         foreach ($mTests as $urls) {
             $ch  = [];
@@ -649,8 +663,8 @@ class G {
 
                     $info      = curl_getinfo($mhInfo['handle']);
                     $timeTotal += $info['total_time'];
-                    $timeMin = min($timeMin, $info['total_time']);
-                    $timeMax = max($timeMax, $info['total_time']);
+                    $timeMin   = min($timeMin, $info['total_time']);
+                    $timeMax   = max($timeMax, $info['total_time']);
 
                     $res[$info['url']] = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH);
                 }
@@ -683,9 +697,9 @@ class G {
         }
         $timeEnd = microtime(true);
 
-        $time   = ($timeEnd - $timeStart);
+        $time = ($timeEnd - $timeStart);
 
-        $reqS   = number_format($testsTotal / $time, 2);
+        $reqS = number_format($testsTotal / $time, 2);
 
         $avg   = number_format(($timeTotal / $i) * 1000, 2);
         $color = "\033[0;32m";
@@ -693,14 +707,107 @@ class G {
         if ($avg > 30) $color = "\033[0;31m";
         $avg = "$color$avg\e[0m";
 
-        $min   = number_format($timeMin * 1000, 2);
-        $max   = number_format($timeMax * 1000, 2);
+        $min = number_format($timeMin * 1000, 2);
+        $max = number_format($timeMax * 1000, 2);
 
         $prefix = ($testsPassed == count($tests)) ? '[OK] ✅ ' : '[FAIL] ❌ ';
 
-        exit(PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed. req/s: $reqS, avg: $avg, min: $min, max: $max" . PHP_EOL);
+        echo PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed. req/s: $reqS, avg: $avg, min: $min, max: $max" . PHP_EOL;
 
+        if ($isBench) G::bench(tests: $tests, host: $host, argc: $argc, exitOnError: $exitOnError);
     }
+
+
+    static function bench(
+        array  $tests,
+        string $host,
+        int    $argc,
+        bool   $exitOnError = false,
+    ): void {
+        if ($argc > 2 || $argc < 1) {
+            echo 'Usage:' . PHP_EOL;
+            echo 'run tests: php test.php' . PHP_EOL;
+            echo 'test single page: php test.php http://example.com/url' . PHP_EOL;
+            exit();
+        }
+
+        if ($argc == 2) {
+            global $argv;
+            $tests = [$argv[1] => '200'];
+        }
+
+        $benchs      = [];
+        $testsPassed = 0;
+        $testsTotal  = count($tests);
+
+        echo PHP_EOL . 'Benchmarking ' . $host . " ($testsTotal)" . PHP_EOL;
+
+        $timeTotal = 0.0;
+        $timeMin   = 1000.0;
+        $timeMax   = 0.0;
+        $i         = 0;
+        foreach ($tests as $url => $code) {
+            echo ($i % 100 == 0) ? $i : '.';
+            $i++;
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            $info   = curl_getinfo($ch);
+            $result = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH) . $result;
+
+
+            if (str_starts_with($result, $code)) {
+                $testsPassed++;
+                $benchs[$info['http_code'] . ' - ' . $url] = $info['total_time'] * 1000;
+
+                $timeTotal += $info['total_time'];
+                $timeMin   = min($timeMin, $info['total_time']);
+                $timeMax   = max($timeMax, $info['total_time']);
+                continue;
+            }
+
+            $result = escapeshellcmd($result);
+            // $result = substr($result, 0, 80);
+
+            echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $result";
+
+            if ($exitOnError) {
+                break;
+            }
+        }
+
+        echo PHP_EOL;
+        asort($benchs);
+        $benchs = array_slice($benchs, -10, preserve_keys: true);
+        foreach ($benchs as $url => $time) {
+            $color = "\033[0;32m";
+            if ($time > 10) $color = "\033[0;33m";
+            if ($time > 30) $color = "\033[0;31m";
+
+            $timeColored = str_pad("$color$time\e[0m", 18, ' ', STR_PAD_LEFT);
+
+            echo "$timeColored - $url" . PHP_EOL;
+        }
+
+        $avg   = number_format(($timeTotal / $i) * 1000, 2);
+        $color = "\033[0;32m";
+        if ($avg > 10) $color = "\033[0;33m";
+        if ($avg > 30) $color = "\033[0;31m";
+        $avg = "$color$avg\e[0m";
+
+        $min = number_format($timeMin * 1000, 2);
+        $max = number_format($timeMax * 1000, 2);
+
+        $prefix = ($testsPassed == count($tests)) ? '[OK] ✅ ' : '[FAIL] ❌ ';
+
+        echo PHP_EOL . "$prefix $testsPassed/$testsTotal benchmarks passed. avg: $avg, min: $min, max: $max" . PHP_EOL;
+    }
+
 
 
 
@@ -859,7 +966,6 @@ class G {
 
         return $r;
     }
-
 
 
 
