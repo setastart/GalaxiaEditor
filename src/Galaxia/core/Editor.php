@@ -35,7 +35,7 @@ class Editor {
     public string $translateEndpoint = '';
 
     public function __construct(string $dir) {
-        $this->dir       = rtrim($dir, '/') . '/';
+        $this->dir       = $dir;
         $this->dirLayout = $this->dir . 'src/GalaxiaEditor/layout/';
         $this->dirLogic  = $this->dir . 'src/GalaxiaEditor/template/';
         $this->dirView   = $this->dir . 'src/GalaxiaEditor/template/';

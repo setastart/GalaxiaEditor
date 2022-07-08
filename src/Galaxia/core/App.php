@@ -39,7 +39,7 @@ class App {
     public string $mysqlPass = '';
 
     public function __construct(string $dir) {
-        $this->dir      = rtrim($dir, '/') . '/';
+        $this->dir      = $dir . '/';
         $this->dirCache = $this->dir . 'var/cache/';
         $this->dirLog   = $this->dir . 'var/log/';
         $this->dirImage = $this->dir . 'var/media/image/';

@@ -19,6 +19,8 @@ use function curl_multi_init;
 use function debug_backtrace;
 use function dirname;
 use function escapeshellcmd;
+use function file_exists;
+use function microtime;
 use function preg_match;
 use function str_starts_with;
 use function substr;
@@ -44,49 +46,26 @@ class G {
     public static string $error     = '';
 
 
-    static function init(string $dir, Request $request = null, string $userTable = '_geUser'): void {
+    static function init(string $dir, string $userTable = '_geUser'): void {
         self::initEnv();
 
-        header('Content-Type: text/html; charset=utf-8');
-        header_remove("X-Powered-By");
+        if (self::isCli()) {
+            header('Content-Type: text/html; charset=utf-8');
+            header_remove("X-Powered-By");
+        }
 
         if (!isset(self::$req)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req = new Request() before G::init()');
         if (isset(self::$app)) self::errorPage(500, 'G app initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
 
         libxml_use_internal_errors(true);
 
-        if ($request) self::$req = $request;
         self::$me = new User($userTable);
 
-        $app = new App($dir);
+        self::$app = new App($dir);
+        require_once self::$app->dir . 'autoload.php';
+        require self::$app->dir . 'config/app.php';
+        require self::$app->dir . 'config/app.private.php';
 
-        require $app->dir . 'config/app.php';
-        require $app->dir . 'config/app.private.php';
-
-        self::$app = $app;
-        self::timerStart('Total', $_SERVER['REQUEST_TIME_FLOAT']);
-    }
-
-
-
-
-    static function initCLI(string $dir, Request $request = null, string $userTable = '_geUser'): void {
-        self::initEnv();
-
-        if (!isset(self::$req)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' Initialize G::$req = new Request() before G::initCLI()');
-        if (isset(self::$app)) self::errorPage(500, 'G app CLI initialization', __METHOD__ . ':' . __LINE__ . ' App was already initialized');
-
-        libxml_use_internal_errors(true);
-
-        if ($request) self::$req = $request;
-        self::$me = new User($userTable);
-
-        $app = new App($dir);
-
-        require $app->dir . 'config/app.php';
-        require $app->dir . 'config/app.private.php';
-
-        self::$app = $app;
         self::timerStart('Total', $_SERVER['REQUEST_TIME_FLOAT']);
     }
 
@@ -153,12 +132,32 @@ class G {
 
 
 
+    static function login(): void {
+        self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey);
+
+        if (G::isLoggedIn()) {
+            G::$req->minStatus       = 1;
+            G::$req->cacheBypassHtml = true;
+            if (G::isDev()) {
+                G::$req->cacheWrite = false;
+            }
+            if (G::isDevDebug()) {
+                G::$req->cacheBypass = true;
+            }
+        }
+    }
+
+    static function isLoggedIn(): bool {
+        return self::$me->loggedIn ?? false;
+    }
+
+    static function isCli(): bool {
+        return PHP_SAPI == 'cli';
+    }
+
     static function isDevEnv(): bool {
         return getenv('GALAXIA_ENV') === 'development';
     }
-
-
-
 
     static function isDev(): bool {
         if (!isset(self::$me)) return false;
@@ -167,7 +166,6 @@ class G {
         return self::$me->hasPerm('dev');
     }
 
-
     static function isDevDebug(): bool {
         if (!self::isDev()) return false;
         if (!isset(self::$app) || !self::$app->cookieDebugVal || !self::$app->cookieDebugKey || !isset($_COOKIE)) return false;
@@ -175,15 +173,7 @@ class G {
         return ($_COOKIE[self::$app->cookieDebugKey] ?? null) === self::$app->cookieDebugVal;
     }
 
-
-
-    static function isCli(): bool {
-        return PHP_SAPI == 'cli';
-    }
-
-
-
-    static function insideEditor(): bool {
+    static function isInsideEditor(): bool {
         if (!isset(self::$editor)) return false;
 
         return ($_SERVER['DOCUMENT_ROOT'] ?? null) === self::$editor->dir . 'public';
@@ -192,7 +182,7 @@ class G {
 
 
 
-    static function getMysqli(): mysqli {
+    static function mysqli(): mysqli {
         if (!isset(self::$app)) self::errorPage(500, 'G db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
         if (!isset(self::$mysqli)) {
             self::timerStart('DB Connection');
@@ -468,8 +458,6 @@ class G {
 
 
 
-    // app + editor error page
-
     static function errorPage(int $code, string $msg = '', string $debugText = ''): never {
         $codeOriginal = $code;
 
@@ -492,7 +480,7 @@ class G {
             exit();
         }
 
-        if (isset(self::$me) && self::$me->loggedIn && self::insideEditor()) {
+        if (isset(self::$me) && self::$me->loggedIn && self::isInsideEditor()) {
             self::$errorCode = $code;
             self::$error     = $errors[$code] . '<br><br>';
             // if (self::isDev()) {
@@ -574,13 +562,14 @@ class G {
 
 
 
+
     static function test(
         array    $tests,
         string   $host,
         int      $argc,
         callable $fBuild,
         bool     $exitOnError = false,
-        int      $multi = 8,
+        int      $simultaneous = 7,
     ): never {
 
         if ($argc > 2 || $argc < 1) {
@@ -617,12 +606,16 @@ class G {
         $mTests = [];
         $i      = 0;
         foreach ($tests as $url => $code) {
-            $mTests[floor($i / $multi)][$url] = $code;
+            $mTests[floor($i / $simultaneous)][$url] = $code;
             $i++;
         }
 
 
-        $i = 0;
+        $timeTotal = 0.0;
+        $timeStart = microtime(true);
+        $timeMin = 1000.0;
+        $timeMax = 0.0;
+        $i         = 0;
         foreach ($mTests as $urls) {
             $ch  = [];
             $res = [];
@@ -632,14 +625,14 @@ class G {
                 curl_setopt($ch[$j], CURLOPT_URL, $url);
                 curl_setopt($ch[$j], CURLOPT_HEADER, 0);
                 curl_setopt($ch[$j], CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch[$j], CURLOPT_FRESH_CONNECT, TRUE);
+                curl_setopt($ch[$j], CURLOPT_FRESH_CONNECT, true);
                 $j++;
             }
 
             $mh = curl_multi_init();
 
             $j = 0;
-            foreach ($urls as $url => $code) {
+            foreach ($urls as $ignored) {
                 curl_multi_add_handle($mh, $ch[$j]);
                 $j++;
             }
@@ -650,10 +643,15 @@ class G {
                 if ($active) {
                     curl_multi_select($mh);
                 }
-                while (false !== ($info = curl_multi_info_read($mh))) {
+                while (false !== ($mhInfo = curl_multi_info_read($mh))) {
                     echo ($i % 100 == 0) ? $i : '.';
                     $i++;
-                    $info              = curl_getinfo($info['handle']);
+
+                    $info      = curl_getinfo($mhInfo['handle']);
+                    $timeTotal += $info['total_time'];
+                    $timeMin = min($timeMin, $info['total_time']);
+                    $timeMax = max($timeMax, $info['total_time']);
+
                     $res[$info['url']] = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH);
                 }
             } while ($active && $status == CURLM_OK);
@@ -674,7 +672,7 @@ class G {
                 }
 
                 $res[$url] = escapeshellcmd($res[$url]);
-                $res[$url] = substr($res[$url], 0, 80);
+                // $res[$url] = substr($res[$url], 0, 80);
 
                 echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $res[$url]";
 
@@ -683,10 +681,24 @@ class G {
                 }
             }
         }
+        $timeEnd = microtime(true);
+
+        $time   = ($timeEnd - $timeStart);
+
+        $reqS   = number_format($testsTotal / $time, 2);
+
+        $avg   = number_format(($timeTotal / $i) * 1000, 2);
+        $color = "\033[0;32m";
+        if ($avg > 10) $color = "\033[0;33m";
+        if ($avg > 30) $color = "\033[0;31m";
+        $avg = "$color$avg\e[0m";
+
+        $min   = number_format($timeMin * 1000, 2);
+        $max   = number_format($timeMax * 1000, 2);
 
         $prefix = ($testsPassed == count($tests)) ? '[OK] ✅ ' : '[FAIL] ❌ ';
 
-        exit(PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed." . PHP_EOL);
+        exit(PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed. req/s: $reqS, avg: $avg, min: $min, max: $max" . PHP_EOL);
 
     }
 
@@ -765,6 +777,7 @@ class G {
 
 
 
+
     static function cacheArray(
         string   $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
@@ -810,14 +823,14 @@ class G {
 
 
     static function prepare(string $query): false|mysqli_stmt {
-        return self::getMysqli()->prepare($query);
+        return self::mysqli()->prepare($query);
     }
 
     static function execute(string $query, array $params = null): false|mysqli_result {
         if (G::isDevEnv() && G::isDevDebug() && preg_match("~^\W*select\W~i", $query)) {
             G::$explains[] = G::explain($query, $params);
         }
-        $stmt = self::getMysqli()->prepare($query);
+        $stmt = self::mysqli()->prepare($query);
         $stmt->execute($params);
         $result = $stmt->get_result();
         $stmt->close();
@@ -827,14 +840,15 @@ class G {
     static function explain(string $query, array $params = null): array {
         $db     = debug_backtrace();
         $source = $db[1]['file'] . ':' . $db[1]['line'];
-        $r      = [
+
+        $r = [
             'src'     => $source,
             'query'   => $query,
             'params'  => $params,
             'explain' => [],
         ];
 
-        $stmt = self::getMysqli()->prepare('EXPLAIN ' . $query);
+        $stmt = self::mysqli()->prepare('EXPLAIN ' . $query);
         $stmt->execute($params);
         $result = $stmt->get_result();
         $stmt->close();
@@ -862,14 +876,6 @@ class G {
         AppRoute::generateSitemap($schemeHost);
     }
 
-
-    static function login(): void {
-        self::$me->logInFromCookieSessionId(self::$app->cookieEditorKey);
-    }
-
-    static function isLoggedIn(): bool {
-        return self::$me->loggedIn ?? false;
-    }
 
     static function versionQuery(): string {
         if (G::$req->cacheBypass || G::isDevEnv()) {
