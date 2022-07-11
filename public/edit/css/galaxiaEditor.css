@@ -529,7 +529,7 @@ a.paper {
 }
 
 .col.flexP { flex: 1 1; }
-.col.flexT { flex: 1 1; }
+.col.flexT { flex: 1 1 calc(4vw + 1px); }
 .col.flexD { flex: 2 1; }
 .col.flex1 { flex: 2 1; }
 .col.flex2 { flex: 3 1; }
