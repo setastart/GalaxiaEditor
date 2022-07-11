@@ -30,10 +30,10 @@ use GalaxiaEditor\input\InputRender;
             <div>
                 <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$itemId)?>" class="btn-a"><?=Text::t('Reload')?></a>
 <?php   if (E::$prev) { ?>
-                <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$prev)?>" class="btn-a"><?=Text::t('< Previous')?></a>
+                <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$prev)?>" class="btn-a">< <?=Text::t('Previous')?></a>
 <?php   } ?>
 <?php   if (E::$next) { ?>
-                <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$next)?>" class="btn-a"><?=Text::t('Next >')?></a>
+                <a href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$next)?>" class="btn-a"><?=Text::t('Next')?> ></a>
 <?php   } ?>
             </div>
 

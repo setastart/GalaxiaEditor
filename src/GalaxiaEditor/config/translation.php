@@ -986,6 +986,16 @@ return [
         'pt' => 'Recarregar',
         'es' => 'Volver a cargar',
     ],
+    'Previous' => [
+        'en' => 'Previous',
+        'pt' => 'Anterior',
+        'es' => 'Anterior',
+    ],
+    'Next' => [
+        'en' => 'Next',
+        'pt' => 'Seguinte',
+        'es' => 'Siguiente',
+    ],
     'Visit' => [
         'en' => 'Visit',
         'pt' => 'Visitar',
