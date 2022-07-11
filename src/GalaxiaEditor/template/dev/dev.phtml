@@ -19,17 +19,17 @@ use GalaxiaEditor\E;
 
     <div class="dev-actions pad">
 <?php   if (G::$app->cookieDebugKey && G::$app->cookieDebugVal)  { ?>
-        <div><button class="btn btn-pad btn-blue active ev-cookie-set" data-key="<?=Text::h(G::$app->cookieDebugKey)?>" data-val="<?=Text::h(G::$app->cookieDebugVal)?>"><?=Text::t("Set debug cookie")?></button></div>
-        <div><button class="btn btn-pad btn-blue active ev-cookie-del" data-key="<?=Text::h(G::$app->cookieDebugKey)?>"><?=Text::t("remove debug cookie")?></button></div>
+        <div><button class="btn btn-pad btn-blue active ev-cookie-set" data-key="<?=Text::h(G::$app->cookieDebugKey)?>" data-val="<?=Text::h(G::$app->cookieDebugVal)?>"><?=Text::t("Set Cookie: Debug")?></button></div>
+        <div><button class="btn btn-pad btn-blue active ev-cookie-del" data-key="<?=Text::h(G::$app->cookieDebugKey)?>"><?=Text::t("Delete Cookie: Debug")?></button></div>
 <?php   } ?>
-        <a href="/edit/dev/info">PHP Information</a>
-        <a href="/edit/dev/sitemap">Regenerate Sitemap</a>
-        <a href="/edit/dev/urls">Urls</a>
-        <a href="/edit/dev/opcache">OPcache Status</a>
-        <a href="/edit/dev/imageListDeleteResizes">Delete Image Resizes</a>
-        <a href="/edit/dev/cacheDeleteApp">Delete App Caches</a>
-        <a href="/edit/dev/cacheDeleteEditor">Delete Editor Caches</a>
-        <a href="/edit/dev/cacheDeleteAll">Delete ALL Caches</a>
+        <a href="/edit/dev/info"><?=Text::t('PHP Information')?></a>
+        <a href="/edit/dev/sitemap"><?=Text::t('Regenerate Sitemap')?></a>
+        <a href="/edit/dev/urls">URLs</a>
+        <a href="/edit/dev/opcache"><?=Text::t('OPcache Status')?></a>
+        <a href="/edit/dev/imageListDeleteResizes"><?=Text::t('Delete Image Resizes')?></a>
+        <a href="/edit/dev/cacheDeleteApp"><?=Text::t('Delete App Caches')?></a>
+        <a href="/edit/dev/cacheDeleteEditor"><?=Text::t('Delete Editor Caches')?></a>
+        <a href="/edit/dev/cacheDeleteAll"><?=Text::t('Delete ALL Caches')?></a>
     </div>
 
 </div>

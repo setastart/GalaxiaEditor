@@ -94,7 +94,7 @@ return [
     'Delete Resizes' => [
         'en' => 'Delete Resizes',
         'pt' => 'Apagar Dimensões',
-        'es' => 'Borrar Dimensiones',
+        'es' => 'Eliminar Dimensiones',
     ],
     'Select' => [
         'en' => 'Select',
@@ -143,14 +143,14 @@ return [
     ],
     'Delete Images' => [
         'en' => 'Delete Images',
-        'pt' => 'Eliminar Imagens',
+        'pt' => 'Apagar Imagens',
         'es' => 'Eliminar Imágenes',
     ],
 
     'Images to Delete' => [
         'en' => 'Images to Delete',
-        'pt' => 'Imagens para Eliminar',
-        'es' => 'Imágenes para eliminar',
+        'pt' => 'Imagens para Apagar',
+        'es' => 'Imágenes para Eliminar',
     ],
     'Remove All' => [
         'en' => 'Remove All',
@@ -882,6 +882,70 @@ return [
         'pt' => 'traduzir',
         'es' => 'traducir',
     ],
+    'Translations' => [
+        'en' => 'Translations',
+        'pt' => 'Traduções',
+        'es' => 'Traduciones',
+    ],
+    'Development' => [
+        'en' => 'Development',
+        'pt' => 'Desenvolvimento',
+        'es' => 'Desarrollo',
+    ],
+    'Development Tools' => [
+        'en' => 'Development Tools',
+        'pt' => 'Ferramentas de Desenvolvimento',
+        'es' => 'Herramientas de Desarrollo',
+    ],
+
+
+    'Set Cookie: Debug' => [
+        'en' => 'Set Cookie: Debug',
+        'pt' => 'Definir Cookie: Debug',
+        'es' => 'Fijar Cookie: Debug',
+    ],
+    'Delete Cookie: Debug' => [
+        'en' => 'Delete Cookie: Debug',
+        'pt' => 'Apagar Cookie: Debug',
+        'es' => 'Eliminar Cookie: Debug',
+    ],
+    'PHP Information' => [
+        'en' => 'PHP Information',
+        'pt' => 'Informação de PHP',
+        'es' => 'Información de PHP',
+    ],
+    'Regenerate Sitemap' => [
+        'en' => 'Regenerate Sitemap',
+        'pt' => 'Regenerar Mapa do Sítio (Sitemap)',
+        'es' => 'Regenerar Mapa del Sítio (Sitemap)',
+    ],
+    'OPcache Status' => [
+        'en' => 'OPcache Status',
+        'pt' => 'Estado de OPcache',
+        'es' => 'Estado de OPcache',
+    ],
+    'Delete Image Resizes' => [
+        'en' => 'Delete Image Resizes',
+        'pt' => 'Apagar Redimensionamentos de Imagens',
+        'es' => 'Eliminar Redimensionamientos de Imágenes',
+    ],
+    'Delete App Caches' => [
+        'en' => 'Delete Cache: App',
+        'pt' => 'Apagar Caché: App',
+        'es' => 'Eliminar Caché: App',
+    ],
+    'Delete Editor Caches' => [
+        'en' => 'Delete Cache: Editor',
+        'pt' => 'Apagar Caché: Editor',
+        'es' => 'Eliminar Caché: Editor',
+    ],
+    'Delete ALL Caches' => [
+        'en' => 'Delete Cache: ALL',
+        'pt' => 'Apagar Caché: TODOS',
+        'es' => 'Eliminar Caché: TODOS',
+    ],
+
+
     'Mod.' => [
         'en' => 'Mod.',
         'pt' => 'Mod.',

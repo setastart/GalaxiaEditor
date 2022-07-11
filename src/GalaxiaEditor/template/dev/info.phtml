@@ -4,6 +4,8 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\Text;
+
 ob_start();
 phpinfo();
 preg_match('~.*?<body>(.*)</body>~s', ob_get_clean(), $matches);
@@ -14,7 +16,7 @@ preg_match('~.*?<body>(.*)</body>~s', ob_get_clean(), $matches);
 <div id="dev" class="paper pad">
 
     <div class="paper-header pad">
-        <h1>PHP Information</h1>
+        <h1><?=Text::t('PHP Information')?></h1>
     </div>
 
     <div class="pad phpinfo">
