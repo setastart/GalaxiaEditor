@@ -80,6 +80,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 <?php   } ?>
 <?php   foreach (G::$me->perms as $perm) { ?>
 .hide-active-perm-<?=Text::h($perm)?> .hide-perm-<?=Text::h($perm)?> { display: none; }
+.hide-active-perm-<?=Text::h($perm)?> #menu .hide-perm-<?=Text::h($perm)?> { display: flex; opacity: 0.4; box-shadow: none; }
 .hide-perm-<?=Text::h($perm)?> { background-color: <?=$permColors[$perm] ?? '#ddd'?>; }
 .paper-header-status.hide-perm-<?=Text::h($perm)?> { padding: 5px 5px 3px; }
 <?php   } ?>

@@ -257,6 +257,11 @@ return [
         'pt' => 'Etiquetas',
         'es' => 'Etiquetas',
     ],
+    'Stats' => [
+        'en' => 'Stats',
+        'pt' => 'Estatísticas',
+        'es' => 'Estadísticas',
+    ],
     'Statistics' => [
         'en' => 'Statistics',
         'pt' => 'Estatísticas',

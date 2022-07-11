@@ -92,7 +92,7 @@ class Editor {
     static function pageStatsGoaccess(string $logFile, string $dir): array {
         return [
             'gcPageType'    => 'gcpGoaccessStats',
-            'gcMenuTitle'   => 'Basic Stats',
+            'gcMenuTitle'   => 'Stats',
             'gcMenuShow'    => true,
             'gcGoaccessLog' => $logFile,
             'gcGoaccessDir' => $dir,
