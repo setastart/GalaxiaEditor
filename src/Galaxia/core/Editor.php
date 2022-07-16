@@ -83,7 +83,7 @@ class Editor {
         return [
             'gcPerms'      => 'dev',
             'gcPageType'   => 'gcpLinkToItem',
-            'gcMenuTitle'  => 'Development',
+            'gcMenuTitle'  => '🛠 Dev',
             'gcMenuShow'   => ['gcPerms' => ['dev']],
             'geLinkToItem' => ['dev'],
         ];

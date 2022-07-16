@@ -887,11 +887,6 @@ return [
         'pt' => 'Traduções',
         'es' => 'Traduciones',
     ],
-    'Development' => [
-        'en' => 'Development',
-        'pt' => 'Desenvolvimento',
-        'es' => 'Desarrollo',
-    ],
     'Development Tools' => [
         'en' => 'Development Tools',
         'pt' => 'Ferramentas de Desenvolvimento',

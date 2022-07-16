@@ -7,6 +7,7 @@
 namespace Galaxia;
 
 
+use function array_map;
 use function str_starts_with;
 
 trait Style {
@@ -83,12 +84,10 @@ trait Style {
 
 
     /**
-     * @param string $hex   fa0, ffaa00, #fa0 or #ffaa00
-     * @param float  $alpha 0.0 - 1.0
-     *
-     * @return string rgba(123, 123, 123, 0.5)
+     * @param string $hex fa0, ffaa00, #fa0 or #ffaa00
+     * @return array [$r, $g, $b]
      */
-    static function hex2rgba(string $hex, float $alpha = 1): string {
+    static function hex2rgbArray(string $hex): array {
         $color = str_starts_with($hex, '#') ? substr($hex, 1) : $hex;
 
         if (strlen($color) == 6) {
@@ -96,10 +95,102 @@ trait Style {
         } else if (strlen($color) == 3) {
             $hexArray = [$color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2]];
         } else {
-            return $hex;
+            return [0, 0, 0];
         }
 
-        $rgb = implode(', ', array_map('hexdec', $hexArray));
+        return array_map('hexdec', $hexArray);
+    }
+
+
+    static function rgb2hsl($r, $g, $b): array {
+        $r   /= 255;
+        $g   /= 255;
+        $b   /= 255;
+        $max = max($r, $g, $b);
+        $min = min($r, $g, $b);
+        $l = ($max + $min) / 2;
+        $d = $max - $min;
+        if ($d == 0) {
+            $h = $s = 0;
+        } else {
+            $h = 0;
+            $s = $d / (1 - abs(2 * $l - 1));
+            switch ($max) {
+                case $r:
+                    $h = 60 * fmod((($g - $b) / $d), 6);
+                    if ($b > $g) {
+                        $h += 360;
+                    }
+                    break;
+                case $g:
+                    $h = 60 * (($b - $r) / $d + 2);
+                    break;
+                case $b:
+                    $h = 60 * (($r - $g) / $d + 4);
+                    break;
+            }
+        }
+        return [round($h), round($s * 100), round($l * 100)];
+    }
+
+    static function hsl2rgb($h, $s, $l): array {
+        $c = (1 - abs(2 * ($l / 100) - 1)) * $s / 100;
+        $x = $c * (1 - abs(fmod(($h / 60), 2) - 1));
+        $m = ($l / 100) - ($c / 2);
+        if ($h < 60) {
+            $r = $c;
+            $g = $x;
+            $b = 0;
+        } else if ($h < 120) {
+            $r = $x;
+            $g = $c;
+            $b = 0;
+        } else if ($h < 180) {
+            $r = 0;
+            $g = $c;
+            $b = $x;
+        } else if ($h < 240) {
+            $r = 0;
+            $g = $x;
+            $b = $c;
+        } else if ($h < 300) {
+            $r = $x;
+            $g = 0;
+            $b = $c;
+        } else {
+            $r = $c;
+            $g = 0;
+            $b = $x;
+        }
+        return [floor(($r + $m) * 255), floor(($g + $m) * 255), floor(($b + $m) * 255)];
+    }
+
+
+
+    /**
+     * @param string $hex fa0, ffaa00, #fa0 or #ffaa00
+     * @param int    $degrees
+     * @return string #123456
+     */
+    static function hueRotate(string $hex, int $degrees): string {
+        $hsl = self::rgb2hsl(...self::hex2rgbArray($hex));
+        $hsl[0] += $degrees;
+        while ($hsl[0] < 0) $hsl[0] += 360;
+        while ($hsl[0] > 360) $hsl[0] -= 360;
+        $rgb = self::hsl2rgb(...$hsl);
+        $rgb = array_map(fn($c) => str_pad(dechex($c), 2, 0, STR_PAD_LEFT), $rgb);
+        return "#{$rgb[0]}{$rgb[1]}{$rgb[2]}";
+    }
+
+
+    /**
+     * @param string $hex   fa0, ffaa00, #fa0 or #ffaa00
+     * @param float  $alpha 0.0 - 1.0
+     *
+     * @return string rgba(123, 123, 123, 0.5)
+     */
+    static function hex2rgba(string $hex, float $alpha = 1): string {
+        $rgb = implode(', ', self::hex2rgbArray($hex));
 
         $alpha = round(max(0, min(1, $alpha)), 3);
         $alpha = match ($alpha) {
@@ -121,26 +212,8 @@ trait Style {
      * @return string #123456
      */
     static function hexMix(string $fg, float $fgMix = 1, string $bg = 'ffffff'): string {
-        $color1 = str_starts_with($fg, '#') ? substr($fg, 1) : $fg;
-
-        if (strlen($color1) == 6) {
-            $hexArray1 = [$color1[0] . $color1[1], $color1[2] . $color1[3], $color1[4] . $color1[5]];
-        } else if (strlen($color1) == 3) {
-            $hexArray1 = [$color1[0] . $color1[0], $color1[1] . $color1[1], $color1[2] . $color1[2]];
-        } else {
-            return $fg;
-        }
-        $rgb1 = array_map('hexdec', $hexArray1);
-
-        $color2 = str_starts_with($bg, '#') ? substr($bg, 1) : $bg;
-        if (strlen($color2) == 6) {
-            $hexArray2 = [$color2[0] . $color2[1], $color2[2] . $color2[3], $color2[4] . $color2[5]];
-        } else if (strlen($color2) == 3) {
-            $hexArray2 = [$color2[0] . $color2[0], $color2[1] . $color2[1], $color2[2] . $color2[2]];
-        } else {
-            return $fg;
-        }
-        $rgb2 = array_map('hexdec', $hexArray2);
+        $rgb1 = self::hex2rgbArray($fg);
+        $rgb2 = self::hex2rgbArray($bg);
 
         $r = str_pad(dechex(round($rgb1[0] + (($rgb2[0] - $rgb1[0]) * (1.0 - $fgMix)))), 2, '0', STR_PAD_LEFT);
         $g = str_pad(dechex(round($rgb1[1] + (($rgb2[1] - $rgb1[1]) * (1.0 - $fgMix)))), 2, '0', STR_PAD_LEFT);

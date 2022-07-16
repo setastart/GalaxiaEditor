@@ -128,7 +128,6 @@ Other operating systems where you can meet the software requirements could also 
 ### Software requirements and dependencies
 
 GalaxiaEditor is built on **PHP 8** and developed on the latest active PHP version (currently PHP 8.1).  
-Older versions may work 
 
 - PHP 8.1
 - MySQL 8.0
@@ -165,10 +164,10 @@ In order to explain how GalaxiaEditor works, Let's suppose we have a server with
 
 GalaxiaEditor and your websites reside in separate directories inside your web serving directory, `/var/www/galaxia` in this example:
 
-    /var/www/galaxia
-    ├── _GalaxiaEditor
-    ├── example1.com
-    └── example2.net
+    /var/www/galaxia/
+    ├── _GalaxiaEditor/
+    ├── example1.com/
+    └── example2.net/
 
 In this setup, the 3 example websites will share the same GalaxiaEditor code 
 
