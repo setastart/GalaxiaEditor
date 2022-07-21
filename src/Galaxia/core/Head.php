@@ -55,6 +55,19 @@ class Head {
 
 
 
+    static function prevNext(string $prev = '', string $next = ''): void {
+// @formatter:off ?>
+<?php   if ($next) { ?>
+    <link rel="next" href="<?=G::$req->schemeHost() . Text::h($next)?>"/>
+<?php   } ?>
+<?php   if ($prev) { ?>
+    <link rel="prev" href="<?=G::$req->schemeHost() . Text::h($prev)?>"/>
+<?php   } ?>
+<?php } // @formatter:on
+
+
+
+
     static function favicon(): void {
 // @formatter:off ?>
 
