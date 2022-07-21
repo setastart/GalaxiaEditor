@@ -205,12 +205,14 @@ class SchemaOrg {
         string   $headline,
         DateTime $dtCreate,
         DateTime $dtModify,
-        array    $images
+        array    $images,
+        array    $author = [],
     ): array {
         return [
             '@context'      => 'https://schema.org',
             '@type'         => 'Article',
             'headline'      => $headline,
+            'author'        => $author,
             'image'         => $images,
             'datePublished' => $dtCreate->format(DATE_ATOM),
             'dateModified'  => $dtModify->format(DATE_ATOM),
