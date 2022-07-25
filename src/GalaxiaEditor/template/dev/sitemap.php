@@ -11,3 +11,6 @@ G::$editor->view = 'dev/dev';
 
 
 G::routeSitemap(G::$req->schemeHost());
+
+if (file_exists(G::dir() .'script/_editor-item-update-hard.php'))
+    include G::dir() .'script/_editor-item-update-hard.php';

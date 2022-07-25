@@ -92,6 +92,7 @@ class AppRoute {
                                     $keyLang => G::addLangPrefix($page['pageSlug_' . $keyLang] . $subLang[$keyLang], $keyLang),
 
                                     'pri' => $sm['priority'],
+                                    'timestamp' => $page['timestampModified'],
                                 ];
 
                                 if (count($activeLocales) > 1) {
@@ -111,6 +112,7 @@ class AppRoute {
                             $urls[$found] = [
                                 $keyLang => G::addLangPrefix($page['pageSlug_' . $keyLang], $keyLang),
                                 'pri'    => $sm['priority'],
+                                'timestamp' => $page['timestampModified'],
                             ];
 
                             if (count($activeLocales) > 1) {
@@ -141,6 +143,7 @@ class AppRoute {
         foreach ($sitemap as $page) {
             foreach ($page as $key => $val) {
                 if ($key == 'pri') continue;
+                if ($key == 'timestamp') continue;
                 $urls[] = $val;
             }
         }
@@ -176,6 +179,7 @@ class AppRoute {
                 $rl .= '<url>' . PHP_EOL;
                 $rl .= '  <priority>' . $url['pri'] . '</priority>' . PHP_EOL;
                 $rl .= '  <loc>' . $schemeHost . $url[$lang] . '</loc>' . PHP_EOL;
+                $rl .= '  <lastmod>' . date('c', $url['timestamp']) . '</lastmod>' . PHP_EOL;
                 if (count($activeLocales) > 1) {
                     foreach ($activeLocales as $lang2 => $locale) {
                         if (!isset($url[$lang2])) continue;
