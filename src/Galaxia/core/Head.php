@@ -99,12 +99,27 @@ class Head {
 
 
 
-    static function headSchemaOrg(array $schema): void {
+    static function headSchemaOrg(
+        array $schema,
+        bool $prettyPrint = false,
+    ): void {
         if (!$schema) return;
+
+        if ($prettyPrint) {
 // @formatter:off ?>
 
-    <script type="application/ld+json"><?=PHP_EOL, json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), PHP_EOL, '    '?></script>
+    <script type="application/ld+json">
+<?=json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), PHP_EOL?>
+    </script>
 <?php // @formatter:on
+        } else {
+// @formatter:off ?>
+
+    <script type="application/ld+json">
+<?=json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), PHP_EOL?>
+    </script>
+<?php // @formatter:on
+        }
     }
 
 
