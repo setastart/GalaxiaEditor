@@ -7,6 +7,8 @@
 namespace Galaxia;
 
 
+use function in_array;
+
 class Asset {
 
 
@@ -17,7 +19,8 @@ class Asset {
         array  $builds,
         string $publicDir,
         string $publicSubdir,
-        string $extBuild
+        string $extBuild,
+        array  $buildsMin = [],
     ): void {
         G::timerStart(__CLASS__ . '::' . __FUNCTION__ . ' ' . $publicSubdir);
 
@@ -31,6 +34,7 @@ class Asset {
 
         foreach ($builds as $buildName => $fileList) {
             $build = '';
+            $min = in_array($buildName, $buildsMin);
 
             // build development files
             foreach ($fileList as $fileName) {
@@ -44,9 +48,9 @@ class Asset {
 
                 file_put_contents($output, PHP_EOL . $fileContent);
                 if ($fileContent) {
-                    $build .= Text::commentHeader($sourceName) . PHP_EOL;
+                    if (!$min) $build .= Text::commentHeader($sourceName) . PHP_EOL;
                     $build .= $fileContent;
-                    $build .= PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL;
+                    if (!$min) $build .= PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL;
                 }
             }
 
@@ -117,8 +121,16 @@ class Asset {
 
 
 
-    static function fontFace(array $fonts, string $family): string {
+    static function fontFace(
+        array  $fonts,
+        string $family,
+        bool   $oneLine = true,
+    ): string {
         $r = '';
+
+        $eol    = $oneLine ? '' : PHP_EOL;
+        $indent = $oneLine ? ' ' : '    ';
+
         foreach ($fonts[$family] ?? [] as $style => $weights) {
             foreach ($weights as $file => $descriptors) {
                 $srces = [];
@@ -134,14 +146,14 @@ class Asset {
                 }
                 unset($descriptors['local'], $descriptors['ext'], $descriptors['variable']);
 
-                $r .= '@font-face {' . PHP_EOL;
-                $r .= "    font-family: '" . Text::h($family) . "';" . PHP_EOL;
-                $r .= "    font-style: " . Text::h($style) . ";" . PHP_EOL;
+                $r .= '@font-face {' . $eol;
+                $r .= $indent . "font-family: '" . Text::h($family) . "';" . $eol;
+                $r .= $indent . "font-style: " . Text::h($style) . ";" . $eol;
                 foreach ($descriptors as $descriptor => $value) {
-                    $r .= "    " . Text::h($descriptor) . ": " . Text::h($value) . ";" . PHP_EOL;
+                    $r .= $indent . "" . Text::h($descriptor) . ": " . Text::h($value) . ";" . $eol;
                 }
-                $r .= "    src: " . implode(', ', $srces) . ";" . PHP_EOL;
-                $r .= "}" . PHP_EOL . PHP_EOL;
+                $r .= $indent . "src: " . implode(', ', $srces) . ";" . $eol;
+                $r .= "}" . $eol . PHP_EOL;
             }
         }
 
