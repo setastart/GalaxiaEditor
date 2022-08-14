@@ -55,6 +55,15 @@ class Head {
 
 
 
+    static function canonical(string $path = ''): void {
+        if  (!$path) return;
+// @formatter:off ?>
+    <link rel="canonical" href="<?=G::$req->schemeHost() . Text::h($path)?>"/>
+<?php } // @formatter:on
+
+
+
+
     static function prevNext(string $prev = '', string $next = ''): void {
 // @formatter:off ?>
 <?php   if ($next) { ?>
@@ -101,7 +110,7 @@ class Head {
 
     static function headSchemaOrg(
         array $schema,
-        bool $prettyPrint = false,
+        bool  $prettyPrint = false,
     ): void {
         if (!$schema) return;
 
