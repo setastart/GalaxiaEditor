@@ -442,6 +442,10 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
                                 $r .= Text::h($value);
                                 break;
 
+                            case 'html':
+                                $r .= Text::html($value);
+                                break;
+
                             default:
                                 if (is_string($value)) $r .= Text::firstLine($value);
                                 if (is_int($value)) $r .= $value;
@@ -503,6 +507,7 @@ $rowsTotal = count(E::$listRows);
 
 // integer filters (enum)
 
+$filterIntsActive = [];
 $filterInts = $list['gcFilterInts'];
 foreach ($filterInts as $filterId => $filter) {
     if (isset($filter['filterType'])) {
@@ -524,6 +529,7 @@ foreach ($filterInts as $filterId => $filter) {
         if (str_contains($filterInts[$filterId]['options'][$int]['cssClass'] ?? '', 'active')) {
             $filterInts[$filterId]['options'][$int]['checked']  = true;
             $filterInts[$filterId]['options'][$int]['cssClass'] = (str_replace('active', '', $filterInts[$filterId]['options'][$int]['cssClass']));
+            $filterIntsActive[$filterId][$int] = '1';
         }
         if (empty($_POST)) continue;
 
@@ -537,14 +543,13 @@ $intFiltersActive = [];
 foreach ($filterInts as $filterId => $filter) {
     foreach ($filter['options'] ?? [] as $int => $value) {
         if (!$filter['options'][$int]['checked']) {
-            $intFiltersActive[] = $filterId;
-            // break 2;
+            $intFiltersActive[$filterId] = true;
         }
     }
 }
 
 G::timerStart('Filter Ints');
-foreach ($intFiltersActive as $filterId) {
+foreach ($intFiltersActive as $filterId => $_) {
 
     $itemsByInt = Cache::listItemsFilterInt($filterId, function() use ($items, $filterInts, $filterId) {
         $itemsByInt = [];
@@ -558,10 +563,9 @@ foreach ($intFiltersActive as $filterId) {
     });
 
     $filteredInts = [];
-    foreach ($filterInts as $filterId => $filter) {
-        if (!isset($_POST['filterInts'][$filterId])) continue;
+    foreach ($filterInts as $filterIntId => $filter) {
         if (!isset($itemsByInt)) continue;
-        $ints = $_POST['filterInts'][$filterId];
+        $ints = $_POST['filterInts'][$filterIntId] ?? $filterIntsActive[$filterIntId];
         krsort($ints);
         foreach ($ints as $int => $value) {
             if ($value && isset($itemsByInt[$int])) {
