@@ -53,7 +53,7 @@ class G {
     static function init(string $dir, string $userTable = '_geUser'): void {
         self::initEnv();
 
-        if (self::isCli()) {
+        if (!self::isCli()) {
             header('Content-Type: text/html; charset=utf-8');
             header_remove("X-Powered-By");
         }
@@ -63,14 +63,15 @@ class G {
 
         libxml_use_internal_errors(true);
 
-        self::$me = new User($userTable);
-
+        self::$me  = new User($userTable);
         self::$app = new App($dir);
+
+        self::timerStart('Total', $_SERVER['REQUEST_TIME_FLOAT']);
+
         require_once self::$app->dir . 'autoload.php';
         require self::$app->dir . 'config/app.php';
         require self::$app->dir . 'config/app.private.php';
 
-        self::timerStart('Total', $_SERVER['REQUEST_TIME_FLOAT']);
     }
 
 

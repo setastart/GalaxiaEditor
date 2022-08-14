@@ -7,8 +7,6 @@
 namespace Galaxia;
 
 use function dirname;
-use function file_get_contents;
-use function preg_match;
 
 class Editor {
 
@@ -483,6 +481,7 @@ class Editor {
         array  $where = [],
         array  $groupBy = [],
         array  $loc = [],
+        int    $minTimestamp = 0,
     ): array {
         return [
             'priority'        => $priority,
@@ -491,6 +490,7 @@ class Editor {
             'gcSelectWhere'   => $where,
             'gcSelectGroupBy' => $groupBy,
             'loc'             => $loc,
+            'minTimestamp'    => $minTimestamp,
         ];
     }
 

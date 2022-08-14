@@ -39,12 +39,16 @@ class AppRoute {
         foreach (G::$app->routes as $pageType => $patterns) {
             foreach ($patterns as $pattern => $methods) {
                 foreach ($methods as $method => $route) {
+                    if ($method != 'GET') continue;
+                    if (empty($route['sitemap'])) continue;
+                    $sm = $route['sitemap'];
+                    ArrayShape::languify($sm, $activeLangs);
+                    if (!isset($sm['priority'])) continue;
+
                     foreach ($pages[$pageType] ?? [] as $page) {
-                        if ($method != 'GET') continue;
-                        if (empty($route['sitemap'])) continue;
-                        $sm = $route['sitemap'];
-                        ArrayShape::languify($sm, $activeLangs);
-                        if (!isset($sm['priority'])) continue;
+                        if ($sm['minTimestamp'] ?? 0) {
+                            $page['timestampModified'] = max($page['timestampModified'], $sm['minTimestamp']);
+                        }
 
                         if ($sm['gcSelect'] ?? []) {
                             $statusFound = false;

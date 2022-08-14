@@ -13,7 +13,7 @@ use function file_get_contents;
 class AppCache {
 
     static function array(
-        string $dirCache, string $scope, int $level, string $key,
+        string   $dirCache, string $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): array {
 
@@ -83,7 +83,7 @@ class AppCache {
 
 
     static function string(
-        string $dirCache, string $scope, int $level, string $key,
+        string   $dirCache, string $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): string {
 
