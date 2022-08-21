@@ -22,10 +22,10 @@
 .f2w.f2-2active .f2-2 { display: none; }
 .f2w.f2-3active .f2-3 { display: none; }
 
-.row.status-0 { background: linear-gradient(135deg, #d43 8px, rgba(255, 255, 255, 0.05) 9px); background-color: #fff; }
-.row.status-1 { background: linear-gradient(135deg, #fc5 8px, rgba(255, 255, 255, 0.05) 9px); background-color: #fff; }
-.row.status-2 { background: linear-gradient(135deg, #5af 8px, rgba(255, 255, 255, 0.05) 9px); background-color: #fff; }
-.row.status-3 { background: linear-gradient(135deg, #6d4 8px, rgba(255, 255, 255, 0.05) 9px); background-color: #fff; }
+.row.status-0 { background: #fff linear-gradient(135deg, #d43 8px, rgba(255, 255, 255, 0.05) 9px) no-repeat; background-size: 16px 16px; }
+.row.status-1 { background: #fff linear-gradient(135deg, #fc5 8px, rgba(255, 255, 255, 0.05) 9px) no-repeat; background-size: 16px 16px; }
+.row.status-2 { background: #fff linear-gradient(135deg, #5af 8px, rgba(255, 255, 255, 0.05) 9px) no-repeat; background-size: 16px 16px; }
+.row.status-3 { background: #fff linear-gradient(135deg, #6d4 8px, rgba(255, 255, 255, 0.05) 9px) no-repeat; background-size: 16px 16px; }
 
 .action-0 { border-left: 4px solid #d43; }
 .action-1 { border-left: 4px solid #fc5; }
