@@ -416,7 +416,7 @@ class AppImage {
             // finish
             $fileNameStripped = pathinfo($fileNameProposed, PATHINFO_FILENAME);
             if ($fileReplace) {
-                if ($imageVips->resized)
+                if ($imageVips->resized ?? false)
                     Flash::info('Replaced and resized image: ' . Text::h($fileSlug . $imageVips->ext));
                 else
                     Flash::info('Replaced image: ' . Text::h($fileSlug . $imageVips->ext));
