@@ -7,7 +7,7 @@ body {
     align-items: start;
 }
 body.isDevEnv {
-    background-color: #dfcff0;
+    background-color: #dcf2c5;
 }
 body.menu-right {
     grid-template-columns: 12px 1fr 12px 202px 12px;
