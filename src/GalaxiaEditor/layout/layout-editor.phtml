@@ -116,7 +116,13 @@ var gchat = {
 <?php   } ?>
 </head>
 
-<body class="page-<?=Text::h(E::$pgSlug)?> hide-active-msgbox-info hide-active-msgbox-warning hide-active-msgbox-error hide-active-msgbox-devlog<?=($menuRight) ? ' menu-right' : ''?>">
+<?php
+$bodyClasses = '';
+if ($menuRight) $bodyClasses .= ' menu-right';
+if (G::isDevDebug()) $bodyClasses .= ' isDevDebug';
+if (G::isDevEnv()) $bodyClasses .= ' isDevEnv';
+?>
+<body class="page-<?=Text::h(E::$pgSlug)?> hide-active-msgbox-info hide-active-msgbox-warning hide-active-msgbox-error hide-active-msgbox-devlog<?=Text::h($bodyClasses)?>">
 
 <div id="openboxes">
 <?php   foreach (['error', 'info', 'warning'] as $box) { ?>

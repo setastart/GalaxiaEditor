@@ -6,6 +6,14 @@ body {
     min-height: 100%;
     align-items: start;
 }
+body.isDevEnv {
+    background-color: #dfcff0;
+}
+body.isDevDebug {
+    background-image: linear-gradient(to right, #fe9, #fe9 40px, #fd0 40px);
+    background-size: 42px 42px;
+    background-repeat: repeat-y;
+}
 body.menu-right {
     grid-template-columns: 12px 1fr 12px 202px 12px;
 }
@@ -146,6 +154,7 @@ a.menu-item:focus {
     border-radius: 4px;
     margin: 40px 0;
     background: rgba(184, 205, 223, 0.8);
+    background: rgba(128, 128, 128, 0.2);
     padding: 3px;
     display: flex;
     flex-wrap: wrap;

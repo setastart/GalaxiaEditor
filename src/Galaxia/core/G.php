@@ -173,9 +173,10 @@ class G {
 
     static function isDevDebug(): bool {
         if (!self::isDev()) return false;
-        if (!isset(self::$app) || !self::$app->cookieDebugVal || !self::$app->cookieDebugKey || !isset($_COOKIE)) return false;
+        if (!isset(self::$app) || !self::$app->cookieDebugVal || !self::$app->cookieDebugKey) return false;
+        if (!isset($_COOKIE) || !isset($_COOKIE[self::$app->cookieDebugKey])) return false;
 
-        return ($_COOKIE[self::$app->cookieDebugKey] ?? null) === self::$app->cookieDebugVal;
+        return $_COOKIE[self::$app->cookieDebugKey] === self::$app->cookieDebugVal;
     }
 
     static function isInsideEditor(): bool {

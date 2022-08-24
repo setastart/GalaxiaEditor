@@ -114,6 +114,17 @@ function handleEventChange(ev) {
         gjInput.switch(ev.target);
     }
 
+    if (ev.target.matches('.ev-cookie-toggle')) {
+        if (ev.target.checked) {
+            document.cookie = ev.target.dataset.key + '=' + ev.target.dataset.val + '; SameSite=Strict; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
+            document.body.classList.add('isDevDebug');
+        } else {
+            document.cookie = ev.target.dataset.key + '=; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+            document.body.classList.remove('isDevDebug');
+        }
+    }
+
+
     if (ev.target.matches('.input-image')) {
         gjInput.validate(ev.target);
     }

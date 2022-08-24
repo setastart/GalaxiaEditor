@@ -69,15 +69,15 @@ class FragMenu {
         <span><?=Text::h(G::$req->host)?></span>
     </a>
 
-    <?php   foreach ($menu as $menuItem) { ?>
-        <?php       if (($menuItem['cssClass'] ?? '') == 'menu-separator') { ?>
+<?php   foreach ($menu as $menuItem) { ?>
+    <?php       if (($menuItem['cssClass'] ?? '') == 'menu-separator') { ?>
             <div class="<?=Text::h($menuItem['cssClass'])?>"></div>
-        <?php       } else {?>
+    <?php       } else {?>
             <a class="menu-item<?=Text::h($menuItem['cssClass'])?>" href="<?=Text::h($menuItem['link'])?>"><?=Text::t($menuItem['title'])?></a>
-        <?php       } ?>
-    <?php   } ?>
+    <?php       } ?>
+<?php   } ?>
 
-    <?php   FragSwitches::render(); ?>
+<?php   FragSwitches::render(); ?>
 </div>
 <?php
 // @formatter:on

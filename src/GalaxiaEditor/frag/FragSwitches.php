@@ -39,6 +39,14 @@ class FragSwitches {
 <?php       } ?>
     </div>
 <?php   } ?>
+<?php   if (G::isDev()) { ?>
+    <div class="switch-dev">
+        <label for="switch-dev-debug" class="btn btn-yellow btn-pill btn-small btn-checkbox<?=Text::h(' active', G::isDevDebug())?>">
+            debug
+            <input class="ev-cookie-toggle" data-key="<?=Text::h(G::$app->cookieDebugKey)?>" data-val="<?=Text::h(G::$app->cookieDebugVal)?>" type="checkbox" value="notDevDebug" id="switch-dev-debug"<?=Text::h(' checked', G::isDevDebug())?>>
+        </label>
+    </div>
+<?php   } ?>
 </div>
 <?php
 // @formatter:on
