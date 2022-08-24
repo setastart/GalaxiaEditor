@@ -77,11 +77,12 @@ class Head {
 
 
 
-    static function favicon(): void {
+    static function favicon(string $version = ''): void {
+        $version = Text::h($version);
 // @formatter:off ?>
 
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico<?=$version?>">
+    <link rel="apple-touch-icon" href="/favicon.png<?=$version?>">
 <?php } // @formatter:on
 
 
