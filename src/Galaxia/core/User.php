@@ -7,16 +7,25 @@
 namespace Galaxia;
 
 
+use function serialize;
+use function unserialize;
+
 class User {
+
+    const TIMEOUT             = 120;
+    const TIMEOUT_LAST_ONLINE = 60;
+
+    static public bool $debug = false;
+    static public bool $redis = false;
 
     private string $tableName;
 
-    public ?int    $id             = null;
-    public bool    $loggedIn       = false;
-    public string  $email          = '';
-    public string  $name           = '';
-    public string  $timeLastOnline = '';
-    public string  $timeCreated    = '';
+    public ?int   $id             = null;
+    public bool   $loggedIn       = false;
+    public string $email          = '';
+    public string $name           = '';
+    public string $timeLastOnline = '';
+    public string $timeCreated    = '';
 
     public array $perms   = [];
     public array $options = [];
@@ -24,6 +33,11 @@ class User {
 
     function __construct(string $tableName = '_geUser') {
         $this->tableName = $tableName;
+    }
+
+
+    static function prefix(string $sessionId): string {
+        return G::$app->mysqlDb . ':session:' . $sessionId;
     }
 
 
@@ -40,10 +54,14 @@ class User {
         ]);
         session_set_save_handler(new Session('_geUser'), true);
         session_register_shutdown();
-
-        if (session_start()) $this->loginFromSessionId();
-
+        $sessionStarted = session_start();
         G::timerStop('Session');
+
+        if ($sessionStarted) {
+            G::timerStart('Login');
+            $this->loginFromSessionId();
+            G::timerStop('Login');
+        }
     }
 
 
@@ -78,6 +96,8 @@ class User {
 
 
     private function load(): bool {
+        G::timerStart(__METHOD__);
+
         $userId         = '';
         $name           = '';
         $email          = '';
@@ -86,23 +106,32 @@ class User {
         $timeLastOnline = '';
         $timeCreated    = '';
 
+        if (User::$redis) {
+            if ($this->redisLoad()) {
+                G::timerStop(__METHOD__, __METHOD__ . ' redis');
+                return true;
+            }
+        }
+
+        if (User::$debug) G::timerStart(__METHOD__ . ' mysql');
         $table = Text::q($this->tableName);
-        $stmt = G::prepare("
-            SELECT
-                _geUserId,
-                name,
-                email,
-                perms,
-                UNIX_TIMESTAMP(timestampLastOnline),
-                UNIX_TIMESTAMP(timestampCreated)
-            FROM $table
-            WHERE _geUserId = ?
-        ");
+        $stmt  = G::prepare("
+                SELECT
+                    _geUserId,
+                    name,
+                    email,
+                    perms,
+                    UNIX_TIMESTAMP(timestampLastOnline),
+                    UNIX_TIMESTAMP(timestampCreated)
+                FROM $table
+                WHERE _geUserId = ?
+            ");
         $stmt->bind_param('d', $this->id);
         $stmt->bind_result($userId, $name, $email, $perms, $timeLastOnline, $timeCreated);
         $stmt->execute();
         $return = $stmt->fetch();
         $stmt->close();
+        if (User::$debug) G::timerStop(__METHOD__ . ' mysql');
 
         if ($perms) $permsArr = explode(',', $perms);
 
@@ -116,18 +145,33 @@ class User {
             $this->timeCreated    = $timeCreated;
 
             $this->loadOptions();
+
+            if (User::$redis) $this->redisSave();
+            G::timerStop(__METHOD__, __METHOD__ . ' mysql');
+        } else {
+            G::timerStop(__METHOD__, __METHOD__ . ' failed');
         }
 
         return $return;
     }
 
+
     public function updateLastOnline(): void {
         if (!$this->loggedIn) return;
 
+        if (User::$debug) G::timerStart(__METHOD__);
+
+        if (User::$redis && $data = G::redis()?->cmd('GET', G::$app->mysqlDb . ':userLastOnline:' . $this->id)->get()) {
+            $this->timeLastOnline = $data;
+            if (User::$debug) G::timerStop(__METHOD__, __METHOD__ . ' redis read');
+            return;
+        }
+
         $this->timeLastOnline = time();
 
+        if (User::$debug) G::timerStart(__METHOD__ . ' mysql');
         $table = Text::q($this->tableName);
-        $stmt = G::prepare("
+        $stmt  = G::prepare("
             UPDATE $table
             SET timestampLastOnline = FROM_UNIXTIME(?)
             WHERE _geUserId = ?
@@ -135,13 +179,25 @@ class User {
         $stmt->bind_param('sd', $this->timeLastOnline, $this->id);
         $stmt->execute();
         $stmt->close();
+        if (User::$debug) G::timerStop(__METHOD__ . ' mysql');
+
+        if (User::$redis) {
+            if (User::$debug) G::timerStart(__METHOD__ . ' redis write');
+            if (G::redis()?->cmd('SETEX', G::$app->mysqlDb . ':userLastOnline:' . $this->id, User::TIMEOUT_LAST_ONLINE, $this->timeLastOnline)->set()) {
+                if (User::$debug) G::timerStop(__METHOD__ . ' redis write');
+            } else {
+                if (User::$debug) G::timerStop(__METHOD__ . ' redis write', rename: __METHOD__ . ' redis write failed');
+            }
+        }
+
+        if (User::$debug) G::timerStop(__METHOD__, rename: __METHOD__ . ' mysql');
     }
 
     public function setName($name): void {
         if (!$this->loggedIn) return;
 
         $table = Text::q($this->tableName);
-        $stmt = G::prepare("
+        $stmt  = G::prepare("
             UPDATE $table
             SET name = ?
             WHERE _geUserId = ?
@@ -154,9 +210,10 @@ class User {
 
     public function loadOptions(): void {
         if (!$this->loggedIn) return;
+        if (Session::$debug) G::timerStart(__METHOD__);
 
-        $optionName       = '';
-        $optionValue      = '';
+        $optionName   = '';
+        $optionValue  = '';
         $optionsTable = Text::q($this->tableName . 'Option');
 
         $stmt = G::prepare("
@@ -173,6 +230,7 @@ class User {
         while ($stmt->fetch()) {
             $this->options[$optionName] = $optionValue;
         }
+        if (Session::$debug) G::timerStop(__METHOD__);
         $stmt->close();
     }
 
@@ -204,6 +262,50 @@ class User {
 
     public function hasPerm(string $perm): bool {
         return in_array($perm, $this->perms);
+    }
+
+
+
+
+    public function redisSave(): void {
+        if (User::$debug) G::timerStart(__METHOD__);
+        $data = [
+            'loggedIn'       => $this->loggedIn,
+            'id'             => $this->id,
+            'name'           => $this->name,
+            'email'          => $this->email,
+            'perms'          => $this->perms,
+            'timeLastOnline' => $this->timeLastOnline,
+            'timeCreated'    => $this->timeCreated,
+            'options'        => $this->options,
+        ];
+
+        if (G::redis()?->cmd('SETEX', G::$app->mysqlDb . ':user:' . $this->id, User::TIMEOUT, serialize($data))->set()) {
+            if (User::$debug) G::timerStop(__METHOD__);
+        } else {
+            if (User::$debug) G::timerStop(__METHOD__, rename: __METHOD__ . ' failed');
+        }
+    }
+
+    public function redisLoad(): bool {
+        if (User::$debug) G::timerStart(__METHOD__);
+        $data = G::redis()?->cmd('GET', G::$app->mysqlDb . ':user:' . $this->id)->get();
+        if (!$data) {
+            if (User::$debug) G::timerStop(__METHOD__, rename: __METHOD__ . ' failed');
+            return false;
+        }
+        $data = unserialize($data);
+
+        $this->loggedIn       = $data['loggedIn'];
+        $this->id             = $data['id'];
+        $this->name           = $data['name'];
+        $this->email          = $data['email'];
+        $this->perms          = $data['perms'];
+        $this->timeLastOnline = $data['timeLastOnline'];
+        $this->timeCreated    = $data['timeCreated'];
+        $this->options        = $data['options'];
+        if (User::$debug) G::timerStop(__METHOD__);
+        return true;
     }
 
 }
