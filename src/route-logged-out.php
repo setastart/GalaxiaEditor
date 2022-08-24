@@ -13,7 +13,7 @@ use function Galaxia\FastRoute\simpleDispatcher;
 
 G::$editor->layout = 'layout-logged-out';
 
-$dispatcher        = simpleDispatcher(function(RouteCollector $r) {
+$dispatcher = simpleDispatcher(function(RouteCollector $r) {
     $r->get('/edit/{pgSlug:login}', 'login/login');
     $r->post('/edit/{pgSlug:login}', 'login/login-post');
     $r->get('/edit/{pgSlug:logout}', 'login/logout');

@@ -37,8 +37,9 @@ class G {
     public static Editor  $editor;
     public static User    $me;
 
-    private static mysqli   $mysqli;
-    private static RedisCli $redis;
+    private static mysqli    $mysqli;
+    private static ?RedisCli $redis;
+    private static bool      $redisFailed = false;
 
     private static array $timers      = [];
     private static int   $timerLevel  = 0;
@@ -89,10 +90,19 @@ class G {
         });
 
         set_error_handler(function($code, $msg, $file = '', $line = 0) {
+            if ($msg == 'fsockopen(): Unable to connect to localhost:6379 (Connection refused)') {
+                return true;
+            }
             self::errorPage($code, 'error ' . $msg, $file . ':' . $line);
         });
 
         register_shutdown_function(function() {
+            if (G::isDev() && isset(G::$editor) && G::$editor->layout != 'layout-none') {
+                G::timerPrint(true, true);
+            }
+            session_write_close();
+
+
             $error = error_get_last();
             if ($error !== null) {
                 self::errorPage(500, $error['message'], $error['type'] . ' - ' . $error['file'] . ':' . $error['line']);
@@ -213,16 +223,26 @@ class G {
 
 
 
-    static function redis(): RedisCli {
+    /**
+     * Use with null safe operator ?-> like G::redis()?->cmd('PING')->get();
+     */
+    static function redis(): ?RedisCli {
         if (!isset(self::$app)) self::errorPage(500, 'G db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
-        if (!isset(self::$redis)) {
+        if (!isset(self::$redis) && !self::$redisFailed) {
             self::timerStart('Redis Connection');
 
-            self::$redis = new RedisCli(host: 'localhost', port: '6379', silent_fail: true, timeout: 60);
-            self::$redis->set_error_function(function($error) {
-                self::errorPage(500, 'G redis Error' . __METHOD__ . ':' . __LINE__ . ' ' . $error);
-            });
+            self::$redis = new RedisCli(host: 'localhost', port: '6379');
 
+            if (is_resource(self::$redis->handle)) {
+                self::$redis->setErrorFunction(function($error) {
+                    self::errorPage(500, 'G redis Error' . __METHOD__ . ':' . __LINE__ . ' ' . $error);
+                });
+            } else {
+                self::$redisFailed = true;
+                self::timerMark('Redis Connection Failed');
+                Flash::devlog('Redis Connection Failed');
+                self::$redis = null;
+            }
 
             self::timerStop('Redis Connection');
         }
@@ -305,7 +325,22 @@ class G {
     }
 
 
-    static function timerStop(string $timerLabel): void {
+    static function timerMark(string $timerLabel): void {
+        // if (isset(self::$me) && !self::isDev()) return;
+        $timerLabel                           = '! ' . $timerLabel;
+        $now                                  = microtime(true);
+        self::$timers[$timerLabel]['start']   = $now;
+        self::$timers[$timerLabel]['end']     = $now;
+        self::$timers[$timerLabel]['level']   = self::$timerLevel + 1;
+        self::$timers[$timerLabel]['total']   = 0;
+        self::$timers[$timerLabel]['running'] = false;
+        self::$timers[$timerLabel]['lap']     = $now;
+        self::$timers[$timerLabel]['count']   = 0;
+        self::$timers[$timerLabel]['mem']     = memory_get_usage(false);
+    }
+
+
+    static function timerStop(string $timerLabel, string $rename = ''): void {
         // if (isset(self::$me) && !self::isDev()) return;
 
         if (!isset(self::$timers[$timerLabel])) return;
@@ -318,6 +353,8 @@ class G {
         self::$timers[$timerLabel]['lap']     = 0;
         self::$timers[$timerLabel]['count']++;
         self::$timers[$timerLabel]['mem'] = memory_get_usage(false) - self::$timers[$timerLabel]['mem'];
+
+        if ($rename) self::$timers[$timerLabel]['rename'] = $rename;
     }
 
 
@@ -382,7 +419,7 @@ class G {
             $cols[$timerLabel]['%']   = number_format((($time['total'] * 100) / $timeTotal), 2);
 
             $cols[$timerLabel][$time['level']] = $percentOfParent;
-            $cols[$timerLabel]['label']        = str_repeat($pad . $pad, max(0, $time['level'] - 2)) . $timerLabel;
+            $cols[$timerLabel]['label']        = str_repeat($pad . $pad, max(0, $time['level'] - 2)) . ($time['rename'] ?? $timerLabel);
 
             $colLen['start']        = max(strlen('start'), $colLen['start'] ?? 0, strlen($cols[$timerLabel]['start'] ?? ''));
             $colLen['#']            = max(strlen('#'), $colLen['#'] ?? 0, strlen($cols[$timerLabel]['#'] ?? ''));

@@ -118,9 +118,9 @@ G::timerStart('Layout');
 include G::$editor->dirLayout . G::$editor->layout . '.phtml';
 G::timerStop('Layout');
 
-if (G::isDev() && G::$editor->layout != 'layout-none') {
-    G::timerPrint(true, true);
-}
+// if (G::isDev() && G::$editor->layout != 'layout-none') {
+//     G::timerPrint(true, true);
+// }
 
 
 exit();

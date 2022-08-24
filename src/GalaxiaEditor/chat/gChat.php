@@ -40,10 +40,10 @@ if (!isset($_SESSION['csrf']) || !isset(Chat::$post['csrf']) || Chat::$post['csr
 
 // redis
 
-G::redis()->set_error_function(function($error) {
+G::redis()?->setErrorFunction(function($error) {
     Chat::exitArrayToJson(['status' => 'error', 'error' => $error]);
 });
-if (G::redis()->cmd('PING')->get() != 'PONG') {
+if (G::redis()?->cmd('PING')->get() != 'PONG') {
     Chat::exitArrayToJson(['status' => 'error', 'error' => 'redis not connected']);
 }
 
@@ -52,14 +52,14 @@ if (G::redis()->cmd('PING')->get() != 'PONG') {
 
 // save my username
 
-G::redis()->cmd('HSET', G::$app->mysqlDb . ':userNames', G::$me->id, G::$me->name)->set();
+G::redis()?->cmd('HSET', G::$app->mysqlDb . ':userNames', G::$me->id, G::$me->name)->set();
 
 
 
 
 // save last seen online for knowing when user has left
 
-G::redis()->cmd('HSET', G::$app->mysqlDb . ':usersLastSeen', G::$me->id, substr(microtime(true) * 1000, 0, 13))->set();
+G::redis()?->cmd('HSET', G::$app->mysqlDb . ':usersLastSeen', G::$me->id, substr(microtime(true) * 1000, 0, 13))->set();
 
 
 

@@ -14,7 +14,6 @@ spl_autoload_register(function($className) {
     if ($classes[0] == 'Galaxia') {
         $fileName = match ($classes[1]) {
             'FastRoute' => __DIR__ . '/Galaxia/fastroute/src/' . implode('/', array_slice($classes, 2)) . '.php',
-            'RedisCli'  => __DIR__ . '/Galaxia/redis/src/RedisCli.php',
             default     => __DIR__ . '/Galaxia/core/' . implode('/', array_slice($classes, 1)) . '.php',
         };
         require_once $fileName;
