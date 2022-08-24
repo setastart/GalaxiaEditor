@@ -9,11 +9,6 @@ body {
 body.isDevEnv {
     background-color: #dfcff0;
 }
-body.isDevDebug {
-    background-image: linear-gradient(to right, #fe9, #fe9 40px, #fd0 40px);
-    background-size: 42px 42px;
-    background-repeat: repeat-y;
-}
 body.menu-right {
     grid-template-columns: 12px 1fr 12px 202px 12px;
 }
