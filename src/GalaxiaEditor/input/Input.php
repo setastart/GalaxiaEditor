@@ -211,7 +211,8 @@ class Input {
                 ($formatted = date_create_from_format('!Y#m#d', $input['value'])) ||
                 ($formatted = date_create_from_format('!Y#m#d H', $input['value'])) ||
                 ($formatted = date_create_from_format('!Y#m#d H#i', $input['value'])) ||
-                ($formatted = date_create_from_format('!Y#m#d H#i#s', $input['value']));
+                ($formatted = date_create_from_format('!Y#m#d H#i#s', $input['value'])) ||
+                ($formatted = date_create(Input::strtotimeLocale($input['value'])));
                 $dateTimeErrors = date_get_last_errors();
 
                 if (!$formatted)
