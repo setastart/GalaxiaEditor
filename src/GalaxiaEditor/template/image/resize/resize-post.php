@@ -46,7 +46,7 @@ $files = [[
     'tmp_name' => G::dirImage() . E::$imgSlug . '/' . E::$imgSlug . E::$img['ext'],
     'name' => E::$imgSlug,
 ]];
-$uploaded = G::imageUpload($files, true, $_POST['resize']);
+$uploaded = G::imageUpload($files, true, $_POST['resize'] ?? 0);
 
 
 

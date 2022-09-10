@@ -129,6 +129,10 @@ trix-toolbar {
     margin-top: -5px;
     z-index: 20;
 }
+.show-changed trix-toolbar {
+    background: linear-gradient(180deg, rgba(204, 255, 204, 1.0) 50%, rgba(204, 255, 204, 0.0));
+}
+
 .module-field-group trix-toolbar {
     background: linear-gradient(180deg, rgba(238, 228, 228, 1.0) 50%, rgba(238, 228, 228, 0.0));
 }

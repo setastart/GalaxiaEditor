@@ -105,7 +105,7 @@ class G {
 
             $error = error_get_last();
             if ($error !== null) {
-                self::errorPage(500, $error['message'], $error['type'] . ' - ' . $error['file'] . ':' . $error['line']);
+                self::errorPage(500, 'shutdown error ' . $error['message'], $error['type'] . ' - ' . $error['file'] . ':' . $error['line']);
             }
             exit();
         });
@@ -503,8 +503,7 @@ class G {
 
     static function errorPage(int $code, string $msg = '', string $debugText = ''): never {
         $codeOriginal = $code;
-
-        $errors = [
+        $errors       = [
             403 => 'Forbidden',
             404 => 'Not Found',
             500 => 'Internal Server Error',

@@ -43,7 +43,6 @@ class InputRender {
 
 $ht = '<div class="' . $css . '">' . PHP_EOL;
 $ht .= InputRender::getRadioInput($input);
-$ht .= '    <div class="input-label"><span class="input-changed"></span></div>' . PHP_EOL;
 
         if (!empty($input['errors'])) {
 $ht .= '    <ul class="input-errors">' . PHP_EOL;
@@ -149,7 +148,6 @@ $ht .= '    <div class="input-label">' .
                '<div><span class="input-title" title="' . Text::h($titleTitle) . '">' . $input['label'] . '</span> <span class="input-label-lang">' . $input['lang'] . '</span></div>' .
                "<div class=\"grey\">{$minlen}{$len}{$maxlen}</div>" .
                // '<div>' .
-               '<div class="input-changed" title="' . Text::t('Modified') . '">' . Text::t('Mod.') . '</div> ' .
                '<button type="button" class="input-initial fake">' . Text::t('initial') . '</button> ' .
                '<button type="button" class="input-initial-undo fake">' . Text::t('undo') . '</button> ' .
                 ($translate ? '<button type="button" class="input-translate fake">' . Text::t('translate') . '</button> ' : '') .

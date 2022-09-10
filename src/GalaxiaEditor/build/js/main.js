@@ -20,24 +20,13 @@ function gjLoad() {
     document.addEventListener('mousedown', handleEventMousedown, true);
     window.addEventListener('keydown', handleEventKeydown, true);
     window.addEventListener('error', handleEventError, true);
+    document.addEventListener('submit', handleEventSubmit, true);
     window.addEventListener('beforeunload', handleEventBeforeunload, true);
-
-    // for (let form of document.forms) {
-    //     form.fdOld = new FormData(form);
-    // }
-    // document.addEventListener('submit', function(ev) {
-    //     for (let input of ev.target) {
-    //         console.log(input);
-    //         if (input.value === input.defaultValue) input.disabled = true;
-    //         if (input.options && input.options[input.selectedIndex].defaultSelected) input.disabled = true;
-    //     }
-    // });
 
     gjImage.init();
     gjTextareas = document.getElementsByTagName('textarea');
 
     gjInput.textareaResize();
-
 
     // prepare form pagination
     for (let i = 0; i < document.forms.length; i++) {
@@ -48,6 +37,8 @@ function gjLoad() {
     }
 
     gjLoadTrix();
+
+    gjForm.init();
 
     // on window resize with debounce
     window.onresize = function() {
@@ -291,6 +282,7 @@ function handleEventKeydown(ev) {
         ev.preventDefault();
         if (document.forms[0].id === 'logout') return;
         if (gjImage.selectorOpen) return;
+        gjForm.disableUnchanged();
         document.forms[0].submit();
     }
 
@@ -325,11 +317,6 @@ function handleEventKeydown(ev) {
 }
 
 
-function handleEventBeforeunload() {
-    gjImage.close();
-}
-
-
 function handleEventError(ev) {
     if (ev.target.matches && (
         ev.target.matches('.slugImage img') ||
@@ -339,6 +326,28 @@ function handleEventError(ev) {
         gjImage.resizeRequest(ev.target);
     }
 }
+
+
+
+function handleEventSubmit(ev) {
+    gjForm.disableUnchanged();
+}
+
+
+
+
+function handleEventBeforeunload(ev) {
+    gjImage.close();
+    if (gjForm.changed()) {
+        if (!gjForm.isSaving) {
+            ev.preventDefault();
+            return ev.returnValue = "Are you sure you want to exit?";
+        }
+    }
+}
+
+
+
 
 function gjLoadTrix() {
     document.addEventListener('trix-before-initialize', function(ev) {

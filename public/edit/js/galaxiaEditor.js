@@ -90,24 +90,13 @@ function gjLoad() {
     document.addEventListener('mousedown', handleEventMousedown, true);
     window.addEventListener('keydown', handleEventKeydown, true);
     window.addEventListener('error', handleEventError, true);
+    document.addEventListener('submit', handleEventSubmit, true);
     window.addEventListener('beforeunload', handleEventBeforeunload, true);
-
-    // for (let form of document.forms) {
-    //     form.fdOld = new FormData(form);
-    // }
-    // document.addEventListener('submit', function(ev) {
-    //     for (let input of ev.target) {
-    //         console.log(input);
-    //         if (input.value === input.defaultValue) input.disabled = true;
-    //         if (input.options && input.options[input.selectedIndex].defaultSelected) input.disabled = true;
-    //     }
-    // });
 
     gjImage.init();
     gjTextareas = document.getElementsByTagName('textarea');
 
     gjInput.textareaResize();
-
 
     // prepare form pagination
     for (let i = 0; i < document.forms.length; i++) {
@@ -118,6 +107,8 @@ function gjLoad() {
     }
 
     gjLoadTrix();
+
+    gjForm.init();
 
     // on window resize with debounce
     window.onresize = function() {
@@ -361,6 +352,7 @@ function handleEventKeydown(ev) {
         ev.preventDefault();
         if (document.forms[0].id === 'logout') return;
         if (gjImage.selectorOpen) return;
+        gjForm.disableUnchanged();
         document.forms[0].submit();
     }
 
@@ -395,11 +387,6 @@ function handleEventKeydown(ev) {
 }
 
 
-function handleEventBeforeunload() {
-    gjImage.close();
-}
-
-
 function handleEventError(ev) {
     if (ev.target.matches && (
         ev.target.matches('.slugImage img') ||
@@ -409,6 +396,28 @@ function handleEventError(ev) {
         gjImage.resizeRequest(ev.target);
     }
 }
+
+
+
+function handleEventSubmit(ev) {
+    gjForm.disableUnchanged();
+}
+
+
+
+
+function handleEventBeforeunload(ev) {
+    gjImage.close();
+    if (gjForm.changed()) {
+        if (!gjForm.isSaving) {
+            ev.preventDefault();
+            return ev.returnValue = "Are you sure you want to exit?";
+        }
+    }
+}
+
+
+
 
 function gjLoadTrix() {
     document.addEventListener('trix-before-initialize', function(ev) {
@@ -815,6 +824,71 @@ let gjImage = {
 };
 
 
+
+
+
+
+/*************************/
+/******  gjForm.js  ******/
+/*************************/
+
+let gjForm = {
+
+    isSaving: false,
+    elMain: null,
+    fdMainInitial: null,
+
+    init: function() {
+        gjForm.elMain = document.forms[0];
+        if (!gjForm.elMain) return;
+        // if (gjForm.elMain.classList.contains('formDisable')) console.log('gjForm.init formDisable');
+        // if (gjForm.elMain.classList.contains('formPrevent')) console.log('gjForm.init formPrevent');
+
+        gjForm.fdMainInitial = new FormData(gjForm.elMain);
+    },
+
+    disableUnchanged: function() {
+        if (!gjForm.elMain) return;
+        gjForm.isSaving = true;
+        if (!gjForm.elMain.classList.contains('formDisable')) return;
+        let fdOld = gjForm.fdMainInitial;
+        let fdNew = new FormData(gjForm.elMain);
+        for (let input of gjForm.elMain.elements) {
+            if (!input.name) continue;
+            if (!fdNew.has(input.name)) continue;
+            if (!fdOld.has(input.name)) continue;
+            if (fdNew.get(input.name) === fdOld.get(input.name)) {
+                input.disabled = true;
+            } else {
+                // console.log(input.name, input.value, fdOld.get(input.name));
+            }
+        }
+    },
+
+    changed: function() {
+        if (!gjForm.elMain) return false;
+        if (!gjForm.elMain.classList.contains('formPrevent')) return;
+        let fdOld = gjForm.fdMainInitial;
+        let fdNew = new FormData(gjForm.elMain);
+        for (let input of gjForm.elMain.elements) {
+            if (!input.name) continue;
+            if (!fdNew.has(input.name)) continue;
+
+            if (fdNew.get(input.name) instanceof File) {
+                if (fdNew.get(input.name).name !== fdOld.get(input.name).name) {
+                    // console.log('file', input.name, fdNew.get(input.name).name, fdOld.get(input.name).name);
+                    return true;
+                }
+            } else {
+                if (fdNew.get(input.name) !== fdOld.get(input.name)) {
+                    // console.log(input.name, fdNew.get(input.name), fdOld.get(input.name));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+};
 
 
 

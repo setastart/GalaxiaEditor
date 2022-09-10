@@ -54,7 +54,7 @@ $files = [[
     'tmp_name' => $_FILES['images']['tmp_name'][0],
     'name' => E::$imgSlug,
 ]];
-$uploaded = G::imageUpload($files, true, $_POST['resize']);
+$uploaded = G::imageUpload($files, true, $_POST['resize'] ?? 0);
 
 
 
