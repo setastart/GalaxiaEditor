@@ -57,6 +57,7 @@
 .show-changed .module-position {
     background-color: #cfc;
 }
+.input-wrap-status .show-changed,
 .paper-header-status .show-changed {
     box-shadow: 0 0 0 5px #cfc;
 }
