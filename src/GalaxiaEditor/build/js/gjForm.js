@@ -21,6 +21,7 @@ let gjForm = {
         let fdNew = new FormData(gjForm.elMain);
         for (let input of gjForm.elMain.elements) {
             if (!input.name) continue;
+            if (input.name === 'csrf') continue;
             if (!fdNew.has(input.name)) continue;
             if (!fdOld.has(input.name)) continue;
             if (fdNew.get(input.name) === fdOld.get(input.name)) {
@@ -38,6 +39,7 @@ let gjForm = {
         let fdNew = new FormData(gjForm.elMain);
         for (let input of gjForm.elMain.elements) {
             if (!input.name) continue;
+            if (input.name === 'csrf') continue;
             if (!fdNew.has(input.name)) continue;
 
             if (fdNew.get(input.name) instanceof File) {
