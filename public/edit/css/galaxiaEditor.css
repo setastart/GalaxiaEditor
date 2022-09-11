@@ -945,6 +945,7 @@ a.row:hover, .row a:hover {
 }
 .module-field-gallery .module-field-group-footer {
     padding-bottom: 1px;
+    margin-top: auto;
 }
 .module-field-gallery .input-wrap-slugImage {
     flex-direction: column-reverse;

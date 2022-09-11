@@ -167,7 +167,7 @@ let gjImage = {
         selectorImg.src = img.src;
         selectorImg.setAttribute('width', img.w);
         selectorImg.setAttribute('height', img.h);
-        if (autogrow) gjInput.textareaAutoGrow(inputEl)
+        if (autogrow) gjInput.textareaAutoGrow(inputEl);
     },
 
 
@@ -240,5 +240,3 @@ let gjImage = {
     },
 
 };
-
-
