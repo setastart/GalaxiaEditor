@@ -31,7 +31,7 @@ G::langSet();
 // init editor
 
 G::initEditor();
-
+GalaxiaEditor\build\Js::build();
 
 
 

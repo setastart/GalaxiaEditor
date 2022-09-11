@@ -203,6 +203,28 @@ function handleEventChange(ev) {
 
 
 function handleEventBlur(ev) {
+    if (ev.target.matches && ev.target.matches('.input-slugImg')) {
+        let img     = ev.target.parentNode.querySelector('button img');
+        let imgSlug = ev.target.value;
+        if (img) {
+            if (imgSlug) {
+                let url = '/edit/' + gjImage.editorImageSlug + '/' + imgSlug + '/thumb';
+                fetch(url, {
+                    redirect: "manual"
+                }).then((res) => {
+                    img.src = '/edit/gfx/btn/no-photo-add.png';
+                    if (res.status === 200) return res.text();
+                }).then((data) => {
+                    if (!data) return;
+                    img.src = data + '?' + new Date;
+                }).catch((error) => {
+                    console.error('Error:', error);
+                });
+            } else {
+                img.src = '/edit/gfx/btn/no-photo-add.png';
+            }
+        }
+    }
     if (ev.target.matches && ev.target.matches('.input-select')) {
         gjInput.change(ev.target);
     }
@@ -398,12 +420,9 @@ function handleEventError(ev) {
 }
 
 
-
 function handleEventSubmit(ev) {
     gjForm.disableUnchanged();
 }
-
-
 
 
 function handleEventBeforeunload(ev) {
@@ -415,8 +434,6 @@ function handleEventBeforeunload(ev) {
         }
     }
 }
-
-
 
 
 function gjLoadTrix() {

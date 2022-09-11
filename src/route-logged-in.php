@@ -160,6 +160,7 @@ $dispatcher = cachedDispatcher(function(RouteCollector $r) {
 
                     $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/verify', 'imageList/verify');
 
+                    $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/thumb', 'image/thumb');
                     $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/resize/{imgW}/{imgH}', 'image/resize/resize-request');
                 }
 
