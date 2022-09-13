@@ -36,64 +36,64 @@ if (E::$itemId == 'new') return;
 
 // get item siblings for prev/next
 
-$list        = E::$section['gcList'];
-$firstTable  = key($list['gcSelect']);
+$list = E::$section['gcList'];
+if ($list) {
+    $firstTable  = key($list['gcSelect']);
+    E::$siblings = Cache::itemList(function() use ($list, $firstTable) {
+        // add key columns to joined tables (used to group joins in columns)
+        $selectQuery = $list['gcSelect'];
+        $items       = [];
+        $i           = 0;
+        $columns     = $list['gcSelect'][$firstTable];
 
-E::$siblings = Cache::itemList(function() use ($list, $firstTable) {
-    // add key columns to joined tables (used to group joins in columns)
-    $selectQuery = $list['gcSelect'];
-    $items       = [];
-    $i           = 0;
-    $columns     = $list['gcSelect'][$firstTable];
+        G::timerStart('list ' . $firstTable);
+        $keyCol = $firstTable . 'Id';
+        if (!in_array($keyCol, $columns)) array_unshift($selectQuery[$firstTable], $keyCol);
 
-    G::timerStart('list ' . $firstTable);
-    $keyCol = $firstTable . 'Id';
-    if (!in_array($keyCol, $columns)) array_unshift($selectQuery[$firstTable], $keyCol);
-
-    $queryMain = [$firstTable => $selectQuery[$firstTable]];
-    $query     = Sql::select($queryMain);
+        $queryMain = [$firstTable => $selectQuery[$firstTable]];
+        $query     = Sql::select($queryMain);
 
 
-    if (isset($list['gcSelectOrderBy'][$firstTable])) {
-        $query .= Sql::selectOrderBy([$firstTable => $list['gcSelectOrderBy'][$firstTable]]);
-    }
+        if (isset($list['gcSelectOrderBy'][$firstTable])) {
+            $query .= Sql::selectOrderBy([$firstTable => $list['gcSelectOrderBy'][$firstTable]]);
+        }
 
-    $f = function(mysqli_result $result, &$items) use ($list, $firstTable, $queryMain) {
-        while ($data = $result->fetch_assoc()) {
-            $data = array_map('strval', $data);
-            foreach ($queryMain[$firstTable] as $column) {
-                $items[$data[$firstTable . 'Id']][$column] = $data[$column];
+        $f = function(mysqli_result $result, &$items) use ($list, $firstTable, $queryMain) {
+            while ($data = $result->fetch_assoc()) {
+                $data = array_map('strval', $data);
+                foreach ($queryMain[$firstTable] as $column) {
+                    $items[$data[$firstTable . 'Id']][$column] = $data[$column];
+                }
             }
+        };
+
+        Sql::chunkSelect($query, $f, $items);
+
+        G::timerStop('list ' . $firstTable);
+
+        return $items;
+    });
+
+    if (E::$siblings) {
+        $ids   = array_keys(E::$siblings);
+        $prev  = 0;
+        $next  = 0;
+        $found = false;
+        foreach (E::$siblings as $id => $sibling) {
+            if ($id == E::$itemId) {
+                E::$prev = $prev;
+                $found   = true;
+                continue;
+            }
+            if ($found) {
+                E::$next = $id;
+                break;
+            }
+            $prev = $id;
         }
-    };
-
-    Sql::chunkSelect($query, $f, $items);
-
-    G::timerStop('list ' . $firstTable);
-
-    return $items;
-});
-
-if (E::$siblings) {
-    $ids = array_keys(E::$siblings);
-    $prev = 0;
-    $next = 0;
-    $found = false;
-    foreach (E::$siblings as $id => $sibling) {
-        if ($id == E::$itemId) {
-            E::$prev = $prev;
-            $found = true;
-            continue;
-        }
-        if ($found) {
-            E::$next = $id;
-            break;
-        }
-        $prev = $id;
     }
-}
 // geD(E::$prev, E::$next, E::$siblings);
-
+}
 
 // restrict edit acces to only own user
 
