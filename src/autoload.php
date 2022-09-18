@@ -24,66 +24,54 @@ require_once __DIR__ . '/Galaxia/fastroute/src/functions.php';
 
 
 
-if (G::isDevEnv() || G::isCli() || G::isDevDebug()) {
-
-    function s(...$vars): void {
-        foreach ($vars as $var) {
-            ob_start();
-            var_dump($var);
-            $dump = ob_get_clean();
-            $dump = preg_replace('~=>\n\s+~m', ' => ', (string)$dump);
-            $dump = preg_replace('~ array\(0\) {\n\s+}~m', ' array(0) {}', (string)$dump);
-            $dump = str_replace('<?php ', '', (string)$dump);
-            echo $dump;
-        }
+function s(...$vars): void {
+    if (!G::isDevEnv() && !G::isCli() && !G::isDevDebug()) return;
+    foreach ($vars as $var) {
+        ob_start();
+        var_dump($var);
+        $dump = ob_get_clean();
+        $dump = preg_replace('~=>\n\s+~m', ' => ', (string)$dump);
+        $dump = preg_replace('~ array\(0\) {\n\s+}~m', ' array(0) {}', (string)$dump);
+        $dump = str_replace('<?php ', '', (string)$dump);
+        echo $dump;
     }
+}
 
-    function db(): void {
-        $e = new Exception();
-        $i = 0;
-        foreach ($e->getTrace() as $frame) {
-            echo str_replace(dirname(__DIR__, 2) . '/', '', sprintf(
-                "#%s %s:%d\n      %s%s%s(%s)\n",
-                str_pad($i, 2),
-                $frame["file"] ?? '',
-                $frame["line"] ?? '',
-                $frame["class"] ?? '',
-                $frame["type"] ?? '',
-                $frame["function"] ?? '',
-                implode(", ", array_map(function($e) { return str_replace('\/', '/', json_encode($e)); }, $frame["args"] ?? []))
-            ));
-            $i++;
-        }
+function db(): void {
+    if (!G::isDevEnv() && !G::isCli() && !G::isDevDebug()) return;
+    $e = new Exception();
+    $i = 0;
+    foreach ($e->getTrace() as $frame) {
+        echo str_replace(dirname(__DIR__, 2) . '/', '', sprintf(
+            "#%s %s:%d\n      %s%s%s(%s)\n",
+            str_pad($i, 2),
+            $frame["file"] ?? '',
+            $frame["line"] ?? '',
+            $frame["class"] ?? '',
+            $frame["type"] ?? '',
+            $frame["function"] ?? '',
+            implode(", ", array_map(function($e) { return str_replace('\/', '/', json_encode($e)); }, $frame["args"] ?? []))
+        ));
+        $i++;
     }
+}
 
+function d(...$vars): void {
+    if (!G::isDevEnv() && !G::isDevDebug()) return;
     if (G::isCli()) {
-        function d(...$vars): void { s(...$vars); }
+        s(...$vars);
     } else {
-        function d(...$vars): void {
-            ob_start();
-            s(...$vars);
-            $dump = ob_get_clean();
-            $dump = highlight_string('<?php ' . $dump, true);
-            $dump = str_replace('&lt;?php&nbsp;', '', $dump);
-            echo $dump . PHP_EOL;
-        }
+        ob_start();
+        s(...$vars);
+        $dump = ob_get_clean();
+        $dump = highlight_string('<?php ' . $dump, true);
+        $dump = str_replace('&lt;?php&nbsp;', '', $dump);
+        echo $dump . PHP_EOL;
     }
+}
 
-    function dd(...$vars): never {
-        d(...$vars);
-        exit;
-    }
-
-    return;
-
-} else {
-
-    function s(): void { }
-
-    function db(): void { }
-
-    function d(): void { }
-
-    function dd(): void { }
-
+function dd(...$vars): void {
+    if (!G::isDevEnv() && !G::isCli() && !G::isDevDebug()) return;
+    d(...$vars);
+    exit;
 }

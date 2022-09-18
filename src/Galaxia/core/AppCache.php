@@ -16,7 +16,7 @@ class AppCache {
         string   $dirCache, string $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): array {
-
+        $result = [];
         $subdir = 'app';
         if ($scope == 'editor') $subdir = 'editor';
 
@@ -48,7 +48,6 @@ class AppCache {
                 if ($write && is_array($r)) {
                     file_put_contents($cacheFile, '<?php return ' . var_export($r, true) . ';' . PHP_EOL);
                 }
-
                 return $r;
             };
 
@@ -74,11 +73,12 @@ class AppCache {
 
         if (!is_array($result)) {
             Flash::error('Cache arr: invalid result');
+            $result = [];
         }
 
         G::timerStop($timerName);
 
-        return $result ?? [];
+        return $result;
     }
 
 
@@ -86,7 +86,7 @@ class AppCache {
         string   $dirCache, string $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): string {
-
+        $result = '';
         $subdir = 'app';
         if ($scope == 'editor') $subdir = 'editor';
 
@@ -118,7 +118,6 @@ class AppCache {
                 if ($write && is_string($r)) {
                     file_put_contents($cacheFile, $r);
                 }
-
                 return $r;
             };
 
@@ -143,11 +142,12 @@ class AppCache {
 
         if (!is_string($result)) {
             Flash::error('Cache str: invalid result');
+            $result = '';
         }
 
         G::timerStop($timerName);
 
-        return $result ?? '';
+        return $result;
     }
 
 

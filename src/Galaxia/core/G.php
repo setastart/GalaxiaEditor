@@ -535,15 +535,6 @@ class G {
             exit();
         }
 
-        if (self::isDevEnv()) {
-            if (!self::isCli()) echo '<pre>' . PHP_EOL;
-            d($msg, $codeOriginal, $code, $errors[$code]);
-            d($debugText);
-            db();
-            if (!self::isCli()) echo '</pre>' . PHP_EOL;
-            exit();
-        }
-
         $errorFile = '';
         if (isset(self::$app)) {
             $errorFilesToCheck = [];
@@ -568,16 +559,14 @@ class G {
         }
 
 
-        if ($code != 404) {
-            if (self::isDevEnv()) {
-                if (!self::isCli()) echo '<!-- ' . PHP_EOL;
-                d($msg);
-                d($debugText);
-                db();
-                if (!self::isCli()) echo '-->' . PHP_EOL;
-            } else {
-                error_log($msg . ' - ' . $debugText);
-            }
+        if (self::isDevEnv()) {
+            if (!self::isCli()) echo '<!-- ' . PHP_EOL;
+            s($msg, $codeOriginal, $code, $errors[$code]);
+            s($debugText);
+            db();
+            if (!self::isCli()) echo '-->' . PHP_EOL;
+        } else {
+            error_log($msg . ' - ' . $debugText);
         }
 
         // self::timerPrint(true, true, true);
