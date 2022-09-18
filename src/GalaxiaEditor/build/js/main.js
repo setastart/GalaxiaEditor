@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', function() {
 function gjLoad() {
     document.addEventListener('input', handleEventInput, true);
     document.addEventListener('change', handleEventChange, true);
-    // document.addEventListener('focus', handleEventFocus, true);
+    document.addEventListener('focus', handleEventFocus, true);
     document.addEventListener('blur', handleEventBlur, true);
     document.addEventListener('click', handleEventClick, true);
     document.addEventListener('mousedown', handleEventMousedown, true);
@@ -132,11 +132,18 @@ function handleEventChange(ev) {
 }
 
 
+function handleEventFocus(ev) {
+    if (ev.target.matches && ev.target.matches('.input-slugImg')) {
+        ev.target.valueOnFocus = ev.target.value;
+    }
+}
+
+
 function handleEventBlur(ev) {
     if (ev.target.matches && ev.target.matches('.input-slugImg')) {
         let img     = ev.target.parentNode.querySelector('button img');
         let imgSlug = ev.target.value;
-        if (img) {
+        if (img && imgSlug !== ev.target.valueOnFocus) {
             if (imgSlug) {
                 let url = '/edit/' + gjImage.editorImageSlug + '/' + imgSlug + '/thumb';
                 fetch(url, {
@@ -159,10 +166,6 @@ function handleEventBlur(ev) {
         gjInput.change(ev.target);
     }
 }
-
-function handleEventFocus(ev) {
-}
-
 
 function handleEventClick(ev) {
     if (ev.target.matches('.slugImage')) {
