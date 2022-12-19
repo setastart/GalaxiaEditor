@@ -34,12 +34,12 @@ class Asset {
 
         foreach ($builds as $buildName => $fileList) {
             $build = '';
-            $min = in_array($buildName, $buildsMin);
+            $min   = in_array($buildName, $buildsMin);
 
             // build development files
             foreach ($fileList as $fileName) {
                 $sourceName = pathinfo(pathinfo($fileName, PATHINFO_FILENAME), PATHINFO_FILENAME);
-                $output     = "${dirDev}${buildName}-${sourceName}${extBuild}";
+                $output     = "{$dirDev}{$buildName}-{$sourceName}{$extBuild}";
 
 
                 ob_start();
@@ -150,7 +150,7 @@ class Asset {
                 $r .= $indent . "font-family: '" . Text::h($family) . "';" . $eol;
                 $r .= $indent . "font-style: " . Text::h($style) . ";" . $eol;
                 foreach ($descriptors as $descriptor => $value) {
-                    $r .= $indent . "" . Text::h($descriptor) . ": " . Text::h($value) . ";" . $eol;
+                    $r .= $indent . Text::h($descriptor) . ": " . Text::h($value) . ";" . $eol;
                 }
                 $r .= $indent . "src: " . implode(', ', $srces) . ";" . $eol;
                 $r .= "}" . $eol . PHP_EOL;
