@@ -163,6 +163,13 @@ class ConfigDb {
                     }
                 }
 
+                foreach ($item['gcSelectExtraOrder'] ?? [] as $table => $cols) {
+                    ConfigDb::gcTableExists($dbSchema, "$areaKey/gcItem/gcSelectExtraOrder", $table);
+                    foreach ($cols as $key => $col) {
+                        ConfigDb::gcTableColumnExists($dbSchema, "$areaKey/gcItem/gcSelectExtraOrder", $table, $key);
+                    }
+                }
+
                 foreach ($item['gcInfo'] as $inputCol => $input) {
                     ConfigDb::gcTableColumnInput($dbSchema, "$areaKey/gcItem/gcInputs", $item['gcTable'], $inputCol, $input);
                 }
@@ -220,6 +227,13 @@ class ConfigDb {
                             foreach ($cols as $col) {
                                 ConfigDb::gcTableColumnExists($dbSchema, "$errorStringPrefix/$toCheck", $table, $col);
                             }
+                        }
+                    }
+
+                    foreach ($module['gcSelectExtraOrder'] ?? [] as $table => $cols) {
+                        ConfigDb::gcTableExists($dbSchema, "$errorStringPrefix/gcSelectOrderBy", $table);
+                        foreach ($cols as $key => $col) {
+                            ConfigDb::gcTableColumnExists($dbSchema, "$errorStringPrefix/gcSelectOrderBy", $table, $key);
                         }
                     }
 
@@ -375,7 +389,7 @@ class ConfigDb {
 
     private static function error(
         string $errorString,
-        array $debug = []
+        mixed $debug = []
     ): never {
         Flash::error('Config database schema error');
         Flash::error($errorString);

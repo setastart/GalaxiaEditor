@@ -19,7 +19,11 @@ E::$module['inputsUnused'] = [];
 $extras = [];
 foreach (E::$module['gcSelectExtra'] as $table => $cols) {
     $query = Sql::select([$table => $cols]);
-    $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
+    if (isset(E::$module['gcSelectExtraOrder'])) {
+        $query .= Sql::selectOrderBy(E::$module['gcSelectExtraOrder']);
+    } else {
+        $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
+    }
     $stmt  = G::prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();

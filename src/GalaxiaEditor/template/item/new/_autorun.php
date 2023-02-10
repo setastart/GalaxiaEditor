@@ -20,8 +20,11 @@ E::$hdTitle = Text::t('+ Add') . ' ' . Text::t(E::$section['gcTitleSingle']);
 $extras = [];
 foreach (E::$item['gcSelectExtra'] as $table => $cols) {
     $query = Sql::select([$table => $cols]);
-    $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
-
+    if (isset(E::$item['gcSelectExtraOrder'])) {
+        $query .= Sql::selectOrderBy(E::$item['gcSelectExtraOrder']);
+    } else {
+        $query .= Sql::selectOrderBy([$table => [$cols[1] => 'ASC']]);
+    }
     $stmt = G::prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();

@@ -61,12 +61,13 @@ class Config {
                 '?gcUpdateOnlyOwn' => 'boolean',
                 'gcRedirect'       => 'boolean',
 
-                'gcInsert'      => 'tableWithCols',
-                'gcSelect'      => 'tableWithCols',
-                'gcSelectLJoin' => 'tableWithCols',
-                'gcSelectExtra' => 'tableWithCols',
-                'gcUpdate'      => 'tableWithCols',
-                'gcDelete'      => 'tableWithCols',
+                'gcInsert'            => 'tableWithCols',
+                'gcSelect'            => 'tableWithCols',
+                'gcSelectLJoin'       => 'tableWithCols',
+                'gcSelectExtra'       => 'tableWithCols',
+                '?gcSelectExtraOrder' => 'tableWithColsOrder',
+                'gcUpdate'            => 'tableWithCols',
+                'gcDelete'            => 'tableWithCols',
 
                 'gcInputs'      => 'inputs',
                 'gcInputsWhere' => 'inputsWhere',
@@ -175,17 +176,18 @@ class Config {
             'gcModuleDeleteIfEmpty' => 'stringArray',
             'gcModuleMultiple'      => 'moduleMultiple',
 
-            'gcSelect'        => 'tableWithCols',
-            'gcSelectLJoin'   => 'tableWithCols',
-            'gcSelectOrderBy' => 'tableWithColsOrder',
-            'gcSelectExtra' => 'tableWithCols',
-            'gcUpdate'      => 'tableWithCols',
+            'gcSelect'            => 'tableWithCols',
+            'gcSelectLJoin'       => 'tableWithCols',
+            'gcSelectOrderBy'     => 'tableWithColsOrder',
+            'gcSelectExtra'       => 'tableWithCols',
+            '?gcSelectExtraOrder' => 'tableWithColsOrder',
+            'gcUpdate'            => 'tableWithCols',
 
             '?gcFieldOrder' => 'stringArray',
 
-            'gcInputs'              => 'inputs',
-            'gcInputsWhereCol'      => 'inputsWhereCol',
-            'gcInputsWhereParent'   => 'inputsWhereParent',
+            'gcInputs'            => 'inputs',
+            'gcInputsWhereCol'    => 'inputsWhereCol',
+            'gcInputsWhereParent' => 'inputsWhereParent',
         ],
 
         'gcpModuleMultiple' => [
@@ -699,7 +701,7 @@ class Config {
 
     private static function error(
         string $errorString,
-        array $debug = []
+        array  $debug = []
     ): never {
         Flash::error('Config error');
         Flash::error($errorString);
