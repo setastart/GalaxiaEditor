@@ -16,7 +16,8 @@ use Transliterator;
 
 class Text {
 
-    public const ALLOWED_TAGS           = '<a><h1><h2><strong><small><p><br><em><del><blockquote><pre><ul><ol><li>';
+    public const ALLOWED_TAGS = '<a><h1><h2><strong><small><p><br><em><del><blockquote><pre><ul><ol><li>';
+
     public const HTMLSPECIALCHARS_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5;
 
     public const TEST_HTML = <<<HTML
@@ -137,6 +138,7 @@ HTML;
 
 
 
+    /** @deprecated */
     static function st(string $text, int $h1 = 0, int $f1 = 0, int $f2 = 0): string {
         // if (G::$dev) $text = TEST_HTML;
         if (empty($text)) return '';
@@ -176,6 +178,7 @@ HTML;
         return $text;
     }
 
+    /** @deprecated */
     static function stg(array $arr, string $key = null, int $h1 = 0, int $f1 = 0, int $f2 = 0, string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
@@ -219,8 +222,10 @@ HTML;
         return $text;
     }
 
-    /** @deprecated  */
-    static function trix(string $text, array $transforms = []): ?string {
+
+
+
+    static function html(string $text = '', array ...$transforms): ?string {
         // if (G::$dev) $text = TEST_HTML;
         $text = trim(strip_tags($text, self::ALLOWED_TAGS));
         if (empty($text)) return null;
@@ -257,8 +262,7 @@ HTML;
         return $text;
     }
 
-    /** @deprecated  */
-    static function trixg(array $arr, string $key = null, array $transforms = [], string $lang = ''): ?string {
+    static function htmlg(array $arr, string $key = null, string $lang = '', array ...$transforms): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -274,7 +278,7 @@ HTML;
                 break;
 
             case 'string':
-                $text = self::trix($arr[$key], $transforms);
+                $text = self::html($arr[$key], ...$transforms);
                 break;
 
             case 'array':
@@ -290,7 +294,7 @@ HTML;
                     if (!isset($arr[$key][$lang])) continue;
                     if (!is_string($arr[$key][$lang])) continue;
                     if (empty($arr[$key][$lang])) continue;
-                    $text = self::trix($arr[$key][$lang], $transforms);
+                    $text = self::html($arr[$key][$lang], ...$transforms);
                     break;
                 }
                 break;
@@ -299,28 +303,6 @@ HTML;
         if ($text !== '0' && empty($text)) return null;
 
         return $text;
-    }
-
-
-
-
-    static function html(string $text = '', array ...$args): ?string {
-        return Text::trix(
-            text: $text,
-            transforms: $args,
-        );
-    }
-
-
-
-
-    static function htmlg(array $arr, string $key = null, string $lang = '', array ...$args): ?string {
-        return Text::trixg(
-            arr: $arr,
-            key: $key,
-            transforms: $args,
-            lang: $lang
-        );
     }
 
 
@@ -806,12 +788,12 @@ HTML;
     private static function getIntlDateFormatter(string $pattern, string $lang) {
         if (!isset(self::$intlDateFormatters[$pattern][$lang])) {
             self::$intlDateFormatters[$pattern][$lang] = new IntlDateFormatter(
-                $lang,                        // locale
-                IntlDateFormatter::FULL,      // datetype
-                IntlDateFormatter::NONE,      // timetype
-                null,                         // timezone
-                IntlDateFormatter::GREGORIAN, // calendar
-                $pattern                      // pattern
+                locale: $lang,
+                dateType: IntlDateFormatter::FULL,
+                timeType: IntlDateFormatter::NONE,
+                timezone: null,
+                calendar: IntlDateFormatter::GREGORIAN,
+                pattern: $pattern
             );
         }
 
