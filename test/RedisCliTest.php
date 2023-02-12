@@ -1,6 +1,6 @@
 <?php
 /*
- Copyright 2017-2022 Ino Detelić & Zaloa G. Ramos
+ Copyright 2017-2023 Ino Detelić & Zaloa G. Ramos
 
   - Licensed under the EUPL, Version 1.2 only (the "Licence");
   - You may not use this work except in compliance with the Licence.
