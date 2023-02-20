@@ -45,32 +45,40 @@ class Head {
 
     static function langAlt(array $url): void {
         if (count($url) < 2) return;
+        echo PHP_EOL;
+        foreach (G::locales() as $lang => $_) {
+            if (!isset($url[$lang])) continue;
+            $langUrl = $url[$lang];
 // @formatter:off ?>
+    <link rel="alternate" hreflang="<?=$lang?>" href="<?=G::$req->schemeHost() . Text::h($langUrl)?>">
+<?php } // @formatter:on
+    }
 
-<?php   foreach ($url ?? [] as $lang => $langUrl) { ?>
-    <link rel="alternate" hreflang="<?=$lang?>" href="<?=G::$req->schemeHost() . Text::h($langUrl)?>"/>
-<?php   } ?>
+
+    static function langAltString(array $url): string {
+        if (count($url) < 2) return '';
+
+        ob_start();
+
+        echo PHP_EOL;
+        foreach (G::locales() as $lang => $_) {
+            if (!isset($url[$lang])) continue;
+            $langUrl = $url[$lang];
+// @formatter:off ?>
+    <link rel="alternate" hreflang="<?=$lang?>" href="<?=G::$req->schemeHost() . Text::h($langUrl)?>">
 <?php } // @formatter:on
 
-
-
-
-    static function canonical(string $path = ''): void {
-        if  (!$path) return;
-// @formatter:off ?>
-    <link rel="canonical" href="<?=G::$req->schemeHost() . Text::h($path)?>"/>
-<?php } // @formatter:on
-
-
+        return ob_get_clean();
+    }
 
 
     static function prevNext(string $prev = '', string $next = ''): void {
 // @formatter:off ?>
 <?php   if ($next) { ?>
-    <link rel="next" href="<?=G::$req->schemeHost() . Text::h($next)?>"/>
+    <link rel="next" href="<?=G::$req->schemeHost() . Text::h($next)?>">
 <?php   } ?>
 <?php   if ($prev) { ?>
-    <link rel="prev" href="<?=G::$req->schemeHost() . Text::h($prev)?>"/>
+    <link rel="prev" href="<?=G::$req->schemeHost() . Text::h($prev)?>">
 <?php   } ?>
 <?php } // @formatter:on
 

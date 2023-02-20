@@ -527,8 +527,8 @@ class G {
             self::$error     = $errors[$code] . '<br><br>';
             // if (self::isDev()) {
             self::$error .= 'Original error code: ' . $codeOriginal . '<br>';
-            self::$error .= nl2br($msg) . '<br><br>';
-            self::$error .= nl2br($debugText) . '<br>';
+            self::$error .= nl2br($msg, false) . '<br><br>';
+            self::$error .= nl2br($debugText, false) . '<br>';
             // }
 
             include self::$editor->dirLayout . 'layout-error.phtml';

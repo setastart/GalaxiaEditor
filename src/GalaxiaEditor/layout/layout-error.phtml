@@ -46,7 +46,7 @@ use GalaxiaEditor\frag\FragMsgBoxes;
             <h1>Error <?=Text::h(G::$errorCode)?></h1>
         </div>
         <div class="pad">
-            <?=nl2br(G::$error)?>
+            <?=nl2br(G::$error, false)?>
         </div>
 <?php   if (G::isDevDebug()) { ?>
         <pre class="pad">
