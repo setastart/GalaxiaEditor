@@ -26,7 +26,7 @@ if (is_resource($redis->handle)) {
 }
 
 
-$in = dirname(__DIR__) . '/public/edit/favicon.pnqg';
+$in = dirname(__DIR__) . '/public/edit/favicon.pnq';
 $vips = vips_image_new_from_file($in)['out'] ?? false;
 if (!$vips) {
     exitWithError('Vips: Could not load vips image.');
