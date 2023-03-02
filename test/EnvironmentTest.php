@@ -9,7 +9,9 @@ $redis = new RedisCli(host: 'localhost', port: '6379');
 
 
 function exitWithError($msg): never {
+    echo PHP_EOL . PHP_EOL;
     echo("️🛑 Error: " . $msg . PHP_EOL);
+    echo PHP_EOL . PHP_EOL;
     exit(1);
 }
 
@@ -26,7 +28,7 @@ if (is_resource($redis->handle)) {
 }
 
 
-$in = dirname(__DIR__) . '/public/edit/favicon.pnq';
+$in = dirname(__DIR__) . '/public/edit/favicon.png';
 $vips = vips_image_new_from_file($in)['out'] ?? false;
 if (!$vips) {
     exitWithError('Vips: Could not load vips image.');
