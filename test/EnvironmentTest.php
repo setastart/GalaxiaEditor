@@ -29,7 +29,18 @@ if (is_resource($redis->handle)) {
 
 
 $in = dirname(__DIR__) . '/public/edit/favicon.png';
+
 $vips = vips_image_new_from_file($in)['out'] ?? false;
 if (!$vips) {
     exitWithError('Vips: Could not load vips image.');
 }
+
+$loader = vips_image_get($vips, 'vips-loader')['out'] ?? false;
+if (!$loader) exitWithError('Could not load vips file loader.');
+
+$ext = ['jpegload' => '.jpg', 'pngload' => '.png'] ?? false;
+if (!$ext) exitWithError('Could not load vips file format.');
+
+$w = vips_image_get($vips, 'width')['out'] ?? 0;
+$h = vips_image_get($vips, 'height')['out'] ?? 0;
+if (!$w || !$h) exitWithError('Could not read vips image dimensions.');
