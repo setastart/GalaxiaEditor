@@ -7,27 +7,14 @@
 namespace Galaxia;
 
 
-use GalaxiaEditor\config\Config;
-use GalaxiaEditor\config\ConfigDb;
-use GalaxiaEditor\E;
 use mysqli;
 use mysqli_result;
 use mysqli_stmt;
 use Throwable;
-use function array_slice;
-use function asort;
-use function curl_multi_add_handle;
-use function curl_multi_init;
 use function debug_backtrace;
 use function dirname;
-use function escapeshellcmd;
 use function file_exists;
-use function microtime;
-use function number_format;
 use function preg_match;
-use function str_pad;
-use function str_starts_with;
-use function substr;
 
 
 class G {
@@ -36,16 +23,13 @@ class G {
     public static App     $app;
     public static Editor  $editor;
     public static User    $me;
+    public static AppMeta $meta;
 
     private static mysqli    $mysqli;
     private static ?RedisCli $redis;
     private static bool      $redisFailed = false;
 
-    private static array $timers      = [];
-    private static int   $timerLevel  = 0;
-    private static int   $timerMaxLen = 0;
-    private static int   $timerMaxLev = 0;
-    static array         $explains    = [];
+    static array $explains = [];
 
     public static int    $errorCode = 0;
     public static string $error     = '';
@@ -67,7 +51,7 @@ class G {
         self::$me  = new User($userTable);
         self::$app = new App($dir);
 
-        self::timerStart('Total', $_SERVER['REQUEST_TIME_FLOAT']);
+        AppTimer::start('Total', $_SERVER['REQUEST_TIME_FLOAT']);
 
         require_once self::$app->dir . 'autoload.php';
         require self::$app->dir . 'config/app.php';
@@ -201,7 +185,7 @@ class G {
     static function mysqli(): mysqli {
         if (!isset(self::$app)) self::errorPage(500, 'G db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
         if (!isset(self::$mysqli)) {
-            self::timerStart('DB Connection');
+            AppTimer::start('DB Connection');
 
             self::$mysqli = new mysqli(self::$app->mysqlHost, self::$app->mysqlUser, self::$app->mysqlPass, self::$app->mysqlDb);
             if (self::$mysqli->connect_errno) {
@@ -214,7 +198,7 @@ class G {
             self::$mysqli->query('SET time_zone = ' . Text::q(self::$app->timeZone) . ';');
             self::$mysqli->query('SET lc_time_names = ' . Text::q(self::$app->locale['long']) . ';');
 
-            self::timerStop('DB Connection');
+            AppTimer::stop('DB Connection');
         }
 
         return self::$mysqli;
@@ -229,7 +213,7 @@ class G {
     static function redis(): ?RedisCli {
         if (!isset(self::$app)) self::errorPage(500, 'G db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
         if (!isset(self::$redis) && !self::$redisFailed) {
-            self::timerStart('Redis Connection');
+            AppTimer::start('Redis Connection');
 
             self::$redis = new RedisCli(host: 'localhost', port: '6379');
 
@@ -239,12 +223,12 @@ class G {
                 });
             } else {
                 self::$redisFailed = true;
-                self::timerMark('Redis Connection Failed');
+                AppTimer::mark('Redis Connection Failed');
                 Flash::devlog('Redis Connection Failed');
                 self::$redis = null;
             }
 
-            self::timerStop('Redis Connection');
+            AppTimer::stop('Redis Connection');
         }
 
         return self::$redis;
@@ -254,7 +238,7 @@ class G {
 
 
     static function loadTranslations(bool $withEditor = false): void {
-        self::timerStart('Translations');
+        AppTimer::start('Translations');
 
         if ($withEditor) {
             Text::$translation = self::cacheArray(
@@ -290,7 +274,7 @@ class G {
             write: self::$req->cacheWrite,
         );
 
-        self::timerStop('Translations');
+        AppTimer::stop('Translations');
     }
 
 
@@ -298,204 +282,51 @@ class G {
 
     // timing
 
-    static function timerStart(string $timerLabel, $timeFloat = null): void {
-        // if (isset(self::$me) && !self::isDev()) return;
-
-        if (isset(self::$timers[$timerLabel])) {
-            if (self::$timers[$timerLabel]['running']) return;
-            self::$timers[$timerLabel]['lap']     = microtime(true);
-            self::$timers[$timerLabel]['running'] = true;
-            self::$timers[$timerLabel]['mem']     = memory_get_usage(false);
-        } else {
-            self::$timerLevel++;
-            self::$timers[$timerLabel]        = [
-                'start'   => $timeFloat ?? microtime(true),
-                'end'     => 0,
-                'level'   => self::$timerLevel,
-                'running' => true,
-                'total'   => 0,
-                'lap'     => $timeFloat ?? 0,
-                'count'   => 0,
-                'mem'     => memory_get_usage(false),
-            ];
-            self::$timers[$timerLabel]['lap'] = self::$timers[$timerLabel]['start'];
-            self::$timerMaxLen                = max(self::$timerMaxLen, (self::$timerLevel * 2) + strlen($timerLabel));
-            self::$timerMaxLev                = max(self::$timerMaxLev, self::$timerLevel);
-        }
+    /** @deprecated - Use AppTimer */
+    static function timerStart(
+        string $timerLabel,
+               $timeFloat = null
+    ): void {
+        AppTimer::start(
+            timerLabel: $timerLabel,
+            timeFloat: $timeFloat
+        );
     }
 
-
+    /** @deprecated - Use AppTimer */
     static function timerMark(string $timerLabel): void {
-        // if (isset(self::$me) && !self::isDev()) return;
-        $timerLabel                           = '! ' . $timerLabel;
-        $now                                  = microtime(true);
-        self::$timers[$timerLabel]['start']   = $now;
-        self::$timers[$timerLabel]['end']     = $now;
-        self::$timers[$timerLabel]['level']   = self::$timerLevel + 1;
-        self::$timers[$timerLabel]['total']   = 0;
-        self::$timers[$timerLabel]['running'] = false;
-        self::$timers[$timerLabel]['lap']     = $now;
-        self::$timers[$timerLabel]['count']   = 0;
-        self::$timers[$timerLabel]['mem']     = memory_get_usage(false);
+        AppTimer::mark(
+            timerLabel: $timerLabel
+        );
     }
 
-
+    /** @deprecated - Use AppTimer */
     static function timerStop(string $timerLabel, string $rename = ''): void {
-        // if (isset(self::$me) && !self::isDev()) return;
-
-        if (!isset(self::$timers[$timerLabel])) return;
-        // if (!self::$timers[$timerLabel]['running']) return;
-
-        if (self::$timerLevel > 0) self::$timerLevel--;
-        self::$timers[$timerLabel]['end']     = microtime(true);
-        self::$timers[$timerLabel]['total']   += self::$timers[$timerLabel]['end'] - self::$timers[$timerLabel]['lap'];
-        self::$timers[$timerLabel]['running'] = false;
-        self::$timers[$timerLabel]['lap']     = 0;
-        self::$timers[$timerLabel]['count']++;
-        self::$timers[$timerLabel]['mem'] = memory_get_usage(false) - self::$timers[$timerLabel]['mem'];
-
-        if ($rename) self::$timers[$timerLabel]['rename'] = $rename;
+        AppTimer::stop(
+            timerLabel: $timerLabel,
+            rename: $rename
+        );
     }
 
-
+    /** @deprecated - Use AppTimer */
     static function timerPrint(
         bool $comments = false,
         bool $memory = false,
         bool $includes = false,
         bool $force = false,
     ): void {
-        if (!$force && !self::isCli() && !self::isDevEnv() && !self::isDev()) return;
-
-        $timeEnd = microtime(true);
-
-        self::$timers['Total']['end']     = $timeEnd;
-        self::$timers['Total']['total']   += self::$timers['Total']['end'] - self::$timers['Total']['lap'];
-        self::$timers['Total']['running'] = false;
-        self::$timers['Total']['lap']     = 0;
-        self::$timers['Total']['count']++;
-        self::$timers['Total']['mem'] = memory_get_usage(false) - self::$timers['Total']['mem'];
-
-        $r       = '';
-        $prefix  = '';
-        $postfix = PHP_EOL;
-        $padHead = ' ';
-        $pad     = ' ';
-
-        if ($comments) {
-            $prefix  = '<!-- ';
-            $postfix = ' -->' . PHP_EOL;
-            $pad     = '`';
-            $padHead = '.';
-        }
-
-        $timeTotal   = self::$timers['Total']['total'];
-        $levelTotals = [$timeTotal];
-
-        $cols   = [];
-        $colLen = [];
-
-        foreach (self::$timers as $timerLabel => $time) {
-            $percentOfParent             = '';
-            $levelTotals[$time['level']] = $time['total'];
-
-            if ($time['level'] > 0) {
-                $divisor = $levelTotals[$time['level'] - 1];
-                if ($divisor == 0) $divisor = 1;
-                $percentOfParent = (($time['total'] * 100) / $divisor);
-                $percentOfParent = number_format($percentOfParent);
-            }
-
-            // if ($percentOfParent > 99) $percentOfParent = 99;
-
-            $cols[$timerLabel]['start'] = number_format(($time['start'] - $_SERVER['REQUEST_TIME_FLOAT']) * 1000, 3);
-            $cols[$timerLabel]['#']     = $time['count'];
-            if ($time['running']) {
-                $cols[$timerLabel]['time'] = number_format(($timeEnd - $time['start']) * 1000, 2);
-            } else {
-                $cols[$timerLabel]['time'] = number_format($time['total'] * 1000, 2);
-            }
-
-            $cols[$timerLabel]['mem'] = Text::bytesIntToAbbr($time['mem'], 2, '.');
-            $cols[$timerLabel]['%']   = number_format((($time['total'] * 100) / $timeTotal), 2);
-
-            $cols[$timerLabel][$time['level']] = $percentOfParent;
-            $cols[$timerLabel]['label']        = str_repeat($pad . $pad, max(0, $time['level'] - 2)) . ($time['rename'] ?? $timerLabel);
-
-            $colLen['start']        = max(strlen('start'), $colLen['start'] ?? 0, strlen($cols[$timerLabel]['start'] ?? ''));
-            $colLen['#']            = max(strlen('#'), $colLen['#'] ?? 0, strlen($cols[$timerLabel]['#'] ?? ''));
-            $colLen['mem']          = max(strlen('mem'), $colLen['mem'] ?? 0, strlen($cols[$timerLabel]['mem'] ?? ''));
-            $colLen['time']         = max(strlen('time'), $colLen['time'] ?? 0, strlen($cols[$timerLabel]['time'] ?? ''));
-            $colLen['%']            = max(strlen('%'), $colLen['%'] ?? 0, strlen($cols[$timerLabel]['%'] ?? ''));
-            $colLen[$time['level']] = max($colLen[$time['level']] ?? 0, strlen($cols[$timerLabel][$time['level']] ?? ''));
-        }
-        foreach ($cols as $time) {
-            $colLen['label'] = max($colLen['label'] ?? 0, strlen($time['label'] ?? ''));
-        }
-
-        $r .= $prefix;
-        foreach ($colLen as $col => $len) {
-            if ($col == 'label') {
-                $r .= str_pad($col, $len, ' ', STR_PAD_RIGHT) . ' ';
-            } else {
-                if (is_int($col)) {
-                    if ($col < 2) continue;
-                    $col -= 1;
-                }
-                $r .= str_pad($col ?? '', $len, $padHead, STR_PAD_LEFT) . ' ';
-            }
-        }
-        $r .= $postfix;
-
-
-        foreach ($cols as $val) {
-            $r .= $prefix;
-            foreach ($colLen as $col => $len) {
-                if ($col == 'label') {
-                    $r .= str_pad($val[$col] ?? '', $len, ' ', STR_PAD_RIGHT) . ' ';
-                } else {
-                    if (is_int($col) && $col < 2) continue;
-
-                    $r .= str_pad($val[$col] ?? '', $len, $pad, STR_PAD_LEFT) . ' ';
-                }
-                // $len   += 1;
-            }
-            $r .= $postfix;
-        }
-
-        $memEnd      = ' ' . Text::bytesIntToAbbr(memory_get_usage(false), 2, $padHead);
-        $memPeak     = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(false), 2, $padHead);
-        $memEndReal  = ' ' . Text::bytesIntToAbbr(memory_get_usage(true), 2, $padHead);
-        $memPeakReal = ' ' . Text::bytesIntToAbbr(memory_get_peak_usage(true), 2, $padHead);
-        $incFiles    = ' ' . count(get_included_files());
-        $memLenMax   = ' ' . max(strlen($memEnd), strlen($memPeak), strlen($memEndReal), strlen($memPeakReal), strlen($incFiles));
-
-        if ($memory) {
-            $r .= $prefix . 'mem at end ......' . str_pad($memEnd, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
-            $r .= $prefix . 'mem peak ........' . str_pad($memPeak, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
-            $r .= $prefix . 'mem real at end .' . str_pad($memEndReal, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
-            $r .= $prefix . 'mem real peak ...' . str_pad($memPeakReal, $memLenMax, $padHead, STR_PAD_LEFT) . ' / ' . ini_get('memory_limit') . $postfix;
-        }
-        $r .= $prefix . 'included files ..' . str_pad($incFiles, $memLenMax, $padHead, STR_PAD_LEFT) . $postfix;
-        if ($includes) {
-            $r         .= $prefix . ' ... ' . $postfix;
-            $parentDir = dirname(self::$app->dir);
-            foreach (get_included_files() as $file) {
-                if (str_starts_with($file, self::$app->dir)) $file = './' . substr($file, strlen(self::$app->dir));
-                else if (str_starts_with($file, $parentDir)) $file = '..' . substr($file, strlen($parentDir));
-                $r .= $prefix . $file . $postfix;
-            }
-        }
-
-        echo $r;
+        AppTimer::print(
+            comments: $comments,
+            memory: $memory,
+            includes: $includes,
+            force: $force,
+        );
     }
 
 
+    /** @deprecated - Use AppTimer */
     static function timerReset(): void {
-        self::$timers      = [];
-        self::$timerLevel  = 0;
-        self::$timerMaxLen = 0;
-        self::$timerMaxLev = 0;
-        self::timerStart('Total', microtime(true));
+        AppTimer::reset();
     }
 
 
@@ -569,13 +400,14 @@ class G {
             error_log($msg . ' - ' . $debugText);
         }
 
-        // self::timerPrint(true, true, true);
+        // AppTimer::print(true, true, true);
         exit();
     }
 
 
     static function redirect($location = '', int $code = 302): never {
         $location = Text::h(trim($location, "/ \t\n\r\0\x0B"));
+        // if (strlen($location) == 2) $location .= '/';
 
         if (self::isCli()) {
             echo "$code - /$location" . PHP_EOL;
@@ -593,7 +425,7 @@ class G {
 
 
 
-
+    /** @deprecated - Use AppTest */
     static function test(
         array    $tests,
         string   $host,
@@ -602,237 +434,31 @@ class G {
         bool     $exitOnError = false,
         int      $simultaneous = 7,
     ): void {
-        global $argv;
-
-        $isBench = false;
-        foreach ($argv as $argn => $val) {
-            if ($val == '--bench') {
-                unset($argv[$argn]);
-                $argc--;
-                $isBench = true;
-            }
-        }
-
-        if ($argc > 2 || $argc < 1) {
-            echo 'Usage:' . PHP_EOL;
-            echo 'run tests: php test.php [--bench]' . PHP_EOL;
-            echo 'test single page: php test.php http://example.test/url' . PHP_EOL;
-            echo '  --bench runs performance benchmark after test' . PHP_EOL;
-            exit();
-        }
-
-        if ($argc == 2) {
-            $tests = [$argv[1] => '200'];
-        }
-
-        $testsPassed = 0;
-        $testsTotal  = count($tests);
-
-        echo PHP_EOL . 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
-
-        G::cacheDeleteAll();
-
-        $fBuild();
-
-        G::initEditor();
-        echo 'Validating config for perms: ';
-        foreach ([[], ['dev']] as $perms) {
-            echo "'" . implode(',', $perms) . "' ";
-            E::$conf = Config::load($perms);
-            ConfigDb::validate();
-        }
-        echo PHP_EOL;
-
-
-        $mTests = [];
-        $i      = 0;
-        foreach ($tests as $url => $code) {
-            $mTests[floor($i / $simultaneous)][$url] = $code;
-            $i++;
-        }
-
-
-        $timeTotal = 0.0;
-        $timeStart = microtime(true);
-        $timeMin   = 1000.0;
-        $timeMax   = 0.0;
-        $i         = 0;
-        foreach ($mTests as $urls) {
-            $ch  = [];
-            $res = [];
-            $j   = 0;
-            foreach ($urls as $url => $code) {
-                $ch[$j] = curl_init();
-                curl_setopt($ch[$j], CURLOPT_URL, $url);
-                curl_setopt($ch[$j], CURLOPT_HEADER, 0);
-                curl_setopt($ch[$j], CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch[$j], CURLOPT_FRESH_CONNECT, true);
-                $j++;
-            }
-
-            $mh = curl_multi_init();
-
-            $j = 0;
-            foreach ($urls as $ignored) {
-                curl_multi_add_handle($mh, $ch[$j]);
-                $j++;
-            }
-
-            //execute the multi handle
-            do {
-                $status = curl_multi_exec($mh, $active);
-                if ($active) {
-                    curl_multi_select($mh);
-                }
-                while (false !== ($mhInfo = curl_multi_info_read($mh))) {
-                    echo ($i % 100 == 0) ? $i : '.';
-                    $i++;
-
-                    $info      = curl_getinfo($mhInfo['handle']);
-                    $timeTotal += $info['total_time'];
-                    $timeMin   = min($timeMin, $info['total_time']);
-                    $timeMax   = max($timeMax, $info['total_time']);
-
-                    $res[$info['url']] = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH);
-                }
-            } while ($active && $status == CURLM_OK);
-
-            $j = 0;
-            foreach ($urls as $url => $code) {
-                $res[$url] .= curl_multi_getcontent($ch[$j]);
-                curl_multi_remove_handle($mh, $ch[$j]);
-                $j++;
-            }
-            curl_multi_close($mh);
-
-
-            foreach ($urls as $url => $code) {
-                if (str_starts_with($res[$url], $code)) {
-                    $testsPassed++;
-                    continue;
-                }
-
-                $res[$url] = escapeshellcmd($res[$url]);
-                // $res[$url] = substr($res[$url], 0, 80);
-
-                echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $res[$url]";
-
-                if ($exitOnError) {
-                    break 2;
-                }
-            }
-        }
-        $timeEnd = microtime(true);
-
-        $time = ($timeEnd - $timeStart);
-
-        $reqS = number_format($testsTotal / $time, 2);
-
-        $avg   = number_format(($timeTotal / $i) * 1000, 2);
-        $color = "\033[0;32m";
-        if ($avg > 10) $color = "\033[0;33m";
-        if ($avg > 30) $color = "\033[0;31m";
-        $avg = "$color$avg\e[0m";
-
-        $min = number_format($timeMin * 1000, 2);
-        $max = number_format($timeMax * 1000, 2);
-
-        $prefix = ($testsPassed == count($tests)) ? '[OK] ✅ ' : '[FAIL] ❌ ';
-
-        echo PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed. req/s: $reqS, avg: $avg, min: $min, max: $max" . PHP_EOL;
-
-        if ($isBench) G::bench(tests: $tests, host: $host, argc: $argc, exitOnError: $exitOnError);
+        AppTest::test(
+            tests: $tests,
+            host: $host,
+            argc: $argc,
+            fBuild: $fBuild,
+            exitOnError: $exitOnError,
+            simultaneous: $simultaneous
+        );
     }
 
 
+
+    /** @deprecated - Use AppTest */
     static function bench(
         array  $tests,
         string $host,
         int    $argc,
         bool   $exitOnError = false,
     ): void {
-        if ($argc > 2 || $argc < 1) {
-            echo 'Usage:' . PHP_EOL;
-            echo 'run tests: php test.php' . PHP_EOL;
-            echo 'test single page: php test.php http://example.com/url' . PHP_EOL;
-            exit();
-        }
-
-        if ($argc == 2) {
-            global $argv;
-            $tests = [$argv[1] => '200'];
-        }
-
-        $benchs      = [];
-        $testsPassed = 0;
-        $testsTotal  = count($tests);
-
-        echo PHP_EOL . 'Benchmarking ' . $host . " ($testsTotal)" . PHP_EOL;
-
-        $timeTotal = 0.0;
-        $timeMin   = 1000.0;
-        $timeMax   = 0.0;
-        $i         = 0;
-        foreach ($tests as $url => $code) {
-            echo ($i % 100 == 0) ? $i : '.';
-            $i++;
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            $result = curl_exec($ch);
-            curl_close($ch);
-
-            $info   = curl_getinfo($ch);
-            $result = $info['http_code'] . ' - ' . parse_url($info['redirect_url'], PHP_URL_PATH) . $result;
-
-
-            if (str_starts_with($result, $code)) {
-                $testsPassed++;
-                $benchs[$info['http_code'] . ' - ' . $url] = $info['total_time'] * 1000;
-
-                $timeTotal += $info['total_time'];
-                $timeMin   = min($timeMin, $info['total_time']);
-                $timeMax   = max($timeMax, $info['total_time']);
-                continue;
-            }
-
-            $result = escapeshellcmd($result);
-            // $result = substr($result, 0, 80);
-
-            echo PHP_EOL . 'Error: ' . $url . " -- expected: $code -- returned: $result";
-
-            if ($exitOnError) {
-                break;
-            }
-        }
-
-        echo PHP_EOL;
-        asort($benchs);
-        $benchs = array_slice($benchs, -10, preserve_keys: true);
-        foreach ($benchs as $url => $time) {
-            $color = "\033[0;32m";
-            if ($time > 10) $color = "\033[0;33m";
-            if ($time > 30) $color = "\033[0;31m";
-
-            $timeColored = str_pad("$color$time\e[0m", 18, ' ', STR_PAD_LEFT);
-
-            echo "$timeColored - $url" . PHP_EOL;
-        }
-
-        $avg   = number_format(($timeTotal / $i) * 1000, 2);
-        $color = "\033[0;32m";
-        if ($avg > 10) $color = "\033[0;33m";
-        if ($avg > 30) $color = "\033[0;31m";
-        $avg = "$color$avg\e[0m";
-
-        $min = number_format($timeMin * 1000, 2);
-        $max = number_format($timeMax * 1000, 2);
-
-        $prefix = ($testsPassed == count($tests)) ? '[OK] ✅ ' : '[FAIL] ❌ ';
-
-        echo PHP_EOL . "$prefix $testsPassed/$testsTotal benchmarks passed. avg: $avg, min: $min, max: $max" . PHP_EOL;
+        AppTest::bench(
+            tests: $tests,
+            host: $host,
+            argc: $argc,
+            exitOnError: $exitOnError
+        );
     }
 
 
@@ -911,44 +537,59 @@ class G {
 
 
 
-
+    /** @deprecated - Use AppCache */
     static function cacheArray(
         string   $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): array {
-        return AppCache::array(self::dirCache(), $scope, $level, $key, $f, $bypass, $write);
+        return AppCache::arrayDir(
+            scope: $scope,
+            level: $level,
+            key: $key,
+            f: $f,
+            bypass: $bypass,
+            write: $write,
+            dirCache: self::dirCache()
+        );
     }
 
+    /** @deprecated - Use AppCache */
     static function cacheString(
         string   $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): string {
-        return AppCache::string(self::dirCache(), $scope, $level, $key, $f, $bypass, $write);
+        return AppCache::stringDir($scope, $level, $key, $f, $bypass, $write, self::dirCache());
     }
 
+    /** @deprecated - Use AppCache */
     static function cacheDelete($scopes, $key = '*'): void {
-        AppCache::delete(self::dirCache(), $scopes, $key);
+        AppCache::deleteDir($scopes, $key, self::dirCache());
     }
 
+    /** @deprecated - Use AppCache */
     static function cacheDeleteAll(): void {
-        AppCache::deleteAll(self::dirCache());
+        AppCache::deleteAllDir(self::dirCache());
     }
 
+    /** @deprecated - Use AppCache */
     static function cacheDeleteOld(): void {
-        AppCache::deleteOld(self::dirCache());
+        AppCache::deleteOldDir(self::dirCache());
     }
 
 
 
 
+    /** @deprecated - Use AppImage */
     static function image($img, $extra = ''): string {
         return AppImage::render($img, $extra);
     }
 
+    /** @deprecated - Use AppImage */
     static function imageGet($imgSlug, $img = [], $resize = true): array {
         return AppImage::imageGet($imgSlug, $img, $resize);
     }
 
+    /** @deprecated - Use AppImage */
     static function imageUpload(array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = ''): array {
         return AppImage::imageUpload($files, $replaceDefault, $toFitDefault, $type);
     }
@@ -956,6 +597,7 @@ class G {
 
 
 
+    /** @deprecated - Use G::execute() */
     static function prepare(string $query): false|mysqli_stmt {
         return self::mysqli()->prepare($query);
     }
@@ -997,20 +639,27 @@ class G {
 
 
 
+    /** @deprecated - Use AppRoute */
     static function routeList(int $pageMinStatus, $pageSlug = 'pgSlug'): array {
         return AppRoute::list($pageMinStatus, $pageSlug);
     }
 
+    /** @deprecated - Use AppRoute */
     static function routeSlugToId(string $table, string $status, string $tableSlug, bool $redirect, string $matchSlug, array $langs = null): ?int {
         return AppRoute::slugToId($table, $status, $tableSlug, $redirect, $matchSlug, $langs ?? self::langs());
     }
 
+    /** @deprecated - Use AppRoute */
     static function routeSitemap(string $schemeHost): void {
         AppRoute::generateSitemap($schemeHost);
     }
 
 
     static function versionQuery(): string {
+        if (G::$req->test) {
+            return '?ver=test';
+        }
+
         if (G::$req->cacheBypass || G::isDevEnv()) {
             return '?ver=' . $_SERVER['REQUEST_TIME'];
         }

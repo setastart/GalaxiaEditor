@@ -9,9 +9,13 @@ namespace Galaxia;
 
 use DateTimeInterface;
 use DOMDocument;
+use DOMElement;
+use DOMXPath;
 use IntlDateFormatter;
 use Normalizer;
 use Transliterator;
+use function in_array;
+use function strip_tags;
 
 
 class Text {
@@ -31,6 +35,51 @@ HTML;
     private static ?Transliterator $transliterator      = null;
     private static ?Transliterator $transliteratorLower = null;
     private static array           $intlDateFormatters  = [];
+
+    static function ricoSanitize(string $html, array $allowed = null): string {
+        $html = str_replace('&nbsp;', ' ', $html);
+
+        // Replace multiple spaces with a single space
+        $html = preg_replace('!\s+!', ' ', $html);
+
+        // // Convert curly quotes to straight equivalent
+        // $replacements = [
+        //     "\xE2\x80\x98" => "'",   // ‘
+        //     "\xE2\x80\x99" => "'",   // ’
+        //     "\xE2\x80\x9A" => "'",   // ‚
+        //     "\xE2\x80\x9B" => "'",   // ‛
+        //     "\xE2\x80\x9C" => '"',   // “
+        //     "\xE2\x80\x9D" => '"',   // ”
+        //     "\xE2\x80\x9E" => '"',   // „
+        //     "\xE2\x80\x9F" => '"',   // ‟
+        //     "\xE2\x80\x93" => '-',
+        //     "\xE2\x80\x94" => '--',
+        //     "\xE2\x80\xa6" => '...',
+        // ];
+        // $html = strtr($html, $replacements);
+
+        $html = strip_tags($html, $allowed);
+        if (!$html) return '';
+
+        libxml_use_internal_errors(true) && libxml_clear_errors();
+        $dom = new DOMDocument();
+        $dom->loadHTML('<?xml encoding="utf-8"?><body>' . $html . '</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOEMPTYTAG);
+        $html  = '';
+        $xpath = new DOMXPath($dom);
+
+        /** @var DOMElement $node */
+        foreach ($xpath->query('//*') as $node) {
+            for ($i = $node->attributes->length - 1; $i >= 0; $i--) {
+                $attribute = $node->attributes->item($i);
+                if ($node->tagName == 'a' && $attribute->name == 'href') continue;
+                if ($node->tagName == 'a' && $attribute->name == 'target') continue;
+                $node->removeAttributeNode($attribute);
+            }
+        }
+
+        $html = str_replace(array('<body>', '</body>'), '', $dom->saveHTML($dom->documentElement));
+        return $html;
+    }
 
 
     static function unsafe(string $text, bool $condition = true): ?string {

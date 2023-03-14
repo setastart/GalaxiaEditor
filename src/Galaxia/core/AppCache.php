@@ -12,10 +12,17 @@ use function file_get_contents;
 
 class AppCache {
 
-    static function array(
-        string   $dirCache, string $scope, int $level, string $key,
-        callable $f, bool $bypass = null, bool $write = null
+    static function arrayDir(
+        string   $scope,
+        int      $level,
+        string   $key,
+        callable $f,
+        bool     $bypass = null,
+        bool     $write = null,
+        string   $dirCache = null
     ): array {
+        $dirCache ??= G::$app->dirCache;
+
         $result = [];
         $subdir = 'app';
         if ($scope == 'editor') $subdir = 'editor';
@@ -82,10 +89,17 @@ class AppCache {
     }
 
 
-    static function string(
-        string   $dirCache, string $scope, int $level, string $key,
-        callable $f, bool $bypass = null, bool $write = null
+    static function stringDir(
+        string   $scope,
+        int      $level,
+        string   $key,
+        callable $f,
+        bool     $bypass = null,
+        bool     $write = null,
+        string   $dirCache = null
     ): string {
+        $dirCache ??= G::$app->dirCache;
+
         $result = '';
         $subdir = 'app';
         if ($scope == 'editor') $subdir = 'editor';
@@ -151,7 +165,13 @@ class AppCache {
     }
 
 
-    static function delete(string $dirCache, $scopes, $key = '*'): void {
+    static function deleteDir(
+        $scopes,
+        $key = '*',
+        string $dirCache = null
+    ): void {
+        $dirCache ??= G::$app->dirCache;
+
         $dirCacheStrlen = strlen($dirCache);
         if (!is_array($scopes)) $scopes = [$scopes];
         if (in_array('editor', $scopes) && !in_array('app', $scopes)) $scopes[] = 'app';
@@ -207,7 +227,8 @@ class AppCache {
     }
 
 
-    static function deleteAll(string $dirCache): void {
+    static function deleteAllDir(string $dirCache = null): void {
+        $dirCache       ??= G::$app->dirCache;
         $dirCacheStrlen = strlen($dirCache);
         $files          = [];
 
@@ -256,7 +277,9 @@ class AppCache {
     }
 
 
-    static function deleteOld(string $dirCache): void {
+    static function deleteOldDir(string $dirCache = null): void {
+        $dirCache ??= G::$app->dirCache;
+
         $pattern = $dirCache . '*.cache';
         $glob    = glob($pattern, GLOB_NOSORT);
 
@@ -270,6 +293,100 @@ class AppCache {
                     if (unlink($fileName)) $deleted++;
 
         Flash::devlog('App old caches deleted: ' . $deleted);
+    }
+
+
+
+
+    static function route(
+        callable $f
+    ): array {
+        return AppCache::arrayDir(
+            scope: 'app',
+            level: 1,
+            key: "route-primary-" . G::$req->minStatus,
+            f: $f,
+            bypass: false,
+            dirCache: G::$app->dirCache
+        );
+    }
+
+    static function subpage(
+        callable $f,
+        string   $table
+    ): array {
+        return AppCache::arrayDir(
+            scope: 'app',
+            level: 5,
+            key: "route-subpage-$table-" . G::$req->minStatus,
+            f: $f,
+            bypass: G::$req->cacheBypass,
+            write: G::$req->cacheWrite,
+            dirCache: G::$app->dirCache
+        );
+    }
+
+    static function subpageLang(
+        callable $f,
+        string   $table
+    ): array {
+        return AppCache::arrayDir(
+            scope: 'app',
+            level: 5,
+            key: "route-subpageLang-$table-" . G::$req->minStatus,
+            f: $f,
+            bypass: G::$req->cacheBypass,
+            write: G::$req->cacheWrite,
+            dirCache: G::$app->dirCache
+        );
+    }
+
+    static function array(
+        string $level,
+        string $key,
+        callable $f,
+        bool $bypass = null,
+        bool $write = null
+    ): array {
+        return AppCache::arrayDir(
+            scope: 'app',
+            level: $level,
+            key: "$key-" . G::$req->minStatus,
+            f: $f,
+            bypass: $bypass ?? G::$req->cacheBypass,
+            write: $write ?? G::$req->cacheWrite,
+            dirCache: G::$app->dirCache
+        );
+    }
+
+    static function string(
+        string $level,
+        string $key,
+        callable $f,
+        bool $bypass = null,
+        bool $write = null
+    ): string {
+        return AppCache::stringDir(
+            scope: 'app',
+            level: $level,
+            key: "$key-" . G::$req->minStatus,
+            f: $f,
+            bypass: $bypass ?? G::$req->cacheBypass,
+            write: $write ?? G::$req->cacheWrite,
+            dirCache: G::$app->dirCache
+        );
+    }
+
+    static function delete($scopes, $key = '*'): void {
+        AppCache::deleteDir(G::$app->dirCache, $scopes, $key);
+    }
+
+    static function deleteAll(): void {
+        AppCache::deleteAllDir(G::$app->dirCache);
+    }
+
+    static function deleteOld(): void {
+        AppCache::deleteOldDir(G::$app->dirCache);
     }
 
 }

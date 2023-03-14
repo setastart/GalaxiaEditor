@@ -7,7 +7,12 @@
 namespace Galaxia;
 
 use Galaxia\FastRoute\Dispatcher;
+use function array_values;
+use function date;
 use function Galaxia\FastRoute\cachedDispatcher;
+use function implode;
+use function is_null;
+use function serialize;
 
 
 class AppRoute {
@@ -95,7 +100,7 @@ class AppRoute {
                                 $urls[$found] = [
                                     $keyLang => G::addLangPrefix($page['pageSlug_' . $keyLang] . $subLang[$keyLang], $keyLang),
 
-                                    'pri' => $sm['priority'],
+                                    'pri'       => $sm['priority'],
                                     'timestamp' => $page['timestampModified'],
                                 ];
 
@@ -114,8 +119,8 @@ class AppRoute {
 
                         if ($pattern == '') {
                             $urls[$found] = [
-                                $keyLang => G::addLangPrefix($page['pageSlug_' . $keyLang], $keyLang),
-                                'pri'    => $sm['priority'],
+                                $keyLang    => G::addLangPrefix($page['pageSlug_' . $keyLang], $keyLang),
+                                'pri'       => $sm['priority'],
                                 'timestamp' => $page['timestampModified'],
                             ];
 
@@ -236,11 +241,13 @@ class AppRoute {
         while ($data = $result->fetch_assoc()) {
             if (!isset(G::$app->routes[$data['pageType']])) continue;
 
-            foreach (G::$app->langs as $lang)
+            foreach (G::$app->langs as $lang) {
                 $slugsAndRedirectsByType['slugs'][$data['pageType']][$data['pageId']][$lang] = $data['pageSlug_' . $lang];
+            }
 
-            if ($data['pageRedirectSlug'])
+            if ($data['pageRedirectSlug']) {
                 $slugsAndRedirectsByType['redirects'][$data['pageType']][$data['pageId']][$data['pageRedirectId']] = $data['pageRedirectSlug'];
+            }
         }
         $stmt->close();
 
@@ -253,8 +260,9 @@ class AppRoute {
                     foreach ($methods as $routeMethod => $route) {
                         foreach ($page as $lang => $slug) {
                             if ($slug == '') $routeFinal = G::$app->locales[$lang]['url'] . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
-                            else $routeFinal = ((G::$app->locales[$lang]['url'] == '/') ? '/' : G::$app->locales[$lang]['url'] . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
+                            else $routeFinal = ((G::$app->locales[$lang]['url'] == '/') ? '/' : rtrim(G::$app->locales[$lang]['url'], '/') . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
                             $routeMeta = [
+                                'type'     => $pageType,
                                 'template' => $route['template'],
                                 'pageId'   => $pageId,
                                 'isRoot'   => empty($pattern),
@@ -281,8 +289,9 @@ class AppRoute {
                         foreach ($redirect as $redirectId => $slug) {
                             if (!$slug) continue;
                             foreach (G::$app->langs as $lang) {
-                                $routeFinal = ((G::$app->locales[$lang]['url'] == '/') ? '/' : G::$app->locales[$lang]['url'] . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
+                                $routeFinal = ((G::$app->locales[$lang]['url'] == '/') ? '/' : rtrim(G::$app->locales[$lang]['url'], '/') . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
                                 $routeMeta  = [
+                                    'type'     => $pageType,
                                     'template' => $route['template'],
                                     'pageId'   => $pageId,
                                     'isRoot'   => empty($pattern),
@@ -311,8 +320,9 @@ class AppRoute {
                             foreach (G::$app->langs as $lang2) {
                                 if ($lang2 == $lang) continue;
                                 if (!$slug) continue;
-                                $routeFinal = ((G::$app->locales[$lang2]['url'] == '/') ? '/' : G::$app->locales[$lang2]['url'] . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
+                                $routeFinal = ((G::$app->locales[$lang2]['url'] == '/') ? '/' : rtrim(G::$app->locales[$lang2]['url'], '/') . '/') . '{' . $pageSlug . ':' . $slug . '}' . $pattern;
                                 $routeMeta  = [
+                                    'type'     => $pageType,
                                     'template' => $route['template'],
                                     'pageId'   => $pageId,
                                     'isRoot'   => empty($pattern),
@@ -427,7 +437,7 @@ class AppRoute {
         bool     $cacheDisabled,
         callable $notFoundFun = null,
     ): void {
-        G::timerStart(__CLASS__ . '::' . __FUNCTION__);
+        AppTimer::start(__CLASS__ . '::' . __FUNCTION__);
 
         $dispatcher = cachedDispatcher($f, ['cacheFile' => $cacheFile, 'cacheDisabled' => $cacheDisabled]);
         $routeInfo  = $dispatcher->dispatch(G::$req->method, G::$req->path);
@@ -449,15 +459,110 @@ class AppRoute {
             case Dispatcher::FOUND:
                 G::$req->pagId      = $routeInfo[1]['pageId'] ?? 0;
                 G::$req->isRoot     = $routeInfo[1]['isRoot'] ?? false;
+                G::$req->type       = $routeInfo[1]['type'] ?? '';
                 G::$req->route      = $routeInfo[1]['template'] ?? '';
                 G::$req->redirectId = $routeInfo[1]['redirect'] ?? false;
                 G::$req->vars       = $routeInfo[2];
                 break;
         }
 
-        G::timerStop(__CLASS__ . '::' . __FUNCTION__);
+        AppTimer::stop(__CLASS__ . '::' . __FUNCTION__);
 
         if ($renderErrorPage) G::errorPage(404, 'Route not found.');
+    }
+
+
+
+    static function pageRedirect(
+        array  $pag,
+        string $varPag,
+        string $pagSlug = 'pageSlug_',
+        string $pagStatus = 'pageStatus',
+        string $pagUrl = 'url',
+        int    $minStatus = 2,
+    ): void {
+        if (G::$req->isRoot &&
+            G::$req->vars[$varPag] &&
+            (G::$req->vars[$varPag] != $pag[$pagSlug][G::lang()])
+        ) {
+            if (G::$req->redirectId !== false) {
+                $query = 'UPDATE pageRedirect SET timestampLastAccessed = NOW() where pageRedirectId = ?';
+                G::execute($query, [G::$req->redirectId]);
+            }
+            G::redirect($pag[$pagUrl][G::lang()], 301);
+        }
+        if (G::$req->minStatus <= $minStatus && $pag[$pagStatus] <= $minStatus) {
+            G::$meta->index = false;
+        }
+    }
+
+
+
+
+    private static function idFromSlug(array $slugs, string $urlSlug): int {
+        return $slugs[$urlSlug] ?? 0;
+    }
+
+
+
+    private static function idFromSlugLang(array $slugs, string $urlSlug): int {
+        foreach ($slugs as $group) {
+            if (isset($group[$urlSlug])) return $group[$urlSlug];
+        }
+
+        return 0;
+    }
+
+
+
+    static function subpageIdFromSlug(
+        string $table,
+        string $slug,
+        int    $minStatus
+    ): int {
+        $slugs = AppCache::subpage(fn() => AppModelUrl::slugRedirect($table, $minStatus), $table);
+
+        $id = AppRoute::idFromSlug($slugs, $slug ?? '');
+
+        if ($id <= 0) G::errorPage(404);
+
+        return $id;
+    }
+
+
+    static function subpageIdFromSlugLang(
+        string $table,
+        string $slug,
+        int    $minStatus
+    ): int {
+        $slugs = AppCache::subpageLang(fn() => AppModelUrl::slugRedirectLang($table, $minStatus), $table);
+
+        $id = AppRoute::idFromSlugLang($slugs, $slug ?? '');
+
+        if ($id <= 0) G::errorPage(404);
+
+        return $id;
+    }
+
+
+    static function subpageRedirectStatusIndex(
+        array  $data,
+        int    $id,
+        string $colUrl,
+        string $colStatus,
+        int    $statusPrivate = 1
+    ): void {
+        $item = $data[$id] ?? null;
+        if (is_null($item)) G::errorPage(404);
+
+        if (G::$req->path != $item[$colUrl][G::lang()]) {
+            G::redirect($item[$colUrl][G::lang()], 301);
+        }
+
+        if (G::$req->minStatus <= $statusPrivate && $item[$colStatus] <= $statusPrivate) {
+            G::$meta->status = $item[$colStatus];
+            G::$meta->index  = false;
+        }
     }
 
 }

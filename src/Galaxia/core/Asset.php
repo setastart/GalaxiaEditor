@@ -8,6 +8,8 @@ namespace Galaxia;
 
 
 use function in_array;
+use function ob_get_clean;
+use function ob_start;
 
 class Asset {
 
@@ -15,6 +17,7 @@ class Asset {
     public static int $viewportMinDefault = 320;
     public static int $viewportMaxDefault = 1000;
 
+    // todo: move to build, rename Asset::build() to Build::asset()
     static function build(
         array  $builds,
         string $publicDir,
@@ -68,9 +71,9 @@ class Asset {
         string $publicSubdir,
         string $extBuild,
         string $version,
-        string $rel = 'stylesheet'
-    ): void {
-        if (!$builds[$buildName] ?? []) return;
+        string $rel = 'stylesheet',
+    ): string {
+        if (!$builds[$buildName] ?? []) return '';
 
         $links = ["/{$publicSubdir}/{$buildName}{$extBuild}{$version}"];
 
@@ -81,11 +84,16 @@ class Asset {
                 $links[]    = "/dev/{$publicSubdir}/{$buildName}-{$sourceName}{$extBuild}{$version}";
             }
         }
+        if (!$links) return '';
+
+        ob_start();
 
         foreach ($links as $href) {
 // @formatter:off ?>
     <link rel="<?=Text::h($rel)?>" href="<?=Text::h($href)?>"/>
-<?php } // @formatter:on
+<?php   } // @formatter:on
+
+        return ob_get_clean();
     }
 
 
@@ -98,8 +106,8 @@ class Asset {
         string $extBuild,
         string $version,
         string $attributes = 'async defer',
-    ): void {
-        if (!$builds[$buildName] ?? []) return;
+    ): string {
+        if (!$builds[$buildName] ?? []) return '';
 
         $links = ["/{$publicSubdir}/{$buildName}{$extBuild}{$version}"];
         if (G::isDevEnv() && G::isDev()) {
@@ -112,10 +120,14 @@ class Asset {
 
         if ($attributes) $attributes = ' ' . trim(Text::h($attributes));
 
+        ob_start();
+
         foreach ($links as $href) {
 // @formatter:off ?>
 <script type="text/javascript" src="<?=$href?>"<?=$attributes?>></script>
-<?php } // @formatter:on
+<?php   } // @formatter:on
+
+        return ob_get_clean();
     }
 
 

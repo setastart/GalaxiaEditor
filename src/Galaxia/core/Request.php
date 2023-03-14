@@ -7,7 +7,9 @@
 namespace Galaxia;
 
 
-class Request {
+use function strlen;
+
+class Request { // todo: rename to AppRequest
 
     public string $host;
     public string $uri;
@@ -19,12 +21,14 @@ class Request {
     public string $scheme;
     public string $method;
 
+    public bool $test;
     public bool $xhr;
     public bool $json;
 
     public array $get;
     public array $post;
     public array $cookie;
+    public array $vars;
 
     public int  $minStatus;
     public bool $cacheBypass;
@@ -33,9 +37,9 @@ class Request {
 
     public int      $pagId;
     public bool     $isRoot;
+    public string   $type;
     public string   $route;
     public bool|int $redirectId;
-    public array    $vars;
 
 
     function __construct(
@@ -46,6 +50,7 @@ class Request {
         string $scheme = null,
         string $method = null,
 
+        bool   $test = null,
         bool   $xhr = null,
         bool   $json = null,
 
@@ -73,6 +78,7 @@ class Request {
         $this->method = $method ?? $_SERVER['REQUEST_METHOD'] ?? 'GET';
         $this->method = in_array($this->method, ['GET', 'POST']) ? $this->method : 'GET';
 
+        $this->test  = $test ?? (($_SERVER['HTTP_X_GALAXIAEDITOR_TEST'] ?? '') == '1');
         $this->xhr  = $xhr ?? (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'XMLHttpRequest');
         $this->json = $json ?? (($_SERVER['HTTP_ACCEPT'] ?? '') == 'application/json');
 
@@ -110,6 +116,9 @@ class Request {
             if ($this->uri == $locale['url']) {
                 return $lang;
             }
+            if (substr($this->uri, 0, 4) == $locale['url']) {
+                return $lang;
+            }
             if (substr($this->uri, 0, 4) == $locale['url'] . '/') {
                 return $lang;
             }
@@ -120,6 +129,44 @@ class Request {
 
 
     function redirectRemoveSlashes(): void {
+        if ($this->path != '/' && str_ends_with($this->path, '/')) {
+            $location = Text::h(trim($this->path, "/ \t\n\r\0\x0B"));
+
+            if (G::isCli()) {
+                echo "301 - /$location" . PHP_EOL;
+                exit();
+            }
+
+            if (headers_sent()) {
+                echo 'headers already sent. redirect: <a href="' . $location . '">' . $location . '</a>' . PHP_EOL;
+                exit();
+            }
+
+            header('Location: /' . $location, true, 301);
+            exit();
+        }
+    }
+
+
+    function redirectRemoveAddSlashes(): void {
+        if (strlen($this->path) == 4 && str_ends_with($this->path, '/')) return;
+        if (strlen($this->path) == 3 && !str_ends_with($this->path, '/')) {
+            $location = Text::h(trim($this->path, "/ \t\n\r\0\x0B"));
+            if (strlen($location) == 2) $location .= '/';
+
+            if (G::isCli()) {
+                echo "301 - /$location" . PHP_EOL;
+                exit();
+            }
+
+            if (headers_sent()) {
+                echo 'headers already sent. redirect: <a href="' . $location . '">' . $location . '</a>' . PHP_EOL;
+                exit();
+            }
+
+            header('Location: /' . $location, true, 301);
+            exit();
+        }
         if ($this->path != '/' && str_ends_with($this->path, '/')) {
             G::redirect($this->path, 301);
         }
