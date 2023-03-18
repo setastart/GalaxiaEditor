@@ -378,7 +378,7 @@ class AppCache {
     }
 
     static function delete($scopes, $key = '*'): void {
-        AppCache::deleteDir(G::$app->dirCache, $scopes, $key);
+        AppCache::deleteDir($scopes, $key, G::$app->dirCache);
     }
 
     static function deleteAll(): void {
