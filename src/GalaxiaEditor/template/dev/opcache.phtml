@@ -8,6 +8,7 @@ namespace GalaxiaEditor\dev\opcache;
 
 use Galaxia\G;
 use Galaxia\Text;
+use function str_contains;
 
 $opStatus = opcache_get_status();
 
@@ -17,23 +18,36 @@ function boolToText(bool $bool) {
 
 const gala = 'Galaxia';
 const edit = 'Editor';
-const webs = 'Website';
-const cach = 'Cache';
-const othr = 'Other';
+
+const wcode = 'Code';
+const wcach = 'Cache';
+const wvndr = 'Vendor';
+
+const ocode = 'Other Code';
+const ocach = 'Other Cache';
+const ovndr = 'Other Vendor';
 
 $scripts = [
-    gala => [],
-    edit => [],
-    webs => [],
-    cach => [],
-    othr => [],
+    gala  => [],
+    edit  => [],
+    wcode => [],
+    wcach => [],
+    wvndr => [],
+    ocode => [],
+    ocach => [],
+    ovndr => [],
 ];
 
 $scriptGalaxia = &$scripts[gala];
 $scriptEditor  = &$scripts[edit];
-$scriptWebsite = &$scripts[webs];
-$scriptCache   = &$scripts[cach];
-$scriptOther   = &$scripts[othr];
+
+$scriptWebCode   = &$scripts[wcode];
+$scriptWebCache  = &$scripts[wcach];
+$scriptWebVendor = &$scripts[wvndr];
+
+$scriptOthCode   = &$scripts[ocode];
+$scriptOthCache  = &$scripts[ocach];
+$scriptOthVendor = &$scripts[ovndr];
 
 $galaDir = dirname(G::$editor->dir) . '/';
 
@@ -42,25 +56,33 @@ uasort($opStatus['scripts'], fn($a, $b) => $a['full_path'] <=> $b['full_path']);
 foreach ($opStatus['scripts'] as $script) {
     if (str_starts_with($script['full_path'], G::$editor->dir . 'src/GalaxiaEditor/')) {
         $script['full_path'] = substr($script['full_path'], strlen($galaDir));
-        $scriptEditor[] = $script;
+        $scriptEditor[]      = $script;
         continue;
     }
     if (str_starts_with($script['full_path'], G::$editor->dir)) {
         $script['full_path'] = substr($script['full_path'], strlen($galaDir));
-        $scriptGalaxia[] = $script;
+        $scriptGalaxia[]     = $script;
         continue;
     }
     if (str_starts_with($script['full_path'], G::$app->dir)) {
         $script['full_path'] = substr($script['full_path'], strlen($galaDir));
-        if (str_ends_with($script['full_path'], '.cache')) {
-            $scriptCache[] = $script;
+        if (str_contains($script['full_path'], '/vendor/')) {
+            $scriptWebVendor[] = $script;
+        } else if (str_ends_with($script['full_path'], '.cache')) {
+            $scriptWebCache[] = $script;
         } else {
-            $scriptWebsite[] = $script;
+            $scriptWebCode[] = $script;
         }
         continue;
     }
     $script['full_path'] = substr($script['full_path'], strlen($galaDir));
-    $scriptOther[] = $script;
+    if (str_contains($script['full_path'], '/vendor/')) {
+        $scriptOthVendor[] = $script;
+    } else if (str_ends_with($script['full_path'], '.cache')) {
+        $scriptOthCache[] = $script;
+    } else {
+        $scriptOthCode[] = $script;
+    }
 }
 
 
@@ -167,7 +189,10 @@ foreach ($opStatus['scripts'] as $script) {
             <th>Editor</th>
             <th>Website Code</th>
             <th>Website Cache</th>
-            <th>Other</th>
+            <th>Website Vendor</th>
+            <th>Other Code</th>
+            <th>Other Cache</th>
+            <th>Other Vendor</th>
             <th>Total</th>
         </tr>
         </thead>
@@ -184,17 +209,28 @@ foreach ($opStatus['scripts'] as $script) {
 
             </td>
             <td>
-                <?=count($scriptWebsite)?><br>
-                <meter value="<?=count($scriptWebsite)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+                <?=count($scriptWebCode)?><br>
+                <meter value="<?=count($scriptWebCode)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
             </td>
             <td>
-                <?=count($scriptCache)?><br>
-                <meter value="<?=count($scriptCache)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
-
+                <?=count($scriptWebCache)?><br>
+                <meter value="<?=count($scriptWebCache)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
             </td>
             <td>
-                <?=count($scriptOther)?><br>
-                <meter value="<?=count($scriptOther)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+                <?=count($scriptWebVendor)?><br>
+                <meter value="<?=count($scriptWebVendor)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+            </td>
+            <td>
+                <?=count($scriptOthCode)?><br>
+                <meter value="<?=count($scriptOthCode)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+            </td>
+            <td>
+                <?=count($scriptOthCache)?><br>
+                <meter value="<?=count($scriptOthCache)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
+            </td>
+            <td>
+                <?=count($scriptOthVendor)?><br>
+                <meter value="<?=count($scriptOthVendor)?>" min="0" max="<?=count($opStatus['scripts'])?>"></meter>
             </td>
             <td>
                 <?=count($opStatus['scripts'])?>
@@ -214,19 +250,33 @@ foreach ($opStatus['scripts'] as $script) {
 
             </td>
             <td>
-                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebsite)))?><br>
-                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebsite))?>" min="0"
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebCode)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebCode))?>" min="0"
                        max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
             </td>
             <td>
-                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptCache)))?><br>
-                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptCache))?>" min="0"
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebCache)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebCache))?>" min="0"
                        max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
-
             </td>
             <td>
-                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOther)))?><br>
-                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOther))?>" min="0"
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebVendor)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptWebVendor))?>" min="0"
+                       max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOthCode)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOthCode))?>" min="0"
+                       max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOthCache)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOthCache))?>" min="0"
+                       max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
+            </td>
+            <td>
+                <?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOthVendor)))?><br>
+                <meter value="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $scriptOthVendor))?>" min="0"
                        max="<?=array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts']))?>"></meter>
             </td>
             <td><?=Text::bytesIntToAbbr(array_sum(array_map(fn($a) => $a['memory_consumption'], $opStatus['scripts'])))?></td>
