@@ -43,6 +43,7 @@ class AppPost {
         $r = '';
         $i = 0;
         foreach (self::$inputs as $input) {
+            if ($input->type == AppInput::typeButton) continue;
             $i++;
             $r .= '<strong>' . $i . ' - ' . Text::h(strip_tags($input->label)) . '</strong><br>';
             $r .= Text::h($input->value) . '<br><br>';

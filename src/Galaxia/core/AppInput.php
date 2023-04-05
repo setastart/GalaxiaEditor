@@ -69,8 +69,8 @@ class AppInput {
 
 
     function recalc(): void {
-        $this->classWrap  = '';
-        $this->classInput = '';
+        $this->classWrap  = "inputWrap inputWrap-$this->type inputName-$this->name";
+        $this->classInput = "inputType-$this->type";
         $this->attr       = '';
 
         if ($this->required) {
@@ -87,9 +87,6 @@ class AppInput {
         if ($this->autofocus) $this->attr .= ' autofocus';
         if ($this->minLength > 0) $this->attr .= ' minlength="' . Text::h($this->minLength) . '"';
         if ($this->maxLength > 0) $this->attr .= ' maxlength="' . Text::h($this->maxLength) . '"';
-
-        $this->classWrap  = "inputWrap inputWrap-$this->type inputName-$this->name";
-        $this->classInput = "inputType-$this->type";
     }
 
 
@@ -173,9 +170,11 @@ class AppInput {
     function string(
         string $classWrap = '',
         string $classBtn = 'btn',
+        string $classLabel = 'inputLabel',
     ): string {
         $classWrap  = trim($classWrap . ' ' . Text::h($this->classWrap) ?? '');
         $classInput = trim(Text::h($this->classInput) ?? '');
+        $classLabel = trim(Text::h($classLabel));
         $classBtn   = trim(Text::h($classBtn));
         $attr       = trim(Text::h($this->attr) ?? '');
         if ($attr) $attr = ' ' . $attr;
@@ -190,7 +189,7 @@ class AppInput {
             case AppInput::typeText:
 // @formatter:off ?>
 <div class="<?=$classWrap?>">
-    <label for="<?=$name?>" class="inputLabel"><?=$label?></label>
+    <label for="<?=$name?>" class="<?=$classLabel?>"><?=$label?></label>
     <input class="<?=$classInput?>" type="text" id="<?=$name?>" name="<?=$name?>" value="<?=$value?>"<?=$attr?>>
 <?php $this->renderErrors()?>
 </div>
@@ -201,7 +200,7 @@ class AppInput {
             case AppInput::typePassword:
 // @formatter:off ?>
 <div class="<?=$classWrap?>">
-    <label for="<?=$name?>" class="inputLabel"><?=$label?></label>
+    <label for="<?=$name?>" class="<?=$classLabel?>"><?=$label?></label>
     <input class="<?=$classInput?>" type="password" id="<?=$name?>" name="<?=$name?>" value="<?=$value?>"<?=$attr?>>
 <?php $this->renderErrors()?>
 </div>
@@ -213,7 +212,7 @@ class AppInput {
 
 // @formatter:off ?>
 <div class="<?=$classWrap?>">
-    <label for="<?=$name?>" class="inputLabel"><?=$label?></label>
+    <label for="<?=$name?>" class="<?=$classLabel?>"><?=$label?></label>
     <input class="<?=$classInput?>" type="tel" pattern="<?=AppInput::patternPhone?>" id="<?=$name?>" name="<?=$name?>" value="<?=$value?>"<?=$attr?>>
 <?php $this->renderErrors()?>
 </div>
@@ -224,7 +223,7 @@ class AppInput {
             case AppInput::typeEmail:
 // @formatter:off ?>
 <div class="<?=$classWrap?>">
-    <label for="<?=$name?>" class="inputLabel"><?=$label?></label>
+    <label for="<?=$name?>" class="<?=$classLabel?>"><?=$label?></label>
     <input class="<?=$classInput?>" type="email" id="<?=$name?>" name="<?=$name?>" value="<?=$value?>"<?=$attr?>>
 <?php $this->renderErrors()?>
 </div>
@@ -235,7 +234,7 @@ class AppInput {
             case AppInput::typeTextarea:
 // @formatter:off ?>
 <div class="<?=$classWrap?>">
-    <label for="<?=$name?>" class="inputLabel"><?=$label?></label>
+    <label for="<?=$name?>" class="<?=$classLabel?>"><?=$label?></label>
     <textarea class="<?=$classInput?>" rows="4" id="<?=$name?>" name="<?=$name?>"<?=$attr?>><?=$value?></textarea>
 <?php $this->renderErrors()?>
 </div>
@@ -244,13 +243,24 @@ class AppInput {
 
 
             case AppInput::typeCheckbox:
-                if ($this->value == AppInput::valueYes) $attr .= ' checked';
 // @formatter:off ?>
 <div class="<?=$classWrap?>">
-    <label for="<?=$name?>" class="inputLabel"><?=$label?></label>
-    <label class="inputCheckboxWrap p-q ml-auto">
-        <input class="<?=$classInput?>" type="checkbox" id="<?=$name?>" name="<?=$name?>" value="<?=AppInput::valueYes?>"<?=$attr?>>
-    </label>
+    <label for="<?=$name?>" class="<?=$classLabel?>"><?=$label?></label>
+    <div class="checkboxOptions">
+<?php
+                foreach ($this->options as $option => $optionText) {
+                    $option = Text::h($option) ?? '';
+                    $optionText = Text::h($optionText) ?? '';
+                    $checked = ($this->value == $option) ? ' checked' : '';
+                    $active = ($this->value == $option) ? 'active' : '';
+?>
+        <label class="inputCheckboxWrap">
+            <input class="<?=$classInput?>" type="checkbox" id="<?=$name?><?=$option?>" name="<?=$name?>" value="<?=$option?>"<?=$attr, $checked?>>
+            <span class="checkboxMark"></span>
+            <span class="checkboxText"><?=$optionText?></span>
+        </label>
+<?php           } ?>
+    </div>
 <?php $this->renderErrors()?>
 </div>
 <?php // @formatter:on
@@ -260,7 +270,7 @@ class AppInput {
             case AppInput::typeRadio:
 // @formatter:off ?>
 <div class="<?=$classWrap?>">
-    <label class="inputLabel"><?=$label?></label>
+    <label class="<?=$classLabel?>"><?=$label?></label>
     <div class="inputOptions">
 <?php
                 foreach ($this->options as $option => $optionText) {
@@ -285,7 +295,7 @@ class AppInput {
             case AppInput::typeSelect:
 // @formatter:off ?>
 <div class="<?=$classWrap?>">
-    <label for="<?=$name?>" class="inputLabel"><?=$label?></label>
+    <label for="<?=$name?>" class="<?=$classLabel?>"><?=$label?></label>
     <select class="<?=$classInput?>" name="<?=$name?>" id="<?=$name?>"<?=$attr?>>
 <?php
                 foreach ($this->options as $option => $optionText) {

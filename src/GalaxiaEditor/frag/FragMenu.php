@@ -65,7 +65,7 @@ class FragMenu {
 ?>
 <div id="menu" class="non-selectable">
     <a id="website-link" target="_blank" rel="noopener" href="/">
-        <img src="/favicon.ico" alt="<?=Text::t('Icon')?>" class="thumb-mini">
+        <img src="/favicon.png" alt="<?=Text::t('Icon')?>" class="thumb-mini">
         <span><?=Text::h(G::$req->host)?></span>
     </a>
 

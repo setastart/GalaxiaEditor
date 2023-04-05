@@ -107,8 +107,13 @@ class AppTest {
                     curl_multi_select($mh);
                 }
                 while (false !== ($mhInfo = curl_multi_info_read($mh))) {
-                    echo ($i % 100 == 0) ? $i : '.';
+                    if ($i == 0) {
+                        echo '0...';
+                    } else {
+                        echo ($i % 100 == 0) ? $i . ',' : '';
+                    }
                     $i++;
+                    if ($i == $testsTotal) echo $i . '!';
 
                     $info      = curl_getinfo($mhInfo['handle']);
                     $timeTotal += $info['total_time'];
@@ -207,8 +212,13 @@ class AppTest {
         $timeMax   = 0.0;
         $i         = 0;
         foreach ($tests as $url => $code) {
-            echo ($i % 100 == 0) ? $i : '.';
+            if ($i == 0) {
+                echo '0...';
+            } else {
+                echo ($i % 100 == 0) ? $i . ',' : '';
+            }
             $i++;
+            if ($i == $testsTotal) echo $i . '!';
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
