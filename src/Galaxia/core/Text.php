@@ -14,7 +14,12 @@ use DOMXPath;
 use IntlDateFormatter;
 use Normalizer;
 use Transliterator;
+use function array_search;
+use function array_unshift;
+use function htmlspecialchars;
 use function in_array;
+use function preg_replace_callback;
+use function str_replace;
 use function strip_tags;
 
 
@@ -136,9 +141,14 @@ HTML;
 
 
     static function h($text, bool $condition = true): ?string {
-        if ($condition) return htmlspecialchars((string)$text, self::HTMLSPECIALCHARS_FLAGS);
+        if (!$condition) return null;
 
-        return null;
+        return htmlspecialchars(
+            string: (string)$text,
+            flags: self::HTMLSPECIALCHARS_FLAGS,
+            encoding: 'UTF-8',
+            double_encode: false,
+        );
     }
 
     static function hg(array $arr, string $key = null, string $lang = ''): ?string {
@@ -157,7 +167,7 @@ HTML;
                 break;
 
             case 'string':
-                $text = htmlspecialchars($arr[$key], self::HTMLSPECIALCHARS_FLAGS) ?: null;
+                $text = htmlspecialchars($arr[$key], self::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false) ?: null;
                 break;
 
             case 'array':
@@ -173,7 +183,7 @@ HTML;
                     if (!isset($arr[$key][$lang])) continue;
                     if (!is_string($arr[$key][$lang])) continue;
                     if (empty($arr[$key][$lang])) continue;
-                    $text = htmlspecialchars($arr[$key][$lang], self::HTMLSPECIALCHARS_FLAGS);
+                    $text = htmlspecialchars($arr[$key][$lang], self::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false);
                     break;
                 }
                 break;
@@ -502,7 +512,7 @@ HTML;
             $text = mb_substr($text, 0, $length) . '[…]';
         }
 
-        return htmlspecialchars($text, self::HTMLSPECIALCHARS_FLAGS);
+        return htmlspecialchars($text, self::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false);
     }
 
     static function descg(array $arr, string $key = null, int $length = null, string $separator = ' / ', string $lang = ''): ?string {
@@ -575,7 +585,7 @@ HTML;
     }
 
     static function t(string $text, string $lang = null): string {
-        return htmlspecialchars(self::unsafet($text, $lang), self::HTMLSPECIALCHARS_FLAGS);
+        return htmlspecialchars(self::unsafet($text, $lang), self::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false);
     }
 
 

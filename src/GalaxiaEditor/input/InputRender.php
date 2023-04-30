@@ -272,7 +272,7 @@ $ht .= '</div>' . PHP_EOL;
 
 
     static function getRawInput($input): string {
-$r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . htmlspecialchars($input['value'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5) . '"';
+$r = '    <input class="input-text" type="' . $input['type'] . '" name="' . $input['name'] . '" value="' . htmlspecialchars($input['value'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8', false) . '"';
 
         foreach ($input['options'] as $optionName => $optionValue) {
 $r .= ' ' . $optionName . '="' . $optionValue . '"';

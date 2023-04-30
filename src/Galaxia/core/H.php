@@ -161,7 +161,7 @@ class H {
     static function __callStatic(string $name, array $arguments): string {
         if (count($arguments) == 1 && is_array($arguments[0])) $arguments = $arguments[0];
 
-        $name  = strtolower(htmlspecialchars($name));
+        $name  = strtolower(htmlspecialchars($name, Text::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false));
         $short = in_array($name, self::selfClosing);
 
         $node = (string)($arguments['node'] ?? '');
@@ -175,15 +175,15 @@ class H {
         $attributes = '';
         foreach ($arguments as $att => $val) {
             if (is_bool($val)) {
-                if ($val) $attributes .= ' ' . strtolower(htmlspecialchars($att));
+                if ($val) $attributes .= ' ' . strtolower(htmlspecialchars($att, Text::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false));
             } else {
-                $attributes .= ' ' . strtolower(htmlspecialchars($att)) . '="' . htmlspecialchars($val) . '"';
+                $attributes .= ' ' . strtolower(htmlspecialchars($att, Text::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false)) . '="' . htmlspecialchars($val, Text::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false) . '"';
             }
         }
 
-        if ($short) return '<' . $name . $attributes . '>';
+        if ($short) return "<{$name}{$attributes}>";
 
-        return '<' . $name . $attributes . '>' . $node . '</' . $name . '>';
+        return "<{$name}{$attributes}>{$node}</{$name}>";
     }
 
 
