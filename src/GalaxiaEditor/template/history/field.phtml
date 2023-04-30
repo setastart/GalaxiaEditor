@@ -16,7 +16,12 @@ use GalaxiaEditor\E;
     </div>
 <?php   if (isset(E::$historyRootSlugs[E::$tabName])) { ?>
     <div class="paper-header">
-        <a href="/edit/<?=Text::h(E::$historyRootSlugs[E::$tabName])?>/<?=Text::h(E::$tabId)?>"><?=Text::t('Edit Item')?></a>
+        <a href="/edit/<?=Text::h(E::$pgSlug) . '/' . Text::h(E::$tabName) . '/' . Text::h(E::$tabId)?>">
+            <?=Text::t('History')?>
+        </a>
+        <a href="/edit/<?=Text::h(E::$historyRootSlugs[E::$tabName])?>/<?=Text::h(E::$tabId)?>">
+            <?=Text::t('Edit Item')?>
+        </a>
     </div>
 <?php   } ?>
 <?php   foreach (E::$historyItems as $itemId => $item) { ?>

@@ -115,6 +115,8 @@ $dispatcher = cachedDispatcher(function(RouteCollector $r) {
                 $r->get('/edit/{pgSlug:' . $rootSlug . '}', 'history/list');
                 $r->post('/edit/{pgSlug:' . $rootSlug . '}', 'history/list');
                 $r->get('/edit/{pgSlug:' . $rootSlug . '}/{tabName}/{tabId}', 'history/item');
+                $r->get('/edit/{pgSlug:' . $rootSlug . '}/{tabName}/{tabId}/{inputKey}', 'history/field');
+                $r->get('/edit/{pgSlug:' . $rootSlug . '}/{tabName}/{tabId}/{inputKey}/{fieldKey}', 'history/field');
                 break;
 
             case 'gcpListItem':
@@ -230,6 +232,8 @@ switch ($routeInfo[0]) {
         E::$pgSlug   = $routeInfo[2]['pgSlug'] ?? '';
         E::$tabName  = $routeInfo[2]['tabName'] ?? '';
         E::$tabId    = $routeInfo[2]['tabId'] ?? '';
+        E::$inputKey = $routeInfo[2]['inputKey'] ?? '';
+        E::$fieldKey = $routeInfo[2]['fieldKey'] ?? '';
         E::$itemId   = $routeInfo[2]['itemId'] ?? '';
         E::$imgSlug  = $routeInfo[2]['imgSlug'] ?? '';
         E::$imgW     = $routeInfo[2]['imgW'] ?? '';

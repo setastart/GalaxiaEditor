@@ -24,6 +24,8 @@ class E {
     static string $pgSlug   = '';
     static string $tabName  = '';
     static string $tabId    = '';
+    static string $inputKey = '';
+    static string $fieldKey = '';
     static string $itemId   = '';
     static string $imgSlug  = '';
     static string $imgW     = '';

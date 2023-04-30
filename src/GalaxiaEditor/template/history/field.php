@@ -12,14 +12,20 @@ use Galaxia\Sql;
 use Galaxia\Text;
 use GalaxiaEditor\E;
 
-
 E::$historyItems = [];
 
 $query = Sql::select(['_geHistory' => ['_geHistoryId', '_geUserId', 'uniqueId', 'inputKey', 'fieldKey', 'action', 'content', 'timestampCreated']]);
-$query .= Sql::selectWhere(['_geHistory' => ['tabName' => '=', 'tabId' => '=']]);
+$query .= Sql::selectWhere([
+    '_geHistory' => [
+        'tabName'  => '=',
+        'tabId'    => '=',
+        'inputKey' => '=',
+        'fieldKey' => '=',
+    ],
+]);
 $query .= Sql::selectOrderBy(['_geHistory' => ['timestampCreated' => 'DESC']]);
 
-$result = G::execute($query, [E::$tabName, E::$tabId]);
+$result = G::execute($query, [E::$tabName, E::$tabId, E::$inputKey, E::$fieldKey]);
 
 while ($data = $result->fetch_assoc()) {
     if (!isset(E::$historyItems[$data['uniqueId']])) {
