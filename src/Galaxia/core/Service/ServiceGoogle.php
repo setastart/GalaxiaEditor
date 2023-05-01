@@ -6,6 +6,10 @@
 
 namespace Galaxia\Service;
 
+use Exception;
+use JsonException;
+use SensitiveParameter;
+
 /**
  * Interact with Google Cloud Platform (GCP) APIs using cURL
  * https://developers.google.com/identity/protocols/oauth2/service-account#httprest
