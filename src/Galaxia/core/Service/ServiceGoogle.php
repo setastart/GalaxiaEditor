@@ -6,11 +6,6 @@
 
 namespace Galaxia\Service;
 
-use Exception;
-use JsonException;
-use SensitiveParameter;
-
-
 /**
  * Interact with Google Cloud Platform (GCP) APIs using cURL
  * https://developers.google.com/identity/protocols/oauth2/service-account#httprest
@@ -31,11 +26,20 @@ class ServiceGoogle {
         try {
             if (!is_readable($serviceFilePath)) throw new Exception('Service file unreadable');
 
+            $serviceFilePathContents = file_get_contents($serviceFilePath);
+            if ($serviceFilePathContents === false) {
+                throw new Exception('Service json: Could not get file contents');
+            }
+
             $service = json_decode(
-                json: file_get_contents($serviceFilePath),
+                json: $serviceFilePathContents,
                 associative: true,
                 flags: JSON_THROW_ON_ERROR
             );
+            if ($service === null) {
+                throw new Exception('Service json: Could not decode service file');
+            }
+
 
             if (!isset($service['token_uri'])) throw new Exception('Service json: Missing token_uri');
             if (!isset($service['client_email'])) throw new Exception('Service json: Missing client_email');
@@ -53,6 +57,9 @@ class ServiceGoogle {
                     'target' => $langTarget,
                 ])
             );
+            if (!$response) {
+                throw new Exception('API request: Empty response');
+            }
             if (isset($response['error'])) {
                 throw new Exception('API request: ' . ($response['error']['message'] ?? '') . ' ' . ($response['error']['status'] ?? ''));
             }
@@ -169,7 +176,7 @@ class ServiceGoogle {
 
     private static function error(string $string): string {
         http_response_code(500);
-        return "ServiceGoogle $string";
+        return "ServiceGoogle $string" . PHP_EOL;
     }
 
 }
