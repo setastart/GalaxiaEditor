@@ -397,7 +397,9 @@ class G {
             db();
             if (!self::isCli()) echo '-->' . PHP_EOL;
         } else {
-            error_log($msg . ' - ' . $debugText);
+            if ($code == 500) {
+                error_log($msg . ' - ' . $debugText);
+            }
         }
 
         // AppTimer::print(true, true, true);
