@@ -48,6 +48,7 @@ class Input {
         'url',
         'number',
         'trix',
+        'rico',
         'textarea',
         'datetime',
         'date',
@@ -364,6 +365,7 @@ class Input {
 
             case 'textarea':
             case 'trix':
+            case 'rico':
                 $input['value'] = strip_tags($input['value'], Text::ALLOWED_TAGS);
                 break;
 

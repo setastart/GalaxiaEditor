@@ -146,7 +146,7 @@ let gjScraper = {
                     case 'INPUT':
                     case 'TEXTAREA':
                         if (inputEl.value === content) continue;
-                        if (inputEl.classList.contains('input-trix')) {
+                        if (inputEl.classList.contains('input-rico')) {
                             let editor = inputEl.nextElementSibling.nextElementSibling.editor;
                             editor.recordUndoEntry('Content updated');
                             editor.setSelectedRange([0, editor.getDocument().getLength()])

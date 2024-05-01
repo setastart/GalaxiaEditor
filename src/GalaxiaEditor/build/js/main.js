@@ -36,7 +36,7 @@ function gjLoad() {
         });
     }
 
-    gjLoadTrix();
+    gjLoadRico();
 
     gjForm.init();
 
@@ -52,7 +52,7 @@ function handleEventInput(ev) {
     if (
         ev.target.matches('.input-text') ||
         ev.target.matches('.input-file') ||
-        ev.target.matches('.input-trix')
+        ev.target.matches('.input-rico')
     ) {
         gjInput.change(ev.target);
         gjInput.textareaAutoGrow(ev.target);
@@ -93,7 +93,7 @@ function handleEventChange(ev) {
     if (
         ev.target.matches('.input-radio input') ||
         ev.target.matches('.input-select') ||
-        ev.target.matches('.input-trix')
+        ev.target.matches('.input-rico')
     ) {
         gjInput.change(ev.target);
     }
@@ -369,8 +369,8 @@ function handleEventBeforeunload(ev) {
 }
 
 
-function gjLoadTrix() {
-    document.addEventListener('trix-before-initialize', function(ev) {
+function gjLoadRico() {
+    document.addEventListener('rico-before-initialize', function(ev) {
         ev.target.addEventListener('keydown', function(ev) {
             if (ev.shiftKey && ev.key === 'Enter') {
                 ev.target.editor.recordUndoEntry('Shift+Enter');
@@ -380,23 +380,19 @@ function gjLoadTrix() {
         });
     });
 
-    document.addEventListener('trix-change', function(ev) {
+    document.addEventListener('rico-change', function(ev) {
         let editorEl = ev.target;
         if (!editorEl.gInputLoaded) {
             editorEl.gInput       = editorEl.parentNode;
             editorEl.gInputLoaded = true;
         }
 
-        gjInput.trixCharWordCount(editorEl);
+        gjInput.ricoCharWordCount(editorEl);
         gjInput.initialUndoClasses(editorEl);
     });
 
-    document.addEventListener('trix-initialize', function(ev) {
+    document.addEventListener('rico-initialize', function(ev) {
         let editorEl = ev.target;
-        gjInput.trixCharWordCount(editorEl);
-    });
-
-    document.addEventListener('trix-file-accept', function(event) {
-        event.preventDefault(); // disable trix image attachment pasting
+        gjInput.ricoCharWordCount(editorEl);
     });
 }

@@ -22,7 +22,7 @@ E::$item     = &E::$section['gcItem'];
 foreach (G::locales() as $lang => $locale) {
     E::$langSelectClass[$lang] = '';
 }
-E::$includeTrix   = true;
+E::$includeRico   = true;
 $querySelectWhere = [E::$item['gcTable'] => [E::$item['gcTable'] . 'Id' => '=']];
 
 

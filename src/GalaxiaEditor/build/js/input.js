@@ -4,10 +4,10 @@ let gjInput = {
     decoder: document.createElement('textarea'),
 
 
-    trixCharWordCount: function(trixEl) {
-        let lenEl = trixEl.parentNode.querySelector('.input-len');
+    ricoCharWordCount: function(ricoEl) {
+        let lenEl = ricoEl.parentNode.querySelector('.input-len');
         if (lenEl) {
-            let text = trixEl.editor.getDocument().toString().trim();
+            let text = ricoEl.editor.getDocument().toString().trim();
 
             if (text.length === 0) {
                 lenEl.innerHTML = '0 ❖ 0';
@@ -345,7 +345,7 @@ let gjInput = {
                 break;
             case 'DATALIST':
                 break;
-            case 'TRIX-EDITOR':
+            case 'RICO-EDITOR':
                 if (el.value !== el.defaultValue) changed = true;
                 break;
         }

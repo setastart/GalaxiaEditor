@@ -36,7 +36,7 @@ class E {
     static string $hookTranslate = '';
 
     static array $langSelectClass    = [];
-    static bool  $includeTrix        = false;
+    static bool  $includeRico        = false;
     static bool  $showSwitchesLang   = false;
     static bool  $passwordColsFound  = false;
     static bool  $chatInclude        = false;

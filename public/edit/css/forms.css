@@ -79,19 +79,24 @@
     margin-top: 0.2em;
     line-height: 1.35;
 }
-.input-wrap-trix {
+.input-wrap-trix,
+.input-wrap-rico {
     display: block;
 }
 .module-field-gallery .input-wrap .input-label,
-.input-wrap-trix .input-label {
+.input-wrap-trix .input-label,
+.input-wrap-rico .input-label {
     margin-bottom: 5px;
 }
 .module-field-gallery .input-wrap .input-label br,
-.input-wrap-trix .input-label br {
+.input-wrap-trix .input-label br,
+.input-wrap-rico .input-label br {
     display: none;
 }
 .input-wrap-trix.show-initial .input-initial,
-.input-wrap-trix.show-initial-undo .input-initial-undo {
+.input-wrap-rico.show-initial .input-initial,
+.input-wrap-trix.show-initial-undo .input-initial-undo,
+.input-wrap-rico.show-initial-undo .input-initial-undo {
     display: none;
 }
 
@@ -257,7 +262,7 @@ textarea.input-text {
     font-family: monospace;
 }
 
-trix-editor:focus,
+rico-editor:focus,
 .input-text:focus,
 .input-title:focus,
 .input-textarea:focus,
@@ -269,7 +274,7 @@ trix-editor:focus,
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.075), 0 0 5px rgba(81,167,232,0.5) !important;
 }
 
-trix-editor:invalid,
+rico-editor:invalid,
 .input-text:invalid,
 .input-title:invalid,
 .input-textarea:invalid,
@@ -586,28 +591,28 @@ a.btn-small {
 .module-field-group-delete .btn-group:nth-child(n+2) {
     border-color: #ccc !important;
 }
-.module-field-group-delete trix-toolbar .trix-button {
+.module-field-group-delete rico-toolbar .rico-button {
     background: transparent !important;
 }
-.module-field-group-delete trix-toolbar .trix-button-group,
-.module-field-group-delete trix-editor {
+.module-field-group-delete rico-toolbar .rico-button-group,
+.module-field-group-delete rico-editor {
     background: rgba(0, 0, 0, 0.1) !important;
     pointer-events: none;
 }
-.module-field-group-delete trix-editor * {
+.module-field-group-delete rico-editor * {
     color: #666 ;
 }
-.module-field-group-delete .trix-dialog {
+.module-field-group-delete .rico-dialog {
     opacity: 0.5;
 }
 
-:disabled ~ trix-editor > *,
-:disabled ~ trix-toolbar > * {
+:disabled ~ rico-editor > *,
+:disabled ~ rico-toolbar > * {
     color: #888 !important;
     pointer-events: none;
 }
-:disabled ~ trix-editor,
-:disabled ~ trix-toolbar,
+:disabled ~ rico-editor,
+:disabled ~ rico-toolbar,
 :disabled,
 button:disabled,
 button.active:disabled {

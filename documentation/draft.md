@@ -10,7 +10,6 @@ convert -verbose favicon.png -define icon:auto-resize=16,32,64 -compress zip fav
 # pngquant
 pngquant --force --speed 1 --verbose --ext .png 256 -- ./public/edit/gfx/icon/*
 pngquant --force --speed 1 --verbose --ext .png 256 -- ./public/edit/gfx/btn/*
-pngquant --force --speed 1 --verbose --ext .png 256 -- ./public/edit/gtrix/btn/*
 
 
 # 3. Features
@@ -46,7 +45,7 @@ pngquant --force --speed 1 --verbose --ext .png 256 -- ./public/edit/gtrix/btn/*
 
 - Content editor
     - To be fully customized by the developer so the editors only use what they need
-    - Trix WYSIWYG HTML editing.
+    - Rich WYSIWYG HTML editing using [Rico](https://github.com/setastart/Rico).
 
 - History
 
@@ -227,7 +226,7 @@ Contains documentation and a central php classes to be used by all websites.
     - [x] textarea
         - [ ] maxlength
         - [ ] rows
-    - [x] trix
+    - [x] rico
     - [x] radio
         - [x] options are radio options
     - [x] select

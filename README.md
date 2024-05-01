@@ -28,7 +28,7 @@ Visit our website to read more about our work and to hire our services:
   - Integrated in the editor, without needing external tools.
   - Everything is localisable, including image alt text and slugs.
 - Upload, reorder and connect **hundreds of images in minutes**.
-- **WYSIWYG** rich text text editor based on [Basecamp Trix](https://trix-editor.org/).  
+- **WYSIWYG** [Rico](https://github.com/setastart/Rico) rich text text editor.  
   The editor expands automatically to fit the text, so there is only one scrollbar in the page and all the content text is always visible.
 - **Simple**, **fast** and **intuitive navigation** designed for each website.
 - **Instant** and **powerful content filtering**.
@@ -232,7 +232,7 @@ GalaxiaEditor is licensed under the European Union Public License version 1.2 (E
 It contains open source code from:
 - [FastRoute](https://github.com/nikic/FastRoute)
 - [PHP Redis implementation](https://github.com/ziogas/PHP-Redis-implementation)
-- [Basecamp Trix](https://github.com/basecamp/trix)
+- [Rico](https://github.com/setastart/Rico)
 
 
 

@@ -106,7 +106,7 @@ function gjLoad() {
         });
     }
 
-    gjLoadTrix();
+    gjLoadRico();
 
     gjForm.init();
 
@@ -122,7 +122,7 @@ function handleEventInput(ev) {
     if (
         ev.target.matches('.input-text') ||
         ev.target.matches('.input-file') ||
-        ev.target.matches('.input-trix')
+        ev.target.matches('.input-rico')
     ) {
         gjInput.change(ev.target);
         gjInput.textareaAutoGrow(ev.target);
@@ -163,7 +163,7 @@ function handleEventChange(ev) {
     if (
         ev.target.matches('.input-radio input') ||
         ev.target.matches('.input-select') ||
-        ev.target.matches('.input-trix')
+        ev.target.matches('.input-rico')
     ) {
         gjInput.change(ev.target);
     }
@@ -439,8 +439,8 @@ function handleEventBeforeunload(ev) {
 }
 
 
-function gjLoadTrix() {
-    document.addEventListener('trix-before-initialize', function(ev) {
+function gjLoadRico() {
+    document.addEventListener('rico-before-initialize', function(ev) {
         ev.target.addEventListener('keydown', function(ev) {
             if (ev.shiftKey && ev.key === 'Enter') {
                 ev.target.editor.recordUndoEntry('Shift+Enter');
@@ -450,24 +450,20 @@ function gjLoadTrix() {
         });
     });
 
-    document.addEventListener('trix-change', function(ev) {
+    document.addEventListener('rico-change', function(ev) {
         let editorEl = ev.target;
         if (!editorEl.gInputLoaded) {
             editorEl.gInput       = editorEl.parentNode;
             editorEl.gInputLoaded = true;
         }
 
-        gjInput.trixCharWordCount(editorEl);
+        gjInput.ricoCharWordCount(editorEl);
         gjInput.initialUndoClasses(editorEl);
     });
 
-    document.addEventListener('trix-initialize', function(ev) {
+    document.addEventListener('rico-initialize', function(ev) {
         let editorEl = ev.target;
-        gjInput.trixCharWordCount(editorEl);
-    });
-
-    document.addEventListener('trix-file-accept', function(event) {
-        event.preventDefault(); // disable trix image attachment pasting
+        gjInput.ricoCharWordCount(editorEl);
     });
 }
 
@@ -1049,7 +1045,7 @@ let gjField = {
         let selects   = group.getElementsByTagName('select');
         let textareas = group.getElementsByTagName('textarea');
         let buttons   = group.getElementsByTagName('button');
-        let trixes    = group.getElementsByTagName('trix-editor-new');
+        let ricos     = group.getElementsByTagName('rico-editor-new');
         let i;
         for (i = inputs.length - 1; i >= 0; i--) {
             inputs[i].name     = inputs[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
@@ -1057,9 +1053,9 @@ let gjField = {
             inputs[i].disabled = false;
             if (inputs[i].dataset.target !== undefined) inputs[i].dataset.target = group.id;
         }
-        for (i = trixes.length - 1; i >= 0; i--) {
-            trixes[i].setAttribute('input', trixes[i].attributes.input.value.replace('\]\[new-0\]\[', '][new-' + groupId + ']['));
-            trixes[i].outerHTML = trixes[i].outerHTML.replace(/trix-editor-new/, 'trix-editor');
+        for (i = ricos.length - 1; i >= 0; i--) {
+            ricos[i].setAttribute('input', ricos[i].attributes.input.value.replace('\]\[new-0\]\[', '][new-' + groupId + ']['));
+            ricos[i].outerHTML = ricos[i].outerHTML.replace(/rico-editor-new/, 'rico-editor');
         }
         for (i = selects.length - 1; i >= 0; i--) {
             selects[i].name     = selects[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
@@ -1218,10 +1214,10 @@ let gjInput = {
     decoder: document.createElement('textarea'),
 
 
-    trixCharWordCount: function(trixEl) {
-        let lenEl = trixEl.parentNode.querySelector('.input-len');
+    ricoCharWordCount: function(ricoEl) {
+        let lenEl = ricoEl.parentNode.querySelector('.input-len');
         if (lenEl) {
-            let text = trixEl.editor.getDocument().toString().trim();
+            let text = ricoEl.editor.getDocument().toString().trim();
 
             if (text.length === 0) {
                 lenEl.innerHTML = '0 ❖ 0';
@@ -1559,7 +1555,7 @@ let gjInput = {
                 break;
             case 'DATALIST':
                 break;
-            case 'TRIX-EDITOR':
+            case 'RICO-EDITOR':
                 if (el.value !== el.defaultValue) changed = true;
                 break;
         }
@@ -1933,7 +1929,7 @@ let gjScraper = {
                     case 'INPUT':
                     case 'TEXTAREA':
                         if (inputEl.value === content) continue;
-                        if (inputEl.classList.contains('input-trix')) {
+                        if (inputEl.classList.contains('input-rico')) {
                             let editor = inputEl.nextElementSibling.nextElementSibling.editor;
                             editor.recordUndoEntry('Content updated');
                             editor.setSelectedRange([0, editor.getDocument().getLength()])
@@ -2130,7 +2126,7 @@ let gjTranslate = {
         let elWrap = el.closest('.input-wrap');
         if (!elWrap) return;
 
-        let elTrix  = elWrap.querySelector('trix-editor');
+        let elRico  = elWrap.querySelector('rico-editor');
         let elInput = elWrap.querySelector('input, textarea');
         if (!elInput) return;
 
@@ -2142,15 +2138,15 @@ let gjTranslate = {
         let xhr       = new XMLHttpRequest();
         xhr.elWrap    = elWrap;
         xhr.elInput   = elInput;
-        xhr.elTrix    = elTrix;
+        xhr.elRico    = elRico;
         xhr.textInput = text;
 
         xhr.onload = function() {
             let text = this.responseText;
             if (this.status !== 200 && text !== 'ok') return;
 
-            if (this.elTrix) {
-                let editor = this.elTrix.editor;
+            if (this.elRico) {
+                let editor = this.elRico.editor;
 
                 text = text.replaceAll('<p> ', '<p>');
                 text = text.replaceAll('<br> ', '<br>');

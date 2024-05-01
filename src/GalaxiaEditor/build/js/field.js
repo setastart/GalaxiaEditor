@@ -130,7 +130,7 @@ let gjField = {
         let selects   = group.getElementsByTagName('select');
         let textareas = group.getElementsByTagName('textarea');
         let buttons   = group.getElementsByTagName('button');
-        let trixes    = group.getElementsByTagName('trix-editor-new');
+        let ricos     = group.getElementsByTagName('rico-editor-new');
         let i;
         for (i = inputs.length - 1; i >= 0; i--) {
             inputs[i].name     = inputs[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');
@@ -138,9 +138,9 @@ let gjField = {
             inputs[i].disabled = false;
             if (inputs[i].dataset.target !== undefined) inputs[i].dataset.target = group.id;
         }
-        for (i = trixes.length - 1; i >= 0; i--) {
-            trixes[i].setAttribute('input', trixes[i].attributes.input.value.replace('\]\[new-0\]\[', '][new-' + groupId + ']['));
-            trixes[i].outerHTML = trixes[i].outerHTML.replace(/trix-editor-new/, 'trix-editor');
+        for (i = ricos.length - 1; i >= 0; i--) {
+            ricos[i].setAttribute('input', ricos[i].attributes.input.value.replace('\]\[new-0\]\[', '][new-' + groupId + ']['));
+            ricos[i].outerHTML = ricos[i].outerHTML.replace(/rico-editor-new/, 'rico-editor');
         }
         for (i = selects.length - 1; i >= 0; i--) {
             selects[i].name     = selects[i].name.replace('\]\[new-0\]\[', '][new-' + groupId + '][');

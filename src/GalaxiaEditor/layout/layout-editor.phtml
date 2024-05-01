@@ -71,8 +71,8 @@ window.addEventListener("DOMContentLoaded", function(event) {
     <link rel="stylesheet" href="/edit/css/chat.css?version=<?=Text::h(G::$editor->version)?>">
 <?php   } ?>
     <link rel="stylesheet" href="/edit/css/responsive.css?version=<?=Text::h(G::$editor->version)?>">
-<?php   if (E::$includeTrix) { ?>
-    <link rel="stylesheet" href="/edit/css/trix.css?version=<?=Text::h(G::$editor->version)?>">
+<?php   if (E::$includeRico) { ?>
+    <link rel="stylesheet" href="/edit/css/rico.css?version=<?=Text::h(G::$editor->version)?>">
 <?php   } ?>
     <style>
 <?php   foreach (G::langs() as $lang) { ?>
@@ -111,8 +111,8 @@ var gchat = {
     </script>
     <script type="text/javascript" src="/edit/js/galaxiaChat.js?version=<?=Text::h(G::$editor->version)?>"></script>
 <?php   } ?>
-<?php   if (E::$includeTrix) { ?>
-    <script type="text/javascript" src="/edit/js/gtrix-1.3.1g.min.js?version=<?=Text::h(G::$editor->version)?>" async defer></script>
+<?php   if (E::$includeRico) { ?>
+    <script type="text/javascript" src="/edit/js/rico-2.1.0.umd.min.js?version=<?=Text::h(G::$editor->version)?>" async defer></script>
 <?php   } ?>
 </head>
 

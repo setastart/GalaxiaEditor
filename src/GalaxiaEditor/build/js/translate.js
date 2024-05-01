@@ -4,7 +4,7 @@ let gjTranslate = {
         let elWrap = el.closest('.input-wrap');
         if (!elWrap) return;
 
-        let elTrix  = elWrap.querySelector('trix-editor');
+        let elRico  = elWrap.querySelector('rico-editor');
         let elInput = elWrap.querySelector('input, textarea');
         if (!elInput) return;
 
@@ -16,15 +16,15 @@ let gjTranslate = {
         let xhr       = new XMLHttpRequest();
         xhr.elWrap    = elWrap;
         xhr.elInput   = elInput;
-        xhr.elTrix    = elTrix;
+        xhr.elRico    = elRico;
         xhr.textInput = text;
 
         xhr.onload = function() {
             let text = this.responseText;
             if (this.status !== 200 && text !== 'ok') return;
 
-            if (this.elTrix) {
-                let editor = this.elTrix.editor;
+            if (this.elRico) {
+                let editor = this.elRico.editor;
 
                 text = text.replaceAll('<p> ', '<p>');
                 text = text.replaceAll('<br> ', '<br>');
