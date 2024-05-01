@@ -440,16 +440,6 @@ function handleEventBeforeunload(ev) {
 
 
 function gjLoadRico() {
-    document.addEventListener('rico-before-initialize', function(ev) {
-        ev.target.addEventListener('keydown', function(ev) {
-            if (ev.shiftKey && ev.key === 'Enter') {
-                ev.target.editor.recordUndoEntry('Shift+Enter');
-                ev.target.editor.insertHTML('<br>');
-                ev.preventDefault();
-            }
-        });
-    });
-
     document.addEventListener('rico-change', function(ev) {
         let editorEl = ev.target;
         if (!editorEl.gInputLoaded) {
@@ -464,6 +454,7 @@ function gjLoadRico() {
     document.addEventListener('rico-initialize', function(ev) {
         let editorEl = ev.target;
         gjInput.ricoCharWordCount(editorEl);
+        gjForm.init();
     });
 }
 
