@@ -21,7 +21,7 @@ use GalaxiaEditor\frag\FragMsgBoxes;
 
     <title>Error <?=Text::h(G::$errorCode)?></title>
 
-    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h(G::$editor->version)?>">
+    <link rel="icon" href="/edit/favicon.png?version=<?=Text::h(G::$editor->version)?>">
 
     <link rel="stylesheet" href="/edit/css/reset.css?version=<?=Text::h(G::$editor->version)?>">
     <link rel="stylesheet" href="/edit/css/text.css?version=<?=Text::h(G::$editor->version)?>">
@@ -64,7 +64,7 @@ use GalaxiaEditor\frag\FragMsgBoxes;
 <?php   } ?>
         <a href="/edit/dev/cacheDeleteEditor"><?=Text::t('Delete Editor Caches')?></a>
     </div>
-    <p class="version"><img class="icon" alt="Icon" src="/edit/favicon.ico"><?=Text::h(G::$me->name)?>@GalaxiaEditor v<?=Text::h(G::$editor->version);?></p>
+    <p class="version"><img class="icon" alt="Icon" src="/edit/favicon.png"><?=Text::h(G::$me->name)?>@GalaxiaEditor v<?=Text::h(G::$editor->version);?></p>
     <p class="copy"><img class="icon" alt="Setastart Icon" src="/edit/gfx/icon/icon-setastart-white-32.png"/><a href="https://setastart.com/" target="_blank">setastart.com</a> &copy; 2017-<?=date("Y")?></p>
 </div>
 

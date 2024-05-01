@@ -31,7 +31,7 @@ $menuRight = ((G::$me->options['menuPosition'] ?? '') == 'right');
 
     <title><?=Text::h(E::$hdTitle)?></title>
 
-    <link rel="shortcut icon" href="/edit/favicon.ico?version=<?=Text::h(G::$editor->version)?>">
+    <link rel="icon" href="/edit/favicon.png?version=<?=Text::h(G::$editor->version)?>">
 
     <script type="text/javascript">
 // switches for hiding perms & langs
@@ -169,7 +169,7 @@ if (G::isDevEnv()) $bodyClasses .= ' isDevEnv';
 <?php   } ?>
         <a href="/edit/dev/cacheDeleteEditor"><?=Text::t('Delete Editor Caches')?></a>
     </div>
-    <p class="version"><img class="icon" alt="Icon" src="/edit/favicon.ico"><?=Text::h(G::$me->name)?>@GalaxiaEditor <?=Text::h(G::$editor->version);?></p>
+    <p class="version"><img class="icon" alt="Icon" src="/edit/favicon.png"><?=Text::h(G::$me->name)?>@GalaxiaEditor <?=Text::h(G::$editor->version);?></p>
     <p class="copy"><img class="icon" alt="Setastart Icon" src="/edit/gfx/icon/icon-setastart-white-32.png"/><a href="https://setastart.com/" target="_blank">setastart.com</a> &copy; 2017-<?=date("Y")?></p>
 </div>
 

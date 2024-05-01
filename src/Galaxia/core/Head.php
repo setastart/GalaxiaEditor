@@ -194,7 +194,7 @@ class Head {
         $version = Text::h($version);
 // @formatter:off ?>
 
-    <link rel="shortcut icon" href="/favicon.ico<?=$version?>">
+    <link rel="icon" href="/favicon.png<?=$version?>">
     <link rel="apple-touch-icon" href="/favicon.png<?=$version?>">
 <?php } // @formatter:on
 
