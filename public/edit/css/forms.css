@@ -79,23 +79,18 @@
     margin-top: 0.2em;
     line-height: 1.35;
 }
-.input-wrap-trix,
 .input-wrap-rico {
     display: block;
 }
 .module-field-gallery .input-wrap .input-label,
-.input-wrap-trix .input-label,
 .input-wrap-rico .input-label {
     margin-bottom: 5px;
 }
 .module-field-gallery .input-wrap .input-label br,
-.input-wrap-trix .input-label br,
 .input-wrap-rico .input-label br {
     display: none;
 }
-.input-wrap-trix.show-initial .input-initial,
 .input-wrap-rico.show-initial .input-initial,
-.input-wrap-trix.show-initial-undo .input-initial-undo,
 .input-wrap-rico.show-initial-undo .input-initial-undo {
     display: none;
 }

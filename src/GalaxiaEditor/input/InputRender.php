@@ -73,7 +73,6 @@ $ht = '<div class="input-wrap pad ' . Text::h($css) . '">' . PHP_EOL;
 
         switch ($input['type']) {
             case 'textarea':
-            case 'trix':
             case 'rico':
 $ht .= '    <div class="input-label">' . Text::t($input['label']) . '<span class="input-label-lang"> ' . $input['lang'] . '</span></div>' . PHP_EOL;
 $ht .= '    <div class="content">' . Text::h(strip_tags($input['valueFromDb'], Text::ALLOWED_TAGS)) . '</div>' . PHP_EOL;
@@ -135,14 +134,14 @@ $ht .= '</div>' . PHP_EOL;
         $maxlen = $maxlen ?: '';
         if ($minlen) $minlen = '<span class="input-min">' . Text::h($minlen) . '</span><span class="tiny">﹤</span>';
         if ($maxlen) $maxlen = '<span class="tiny">﹤</span><span class="input-max">' . Text::h($maxlen) . '</span> ';
-        if ($input['type'] == 'trix' ||$input['type'] == 'rico') {
+        if ($input['type'] == 'rico') {
             $len = '<span class="input-len" title="' . Text::t('Number of letters ❖ Number of words') . '">' . ($input['type'] == 'rico' ? '' : mb_strlen($input['value'] ?? '')) . '</span>';
         } else if ($minlen || $maxlen) {
             $len = '<span class="input-len">' . mb_strlen($input['value'] ?? '') . '</span>';
         }
 
         $titleTitle = (G::isDev()) ? (Text::h($input['prefix']) ?? Text::h($input['name'])) : '';
-        $translate = (substr($input['nameFromDb'], -3, 1) == '_' || substr($input['name'], -3, 1) == '_') && E::$hookTranslate && in_array($input['type'], ['text', 'textarea', 'trix', 'rico']);
+        $translate = (substr($input['nameFromDb'], -3, 1) == '_' || substr($input['name'], -3, 1) == '_') && E::$hookTranslate && in_array($input['type'], ['text', 'textarea', 'rico']);
 
 $ht = '<div class="' . Text::h($css) . '">' . PHP_EOL;
 $ht .= '    <div class="input-label">' .
@@ -187,7 +186,6 @@ $ht .= InputRender::getTextInput($input) . PHP_EOL;
 $ht .= InputRender::getBasicInput($input) . PHP_EOL;
                 break;
 
-            case 'trix':
             case 'rico':
 $ht .= InputRender::getRicoInput($input) . PHP_EOL;
                 break;
