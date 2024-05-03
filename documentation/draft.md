@@ -160,8 +160,9 @@ Contains documentation and a central php classes to be used by all websites.
     - 'value_' becomes 'value_pt', 'value_en', according to your site language settings
     - underscores cannot be used as a string value, only as elements (to allow cloning)
 
-- there must be a 'pages' table.
-    - there must be 'status', 'title_', 'slug_' and 'pageType' columns.
+- there must be a 'page' table.
+    - there must be 'pageStatus', 'pageTitle_', 'pageSlug_' and 'pageType' columns.
+    - it should also have 'position', 'timestampCreated' and 'timestampModified' columns
 
 - each table must have a primary key.
     - primary key cannot end with an underscore.
@@ -171,7 +172,7 @@ Contains documentation and a central php classes to be used by all websites.
 - Use unique names for columns to be joined
 
 - select: first column of every table must be the primary key.
-    - naming: pages -> pageId, events -> eventId, etc.
+    - naming: page -> pageId, event -> eventId, etc.
     - this key will be used to build the php array that contains the data.
 
 - special column name prefixes:

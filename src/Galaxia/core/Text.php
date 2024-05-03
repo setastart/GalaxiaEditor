@@ -288,7 +288,6 @@ HTML;
         // if (G::$dev) $text = TEST_HTML;
         $text = trim(strip_tags($text, self::ALLOWED_TAGS));
         if (empty($text)) return null;
-        if (empty($transforms)) return $text;
 
         // add target="_blank" rel="noopener" to outgoing links
         $host = explode('.', G::$req->host);
@@ -302,20 +301,27 @@ HTML;
             return '<a ' . $inject . '"' . substr($matches[0], 2);
         }, $text);
 
+        if (empty($transforms)) return $text;
+
         foreach ($transforms as $tagOld => $transform) {
             $tagNew = 'galaxiaTemp' . $transform[0];
             $class  = '';
             if (isset($transform[1])) $class = ' class="' . $transform[1] . '"';
             $id = '';
-            if (isset($transform[2])) $id = ' class="' . $transform[2] . '"';
+            if (isset($transform[2])) $id = ' id="' . $transform[2] . '"';
             $text = str_replace("<$tagOld>", "<$tagNew$class$id>", $text);
             $text = str_replace("</$tagOld>", "</$tagNew>", $text);
         }
 
         foreach ($transforms as $transform) {
-            $tagOld = 'galaxiaTemp' . $transform[0];
-            $tagNew = $transform[0];
-            $text   = str_replace($tagOld, $tagNew, $text);
+            if (!$transform[0] ?? false) {
+                $text = str_replace('<galaxiaTemp>', '', $text);
+                $text = str_replace('</galaxiaTemp>', '', $text);
+            } else {
+                $tagOld = 'galaxiaTemp' . $transform[0];
+                $tagNew = $transform[0];
+                $text = str_replace($tagOld, $tagNew, $text);
+            }
         }
 
         return $text;

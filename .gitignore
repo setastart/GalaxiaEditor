@@ -1,3 +1,5 @@
 /.idea/
 *.private.*
+!/test/_testEnv/config/app.private.php
 composer.json
+/test/Makefile

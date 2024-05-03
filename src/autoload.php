@@ -42,8 +42,8 @@ function db(): void {
     $e = new Exception();
     $i = 0;
     foreach ($e->getTrace() as $frame) {
-        echo str_replace(dirname(__DIR__, 2) . '/', '', sprintf(
-            "#%s %s:%d\n      %s%s%s(%s)\n",
+        echo sprintf(
+            "#%s %s:%d\n    %s%s%s(%s)\n",
             str_pad($i, 2),
             $frame["file"] ?? '',
             $frame["line"] ?? '',
@@ -51,7 +51,7 @@ function db(): void {
             $frame["type"] ?? '',
             $frame["function"] ?? '',
             implode(", ", array_map(function($e) { return str_replace('\/', '/', json_encode($e)); }, $frame["args"] ?? []))
-        ));
+        );
         $i++;
     }
 }

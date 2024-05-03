@@ -55,7 +55,7 @@ class G {
 
         require_once self::$app->dir . 'autoload.php';
         require self::$app->dir . 'config/app.php';
-        require self::$app->dir . 'config/app.private.php';
+        include self::$app->dir . 'config/app.private.php';
 
     }
 
@@ -68,7 +68,7 @@ class G {
         set_exception_handler(function(Throwable $e) {
             self::errorPage(
                 $e->getCode(),
-                'exc ' . $e->getFile() . ' ' . $e->getLine() . ' ' . $e->getMessage(),
+                'exc ' . $e->getFile() . ':' . $e->getLine() . ' ' . $e->getMessage(),
                 $e->getTraceAsString()
             );
         });
@@ -340,9 +340,6 @@ class G {
             500 => 'Internal Server Error',
         ];
 
-        if (!in_array($code, [403, 404, 500])) $code = 500;
-        http_response_code($code);
-
         if (self::isCli()) {
             ob_get_clean();
             echo "$codeOriginal - $msg" . PHP_EOL;
@@ -352,6 +349,9 @@ class G {
             }
             exit();
         }
+
+        if (!in_array($code, [403, 404, 500])) $code = 500;
+        http_response_code($code);
 
         if (isset(self::$me) && self::$me->loggedIn && self::isInsideEditor()) {
             self::$errorCode = $code;
