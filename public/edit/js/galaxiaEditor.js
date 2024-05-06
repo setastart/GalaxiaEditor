@@ -454,8 +454,13 @@ function gjLoadRico() {
     document.addEventListener('rico-initialize', function(ev) {
         let editorEl = ev.target;
         gjInput.ricoCharWordCount(editorEl);
-        gjForm.init();
     });
+
+    document.querySelectorAll('rico-editor')?.forEach(function(el) {
+        el.addEventListener('rico-initialize', function() {
+            gjForm.init();
+        });
+    })
 }
 
 

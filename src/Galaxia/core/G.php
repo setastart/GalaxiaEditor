@@ -362,6 +362,7 @@ class G {
             self::$error .= nl2br($debugText, false) . '<br>';
             // }
 
+            error_log($msg . ' - ' . $debugText);
             include self::$editor->dirLayout . 'layout-error.phtml';
             exit();
         }
