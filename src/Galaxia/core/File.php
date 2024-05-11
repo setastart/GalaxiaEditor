@@ -67,53 +67,13 @@ class File {
 
     static function simplify(array $filesOriginal): array {
         $files = [];
-        foreach ($filesOriginal ?? [] as $key => $all) {
+        foreach ($filesOriginal as $key => $all) {
             foreach ($all as $i => $val) {
                 $files[$i][$key] = $val;
             }
         }
 
         return $files;
-    }
-
-
-
-
-    static function lock(
-        string   $dir,
-        string   $fileName,
-        callable $f,
-        callable $fOnUnlock = null,
-        callable $fOnFail = null,
-    ) {
-        $dir = rtrim($dir, '/');
-        $r   = null;
-
-        if (is_dir($dir) && $fp = fopen($dir . '/' . $fileName, 'w')) {
-            flock($fp, LOCK_EX | LOCK_NB, $wouldBlock);
-            if ($wouldBlock) {
-                // G::timerStart($timer = "Lock blocked $fileName");
-                flock($fp, LOCK_SH);
-                if (!is_null($fOnUnlock)) {
-                    $r = $fOnUnlock();
-                }
-            } else {
-                // G::timerStart($timer = "Lock acquired $fileName");
-                $r = $f();
-                flock($fp, LOCK_UN);
-            }
-            fclose($fp);
-        } else {
-            // G::timerStart($timer = "Lock failed $fileName");
-            if (!is_null($fOnFail)) {
-                $r = $fOnFail();
-            } else {
-                $r = $f();
-            }
-        }
-
-        // G::timerStop($timer);
-        return $r;
     }
 
 }

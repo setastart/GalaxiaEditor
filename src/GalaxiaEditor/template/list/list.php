@@ -4,6 +4,7 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppTimer;
 use Galaxia\G;
 use Galaxia\Pagination;
 use Galaxia\Sql;
@@ -125,7 +126,7 @@ $items = Cache::listItems(E::$listOrder, function() use ($list, $firstTable, $fi
     $i           = 0;
     foreach ($selectQuery as $table => $columns) {
 
-        G::timerStart('list ' . $table);
+        AppTimer::start('list ' . $table);
         $keyCol = $table . 'Id';
         if (!in_array($keyCol, $columns)) array_unshift($selectQuery[$table], $keyCol);
 
@@ -215,7 +216,7 @@ $items = Cache::listItems(E::$listOrder, function() use ($list, $firstTable, $fi
 
         }
 
-        G::timerStop('list ' . $table);
+        AppTimer::stop('list ' . $table);
         $i++;
     }
 
@@ -548,7 +549,7 @@ foreach ($filterInts as $filterId => $filter) {
     }
 }
 
-G::timerStart('Filter Ints');
+AppTimer::start('Filter Ints');
 foreach ($intFiltersActive as $filterId => $_) {
 
     $itemsByInt = Cache::listItemsFilterInt($filterId, function() use ($items, $filterInts, $filterId) {
@@ -576,7 +577,7 @@ foreach ($intFiltersActive as $filterId => $_) {
     E::$listRows = array_intersect_key(E::$listRows, $filteredInts);
 
 }
-G::timerStop('Filter Ints');
+AppTimer::stop('Filter Ints');
 
 
 
@@ -590,7 +591,7 @@ foreach ($_POST['filterTexts'] ?? [] as $filterId => $ints) {
     if ($ints !== '') $textFiltersActive[] = $filterId;
 }
 
-G::timerStart('Filter Texts');
+AppTimer::start('Filter Texts');
 foreach ($textFiltersActive as $filterId) {
     $filterInput = trim($_POST['filterTexts'][$filterId] ?? '', '+ ');
     if (!$filterInput) continue;
@@ -641,7 +642,7 @@ foreach ($textFiltersActive as $filterId) {
     }
     if ($itemsFiltered) E::$listRows = array_diff_key(E::$listRows, $itemsFiltered);
 }
-G::timerStop('Filter Texts');
+AppTimer::stop('Filter Texts');
 
 
 

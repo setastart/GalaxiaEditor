@@ -48,3 +48,5 @@ if (!$ext) exitWithError('Could not load vips file format.');
 $w = vips_image_get($vips, 'width')['out'] ?? 0;
 $h = vips_image_get($vips, 'height')['out'] ?? 0;
 if (!$w || !$h) exitWithError('Could not read vips image dimensions.');
+
+echo "Redis and vips OK." . PHP_EOL;

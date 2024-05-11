@@ -7,6 +7,7 @@
 
 // variables
 
+use Galaxia\AppTimer;
 use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Sql;
@@ -46,7 +47,7 @@ if ($list) {
         $i           = 0;
         $columns     = $list['gcSelect'][$firstTable];
 
-        G::timerStart('list ' . $firstTable);
+        AppTimer::start('list ' . $firstTable);
         $keyCol = $firstTable . 'Id';
         if (!in_array($keyCol, $columns)) array_unshift($selectQuery[$firstTable], $keyCol);
 
@@ -69,7 +70,7 @@ if ($list) {
 
         Sql::chunkSelect($query, $f, $items);
 
-        G::timerStop('list ' . $firstTable);
+        AppTimer::stop('list ' . $firstTable);
 
         return $items;
     });

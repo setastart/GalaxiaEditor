@@ -70,17 +70,17 @@ class Session implements SessionHandlerInterface {
 
 
         if (Session::$redis) {
-            G::timerStart('Session read redis');
+            AppTimer::start('Session read redis');
             if ($sessionData = G::redis()?->cmd('GET', Session::prefix($sessionId))->get()) {
-                G::timerStop('Session read redis');
+                AppTimer::stop('Session read redis');
             } else {
-                G::timerStop('Session read redis', rename: 'Session read redis failed');
+                AppTimer::stop('Session read redis', rename: 'Session read redis failed');
             }
         }
 
         if (!$sessionData) {
 
-            if (Session::$debug) G::timerStart('Session read mysql');
+            if (Session::$debug) AppTimer::start('Session read mysql');
             $stmt = G::prepare("
                 SELECT sessionData
                 FROM $this->tableName
@@ -95,14 +95,14 @@ class Session implements SessionHandlerInterface {
             $stmt->execute();
             $stmt->fetch();
             $stmt->close();
-            if (Session::$debug) G::timerStop('Session read mysql');
+            if (Session::$debug) AppTimer::stop('Session read mysql');
 
             if (Session::$redis && $sessionData) {
-                if (Session::$debug) G::timerStart('Session write redis from mysql');
+                if (Session::$debug) AppTimer::start('Session write redis from mysql');
                 if (G::redis()?->cmd('SETEX', Session::prefix($sessionId), Session::TIMEOUT, $sessionData)->set()) {
-                    if (Session::$debug) G::timerStop('Session write redis from mysql');
+                    if (Session::$debug) AppTimer::stop('Session write redis from mysql');
                 } else {
-                    if (Session::$debug) G::timerStop('Session write redis from mysql', rename: 'Session write redis from mysql failed');
+                    if (Session::$debug) AppTimer::stop('Session write redis from mysql', rename: 'Session write redis from mysql failed');
                 }
             }
         }
@@ -118,15 +118,15 @@ class Session implements SessionHandlerInterface {
 
 
         if (Session::$redis) {
-            G::timerStart('Session write redis');
+            AppTimer::start('Session write redis');
             if (G::redis()?->cmd('SETEX', Session::prefix($sessionId), Session::TIMEOUT, $sessionData)->set()) {
-                G::timerStop('Session write redis');
+                AppTimer::stop('Session write redis');
             } else {
-                G::timerStop('Session write redis', rename: 'Session write redis failed');
+                AppTimer::stop('Session write redis', rename: 'Session write redis failed');
             }
         }
 
-        if (Session::$debug) G::timerStart('Session write mysql');
+        if (Session::$debug) AppTimer::start('Session write mysql');
         $stmt = G::prepare("
             INSERT INTO $this->tableName (
                 _geUserSessionId,
@@ -144,11 +144,11 @@ class Session implements SessionHandlerInterface {
 
         $stmt->bind_param('ssss', $sessionId, $sessionData, $sessionId, $sessionData);
         $success = $stmt->execute();
-        if (Session::$debug) G::timerStop('Session write mysql', 'Session write mysql' . $stmt->insert_id ? 'insert' : 'update');
+        if (Session::$debug) AppTimer::stop('Session write mysql', 'Session write mysql' . $stmt->insert_id ? 'insert' : 'update');
         $stmt->close();
 
         if (isset($_SESSION['id'])) {
-            if (Session::$debug) G::timerStart('Session write mysql update userid');
+            if (Session::$debug) AppTimer::start('Session write mysql update userid');
             $stmt = G::prepare("
                 UPDATE $this->tableName
                 SET _geUserId = ?
@@ -157,14 +157,14 @@ class Session implements SessionHandlerInterface {
             $stmt->bind_param('ds', $_SESSION['id'], $sessionId);
             $stmt->execute();
             $stmt->close();
-            if (Session::$debug) G::timerStop('Session write mysql update userid');
+            if (Session::$debug) AppTimer::stop('Session write mysql update userid');
         }
 
         return $success;
     }
 
     public function destroy($sessionId): bool {
-        if (Session::$debug) G::timerStart('Session delete mysql');
+        if (Session::$debug) AppTimer::start('Session delete mysql');
         $stmt = G::prepare("
             DELETE FROM $this->tableName
             WHERE _geUserSessionId = ?
@@ -173,19 +173,19 @@ class Session implements SessionHandlerInterface {
         $stmt->bind_param('s', $sessionId);
         $success = $stmt->execute();
         $stmt->close();
-        if (Session::$debug) G::timerStop('Session delete mysql');
+        if (Session::$debug) AppTimer::stop('Session delete mysql');
 
         if (Session::$redis) {
-            if (Session::$debug) G::timerStart('Session delete redis');
+            if (Session::$debug) AppTimer::start('Session delete redis');
             G::redis()?->cmd('DEL', Session::prefix($sessionId))->set();
-            if (Session::$debug) G::timerStop('Session delete redis');
+            if (Session::$debug) AppTimer::stop('Session delete redis');
         }
 
         return $success;
     }
 
     public function gc($maxlifetime): int|false {
-        if (Session::$debug) G::timerStart('Session garbage collection mysql');
+        if (Session::$debug) AppTimer::start('Session garbage collection mysql');
         $stmt = G::prepare("
             DELETE FROM $this->tableName
             WHERE
@@ -195,7 +195,7 @@ class Session implements SessionHandlerInterface {
 
         $success = $stmt->execute();
         $stmt->close();
-        if (Session::$debug) G::timerStop('Session garbage collection mysql');
+        if (Session::$debug) AppTimer::stop('Session garbage collection mysql');
 
         return $success;
     }

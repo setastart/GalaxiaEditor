@@ -12,156 +12,148 @@ use function file_get_contents;
 
 class AppCache {
 
-    static function arrayDir(
+    private static bool $saveSkip = false; // For nested caches. Skip saving outer cache if inner fails.
+
+    static function cacheString(
         string   $scope,
         int      $level,
         string   $key,
         callable $f,
-        bool     $bypass = null,
-        bool     $write = null,
+        bool     $load = true,
+        bool     $save = true,
+        string   $dirCache = null,
+        bool     $debug = false,
+    ): string {
+        $dirCache ??= G::$app->dirCache;
+
+        $subdir = 'app';
+        if ($scope == 'editor') $subdir = 'editor';
+
+        $dir = $dirCache . trim($subdir, '/') . '/';
+        if (!is_dir($dir)) mkdir($dir);
+
+        $cacheName = "{$scope}-{$level}-{$key}.string";
+        $cacheFile = $dir . $cacheName . '.cache';
+
+        $fCache = function() use ($debug, $dirCache, $cacheName, $cacheFile, $f, $load, $save): string {
+            AppTimer::start($cacheName);
+            $r = "";
+            $s = "Cache str";
+            if ($load && $save) $s .= " RW"; else if ($load) $s .= " R";
+            else if ($save) $s .= " W";
+
+            $loaded = false;
+            if ($load) {
+                $s .= " Load";
+                $r = (file_exists($cacheFile)) ? file_get_contents($cacheFile) : false;
+                if ($r === false) {
+                    $s .= " MISS.";
+                } else {
+                    $loaded = true;
+                }
+            }
+
+            if (!$loaded) {
+                $s .= " Compute";
+                $r = $f();
+            }
+
+            if (is_string($r)) {
+                $s .= " OK.";
+            } else {
+                $s              .= " FAIL.";
+                $r              = "";
+                self::$saveSkip = true;
+            }
+
+            if ($save && !$loaded) {
+                $s .= " Save";
+                if (self::$saveSkip) {
+                    $s .= " SKIP.";
+                } else {
+                    $s .= file_put_contents($cacheFile, $r) === false ? " FAIL." : " OK.";
+                }
+            }
+
+            $s .= " $cacheName";
+            AppTimer::stop($cacheName, rename: $s);
+            if ($debug) {
+                Flash::info($s);
+            }
+            // error_log($s . PHP_EOL, 3, $dirCache . 'AppCache.log');
+            return $r;
+        };
+
+        return self::lock($cacheName, $fCache);
+    }
+
+    static function cacheArray(
+        string   $scope,
+        int      $level,
+        string   $key,
+        callable $f,
+        bool     $load = true,
+        bool     $save = true,
         string   $dirCache = null
     ): array {
         $dirCache ??= G::$app->dirCache;
 
-        $result = [];
         $subdir = 'app';
         if ($scope == 'editor') $subdir = 'editor';
-
-        $cacheName = $scope . '-' . $level . '-' . $key;
 
         $dir = $dirCache . trim($subdir, '/') . '/';
         if (!is_dir($dir)) mkdir($dir);
 
-        if (is_null($write)) $write = !$bypass;
-        if (!$bypass) $write = true;
-
+        $cacheName = "{$scope}-{$level}-{$key}.string";
         $cacheFile = $dir . $cacheName . '.cache';
 
-        if (!$bypass && file_exists($cacheFile)) {
+        $fCache = function() use ($dirCache, $cacheName, $cacheFile, $f, $load, $save): array {
+            AppTimer::start($cacheName);
+            $r = [];
+            $s = "Cache arr";
+            if ($load && $save) $s .= " RW"; else if ($load) $s .= " R";
+            else if ($save) $s .= " W";
 
-            $timerName = 'Cache arr HIT: ' . $cacheName;
-            G::timerStart($timerName);
-
-            $result = include $cacheFile;
-
-        } else {
-
-            $cacheType = $bypass ? 'BYPASS' : 'MISS';
-            $timerName = 'Cache arr ' . $cacheType . ': ' . $cacheName;
-            G::timerStart($timerName);
-
-            $fCache = function() use ($f, $write, $cacheFile) {
-                $r = $f();
-                if ($write && is_array($r)) {
-                    file_put_contents($cacheFile, '<?php return ' . var_export($r, true) . ';' . PHP_EOL);
+            $loaded = false;
+            if ($load) {
+                $s .= " Load";
+                $r = (file_exists($cacheFile)) ? include $cacheFile : false;
+                if ($r === false) {
+                    $s .= " MISS.";
+                } else {
+                    $loaded = true;
                 }
-                return $r;
-            };
-
-            if ($bypass) {
-                $result = $fCache();
-            } else {
-                $result = File::lock(
-                    dir: $dirCache . 'flock',
-                    fileName: $cacheName . '.lock',
-                    f: $fCache,
-                    fOnUnlock: function() use ($cacheFile) {
-                        if (file_exists($cacheFile)) {
-                            return include $cacheFile;
-                        }
-                        return [];
-                    },
-                    fOnFail: $f
-                );
-
             }
 
-        }
-
-        if (!is_array($result)) {
-            Flash::error('Cache arr: invalid result');
-            $result = [];
-        }
-
-        G::timerStop($timerName);
-
-        return $result;
-    }
-
-
-    static function stringDir(
-        string   $scope,
-        int      $level,
-        string   $key,
-        callable $f,
-        bool     $bypass = null,
-        bool     $write = null,
-        string   $dirCache = null
-    ): string {
-        $dirCache ??= G::$app->dirCache;
-
-        $result = '';
-        $subdir = 'app';
-        if ($scope == 'editor') $subdir = 'editor';
-
-        $cacheName = $scope . '-' . $level . '-' . $key;
-
-        $dir = $dirCache . trim($subdir, '/') . '/';
-        if (!is_dir($dir)) mkdir($dir);
-
-        if (is_null($write)) $write = !$bypass;
-        if (!$bypass) $write = true;
-
-        $cacheFile = $dir . $cacheName . '.cache';
-
-        if (!$bypass && file_exists($cacheFile)) {
-
-            $timerName = 'Cache str HIT: ' . $cacheName;
-            G::timerStart($timerName);
-
-            $result = file_get_contents($cacheFile);
-
-        } else {
-
-            $cacheType = $bypass ? 'BYPASS' : 'MISS';
-            $timerName = 'Cache str ' . $cacheType . ': ' . $cacheName;
-            G::timerStart($timerName);
-
-            $fCache = function() use ($f, $write, $cacheFile) {
+            if (!$loaded) {
+                $s .= " Compute";
                 $r = $f();
-                if ($write && is_string($r)) {
-                    file_put_contents($cacheFile, $r);
-                }
-                return $r;
-            };
-
-            if ($bypass) {
-                $result = $fCache();
-            } else {
-                $result = File::lock(
-                    dir: $dirCache . 'flock',
-                    fileName: $cacheName . '.lock',
-                    f: $fCache,
-                    fOnUnlock: function() use ($cacheFile) {
-                        if (file_exists($cacheFile)) {
-                            return file_get_contents($cacheFile);
-                        }
-                        return '';
-                    },
-                    fOnFail: $f
-                );
             }
 
-        }
+            if (is_array($r)) {
+                $s .= " OK.";
+            } else {
+                $s              .= " FAIL.";
+                $r              = [];
+                self::$saveSkip = true;
+            }
 
-        if (!is_string($result)) {
-            Flash::error('Cache str: invalid result');
-            $result = '';
-        }
+            if ($save && !$loaded) {
+                $s .= " Save";
+                if (self::$saveSkip) {
+                    $s .= " SKIP.";
+                } else {
+                    $s .= file_put_contents($cacheFile, '<?php return ' . var_export($r, true) . ';') === false ? " FAIL." : " OK.";
+                }
+            }
 
-        G::timerStop($timerName);
+            $s .= " - $cacheName";
+            AppTimer::stop($cacheName, rename: $s);
+            // error_log($s . PHP_EOL, 3, $dirCache . 'AppCache.log');
+            return $r;
+        };
 
-        return $result;
+        return self::lock($cacheName, $fCache);
     }
 
 
@@ -296,17 +288,16 @@ class AppCache {
     }
 
 
-
-
     static function route(
         callable $f
     ): array {
-        return AppCache::arrayDir(
+        return self::cacheArray(
             scope: 'app',
             level: 1,
             key: "route-primary-" . G::$req->minStatus,
             f: $f,
-            bypass: false,
+            load: true,
+            save: true,
             dirCache: G::$app->dirCache
         );
     }
@@ -315,13 +306,13 @@ class AppCache {
         callable $f,
         string   $table
     ): array {
-        return AppCache::arrayDir(
+        return self::cacheArray(
             scope: 'app',
             level: 5,
             key: "route-subpage-$table-" . G::$req->minStatus,
             f: $f,
-            bypass: G::$req->cacheBypass,
-            write: G::$req->cacheWrite,
+            load: !G::$req->cacheBypass,
+            save: G::$req->cacheWrite,
             dirCache: G::$app->dirCache
         );
     }
@@ -330,49 +321,49 @@ class AppCache {
         callable $f,
         string   $table
     ): array {
-        return AppCache::arrayDir(
+        return self::cacheArray(
             scope: 'app',
             level: 5,
             key: "route-subpageLang-$table-" . G::$req->minStatus,
             f: $f,
-            bypass: G::$req->cacheBypass,
-            write: G::$req->cacheWrite,
+            load: !G::$req->cacheBypass,
+            save: G::$req->cacheWrite,
             dirCache: G::$app->dirCache
         );
     }
 
     static function array(
-        string $level,
-        string $key,
+        string   $level,
+        string   $key,
         callable $f,
-        bool $bypass = null,
-        bool $write = null
+        bool     $bypass = null,
+        bool     $write = null
     ): array {
-        return AppCache::arrayDir(
+        return self::cacheArray(
             scope: 'app',
             level: $level,
             key: "$key-" . G::$req->minStatus,
             f: $f,
-            bypass: $bypass ?? G::$req->cacheBypass,
-            write: $write ?? G::$req->cacheWrite,
+            load: !($bypass ?? G::$req->cacheBypass),
+            save: $write ?? G::$req->cacheWrite,
             dirCache: G::$app->dirCache
         );
     }
 
     static function string(
-        string $level,
-        string $key,
+        string   $level,
+        string   $key,
         callable $f,
-        bool $bypass = null,
-        bool $write = null
+        bool     $bypass = null,
+        bool     $write = null
     ): string {
-        return AppCache::stringDir(
+        return self::cacheString(
             scope: 'app',
             level: $level,
             key: "$key-" . G::$req->minStatus,
             f: $f,
-            bypass: $bypass ?? G::$req->cacheBypass,
-            write: $write ?? G::$req->cacheWrite,
+            load: !($bypass ?? G::$req->cacheBypass),
+            save: $write ?? G::$req->cacheWrite,
             dirCache: G::$app->dirCache
         );
     }
@@ -388,5 +379,73 @@ class AppCache {
     static function deleteOld(): void {
         AppCache::deleteOldDir(G::$app->dirCache);
     }
+
+
+    static function lock(
+        string   $name,
+        callable $f
+    ): mixed {
+        $dir = G::dirCache() . 'flock';
+        if (!is_dir($dir)) {
+            if (!mkdir($dir)) {
+                return $f();
+            }
+        }
+
+        if ($fp = fopen($dir . '/' . $name, 'w')) {
+            try {
+                flock($fp, LOCK_EX);
+                $r = $f();
+            } finally {
+                fclose($fp);
+            }
+        } else {
+            Flash::error("Failed to open cache file " . $dir . "/" . $name);
+            $r = $f();
+        }
+
+        return $r;
+    }
+
+
+    static function redisLock(
+        string   $name,
+        callable $f,
+        int      $ttl = 30 // in seconds
+    ): mixed {
+
+        if (G::redis() == null) {
+            return self::lock($name . '.lock', $f);
+        }
+
+        $name      = G::$app->mysqlDb . ':lock:' . $name;
+        $token     = uniqid();
+        $usleepMin = 100;
+        $usleepMax = 100000;
+        $usleep    = $usleepMin;
+
+        try {
+            while (!self::lockAcquire(name: $name, token: $token, ttl: $ttl * 1000)) {
+                usleep($usleep);
+                $usleep *= 2;
+                $usleep = min($usleep, $usleepMax);
+            }
+            $r = $f();
+        } finally {
+            self::lockRelease(name: $name, token: $token);
+        }
+
+        return $r;
+    }
+
+    static function lockAcquire(string $name, $token, $ttl): bool {
+        return (G::redis()?->cmd('SET', $name, $token, 'NX', 'PX', $ttl)->set()[0] ?? '') === 'OK';
+    }
+
+    static function lockRelease(string $name, $token): void {
+        $lua = 'if redis.call("GET", ARGV[1]) == ARGV[2] then return redis.call("DEL", ARGV[1]) else return 0 end';
+        G::redis()?->cmd('EVAL', $lua, 0, $name, $token)->set();
+    }
+
 
 }

@@ -43,7 +43,7 @@ class User {
 
     public function logInFromCookieSessionId(string $cookieName): void {
         if (!isset($_COOKIE[$cookieName])) return;
-        G::timerStart('Session');
+        AppTimer::start('Session');
         session_name($cookieName);
         session_set_cookie_params([
             'lifetime' => 31536000,
@@ -55,12 +55,12 @@ class User {
         session_set_save_handler(new Session('_geUser'), true);
         session_register_shutdown();
         $sessionStarted = session_start();
-        G::timerStop('Session');
+        AppTimer::stop('Session');
 
         if ($sessionStarted) {
-            G::timerStart('Login');
+            AppTimer::start('Login');
             $this->loginFromSessionId();
-            G::timerStop('Login');
+            AppTimer::stop('Login');
         }
     }
 
@@ -96,7 +96,7 @@ class User {
 
 
     private function load(): bool {
-        G::timerStart(__METHOD__);
+        AppTimer::start(__METHOD__);
 
         $userId         = '';
         $name           = '';
@@ -108,12 +108,12 @@ class User {
 
         if (User::$redis) {
             if ($this->redisLoad()) {
-                G::timerStop(__METHOD__, __METHOD__ . ' redis');
+                AppTimer::stop(__METHOD__, __METHOD__ . ' redis');
                 return true;
             }
         }
 
-        if (User::$debug) G::timerStart(__METHOD__ . ' mysql');
+        if (User::$debug) AppTimer::start(__METHOD__ . ' mysql');
         $table = Text::q($this->tableName);
         $stmt  = G::prepare("
                 SELECT
@@ -131,7 +131,7 @@ class User {
         $stmt->execute();
         $return = $stmt->fetch();
         $stmt->close();
-        if (User::$debug) G::timerStop(__METHOD__ . ' mysql');
+        if (User::$debug) AppTimer::stop(__METHOD__ . ' mysql');
 
         if ($perms) $permsArr = explode(',', $perms);
 
@@ -147,9 +147,9 @@ class User {
             $this->loadOptions();
 
             if (User::$redis) $this->redisSave();
-            G::timerStop(__METHOD__, __METHOD__ . ' mysql');
+            AppTimer::stop(__METHOD__, __METHOD__ . ' mysql');
         } else {
-            G::timerStop(__METHOD__, __METHOD__ . ' failed');
+            AppTimer::stop(__METHOD__, __METHOD__ . ' failed');
         }
 
         return $return;
@@ -159,17 +159,17 @@ class User {
     public function updateLastOnline(): void {
         if (!$this->loggedIn) return;
 
-        if (User::$debug) G::timerStart(__METHOD__);
+        if (User::$debug) AppTimer::start(__METHOD__);
 
         if (User::$redis && $data = G::redis()?->cmd('GET', G::$app->mysqlDb . ':userLastOnline:' . $this->id)->get()) {
             $this->timeLastOnline = $data;
-            if (User::$debug) G::timerStop(__METHOD__, __METHOD__ . ' redis read');
+            if (User::$debug) AppTimer::stop(__METHOD__, __METHOD__ . ' redis read');
             return;
         }
 
         $this->timeLastOnline = time();
 
-        if (User::$debug) G::timerStart(__METHOD__ . ' mysql');
+        if (User::$debug) AppTimer::start(__METHOD__ . ' mysql');
         $table = Text::q($this->tableName);
         $stmt  = G::prepare("
             UPDATE $table
@@ -179,18 +179,18 @@ class User {
         $stmt->bind_param('sd', $this->timeLastOnline, $this->id);
         $stmt->execute();
         $stmt->close();
-        if (User::$debug) G::timerStop(__METHOD__ . ' mysql');
+        if (User::$debug) AppTimer::stop(__METHOD__ . ' mysql');
 
         if (User::$redis) {
-            if (User::$debug) G::timerStart(__METHOD__ . ' redis write');
+            if (User::$debug) AppTimer::start(__METHOD__ . ' redis write');
             if (G::redis()?->cmd('SETEX', G::$app->mysqlDb . ':userLastOnline:' . $this->id, User::TIMEOUT_LAST_ONLINE, $this->timeLastOnline)->set()) {
-                if (User::$debug) G::timerStop(__METHOD__ . ' redis write');
+                if (User::$debug) AppTimer::stop(__METHOD__ . ' redis write');
             } else {
-                if (User::$debug) G::timerStop(__METHOD__ . ' redis write', rename: __METHOD__ . ' redis write failed');
+                if (User::$debug) AppTimer::stop(__METHOD__ . ' redis write', rename: __METHOD__ . ' redis write failed');
             }
         }
 
-        if (User::$debug) G::timerStop(__METHOD__, rename: __METHOD__ . ' mysql');
+        if (User::$debug) AppTimer::stop(__METHOD__, rename: __METHOD__ . ' mysql');
     }
 
     public function setName($name): void {
@@ -210,7 +210,7 @@ class User {
 
     public function loadOptions(): void {
         if (!$this->loggedIn) return;
-        if (Session::$debug) G::timerStart(__METHOD__);
+        if (Session::$debug) AppTimer::start(__METHOD__);
 
         $optionName   = '';
         $optionValue  = '';
@@ -230,7 +230,7 @@ class User {
         while ($stmt->fetch()) {
             $this->options[$optionName] = $optionValue;
         }
-        if (Session::$debug) G::timerStop(__METHOD__);
+        if (Session::$debug) AppTimer::stop(__METHOD__);
         $stmt->close();
     }
 
@@ -268,7 +268,7 @@ class User {
 
 
     public function redisSave(): void {
-        if (User::$debug) G::timerStart(__METHOD__);
+        if (User::$debug) AppTimer::start(__METHOD__);
         $data = [
             'loggedIn'       => $this->loggedIn,
             'id'             => $this->id,
@@ -281,17 +281,17 @@ class User {
         ];
 
         if (G::redis()?->cmd('SETEX', G::$app->mysqlDb . ':user:' . $this->id, User::TIMEOUT, serialize($data))->set()) {
-            if (User::$debug) G::timerStop(__METHOD__);
+            if (User::$debug) AppTimer::stop(__METHOD__);
         } else {
-            if (User::$debug) G::timerStop(__METHOD__, rename: __METHOD__ . ' failed');
+            if (User::$debug) AppTimer::stop(__METHOD__, rename: __METHOD__ . ' failed');
         }
     }
 
     public function redisLoad(): bool {
-        if (User::$debug) G::timerStart(__METHOD__);
+        if (User::$debug) AppTimer::start(__METHOD__);
         $data = G::redis()?->cmd('GET', G::$app->mysqlDb . ':user:' . $this->id)->get();
         if (!$data) {
-            if (User::$debug) G::timerStop(__METHOD__, rename: __METHOD__ . ' failed');
+            if (User::$debug) AppTimer::stop(__METHOD__, rename: __METHOD__ . ' failed');
             return false;
         }
         $data = unserialize($data);
@@ -304,7 +304,7 @@ class User {
         $this->timeLastOnline = $data['timeLastOnline'];
         $this->timeCreated    = $data['timeCreated'];
         $this->options        = $data['options'];
-        if (User::$debug) G::timerStop(__METHOD__);
+        if (User::$debug) AppTimer::stop(__METHOD__);
         return true;
     }
 

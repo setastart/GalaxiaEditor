@@ -4,6 +4,7 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppTimer;
 use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Text;
@@ -154,9 +155,9 @@ if (G::isDevEnv()) $bodyClasses .= ' isDevEnv';
 
 <div id="page">
 <?php   FragMsgBoxes::render(); ?>
-<?php   G::timerStart('View: ' . G::$editor->view . '.phtml'); ?>
+<?php   AppTimer::start('View: ' . G::$editor->view . '.phtml'); ?>
 <?php   require G::$editor->dirView . G::$editor->view . '.phtml'; ?>
-<?php   G::timerStop('View: ' . G::$editor->view . '.phtml'); ?>
+<?php   AppTimer::stop('View: ' . G::$editor->view . '.phtml'); ?>
 </div>
 
 <?php   if ($menuRight) FragMenu::render(); ?>

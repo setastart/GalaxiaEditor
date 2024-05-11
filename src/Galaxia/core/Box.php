@@ -119,7 +119,7 @@ class Box {
         array  $templates = self::templates,
         array  $sizes = self::sizes
     ): string {
-        G::timerStart(__CLASS__ . '::' . __FUNCTION__);
+        AppTimer::start(__CLASS__ . '::' . __FUNCTION__);
 
         $cssDir  = rtrim($cssDir, '/');
         $htmlDir = rtrim($htmlDir, '/');
@@ -200,7 +200,7 @@ class Box {
         file_put_contents("$cssDir/$buildName.css", $css);
         file_put_contents("$cssDir/$buildName-unused.css", $cssUnused);
 
-        G::timerStop(__CLASS__ . '::' . __FUNCTION__);
+        AppTimer::stop(__CLASS__ . '::' . __FUNCTION__);
 
         // if (G::isDevEnv()) return $css . Text::commentHeader('Unused') . $cssUnused;
 

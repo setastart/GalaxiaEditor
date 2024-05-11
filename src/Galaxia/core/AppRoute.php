@@ -7,12 +7,10 @@
 namespace Galaxia;
 
 use Galaxia\FastRoute\Dispatcher;
-use function array_values;
 use function date;
 use function Galaxia\FastRoute\cachedDispatcher;
 use function implode;
 use function is_null;
-use function serialize;
 
 
 class AppRoute {

@@ -4,6 +4,7 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppTimer;
 use Galaxia\FastRoute\Dispatcher;
 use Galaxia\FastRoute\RouteCollector;
 use Galaxia\G;
@@ -65,9 +66,9 @@ foreach (E::$conf as $confPage) {
 }
 
 if (G::isDevDebug()) {
-    G::timerStart('Database validation');
+    AppTimer::start('Database validation');
     ConfigDb::validate();
-    G::timerStop('Database validation');
+    AppTimer::stop('Database validation');
 }
 
 Config::loadSlugs();
@@ -81,7 +82,7 @@ if (isset(E::$conf['chat']) && G::$req->method == 'POST' && in_array(G::$req->pa
 
 
 // routes
-G::timerStart('Routing');
+AppTimer::start('Routing');
 G::$editor->layout = 'layout-editor';
 
 $dispatcher = cachedDispatcher(function(RouteCollector $r) {
@@ -211,7 +212,7 @@ $dispatcher = cachedDispatcher(function(RouteCollector $r) {
 ]);
 
 
-G::timerStop('Routing');
+AppTimer::stop('Routing');
 
 $routeInfo = $dispatcher->dispatch(G::$req->method, G::$req->pathOriginal);
 

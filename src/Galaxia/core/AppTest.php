@@ -9,15 +9,131 @@ namespace Galaxia;
 use GalaxiaEditor\config\Config;
 use GalaxiaEditor\config\ConfigDb;
 use GalaxiaEditor\E;
+use ReflectionException;
 use function str_replace;
 
 class AppTest {
 
-    static function test(
+    public int $ok    = 0;
+    public int $total = 0;
+
+    function error($msg): never {
+        db();
+        dd("❌ Error", $msg);
+    }
+
+    function setUp(): void { }
+
+    function tearDown(): void { }
+
+    function assertEqual(mixed $a, mixed $b, string $msg = ""): void {
+        if ($a === $b) {
+            $this->ok++;
+        } else {
+            $this->assertMessage($msg, $a, $b);
+        }
+        $this->total++;
+    }
+
+    function assertNotEqual(mixed $a, mixed $b, string $msg = ""): void {
+        if ($a !== $b) {
+            $this->ok++;
+        } else {
+            $this->assertMessage($msg, $a, $b);
+        }
+        $this->total++;
+    }
+
+    function assertTrue(mixed $a, string $msg = ""): void {
+        $this->assertEqual($a, true, $msg);
+    }
+
+    function assertFalse(mixed $a, string $msg = ""): void {
+        $this->assertEqual($a, false, $msg);
+    }
+
+    function assertNull(mixed $a, string $msg = ""): void {
+        $this->assertEqual($a, null, $msg);
+    }
+
+    function assertNotNull(mixed $a, string $msg = ""): void {
+        $this->assertNotEqual($a, null, $msg);
+    }
+
+    function assertEmpty(mixed $a, string $msg = ""): void {
+        $this->assertEqual(empty($a), true, $msg);
+    }
+
+    function assertNotEmpty(mixed $a, string $msg = ""): void {
+        $this->assertEqual(empty($a), false, $msg);
+    }
+
+    private function assertMessage(string $msg, mixed $result, mixed $expect): void {
+        echo "❌ Assert fail: $msg" . PHP_EOL;
+
+        $e = new \Exception();
+        foreach ($e->getTrace() as $frame) {
+            if (($frame["file"] ?? '') == __FILE__) {
+                continue;
+            }
+            echo sprintf(
+                "   %s:%d - %s%s%s()\n",
+                $frame["file"] ?? '',
+                $frame["line"] ?? '',
+                $frame["class"] ?? '',
+                $frame["type"] ?? '',
+                $frame["function"] ?? ''
+            );
+        }
+        d(['result' => $result, 'expect' => $expect]);
+    }
+
+    function run(): void {
+        $reflectorClass = new \ReflectionClass(get_called_class());
+
+        foreach ($reflectorClass->getMethods() as $method) {
+            if (!str_starts_with($method->name, 'test')) {
+                continue;
+            }
+
+            try {
+                $reflectorClass->getMethod("setUp")->invoke($this);
+            } catch (reflectionException) {
+            }
+
+            try {
+                $method->invoke($this);
+            } catch (reflectionException) {
+            }
+
+            try {
+                $reflectorClass->getMethod("tearDown")->invoke($this);
+            } catch (reflectionException) {
+            }
+        }
+
+        $this->finish();
+    }
+
+    private function finish(bool $exitOnFail = true): void {
+        $className = get_called_class();
+        if ($this->total == 0) {
+            echo "⚠️️ $className didn't run. 0 tests." . PHP_EOL;
+        } else if ($this->ok === $this->total) {
+            echo "✅ $className passed all $this->total tests." . PHP_EOL;
+        } else {
+            $failedCount = $this->total - $this->ok;
+            echo "❌❌❌ $className failed $failedCount tests. $this->ok / $this->total." . PHP_EOL;
+            if ($exitOnFail) {
+                exit(1);
+            }
+        }
+    }
+
+    static function urls(
         array    $tests,
         string   $host,
         int      $argc,
-        callable $fBuild,
         bool     $exitOnError = false,
         int      $simultaneous = 7,
     ): void {
@@ -47,11 +163,7 @@ class AppTest {
         $testsPassed = 0;
         $testsTotal  = count($tests);
 
-        echo PHP_EOL . 'Testing ' . $host . " ($testsTotal)" . PHP_EOL;
-
-        G::cacheDeleteAll();
-
-        $fBuild();
+        echo PHP_EOL . 'Testing ' . $host . " ($testsTotal) simultaneous: $simultaneous" . PHP_EOL;
 
         G::initEditor();
         echo 'Validating config for perms: ';
@@ -61,7 +173,6 @@ class AppTest {
             ConfigDb::validate();
         }
         echo PHP_EOL;
-
 
         $mTests = [];
         $i      = 0;
@@ -161,11 +272,9 @@ class AppTest {
             }
         }
         $timeEnd = microtime(true);
-
         $time = ($timeEnd - $timeStart);
 
         $reqS = number_format($testsTotal / $time, 2);
-
         $avg   = number_format(($timeTotal / $i) * 1000, 2);
         $color = "\033[0;32m";
         if ($avg > 10) $color = "\033[0;33m";
@@ -179,7 +288,11 @@ class AppTest {
 
         echo PHP_EOL . "$prefix $testsPassed/$testsTotal tests passed. req/s: $reqS, avg: $avg, min: $min, max: $max" . PHP_EOL;
 
-        if ($isBench) G::bench(tests: $tests, host: $host, argc: $argc, exitOnError: $exitOnError);
+        if ($isBench) AppTest::bench(tests: $tests, host: $host, argc: $argc, exitOnError: $exitOnError);
+
+        if ($testsPassed != count($tests)) {
+            exit(1);
+        };
     }
 
 
@@ -264,6 +377,7 @@ class AppTest {
             echo "$timeColored - $url" . PHP_EOL;
         }
 
+        $reqS  = number_format($testsTotal / $time, 2);
         $avg   = number_format(($timeTotal / $i) * 1000, 2);
         $color = "\033[0;32m";
         if ($avg > 10) $color = "\033[0;33m";
@@ -275,7 +389,7 @@ class AppTest {
 
         $prefix = ($testsPassed == count($tests)) ? '[OK] ✅ ' : '[FAIL] ❌ ';
 
-        echo PHP_EOL . "$prefix $testsPassed/$testsTotal benchmarks passed. avg: $avg, min: $min, max: $max" . PHP_EOL;
+        echo PHP_EOL . "$prefix $testsPassed/$testsTotal benchmarks passed. req/s: $reqS, avg: $avg, min: $min, max: $max" . PHP_EOL;
     }
 
 }

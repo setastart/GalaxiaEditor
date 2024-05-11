@@ -78,7 +78,7 @@ class Request { // todo: rename to AppRequest
         $this->method = $method ?? $_SERVER['REQUEST_METHOD'] ?? 'GET';
         $this->method = in_array($this->method, ['GET', 'POST']) ? $this->method : 'GET';
 
-        $this->test  = $test ?? (($_SERVER['HTTP_X_GALAXIAEDITOR_TEST'] ?? '') == '1');
+        $this->test = $test ?? (($_SERVER['HTTP_X_GALAXIAEDITOR_TEST'] ?? '') == '1');
         $this->xhr  = $xhr ?? (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'XMLHttpRequest');
         $this->json = $json ?? (($_SERVER['HTTP_ACCEPT'] ?? '') == 'application/json');
 

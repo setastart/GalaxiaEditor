@@ -82,7 +82,7 @@ class G {
 
         register_shutdown_function(function() {
             if (G::isDev() && isset(G::$editor) && G::$editor->layout != 'layout-none') {
-                G::timerPrint(true, true);
+                AppTimer::print(true, true);
             }
             session_write_close();
 
@@ -179,6 +179,9 @@ class G {
         return ($_SERVER['DOCUMENT_ROOT'] ?? null) === self::$editor->dir . 'public';
     }
 
+    static function isTest(): bool {
+        return self::$req->test;
+    }
 
 
 
@@ -211,7 +214,7 @@ class G {
      * Use with null safe operator ?-> like G::redis()?->cmd('PING')->get();
      */
     static function redis(): ?RedisCli {
-        if (!isset(self::$app)) self::errorPage(500, 'G db', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
+        if (!isset(self::$app)) self::errorPage(500, 'G redis', __METHOD__ . ':' . __LINE__ . ' App was not initialized');
         if (!isset(self::$redis) && !self::$redisFailed) {
             AppTimer::start('Redis Connection');
 
@@ -347,7 +350,7 @@ class G {
             if (self::isDev()) {
                 db();
             }
-            exit();
+            exit(1);
         }
 
         if (!in_array($code, [403, 404, 500])) $code = 500;
@@ -425,45 +428,6 @@ class G {
         header('Location: /' . $location, true, $code);
         exit();
     }
-
-
-
-    /** @deprecated - Use AppTest */
-    static function test(
-        array    $tests,
-        string   $host,
-        int      $argc,
-        callable $fBuild,
-        bool     $exitOnError = false,
-        int      $simultaneous = 7,
-    ): void {
-        AppTest::test(
-            tests: $tests,
-            host: $host,
-            argc: $argc,
-            fBuild: $fBuild,
-            exitOnError: $exitOnError,
-            simultaneous: $simultaneous
-        );
-    }
-
-
-
-    /** @deprecated - Use AppTest */
-    static function bench(
-        array  $tests,
-        string $host,
-        int    $argc,
-        bool   $exitOnError = false,
-    ): void {
-        AppTest::bench(
-            tests: $tests,
-            host: $host,
-            argc: $argc,
-            exitOnError: $exitOnError
-        );
-    }
-
 
 
 
@@ -545,13 +509,13 @@ class G {
         string   $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): array {
-        return AppCache::arrayDir(
+        return AppCache::cacheArray(
             scope: $scope,
             level: $level,
             key: $key,
             f: $f,
-            bypass: $bypass,
-            write: $write,
+            load: !($bypass ?? false),
+            save: $write ?? true,
             dirCache: self::dirCache()
         );
     }
@@ -561,7 +525,15 @@ class G {
         string   $scope, int $level, string $key,
         callable $f, bool $bypass = null, bool $write = null
     ): string {
-        return AppCache::stringDir($scope, $level, $key, $f, $bypass, $write, self::dirCache());
+        return AppCache::cacheString(
+            scope: $scope,
+            level: $level,
+            key: $key,
+            f: $f,
+            load: !($bypass ?? false),
+            save: $write ?? true,
+            dirCache: self::dirCache()
+        );
     }
 
     /** @deprecated - Use AppCache */
@@ -659,7 +631,7 @@ class G {
 
 
     static function versionQuery(): string {
-        if (G::$req->test) {
+        if (G::isTest()) {
             return '?ver=test';
         }
 

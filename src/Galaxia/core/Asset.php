@@ -25,7 +25,7 @@ class Asset {
         string $extBuild,
         array  $buildsMin = [],
     ): void {
-        G::timerStart(__CLASS__ . '::' . __FUNCTION__ . ' ' . $publicSubdir);
+        AppTimer::start(__CLASS__ . '::' . __FUNCTION__ . ' ' . $publicSubdir);
 
         $dir    = rtrim($publicDir, '/') . "/$publicSubdir/";
         $dirDev = rtrim($publicDir, '/') . "/dev/$publicSubdir/";
@@ -61,7 +61,7 @@ class Asset {
             file_put_contents($dir . $buildName . $extBuild, $build);
         }
 
-        G::timerStop(__CLASS__ . '::' . __FUNCTION__ . ' ' . $publicSubdir);
+        AppTimer::stop(__CLASS__ . '::' . __FUNCTION__ . ' ' . $publicSubdir);
     }
 
 

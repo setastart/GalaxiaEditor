@@ -7,6 +7,7 @@
 namespace GalaxiaEditor\config;
 
 
+use Galaxia\AppTimer;
 use Galaxia\ArrayShape;
 use Galaxia\Flash;
 use Galaxia\G;
@@ -205,7 +206,7 @@ class Config {
 
         $r = require G::dir() . 'config/editor.php';
 
-        G::timerStart('Config validation');
+        AppTimer::start('Config validation');
         foreach ($r as $rootSlug => $confPage) {
             if (!isset($confPage['gcPageType'])) {
                 Config::error($rootSlug . '/gcPageType missing.');
@@ -217,7 +218,7 @@ class Config {
 
             Config::parse($rootSlug, Config::PROTO_GC[$confPage['gcPageType']], $confPage, '');
         }
-        G::timerStop('Config validation');
+        AppTimer::stop('Config validation');
 
 
         // disable input modifiers(gcInputsWhere, gcInputsWhereCol, gcInputsWhereParent) without perms by setting their type to 'none'
@@ -257,13 +258,13 @@ class Config {
         }
 
 
-        G::timerStart('removePermsRecursive()');
+        AppTimer::start('removePermsRecursive()');
         ArrayShape::removePermsRecursive($r, $perms);
-        G::timerStop('removePermsRecursive()');
+        AppTimer::stop('removePermsRecursive()');
 
-        G::timerStart('languify');
+        AppTimer::start('languify');
         ArrayShape::languify($r, array_keys(G::locales()), $perms);
-        G::timerStop('languify');
+        AppTimer::stop('languify');
 
 
         // Remove inputs without a type

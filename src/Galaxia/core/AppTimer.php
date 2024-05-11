@@ -79,7 +79,13 @@ class AppTimer {
         bool $includes = false,
         bool $force = false,
     ): void {
-        if (!$force && !G::isCli() && !G::isDevEnv() && !G::isDev()) return;
+        if (!$force) {
+            if (G::isCli() || G::isDevEnv() || G::isDev()) {
+                if (G::isTest()) return;
+            } else {
+                return;
+            }
+        }
 
         $timeEnd = microtime(true);
 
