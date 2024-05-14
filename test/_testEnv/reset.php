@@ -8,9 +8,9 @@
 use Galaxia\G;
 use Test\GalaxiaTest;
 
-include_once __DIR__ . '/GalaxiaTest.php';
+include_once dirname(__DIR__, 2) . '/src/boot-cli-editor.php';
 
-$rebuildDbQuery = file_get_contents(__DIR__ . '/_testEnv/testDb.sql');
+$rebuildDbQuery = file_get_contents(__DIR__ . '/testDb.sql');
 
 $mysqli = new mysqli('', 'root', '', '');
 if ($mysqli->connect_errno) {
@@ -21,6 +21,3 @@ $mysqli->set_charset('utf8mb4');
 $mysqli->multi_query($rebuildDbQuery);
 while ($mysqli->next_result()) { echo ''; }
 $mysqli->close();
-
-
-G::init(dir: __DIR__ . '/_testEnv');

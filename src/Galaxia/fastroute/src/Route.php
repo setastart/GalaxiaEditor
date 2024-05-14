@@ -5,39 +5,23 @@ namespace Galaxia\FastRoute;
 
 use function preg_match;
 
-class Route
-{
-    /** @var string */
-    public $httpMethod;
+readonly class Route {
 
-    /** @var string */
-    public $regex;
-
-    /** @var mixed[] */
-    public $variables;
-
-    /** @var mixed */
-    public $handler;
-
-    /**
-     * @param mixed   $handler
-     * @param mixed[] $variables
-     */
-    public function __construct(string $httpMethod, $handler, string $regex, array $variables)
-    {
-        $this->httpMethod = $httpMethod;
-        $this->handler = $handler;
-        $this->regex = $regex;
-        $this->variables = $variables;
+    public function __construct(
+        public string $httpMethod,
+        public mixed  $handler,
+        public string $regex,
+        public array  $variables
+    ) {
     }
 
     /**
      * Tests whether this route matches the given string.
      */
-    public function matches(string $str): bool
-    {
+    public function matches(string $str): bool {
         $regex = '~^' . $this->regex . '$~';
 
-        return (bool) preg_match($regex, $str);
+        return (bool)preg_match($regex, $str);
     }
+
 }

@@ -13,13 +13,12 @@
 
 namespace Test\Redis;
 
+use Galaxia\AppTest;
 use Galaxia\RedisCli;
-use Test\GalaxiaTest;
 
-include_once dirname(__DIR__) . "/GalaxiaTest.php";
+include_once dirname(__DIR__, 2) . '/src/boot-cli-editor.php';
 
-
-class RedisCliTest extends GalaxiaTest {
+class RedisCliTest extends AppTest {
 
     static RedisCli $redis;
 

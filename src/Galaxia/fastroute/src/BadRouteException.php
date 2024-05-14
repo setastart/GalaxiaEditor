@@ -5,6 +5,6 @@ namespace Galaxia\FastRoute;
 
 use LogicException;
 
-class BadRouteException extends LogicException
-{
+class BadRouteException extends LogicException {
+
 }

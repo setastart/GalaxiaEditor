@@ -599,8 +599,6 @@ HTML;
 
     /**
      * put SQL query quotes around table and field names
-     * @param string $text
-     * @return string
      */
     static function q(string $text): string {
         return '`' . str_replace('`', '``', self::h($text)) . '`';
@@ -795,8 +793,6 @@ HTML;
 
     /**
      * converts for example 1M => 1048576 or 1k => 1024
-     * @param string $size
-     * @return int
      */
     static function bytesAbbrToInt(string $size): int {
         $unit = preg_replace('/[^bkmgtpezy]/i', '', $size);

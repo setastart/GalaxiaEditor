@@ -29,7 +29,6 @@ trait Style {
 
     /**
      * @param array $size [min, max, wMin, wMax]
-     * @return string
      */
     static function min(array $size): string {
         if ($size[0] > $size[1]) {

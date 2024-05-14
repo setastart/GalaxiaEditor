@@ -135,7 +135,7 @@ class AppTest {
         string   $host,
         int      $argc,
         bool     $exitOnError = false,
-        int      $simultaneous = 7,
+        int      $simultaneous = 16,
     ): void {
         global $argv;
 
