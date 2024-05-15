@@ -104,7 +104,7 @@ class AppCache {
         $dir = $dirCache . trim($subdir, '/') . '/';
         if (!is_dir($dir)) mkdir($dir);
 
-        $cacheName = "{$scope}-{$level}-{$key}.string";
+        $cacheName = "{$scope}-{$level}-{$key}.array";
         $cacheFile = $dir . $cacheName . '.cache';
 
         $fCache = function() use ($dirCache, $cacheName, $cacheFile, $f, $load, $save): array {
@@ -391,6 +391,7 @@ class AppCache {
                 return $f();
             }
         }
+        $name .= '.lock';
 
         if ($fp = fopen($dir . '/' . $name, 'w')) {
             try {
