@@ -4,6 +4,7 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppCache;
 use Galaxia\AppImage;
 use Galaxia\Flash;
 use Galaxia\G;
@@ -28,8 +29,8 @@ foreach ($_POST['modules'][0]['imageDelete'] ?? [] as $imageNew) {
 // finish
 
 if (Flash::hasInfo()) {
-    G::cacheDelete(['app', 'fastroute']);
-    G::cacheDelete('editor', 'imageList-' . E::$pgSlug . '*');
+    AppCache::deleteDir(['app', 'fastroute']);
+    AppCache::deleteDir('editor', 'imageList-' . E::$pgSlug . '*');
 }
 
 G::redirect('edit/' . E::$pgSlug);

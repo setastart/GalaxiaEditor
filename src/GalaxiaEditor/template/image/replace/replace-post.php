@@ -4,9 +4,11 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
-use Galaxia\G;
+use Galaxia\AppCache;
+use Galaxia\AppImage;
 use Galaxia\File;
 use Galaxia\Flash;
+use Galaxia\G;
 use GalaxiaEditor\E;
 use GalaxiaEditor\input\Input;
 
@@ -54,13 +56,13 @@ $files = [[
     'tmp_name' => $_FILES['images']['tmp_name'][0],
     'name' => E::$imgSlug,
 ]];
-$uploaded = G::imageUpload($files, true, $_POST['resize'] ?? 0);
+$uploaded = AppImage::imageUpload($files, true, $_POST['resize'] ?? 0);
 
 
 
 
 // finish
 
-G::cacheDelete(['app', 'fastroute']);
-G::cacheDelete('editor', 'imageList-' . E::$pgSlug . '*');
+AppCache::deleteDir(['app', 'fastroute']);
+AppCache::deleteDir('editor', 'imageList-' . E::$pgSlug . '*');
 G::redirect('edit/' . E::$pgSlug . '/' . E::$imgSlug);

@@ -9,6 +9,9 @@ namespace Galaxia;
 
 class File {
 
+    static string $scriptItemUpdateHard = '_editor-item-update-hard.php';
+    static string $scriptItemUpdateSoft = '_editor-item-update-soft.php';
+
     static function uploadRemoveErrors(string $inputName): array {
         if (!isset($_FILES[$inputName])) {
             Flash::error('Required.', 'form', $inputName);
@@ -74,6 +77,16 @@ class File {
         }
 
         return $files;
+    }
+
+    static function runPhpScript(string $fileName, ?string $dir = null) {
+        $dir  ??= G::dir() . 'script';
+        $path = Text::h("$dir/$fileName");
+        if (!file_exists($path)) {
+            Flash::devlog("runPhpScript $path does not exist.");
+            return;
+        }
+        Flash::devlog("runPhpScript $fileName: " . shell_exec(escapeshellcmd("php $path")));
     }
 
 }

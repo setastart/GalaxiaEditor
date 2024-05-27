@@ -95,6 +95,9 @@ class G {
         });
 
         if (self::isDevEnv() || self::isCli()) {
+            if (self::isDevEnv()) {
+                putenv("PATH=" . getenv('PATH') . ':/opt/homebrew/bin');
+            }
             ini_set('display_errors', '1');
         } else {
             ini_set('display_errors', '0');

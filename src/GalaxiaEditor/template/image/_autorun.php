@@ -40,7 +40,7 @@ $inUse = ModelImage::imagesInUse()[E::$imgSlug] ?? [];
 
 // load image and build inputs
 
-E::$img            = G::imageGet(E::$imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
+E::$img            = AppImage::imageGet(E::$imgSlug, ['w' => 256, 'h' => 256, 'version' => time(), 'extra' => ['type']]);
 E::$img['resizes'] = AppImage::resizes(G::dirImage(), E::$imgSlug) ?? [];
 
 

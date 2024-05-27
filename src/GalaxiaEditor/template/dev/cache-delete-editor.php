@@ -4,11 +4,12 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppCache;
 use Galaxia\Flash;
 use Galaxia\G;
 
 
-G::cacheDelete('editor');
+AppCache::deleteDir('editor');
 
 Flash::info('editor caches deleted');
 

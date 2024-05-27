@@ -4,6 +4,7 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppCache;
 use Galaxia\AppImage;
 use Galaxia\G;
 use Galaxia\Flash;
@@ -21,7 +22,7 @@ foreach ($images as $imgSlug => $mtimeDir) {
     touch(G::dirImage() . $imgSlug . '/', $mtime);
 }
 
-G::cacheDelete('editor');
+AppCache::deleteDir('editor');
 Flash::info(Text::t('Reordered images by upload time'));
 
 G::redirect('edit/' . G::$editor->imageSlug);

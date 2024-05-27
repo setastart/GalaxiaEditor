@@ -4,6 +4,7 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppImage;
 use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\E;
@@ -22,7 +23,7 @@ use GalaxiaEditor\input\InputRender;
 
     <div class="image-preview pad">
         <figure>
-            <?=G::image(E::$img), PHP_EOL?>
+            <?=AppImage::render(E::$img), PHP_EOL?>
         </figure>
     </div>
 

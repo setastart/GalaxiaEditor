@@ -4,6 +4,9 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppCache;
+use Galaxia\AppRoute;
+use Galaxia\File;
 use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Sql;
@@ -68,14 +71,13 @@ foreach (E::$modules as $module) {
 
 // finish
 
-G::cacheDelete('editor');
+AppCache::deleteDir('editor');
 Flash::info(sprintf(Text::t('Deleted: %s.'), Text::t(E::$section['gcTitleSingle'])));
 
 if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
-    G::cacheDelete(['app', 'fastroute']);
-    G::routeSitemap(G::$req->schemeHost());
-    if (file_exists(G::dir() .'script/_editor-item-update-hard.php'))
-        include G::dir() .'script/_editor-item-update-hard.php';
+    AppCache::deleteDir(['app', 'fastroute']);
+    AppRoute::generateSitemap(G::$req->schemeHost());
+    File::runPhpScript(File::$scriptItemUpdateHard);
 }
 
 G::redirect('edit/' . E::$pgSlug);

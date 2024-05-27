@@ -4,11 +4,11 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
-use Galaxia\G;
+use Galaxia\AppImage;
 use GalaxiaEditor\E;
 
 
-if (!G::imageGet(E::$imgSlug, ['w' => E::$imgW, 'h' => E::$imgH])) {
+if (!AppImage::imageGet(E::$imgSlug, ['w' => E::$imgW, 'h' => E::$imgH])) {
     http_response_code(404);
     exit('error');
 }

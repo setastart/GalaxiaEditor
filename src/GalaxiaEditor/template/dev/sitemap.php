@@ -4,13 +4,14 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppRoute;
+use Galaxia\File;
 use Galaxia\G;
 
 
 G::$editor->view = 'dev/dev';
 
 
-G::routeSitemap(G::$req->schemeHost());
+AppRoute::generateSitemap(G::$req->schemeHost());
 
-if (file_exists(G::dir() .'script/_editor-item-update-hard.php'))
-    include G::dir() .'script/_editor-item-update-hard.php';
+File::runPhpScript(File::$scriptItemUpdateHard);

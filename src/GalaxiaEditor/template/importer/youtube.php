@@ -30,7 +30,7 @@ if ($r[Scrape::DATA][Youtube::IMG_SLUG] ?? '') {
             'tmp_name' => $r[Scrape::DATA][Youtube::IMG_URL],
             'name' => $imgSlug,
         ]];
-        $uploadedImages = G::imageUpload($files, true, 1920, 'vimeo');
+        $uploadedImages = AppImage::imageUpload($files, true, 1920, 'vimeo');
         if (empty($uploadedImages)) {
             $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_NOT_DOWNLOADED;
         } else {

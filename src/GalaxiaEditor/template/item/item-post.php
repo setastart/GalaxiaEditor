@@ -4,6 +4,9 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppCache;
+use Galaxia\AppRoute;
+use Galaxia\File;
 use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Sql;
@@ -135,21 +138,17 @@ if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
 
 
     if (E::$itemChanges || E::$fieldsNew || E::$fieldsDel || E::$fieldsUpd) {
-        G::cacheDelete(['app', 'fastroute']);
-        G::cacheDelete('editor');
+        AppCache::deleteDir(['app', 'fastroute']);
+        AppCache::deleteDir('editor');
 
         if (
             isset(E::$itemChanges[E::$item['gcTable'] . 'Status']) ||
             count(array_intersect(array_keys(E::$itemChanges), $slugs)) > 0
         ) {
-            G::routeSitemap(G::$req->schemeHost());
-            if (file_exists(G::dir() .'script/_editor-item-update-hard.php')) {
-                include G::dir() .'script/_editor-item-update-hard.php';
-            }
+            AppRoute::generateSitemap(G::$req->schemeHost());
+            File::runPhpScript(File::$scriptItemUpdateHard);
         } else {
-            if (file_exists(G::dir() .'script/_editor-item-update-soft.php')) {
-                include G::dir() .'script/_editor-item-update-soft.php';
-            }
+            File::runPhpScript(File::$scriptItemUpdateSoft);
         }
 
     }

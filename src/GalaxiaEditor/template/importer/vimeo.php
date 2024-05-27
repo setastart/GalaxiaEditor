@@ -27,7 +27,7 @@ if ($r[Scrape::DATA][Vimeo::IMG_SLUG] ?? '') {
             'name'     => $imgSlug,
         ]];
 
-        $uploadedImages = G::imageUpload($files, true, 1920, 'vimeo');
+        $uploadedImages = AppImage::imageUpload($files, true, 1920, 'vimeo');
         if (empty($uploadedImages)) {
             $r[Scrape::INFO][$id] = Scrape::INFO_IMAGE_NOT_DOWNLOADED;
         } else {

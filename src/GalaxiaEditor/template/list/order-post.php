@@ -4,6 +4,7 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppCache;
 use Galaxia\Flash;
 use Galaxia\G;
 use Galaxia\Text;
@@ -23,8 +24,8 @@ if ($changes) {
     Flash::warning(Text::t('No changes were made.'));
 }
 
-G::cacheDelete(['app', 'fastroute']);
-G::cacheDelete('editor');
+AppCache::deleteDir(['app', 'fastroute']);
+AppCache::deleteDir('editor');
 
 Flash::info('editor caches deleted');
 

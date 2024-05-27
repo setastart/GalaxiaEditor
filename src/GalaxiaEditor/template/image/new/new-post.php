@@ -4,9 +4,11 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
-use Galaxia\G;
+use Galaxia\AppCache;
+use Galaxia\AppImage;
 use Galaxia\File;
 use Galaxia\Flash;
+use Galaxia\G;
 use Galaxia\Text;
 use GalaxiaEditor\config\Config;
 use GalaxiaEditor\E;
@@ -62,7 +64,7 @@ foreach ($files as $i => $file) {
 
 // upload images
 
-$uploaded = G::imageUpload($files, false, 1920);
+$uploaded = AppImage::imageUpload($files, false, 1920);
 foreach ($uploaded as $img) {
     if ($img['imgType'] ?? '') {
         $file = G::dirImage() . $img['slug'] . '/' . $img['slug'] . '_type.txt';
@@ -94,8 +96,8 @@ if (Flash::hasError()) return;
 
 // finish
 
-G::cacheDelete(['app', 'fastroute']);
-G::cacheDelete('editor', 'imageList-' . E::$pgSlug . '*');
+AppCache::deleteDir(['app', 'fastroute']);
+AppCache::deleteDir('editor', 'imageList-' . E::$pgSlug . '*');
 
 if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
 if (isset($_POST['submitAndAddMore'])) G::redirect('edit/' . E::$pgSlug . '/new');

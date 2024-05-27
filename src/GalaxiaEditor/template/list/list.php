@@ -4,6 +4,7 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppImage;
 use Galaxia\AppTimer;
 use Galaxia\G;
 use Galaxia\Pagination;
@@ -381,9 +382,9 @@ E::$listRows = Cache::listRows(E::$listOrder, function() use ($firstTable, $item
                                 if ($i == $thumbsToShow) {
                                     $r .= $thumbCount . PHP_EOL;
                                 } else {
-                                    $img = G::imageGet($value, ['w' => 256, 'h' => 256, 'version' => 'mtime', 'loading' => false], false);
+                                    $img = AppImage::imageGet($value, ['w' => 256, 'h' => 256, 'version' => 'mtime', 'loading' => false], false);
                                     if ($img) {
-                                        $r .= G::image($img) . PHP_EOL;
+                                        $r .= AppImage::render($img) . PHP_EOL;
                                     } else {
                                         $r .= '<div class="nophoto" style="background-image:url(/edit/gfx/btn/no-photo.png);"></div>' . PHP_EOL;
                                     }

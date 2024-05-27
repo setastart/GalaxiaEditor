@@ -31,7 +31,7 @@ E::$imgItems = Cache::imageListItems(function() {
     $imageList = AppImage::list(G::dirImage());
 
     foreach ($imageList as $imgSlug => $mtime) {
-        if (!$img = G::imageGet($imgSlug, ['w' => 256, 'h' => 256, 'extra' => ['type'], 'version' => 'mtime', 'fileSize' => true, 'loading' => false], false)) continue;
+        if (!$img = AppImage::imageGet($imgSlug, ['w' => 256, 'h' => 256, 'extra' => ['type'], 'version' => 'mtime', 'fileSize' => true, 'loading' => false], false)) continue;
         $items[$imgSlug] = $img;
     }
 
@@ -71,7 +71,7 @@ switch ($_POST['imageListType'] ?? '') {
 $ht = '';
 $ht .= '<button type="button" id="' . Text::h($imgSlug) . '" class="imageSelectItem' . $cssInUse . '">' . PHP_EOL;
 $ht .= '    <figure>' . PHP_EOL;
-$ht .= '        ' . G::image($img) . PHP_EOL;
+$ht .= '        ' . AppImage::render($img) . PHP_EOL;
 $ht .= '    </figure>' . PHP_EOL;
 $ht .= '    <p>' . Text::h($imgSlug) . '</p>' . PHP_EOL;
 
@@ -106,7 +106,7 @@ $ht = '';
 $ht .= '<a class="row row-image" href="/edit/' . G::$editor->imageSlug .  '/' . $imgSlug . '">' . PHP_EOL;
 $ht .= '    <div class="col flexT">' . PHP_EOL;
 $ht .= '        <div class="col-thumb figure single">' . PHP_EOL;
-$ht .= '            ' . G::image($img) . PHP_EOL;
+$ht .= '            ' . AppImage::render($img) . PHP_EOL;
 $ht .= '        </div>' . PHP_EOL;
 $ht .= '    </div>' . PHP_EOL;
 $ht .= '    <div class="col flex1">' . PHP_EOL;
