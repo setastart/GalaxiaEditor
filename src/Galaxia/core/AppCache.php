@@ -426,24 +426,24 @@ class AppCache {
         $usleep    = $usleepMin;
 
         try {
-            while (!self::lockAcquire(name: $name, token: $token, ttl: $ttl * 1000)) {
+            while (!self::redisLockAcquire(name: $name, token: $token, ttl: $ttl * 1000)) {
                 usleep($usleep);
                 $usleep *= 2;
                 $usleep = min($usleep, $usleepMax);
             }
             $r = $f();
         } finally {
-            self::lockRelease(name: $name, token: $token);
+            self::redisLockRelease(name: $name, token: $token);
         }
 
         return $r;
     }
 
-    static function lockAcquire(string $name, $token, $ttl): bool {
+    static function redisLockAcquire(string $name, $token, $ttl): bool {
         return (G::redis()?->cmd('SET', $name, $token, 'NX', 'PX', $ttl)->set()[0] ?? '') === 'OK';
     }
 
-    static function lockRelease(string $name, $token): void {
+    static function redisLockRelease(string $name, $token): void {
         $lua = 'if redis.call("GET", ARGV[1]) == ARGV[2] then return redis.call("DEL", ARGV[1]) else return 0 end';
         G::redis()?->cmd('EVAL', $lua, 0, $name, $token)->set();
     }
