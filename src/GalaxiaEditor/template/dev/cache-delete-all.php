@@ -4,6 +4,7 @@
 // You may not use this work except in compliance with the Licence.
 // Licence copy: https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12
 
+use Galaxia\AppCache;
 use Galaxia\Flash;
 use Galaxia\G;
 
@@ -11,6 +12,6 @@ use Galaxia\G;
 G::$editor->view = 'dev/dev';
 
 
-G::cacheDeleteAll();
+AppCache::deleteAllDir();
 
 Flash::info('ALL caches deleted');

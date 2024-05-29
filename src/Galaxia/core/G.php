@@ -286,58 +286,6 @@ class G {
 
 
 
-    // timing
-
-    /** @deprecated - Use AppTimer */
-    static function timerStart(
-        string $timerLabel,
-               $timeFloat = null
-    ): void {
-        AppTimer::start(
-            timerLabel: $timerLabel,
-            timeFloat: $timeFloat
-        );
-    }
-
-    /** @deprecated - Use AppTimer */
-    static function timerMark(string $timerLabel): void {
-        AppTimer::mark(
-            timerLabel: $timerLabel
-        );
-    }
-
-    /** @deprecated - Use AppTimer */
-    static function timerStop(string $timerLabel, string $rename = ''): void {
-        AppTimer::stop(
-            timerLabel: $timerLabel,
-            rename: $rename
-        );
-    }
-
-    /** @deprecated - Use AppTimer */
-    static function timerPrint(
-        bool $comments = false,
-        bool $memory = false,
-        bool $includes = false,
-        bool $force = false,
-    ): void {
-        AppTimer::print(
-            comments: $comments,
-            memory: $memory,
-            includes: $includes,
-            force: $force,
-        );
-    }
-
-
-    /** @deprecated - Use AppTimer */
-    static function timerReset(): void {
-        AppTimer::reset();
-    }
-
-
-
-
     static function errorPage(int $code, string $msg = '', string $debugText = ''): never {
         $codeOriginal = $code;
         $errors       = [
@@ -539,39 +487,6 @@ class G {
         );
     }
 
-    /** @deprecated - Use AppCache */
-    static function cacheDelete($scopes, $key = '*'): void {
-        AppCache::deleteDir($scopes, $key, self::dirCache());
-    }
-
-    /** @deprecated - Use AppCache */
-    static function cacheDeleteAll(): void {
-        AppCache::deleteAllDir(self::dirCache());
-    }
-
-    /** @deprecated - Use AppCache */
-    static function cacheDeleteOld(): void {
-        AppCache::deleteOldDir(self::dirCache());
-    }
-
-
-
-
-    /** @deprecated - Use AppImage */
-    static function image($img, $extra = ''): string {
-        return AppImage::render($img, $extra);
-    }
-
-    /** @deprecated - Use AppImage */
-    static function imageGet($imgSlug, $img = [], $resize = true): array {
-        return AppImage::imageGet($imgSlug, $img, $resize);
-    }
-
-    /** @deprecated - Use AppImage */
-    static function imageUpload(array $files, $replaceDefault = false, int $toFitDefault = 0, string $type = ''): array {
-        return AppImage::imageUpload($files, $replaceDefault, $toFitDefault, $type);
-    }
-
 
 
 
@@ -615,22 +530,6 @@ class G {
     }
 
 
-
-
-    /** @deprecated - Use AppRoute */
-    static function routeList(int $pageMinStatus, $pageSlug = 'pgSlug'): array {
-        return AppRoute::list($pageMinStatus, $pageSlug);
-    }
-
-    /** @deprecated - Use AppRoute */
-    static function routeSlugToId(string $table, string $status, string $tableSlug, bool $redirect, string $matchSlug, array $langs = null): ?int {
-        return AppRoute::slugToId($table, $status, $tableSlug, $redirect, $matchSlug, $langs ?? self::langs());
-    }
-
-    /** @deprecated - Use AppRoute */
-    static function routeSitemap(string $schemeHost): void {
-        AppRoute::generateSitemap($schemeHost);
-    }
 
 
     static function versionQuery(): string {

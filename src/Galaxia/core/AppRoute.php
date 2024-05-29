@@ -344,7 +344,16 @@ class AppRoute {
 
 
 
-    static function slugToId($table, $status, $tableSlug, $redirect, $matchSlug, $langs): ?int {
+    static function slugToId(
+        string $table,
+        string $status,
+        string $tableSlug,
+        bool $redirect,
+        string $matchSlug,
+        array $langs = null
+    ): ?int {
+        $langs ??= G::langs();
+
         $id                = null;
         $tableId           = $table . 'Id';
         $tableStatus       = $table . 'Status';
