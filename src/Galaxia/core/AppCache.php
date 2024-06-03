@@ -9,6 +9,7 @@ namespace Galaxia;
 
 use function file_exists;
 use function file_get_contents;
+use function random_int;
 
 class AppCache {
 
@@ -421,13 +422,13 @@ class AppCache {
 
         $name      = G::$app->mysqlDb . ':lock:' . $name;
         $token     = uniqid();
-        $usleepMin = 100;
+        $usleepMin = 64;
         $usleepMax = 100000;
         $usleep    = $usleepMin;
 
         try {
             while (!self::redisLockAcquire(name: $name, token: $token, ttl: $ttl * 1000)) {
-                usleep($usleep);
+                usleep(random_int(16, $usleep));
                 $usleep *= 2;
                 $usleep = min($usleep, $usleepMax);
             }

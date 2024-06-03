@@ -179,7 +179,7 @@ class AppImage {
 
             $file = $imgDirSlug . '_' . $img[self::w] . '_' . $img[self::h] . '.webp';
             if ($img[self::webp] && !file_exists($file)) {
-                AppCache::lock(
+                AppCache::redisLock(
                     '_img_' . $imgSlug . '_' . $img[self::w] . '_' . $img[self::h] . '.webp' . '.lock',
                     function() use ($imgDir, $imgSlug, $img) {
                         try {
@@ -198,7 +198,7 @@ class AppImage {
 
             $file = $imgDirSlug . '_' . $img[self::w] . '_' . $img[self::h] . $img[self::ext];
             if ($resize && !file_exists($file)) {
-                AppCache::lock(
+                AppCache::redisLock(
                     '_img_' . $imgSlug . '_' . $img[self::w] . '_' . $img[self::h] . $img[self::ext] . '.lock',
                     function() use ($imgDir, $imgSlug, $img) {
                         try {
@@ -213,7 +213,7 @@ class AppImage {
 
             $file = $imgDirSlug . '_' . $img[self::w] . '_' . $img[self::h] . '.webp';
             if ($img[self::webp] && $resize && !file_exists($file)) {
-                AppCache::lock(
+                AppCache::redisLock(
                     '_img_' . $imgSlug . '_' . $img[self::w] . '_' . $img[self::h] . '.webp' . '.lock',
                     function() use ($imgDir, $imgSlug, $img) {
                         try {
@@ -248,7 +248,7 @@ class AppImage {
 
                 $file = $imgDirSlug . '_' . $imgResize[self::w] . '_' . $imgResize[self::h] . '.webp';
                 if ($img[self::webp] && $resize && !file_exists($file)) {
-                    AppCache::lock(
+                    AppCache::redisLock(
                         '_img_' . $imgSlug . '_' . $imgResize[self::w] . '_' . $imgResize[self::h] . '.webp' . '.lock',
                         function() use ($imgDir, $imgSlug, $imgResize, $img) {
                             try {
@@ -266,7 +266,7 @@ class AppImage {
 
                 $file = $imgDirSlug . '_' . $imgResize[self::w] . '_' . $imgResize[self::h] . $img[self::ext];
                 if ($resize && !file_exists($file)) {
-                    AppCache::lock(
+                    AppCache::redisLock(
                         '_img_' . $imgSlug . '_' . $imgResize[self::w] . '_' . $imgResize[self::h] . $img[self::ext] . '.lock',
                         function() use ($imgDir, $imgSlug, $imgResize, $img) {
                             try {
@@ -281,7 +281,7 @@ class AppImage {
 
                 $file = $imgDirSlug . '_' . $imgResize[self::w] . '_' . $imgResize[self::h] . '.webp';
                 if ($img[self::webp] && $resize && !file_exists($file)) {
-                    AppCache::lock(
+                    AppCache::redisLock(
                         '_img_' . $imgSlug . '_' . $imgResize[self::w] . '_' . $imgResize[self::h] . '.webp' . '.lock',
                         function() use ($imgDir, $imgSlug, $imgResize, $img) {
                             try {
