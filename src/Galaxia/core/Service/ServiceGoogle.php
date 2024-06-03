@@ -16,8 +16,8 @@ use SensitiveParameter;
  */
 class ServiceGoogle {
 
-    const scopeFull        = 'https://www.googleapis.com/auth/cloud-platform';
-    const scopeTranslation = 'https://www.googleapis.com/auth/cloud-translation';
+    const string scopeFull        = 'https://www.googleapis.com/auth/cloud-platform';
+    const string scopeTranslation = 'https://www.googleapis.com/auth/cloud-translation';
 
     static function translate(
         #[SensitiveParameter]

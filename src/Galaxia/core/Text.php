@@ -25,11 +25,11 @@ use function strip_tags;
 
 class Text {
 
-    public const ALLOWED_TAGS = ['a', 'h1', 'h2', 'h3', 'strong', 'small', 'p', 'br', 'em', 'del', 'blockquote', 'pre', 'ul', 'ol', 'li'];
+    public const array ALLOWED_TAGS = ['a', 'h1', 'h2', 'h3', 'strong', 'small', 'p', 'br', 'em', 'del', 'blockquote', 'pre', 'ul', 'ol', 'li'];
 
-    public const HTMLSPECIALCHARS_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5;
+    public const int HTMLSPECIALCHARS_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5;
 
-    public const TEST_HTML = <<<HTML
+    public const string TEST_HTML = <<<HTML
 <div>This div tag should go away.</div><span>This span tag too.</span><h1 onclick="console.error('this should never happen')">Example <strong>Test Heading 1</strong> that <del>is</del> 49 <em>characters</em> long</h1><p>First paragraph, a bit <strong>long so it wraps around</strong>, to see how it <em>looks if it wraps</em>. This first paragraph <del>doesn't have</del> any newlines and is 155 characters long.</p><p>Second short paragraph with newine here.<br>This line is a soft break from the previous.<br>Another line with a <a href="https://setastart.com">hyperlink</a>.</p><h2>Example <strong>Test Heading 2</strong> that <del>is</del> 49 <em>characters</em> long</h2><p>Third short paragraph.</p><ul><li>Unordered list item one.<br>Soft break into a long line to see how it wraps. Lorem ipsum dolor sit amet everything bla bla bla andalongfakewordwhynot.</li><li>Unordered list item two.<ul><li>Subitem one.<ul><li>Subsubitem one. I'm making this one longer, so it wraps to see where it ends up. This item is 113 characters long.</li><li>Subsubitem two.</li></ul></li></ul></li></ul><ol><li>Unordered list item one.<br>Soft break into a long line to see how it wraps. Lorem ipsum dolor sit amet everything bla bla bla andalongfakewordwhynot.</li><li>Unordered list item two.<ol><li>Subitem one.<ol><li>Subsubitem one. I'm making this one longer, so it wraps to see where it ends up. This item is 113 characters long.</li><li>Subsubitem two.</li></ol></li></ol></li></ol><pre>This is a code fragment or something. First line, a bit long so it wraps around, to see how it looks if it wraps. This first line ends in a newline after the dot.
 Second Line.</pre><blockquote>This is a quotation or something. First line, a bit long, so it wraps around, to see how it looks if it wraps. This first line ends in a newline after the dot.<br>Second Line.</blockquote>
 HTML;
@@ -320,7 +320,7 @@ HTML;
             } else {
                 $tagOld = 'galaxiaTemp' . $transform[0];
                 $tagNew = $transform[0];
-                $text = str_replace($tagOld, $tagNew, $text);
+                $text   = str_replace($tagOld, $tagNew, $text);
             }
         }
 

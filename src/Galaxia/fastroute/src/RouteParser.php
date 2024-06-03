@@ -6,7 +6,7 @@ namespace Galaxia\FastRoute;
 // Std RouteParser
 class RouteParser {
 
-    public const VARIABLE_REGEX = <<<'REGEX'
+    public const string VARIABLE_REGEX = <<<'REGEX'
 \{
     \s* ([a-zA-Z_][a-zA-Z0-9_-]*) \s*
     (?:
@@ -15,7 +15,7 @@ class RouteParser {
 \}
 REGEX;
 
-    public const DEFAULT_DISPATCH_REGEX = '[^/]+';
+    public const string DEFAULT_DISPATCH_REGEX = '[^/]+';
 
     /**
      * Parses a route string into multiple route data arrays.

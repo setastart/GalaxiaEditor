@@ -40,12 +40,12 @@ use Closure;
  */
 class RedisCli {
 
-    const INTEGER   = ':';
-    const INLINE    = '+';
-    const BULK      = '$';
-    const MULTIBULK = '*';
-    const ERROR     = '-';
-    const NL        = "\r\n";
+    const string INTEGER   = ':';
+    const string INLINE    = '+';
+    const string BULK      = '$';
+    const string MULTIBULK = '*';
+    const string ERROR     = '-';
+    const string NL        = "\r\n";
 
     public mixed    $handle;
     private Closure $errorFunction;

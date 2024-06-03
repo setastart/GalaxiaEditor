@@ -136,7 +136,7 @@ namespace Galaxia;
  */
 class H {
 
-    const selfClosing = [
+    const array selfClosing = [
         'area',
         'base',
         'br',

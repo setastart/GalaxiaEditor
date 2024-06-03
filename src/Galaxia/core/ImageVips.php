@@ -12,13 +12,13 @@ use Exception;
 
 class ImageVips {
 
-    const EXT_JPG  = '.jpg';
-    const EXT_PNG  = '.png';
-    const EXT_WEBP = '.webp';
+    const string EXT_JPG  = '.jpg';
+    const string EXT_PNG  = '.png';
+    const string EXT_WEBP = '.webp';
 
-    const FORMATS = [self::EXT_JPG, self::EXT_PNG];
+    const array FORMATS = [self::EXT_JPG, self::EXT_PNG];
 
-    const LOADERS = ['jpegload' => self::EXT_JPG, 'pngload' => self::EXT_PNG];
+    const array LOADERS = ['jpegload' => self::EXT_JPG, 'pngload' => self::EXT_PNG];
 
     public static int $qualityJpg    = 85;
     public static int $qualityWebp   = 88;

@@ -25,7 +25,7 @@ class Config {
      *   gc:  galaxia config
      *   gcp: galaxia config proto
      */
-    public const PROTO_GC = [
+    public const array PROTO_GC = [
         'gcpSeparator' => [
             'gcPageType' => 'string',
         ],

@@ -14,7 +14,7 @@ use GalaxiaEditor\E;
 
 class ConfigDb {
 
-    const RESERVED_COLUMNS = ['gcMulti'];
+    const array RESERVED_COLUMNS = ['gcMulti'];
 
     static function validate(): void {
         $dbSchema = [];

@@ -9,13 +9,13 @@ namespace GalaxiaEditor\chat;
 
 class Chat {
 
-    public const timeoutXread        = 1000;    // milliseconds
-    public const timeoutListen       = 11;      // seconds
-    public const timeoutAlive        = 15;      // seconds
-    public const timeoutLeave        = 2;       // seconds
-    public const timeoutRoomInactive = 60 * 30; // seconds
+    public const int timeoutXread        = 1000;    // milliseconds
+    public const int timeoutListen       = 11;      // seconds
+    public const int timeoutAlive        = 15;      // seconds
+    public const int timeoutLeave        = 2;       // seconds
+    public const int timeoutRoomInactive = 60 * 30; // seconds
 
-    public static mixed    $post;
+    public static mixed $post;
 
     static function exitArrayToJson($r): never {
         header('Content-Type: application/json');

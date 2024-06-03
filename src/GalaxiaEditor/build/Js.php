@@ -12,9 +12,9 @@ use Galaxia\Text;
 
 class Js {
 
-    const FILE_EXT_JS_BUILD = '.js';
+    const string FILE_EXT_JS_BUILD = '.js';
 
-    const JS_FILENAMES = [
+    const array JS_FILENAMES = [
         'galaxiaEditor' => [
             __DIR__ . '/js/polyfill.js',
             __DIR__ . '/js/main.js',

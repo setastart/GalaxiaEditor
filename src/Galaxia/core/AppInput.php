@@ -8,19 +8,19 @@ use function array_key_exists;
 
 class AppInput {
 
-    const typeText     = 'text';
-    const typePhone    = 'phone';
-    const typeEmail    = 'email';
-    const typePassword = 'password';
-    const typeTextarea = 'textarea';
-    const typeCheckbox = 'checkbox';
-    const typeRadio    = 'radio';
-    const typeSelect   = 'select';
-    const typeButton   = 'button';
+    const string typeText     = 'text';
+    const string typePhone    = 'phone';
+    const string typeEmail    = 'email';
+    const string typePassword = 'password';
+    const string typeTextarea = 'textarea';
+    const string typeCheckbox = 'checkbox';
+    const string typeRadio    = 'radio';
+    const string typeSelect   = 'select';
+    const string typeButton   = 'button';
 
-    const patternPhone = '[\d\-+\s]*';
+    const string patternPhone = '[\d\-+\s]*';
 
-    const types = [
+    const array types = [
         AppInput::typeText,
         AppInput::typePhone,
         AppInput::typeEmail,
@@ -33,16 +33,16 @@ class AppInput {
 
     public array $error = [];
 
-    const txFormErrorPhone         = 'formErrorPhone';
-    const txFormErrorEmail         = 'formErrorEmail';
-    const txFormErrorMinlength     = 'formErrorMinlength';
-    const txFormErrorMaxlength     = 'formErrorMaxlength';
-    const txFormErrorRequired      = 'formErrorRequired';
-    const txFormErrorValueNotValid = 'formErrorValueNotValid';
-    const txFormContainsSpamWords  = 'formContainsSpamWords';
+    const string txFormErrorPhone         = 'formErrorPhone';
+    const string txFormErrorEmail         = 'formErrorEmail';
+    const string txFormErrorMinlength     = 'formErrorMinlength';
+    const string txFormErrorMaxlength     = 'formErrorMaxlength';
+    const string txFormErrorRequired      = 'formErrorRequired';
+    const string txFormErrorValueNotValid = 'formErrorValueNotValid';
+    const string txFormContainsSpamWords  = 'formContainsSpamWords';
 
-    const valueYes = 'yes';
-    const valueNo  = 'no';
+    const string valueYes = 'yes';
+    const string valueNo  = 'no';
 
     public string $classWrap  = '';
     public string $classInput = '';

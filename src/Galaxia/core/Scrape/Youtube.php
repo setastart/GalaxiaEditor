@@ -9,24 +9,24 @@ namespace Galaxia\Scrape;
 
 class Youtube {
 
-    const TYPE          = '@type';
-    const ID            = 'id';
-    const URL           = 'url';
-    const HASH          = 'hash';
-    const STATUS        = 'status';
-    const TITLE         = 'title';
-    const LENGTHSECONDS = 'lengthSeconds';
-    const CHANNELID     = 'channelId';
-    const CHANNEL       = 'channel';
-    const ISPRIVATE     = 'isPrivate';
-    const ISUNLISTED    = 'isUnlisted';
-    const DATE          = 'date';
-    const VIEWCOUNT     = 'viewCount';
-    const IMG_SLUG      = 'imgSlug';
-    const IMG_URL       = 'imgUrl';
+    const string TYPE          = '@type';
+    const string ID            = 'id';
+    const string URL           = 'url';
+    const string HASH          = 'hash';
+    const string STATUS        = 'status';
+    const string TITLE         = 'title';
+    const string LENGTHSECONDS = 'lengthSeconds';
+    const string CHANNELID     = 'channelId';
+    const string CHANNEL       = 'channel';
+    const string ISPRIVATE     = 'isPrivate';
+    const string ISUNLISTED    = 'isUnlisted';
+    const string DATE          = 'date';
+    const string VIEWCOUNT     = 'viewCount';
+    const string IMG_SLUG      = 'imgSlug';
+    const string IMG_URL       = 'imgUrl';
 
 
-    const RETURN_YOUTUBE = [
+    const array RETURN_YOUTUBE = [
         self::TYPE          => 'Video',
         self::ID            => '',
         self::HASH          => '',
@@ -43,13 +43,13 @@ class Youtube {
         self::IMG_URL       => '',
     ];
 
-    const URL_YOUTUBE_PREFIX = 'https://www.youtube.com/watch?v=';
-    const URL_SCRAPE_PREFIX  = 'https://www.youtube.com/get_video_info?video_id=';
+    const string URL_YOUTUBE_PREFIX = 'https://www.youtube.com/watch?v=';
+    const string URL_SCRAPE_PREFIX  = 'https://www.youtube.com/get_video_info?video_id=';
 
-    const URL_IMG_PREFIX = 'https://img.youtube.com/vi/';
-    const URL_IMG_SUFFIX = '/hqdefault.jpg';
+    const string URL_IMG_PREFIX = 'https://img.youtube.com/vi/';
+    const string URL_IMG_SUFFIX = '/hqdefault.jpg';
 
-    const SLUG_IMG_PREFIX = 'youtube-';
+    const string SLUG_IMG_PREFIX = 'youtube-';
 
 
     static function getVideoFromId(string $id): array {

@@ -118,7 +118,7 @@ class Head {
 
 
 
-    // todo: make $desctription accept only strings
+    // todo: make $description accept only strings
     static function metaSecond(string|array $description, string $author, bool $index, int $length = 160): void {
         if (is_array($description)) {
             $desc = Text::descg($description, null, $length) ?? '';
@@ -200,7 +200,7 @@ class Head {
 
 
 
-    // todo: make $desctription accept only strings
+    // todo: make $description accept only strings
     static function openGraph(
         string       $title,
         string       $image,

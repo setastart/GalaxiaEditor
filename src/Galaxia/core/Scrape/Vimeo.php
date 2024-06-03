@@ -9,17 +9,17 @@ namespace Galaxia\Scrape;
 
 class Vimeo {
 
-    const TYPE     = '@type';
-    const ID       = 'id';
-    const HASH     = 'hash';
-    const URL      = 'url';
-    const TITLE    = 'title';
-    const DATE     = 'date';
-    const VIEWS    = 'views';
-    const IMG_SLUG = 'imgSlug';
-    const IMG_URL  = 'imgUrl';
+    const string TYPE     = '@type';
+    const string ID       = 'id';
+    const string HASH     = 'hash';
+    const string URL      = 'url';
+    const string TITLE    = 'title';
+    const string DATE     = 'date';
+    const string VIEWS    = 'views';
+    const string IMG_SLUG = 'imgSlug';
+    const string IMG_URL  = 'imgUrl';
 
-    const RETURN_VIMEO = [
+    const array RETURN_VIMEO = [
         self::TYPE     => 'Video',
         self::ID       => '',
         self::HASH     => '',
@@ -30,12 +30,12 @@ class Vimeo {
         self::IMG_URL  => '',
     ];
 
-    const URL_VIMEO_PREFIX = 'https://vimeo.com/';
+    const string URL_VIMEO_PREFIX = 'https://vimeo.com/';
 
-    const URL_IMG_PREFIX = 'https://i.vimeocdn.com/video/';
-    const URL_IMG_SUFFIX = '.jpg';
+    const string URL_IMG_PREFIX = 'https://i.vimeocdn.com/video/';
+    const string URL_IMG_SUFFIX = '.jpg';
 
-    const SLUG_IMG_PREFIX = 'vimeo-';
+    const string SLUG_IMG_PREFIX = 'vimeo-';
 
 
     static function getVideoFromId(int $id): array {
@@ -48,7 +48,7 @@ class Vimeo {
         $json = Scrape::getJsonLd($html[Scrape::DATA]);
         if ($json[Scrape::ERROR]) return Scrape::resultClean($json);
 
-        $json[Scrape::DATA] = array_filter($json[Scrape::DATA], function ($a) {
+        $json[Scrape::DATA] = array_filter($json[Scrape::DATA], function($a) {
             return ($a['@type'] ?? '') == 'VideoObject';
         });
         $json[Scrape::DATA] = $json[Scrape::DATA][0];

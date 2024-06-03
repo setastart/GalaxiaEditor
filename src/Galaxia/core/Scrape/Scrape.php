@@ -12,29 +12,29 @@ use Galaxia\Text;
 
 class Scrape {
 
-    const ERROR  = 'error';
-    const INFO   = 'info';
-    const DATA   = 'data';
+    const string ERROR = 'error';
+    const string INFO  = 'info';
+    const string DATA  = 'data';
 
-    const RETURN = [
+    const array RETURN = [
         self::ERROR => '',
         self::INFO  => [],
         self::DATA  => [],
     ];
 
-    const INFO_IMAGE_EXISTS         = 'Image already exists.';
-    const INFO_IMAGE_DOWNLOADED     = 'Image downloaded.';
-    const INFO_IMAGE_NOT_DOWNLOADED = 'Could not download image.';
+    const string INFO_IMAGE_EXISTS         = 'Image already exists.';
+    const string INFO_IMAGE_DOWNLOADED     = 'Image downloaded.';
+    const string INFO_IMAGE_NOT_DOWNLOADED = 'Could not download image.';
 
-    const ERROR_INVALID_URL              = 'Invalid Url.';
-    const ERROR_COULD_NOT_DOWNLOAD_PAGE  = 'Could not download page.';
-    const ERROR_JSON_LD_NOT_DECODED      = 'JSON-LD not decoded.';
-    const ERROR_JSON_LD_NOT_FOUND        = 'JSON-LD not found.';
-    const ERROR_INTERNAL_SCRAPER         = 'Internal scraper error.';
-    const ERROR_DOWNLOADED_PAGE_IS_EMPTY = 'Downloaded page is empty.';
-    const ERROR_FILE_NOT_FOUND           = 'File not found.';
+    const string ERROR_INVALID_URL              = 'Invalid Url.';
+    const string ERROR_COULD_NOT_DOWNLOAD_PAGE  = 'Could not download page.';
+    const string ERROR_JSON_LD_NOT_DECODED      = 'JSON-LD not decoded.';
+    const string ERROR_JSON_LD_NOT_FOUND        = 'JSON-LD not found.';
+    const string ERROR_INTERNAL_SCRAPER         = 'Internal scraper error.';
+    const string ERROR_DOWNLOADED_PAGE_IS_EMPTY = 'Downloaded page is empty.';
+    const string ERROR_FILE_NOT_FOUND           = 'File not found.';
 
-    const UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3';
+    const string UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3';
 
 
     static function downloadHtml(string $url, string $referer = '', string $ua = null): array {

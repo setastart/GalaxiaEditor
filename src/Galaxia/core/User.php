@@ -12,8 +12,8 @@ use function unserialize;
 
 class User {
 
-    const TIMEOUT             = 120;
-    const TIMEOUT_LAST_ONLINE = 60;
+    const int TIMEOUT             = 120;
+    const int TIMEOUT_LAST_ONLINE = 60;
 
     static public bool $debug = false;
     static public bool $redis = false;

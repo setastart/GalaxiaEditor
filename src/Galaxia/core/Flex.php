@@ -9,7 +9,7 @@ namespace Galaxia;
 
 class Flex {
 
-    const fixed = [
+    const array fixed = [
         0 => [
             '.flex { display: flex; flex-wrap: wrap; }',
             '.flex-col { display: flex; flex-direction: column; }',
@@ -51,7 +51,7 @@ class Flex {
         ],
     ];
 
-    const combinations = [
+    const array combinations = [
         0 => [
             '.flex.' => [
                 'h' => [
@@ -113,7 +113,7 @@ class Flex {
     ];
 
 
-    const modifications = [
+    const array modifications = [
         'stretch'  => 'stretch',
         'center'   => 'center',
         'start'    => 'flex-start',
@@ -131,9 +131,9 @@ class Flex {
         string $htmlDir,
         string $htmlGlob = '{/,/*/,/*/*/}*.php',
         string $buildName = 'gen-flex',
-        array $used = self::fixed,
-        array $combs = self::combinations,
-        array $mods = self::modifications
+        array  $used = self::fixed,
+        array  $combs = self::combinations,
+        array  $mods = self::modifications
     ): string {
         AppTimer::start(__CLASS__ . '::' . __FUNCTION__);
 
@@ -222,8 +222,8 @@ class Flex {
     }
 
     private static function drawRules(
-        array $rules,
-        array $classesFound,
+        array  $rules,
+        array  $classesFound,
         string &$css,
         string &$cssUnused,
         string $indent = ''

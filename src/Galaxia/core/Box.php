@@ -11,12 +11,12 @@ class Box {
 
     use Style;
 
-    const with    = 'with';
-    const fix     = 'fix';
-    const permute = 'permute';
-    const negate  = 'negate';
+    const string with    = 'with';
+    const string fix     = 'fix';
+    const string permute = 'permute';
+    const string negate  = 'negate';
 
-    const borders = [
+    const array borders = [
         'b'  => ['border-width'],
         'bh' => ['border-left-width', 'border-right-width'],
         'bv' => ['border-top-width', 'border-bottom-width'],
@@ -26,7 +26,7 @@ class Box {
         'bl' => ['border-left-width'],
     ];
 
-    const margins = [
+    const array margins = [
         'm'  => ['margin'],
         'mh' => ['margin-left', 'margin-right'],
         'mv' => ['margin-top', 'margin-bottom'],
@@ -36,7 +36,7 @@ class Box {
         'ml' => ['margin-left'],
     ];
 
-    const paddings = [
+    const array paddings = [
         'p'  => ['padding'],
         'ph' => ['padding-left', 'padding-right'],
         'pv' => ['padding-top', 'padding-bottom'],
@@ -46,7 +46,7 @@ class Box {
         'pl' => ['padding-left'],
     ];
 
-    const dimensions = [
+    const array dimensions = [
         'w'    => ['width'],
         'wmin' => ['min-width'],
         'wmax' => ['max-width'],
@@ -56,21 +56,21 @@ class Box {
         'mh'   => ['margin-left: auto; margin-right: auto; max-width'],
     ];
 
-    const s1  = [1, 3];
-    const s2  = [2, 6];
-    const s3  = [3, 9];
-    const s4  = [4, 12];
-    const s6  = [6, 18];
-    const s8  = [8, 24];
-    const s12 = [12, 36];
-    const s16 = [16, 48];
-    const s24 = [24, 72];
-    const s32 = [32, 96];
-    const s48 = [48, 144];
-    const s64 = [64, 192];
-    const s96 = [96, 288];
+    const array s1  = [1, 3];
+    const array s2  = [2, 6];
+    const array s3  = [3, 9];
+    const array s4  = [4, 12];
+    const array s6  = [6, 18];
+    const array s8  = [8, 24];
+    const array s12 = [12, 36];
+    const array s16 = [16, 48];
+    const array s24 = [24, 72];
+    const array s32 = [32, 96];
+    const array s48 = [48, 144];
+    const array s64 = [64, 192];
+    const array s96 = [96, 288];
 
-    const templates = [
+    const array templates = [
         'border' => [
             self::with => self::borders,
             self::fix  => ['1px', '2px', '0'],
@@ -89,7 +89,7 @@ class Box {
         ],
     ];
 
-    const sizes = [
+    const array sizes = [
         'auto' => 'auto',
         '0'    => '0',
         '1px'  => '1px',

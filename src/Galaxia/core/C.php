@@ -8,9 +8,9 @@ namespace Galaxia;
 
 class C {
 
-    const created  = 'timestampCreated';
-    const img      = 'imgSlug';
-    const pos      = 'position';
-    const modified = 'timestampModified';
+    const string created  = 'timestampCreated';
+    const string img      = 'imgSlug';
+    const string pos      = 'position';
+    const string modified = 'timestampModified';
 
 }

@@ -79,7 +79,7 @@ class File {
         return $files;
     }
 
-    static function runPhpScript(string $fileName, ?string $dir = null) {
+    static function runPhpScript(string $fileName, ?string $dir = null): void {
         $dir  ??= G::dir() . 'script';
         $path = Text::h("$dir/$fileName");
         if (!file_exists($path)) {

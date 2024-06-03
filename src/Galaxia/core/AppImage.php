@@ -13,32 +13,32 @@ use Exception;
 
 class AppImage {
 
-    const name      = 'name';
-    const time      = 'time';
-    const slug      = 'slug';
-    const ext       = 'ext';
-    const webp      = 'webp';
-    const mtime     = 'mtime';
-    const fileSize  = 'fileSize';
-    const w         = 'w';
-    const h         = 'h';
-    const wOriginal = 'wOriginal';
-    const hOriginal = 'hOriginal';
-    const fit       = 'fit';
-    const version   = 'version';
-    const id        = 'id';
-    const cls       = 'class';
-    const src       = 'src';
-    const set       = 'set';
-    const srcset    = 'srcset';
-    const sizes     = 'sizes';
-    const alt       = 'alt';
-    const lang      = 'lang';
-    const extra     = 'extra';
-    const loading   = 'loading';
-    const debug     = 'debug';
+    const string name      = 'name';
+    const string time      = 'time';
+    const string slug      = 'slug';
+    const string ext       = 'ext';
+    const string webp      = 'webp';
+    const string mtime     = 'mtime';
+    const string fileSize  = 'fileSize';
+    const string w         = 'w';
+    const string h         = 'h';
+    const string wOriginal = 'wOriginal';
+    const string hOriginal = 'hOriginal';
+    const string fit       = 'fit';
+    const string version   = 'version';
+    const string id        = 'id';
+    const string cls       = 'class';
+    const string src       = 'src';
+    const string set       = 'set';
+    const string srcset    = 'srcset';
+    const string sizes     = 'sizes';
+    const string alt       = 'alt';
+    const string lang      = 'lang';
+    const string extra     = 'extra';
+    const string loading   = 'loading';
+    const string debug     = 'debug';
 
-    public const proto = [
+    public const array proto = [
         self::name      => '',
         self::slug      => '',
         self::ext       => '',

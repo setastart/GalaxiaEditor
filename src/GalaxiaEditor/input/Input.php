@@ -16,7 +16,7 @@ use function preg_replace;
 
 class Input {
 
-    public const PROTO_INPUT = [
+    public const array PROTO_INPUT = [
         'label'       => '',
         'name'        => '',
         'nameFromDb'  => '',
@@ -37,7 +37,7 @@ class Input {
         'nullable'    => false,
     ];
 
-    public const ALLOWED_INPUT_TYPES = [
+    public const array ALLOWED_INPUT_TYPES = [
         'none',
         'password',
         'slug',

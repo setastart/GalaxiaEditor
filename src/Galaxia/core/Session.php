@@ -39,12 +39,13 @@ When session_regenerate_id(1) is called after session_start():
     close
 */
 
+
 class Session implements SessionHandlerInterface {
 
     static public bool $debug = false;
     static public bool $redis = false;
 
-    const TIMEOUT = 60;
+    const int TIMEOUT = 60;
 
     private string $tableName;
     private string $sessionDataOnRead = '';
