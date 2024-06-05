@@ -6,6 +6,7 @@ namespace Galaxia\FastRoute;
 // Std RouteParser
 class RouteParser {
 
+    /** @noinspection Annotator */
     public const string VARIABLE_REGEX = <<<'REGEX'
 \{
     \s* ([a-zA-Z_][a-zA-Z0-9_-]*) \s*
@@ -41,7 +42,8 @@ REGEX;
      * ]
      *
      * Here one route string was converted into two route data arrays.
-     */
+     *
+     * @noinspection Annotator*/
     public function parse(string $route): array {
         $routeWithoutClosingOptionals = rtrim($route, ']');
         $numOptionals                 = strlen($route) - strlen($routeWithoutClosingOptionals);

@@ -24,8 +24,8 @@ if ($changes) {
     Flash::warning(Text::t('No changes were made.'));
 }
 
-AppCache::deleteDir(['app', 'fastroute']);
-AppCache::deleteDir('editor');
+AppCache::delete(['app', 'fastroute']);
+AppCache::delete(['editor']);
 
 Flash::info('editor caches deleted');
 

@@ -455,40 +455,6 @@ class G {
 
 
 
-    /** @deprecated - Use AppCache */
-    static function cacheArray(
-        string   $scope, int $level, string $key,
-        callable $f, bool $bypass = null, bool $write = null
-    ): array {
-        return AppCache::cacheArray(
-            scope: $scope,
-            level: $level,
-            key: $key,
-            f: $f,
-            load: !($bypass ?? false),
-            save: $write ?? true,
-            dirCache: self::dirCache()
-        );
-    }
-
-    /** @deprecated - Use AppCache */
-    static function cacheString(
-        string   $scope, int $level, string $key,
-        callable $f, bool $bypass = null, bool $write = null
-    ): string {
-        return AppCache::cacheString(
-            scope: $scope,
-            level: $level,
-            key: $key,
-            f: $f,
-            load: !($bypass ?? false),
-            save: $write ?? true,
-            dirCache: self::dirCache()
-        );
-    }
-
-
-
 
     /** @deprecated - Use G::execute() */
     static function prepare(string $query): false|mysqli_stmt {

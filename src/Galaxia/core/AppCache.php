@@ -156,15 +156,14 @@ class AppCache {
     }
 
 
-    static function deleteDir(
-        $scopes,
-        $key = '*',
+    static function delete(
+        array $scopes,
+        string $key = '*',
         string $dirCache = null
     ): void {
         $dirCache ??= G::$app->dirCache;
 
         $dirCacheStrlen = strlen($dirCache);
-        if (!is_array($scopes)) $scopes = [$scopes];
         if (in_array('editor', $scopes) && !in_array('app', $scopes)) $scopes[] = 'app';
         $files = [];
         foreach ($scopes as $scope) {
@@ -218,7 +217,7 @@ class AppCache {
     }
 
 
-    static function deleteAllDir(string $dirCache = null): void {
+    static function deleteAll(string $dirCache = null): void {
         $dirCache       ??= G::$app->dirCache;
         $dirCacheStrlen = strlen($dirCache);
         $files          = [];
@@ -268,7 +267,7 @@ class AppCache {
     }
 
 
-    static function deleteOldDir(string $dirCache = null): void {
+    static function deleteOld(string $dirCache = null): void {
         $dirCache ??= G::$app->dirCache;
 
         $pattern = $dirCache . '*.cache';
@@ -329,54 +328,6 @@ class AppCache {
             save: G::$req->cacheWrite,
             dirCache: G::$app->dirCache
         );
-    }
-
-    static function array(
-        string   $level,
-        string   $key,
-        callable $f,
-        bool     $bypass = null,
-        bool     $write = null
-    ): array {
-        return self::cacheArray(
-            scope: 'app',
-            level: $level,
-            key: "$key-" . G::$req->minStatus,
-            f: $f,
-            load: !($bypass ?? G::$req->cacheBypass),
-            save: $write ?? G::$req->cacheWrite,
-            dirCache: G::$app->dirCache
-        );
-    }
-
-    static function string(
-        string   $level,
-        string   $key,
-        callable $f,
-        bool     $bypass = null,
-        bool     $write = null
-    ): string {
-        return self::cacheString(
-            scope: 'app',
-            level: $level,
-            key: "$key-" . G::$req->minStatus,
-            f: $f,
-            load: !($bypass ?? G::$req->cacheBypass),
-            save: $write ?? G::$req->cacheWrite,
-            dirCache: G::$app->dirCache
-        );
-    }
-
-    static function delete($scopes, $key = '*'): void {
-        AppCache::deleteDir($scopes, $key, G::$app->dirCache);
-    }
-
-    static function deleteAll(): void {
-        AppCache::deleteAllDir(G::$app->dirCache);
-    }
-
-    static function deleteOld(): void {
-        AppCache::deleteOldDir(G::$app->dirCache);
     }
 
 

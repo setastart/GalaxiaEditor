@@ -9,7 +9,7 @@ use Galaxia\Flash;
 use Galaxia\G;
 
 
-AppCache::deleteDir('editor');
+AppCache::delete(['editor']);
 
 Flash::info('editor caches deleted');
 

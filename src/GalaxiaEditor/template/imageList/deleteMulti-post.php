@@ -29,8 +29,8 @@ foreach ($_POST['modules'][0]['imageDelete'] ?? [] as $imageNew) {
 // finish
 
 if (Flash::hasInfo()) {
-    AppCache::deleteDir(['app', 'fastroute']);
-    AppCache::deleteDir('editor', 'imageList-' . E::$pgSlug . '*');
+    AppCache::delete(['app', 'fastroute']);
+    AppCache::delete(['editor'], 'imageList-' . E::$pgSlug . '*');
 }
 
 G::redirect('edit/' . E::$pgSlug);

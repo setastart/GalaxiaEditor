@@ -96,8 +96,8 @@ if (Flash::hasError()) return;
 
 // finish
 
-AppCache::deleteDir(['app', 'fastroute']);
-AppCache::deleteDir('editor', 'imageList-' . E::$pgSlug . '*');
+AppCache::delete(['app', 'fastroute']);
+AppCache::delete(['editor'], 'imageList-' . E::$pgSlug . '*');
 
 if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
 if (isset($_POST['submitAndAddMore'])) G::redirect('edit/' . E::$pgSlug . '/new');

@@ -367,6 +367,7 @@ class AppTest {
         echo PHP_EOL;
         asort($benchs);
         $benchs = array_slice($benchs, -10, preserve_keys: true);
+        $time = 0;
         foreach ($benchs as $url => $time) {
             $color = "\033[0;32m";
             if ($time > 10) $color = "\033[0;33m";

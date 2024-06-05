@@ -102,11 +102,11 @@ foreach (E::$itemChanges as $key => $value)
 
 // finish
 
-AppCache::deleteDir('editor');
+AppCache::delete(['editor']);
 Flash::info(sprintf(Text::t('Added: %s.'), Text::t(E::$section['gcTitleSingle'])));
 
 if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
-    AppCache::deleteDir(['app', 'fastroute']);
+    AppCache::delete(['app', 'fastroute']);
     AppRoute::generateSitemap(G::$req->schemeHost());
     File::runPhpScript(File::$scriptItemUpdateHard);
 }

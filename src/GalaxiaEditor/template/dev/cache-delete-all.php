@@ -12,6 +12,6 @@ use Galaxia\G;
 G::$editor->view = 'dev/dev';
 
 
-AppCache::deleteAllDir();
+AppCache::deleteAll();
 
 Flash::info('ALL caches deleted');

@@ -986,7 +986,6 @@ a.row:hover, .row a:hover {
 }
 #image-select .image-select-header {
     position: sticky;
-    position: -webkit-sticky;
     top: 0;
     margin-bottom: 12px;
     border-bottom: 3px solid #eb1;

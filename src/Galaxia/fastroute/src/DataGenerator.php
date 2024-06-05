@@ -175,6 +175,7 @@ class DataGenerator {
         return [$regex, $variables];
     }
 
+    /** @noinspection Annotator */
     private function regexHasCapturingGroups(string $regex): bool {
         if (!str_contains($regex, '(')) {
             // Needs to have at least a ( to contain a capturing group

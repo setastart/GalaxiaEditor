@@ -29,7 +29,7 @@ if (!AppImage::delete(G::dirImage(), E::$imgSlug)) {
 
 // finish
 
-AppCache::deleteDir(['app', 'fastroute']);
-AppCache::deleteDir('editor', 'imageList-' . E::$pgSlug . '*');
+AppCache::delete(['app', 'fastroute']);
+AppCache::delete(['editor'], 'imageList-' . E::$pgSlug . '*');
 Flash::info('Deleted image: ' . Text::h(E::$imgSlug));
 G::redirect('edit/' . E::$pgSlug);

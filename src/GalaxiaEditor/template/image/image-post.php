@@ -149,8 +149,8 @@ if (isset(E::$imgChanges['imgSlug'])) {
 
 // finish
 
-AppCache::deleteDir(['app', 'fastroute']);
-AppCache::deleteDir('editor', 'imageList-' . E::$pgSlug . '*');
+AppCache::delete(['app', 'fastroute']);
+AppCache::delete(['editor'], 'imageList-' . E::$pgSlug . '*');
 
 if (isset($_POST['submitAndGoBack'])) G::redirect('edit/' . E::$pgSlug);
 G::redirect('edit/' . E::$pgSlug . '/' . E::$imgSlug);

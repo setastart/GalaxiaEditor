@@ -22,7 +22,7 @@ foreach ($images as $imgSlug => $mtime) {
     touch(G::dirImage() . $imgSlug . '/', $mtime);
 }
 
-AppCache::deleteDir('editor');
+AppCache::delete(['editor']);
 Flash::info(sprintf(Text::t('Deleted %d Webp Images'), $count));
 
 G::redirect('edit/dev');

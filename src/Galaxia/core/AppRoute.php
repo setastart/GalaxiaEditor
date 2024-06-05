@@ -529,7 +529,7 @@ class AppRoute {
     ): int {
         $slugs = AppCache::subpage(fn() => AppModelUrl::slugRedirect($table, $minStatus), $table);
 
-        $id = AppRoute::idFromSlug($slugs, $slug ?? '');
+        $id = AppRoute::idFromSlug($slugs, $slug);
 
         if ($id <= 0) G::errorPage(404);
 
@@ -544,7 +544,7 @@ class AppRoute {
     ): int {
         $slugs = AppCache::subpageLang(fn() => AppModelUrl::slugRedirectLang($table, $minStatus), $table);
 
-        $id = AppRoute::idFromSlugLang($slugs, $slug ?? '');
+        $id = AppRoute::idFromSlugLang($slugs, $slug);
 
         if ($id <= 0) G::errorPage(404);
 

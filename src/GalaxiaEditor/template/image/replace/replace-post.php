@@ -63,6 +63,6 @@ $uploaded = AppImage::imageUpload($files, true, $_POST['resize'] ?? 0);
 
 // finish
 
-AppCache::deleteDir(['app', 'fastroute']);
-AppCache::deleteDir('editor', 'imageList-' . E::$pgSlug . '*');
+AppCache::delete(['app', 'fastroute']);
+AppCache::delete(['editor'], 'imageList-' . E::$pgSlug . '*');
 G::redirect('edit/' . E::$pgSlug . '/' . E::$imgSlug);

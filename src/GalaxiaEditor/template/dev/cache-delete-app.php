@@ -12,6 +12,6 @@ use Galaxia\G;
 G::$editor->view = 'dev/dev';
 
 
-AppCache::deleteDir(['app', 'fastroute']);
+AppCache::delete(['app', 'fastroute']);
 
 Flash::info('app caches deleted');

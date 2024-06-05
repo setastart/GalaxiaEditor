@@ -138,8 +138,8 @@ if (!in_array(E::$pgSlug, ['users', 'passwords'])) {
 
 
     if (E::$itemChanges || E::$fieldsNew || E::$fieldsDel || E::$fieldsUpd) {
-        AppCache::deleteDir(['app', 'fastroute']);
-        AppCache::deleteDir('editor');
+        AppCache::delete(['app', 'fastroute']);
+        AppCache::delete(['editor']);
 
         if (
             isset(E::$itemChanges[E::$item['gcTable'] . 'Status']) ||
