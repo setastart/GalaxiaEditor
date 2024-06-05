@@ -81,7 +81,6 @@ class AppCache {
             if ($debug) {
                 Flash::info($s);
             }
-            // error_log($s . PHP_EOL, 3, $dirCache . 'AppCache.log');
             return $r;
         };
 
@@ -150,7 +149,6 @@ class AppCache {
 
             $s .= " - $cacheName";
             AppTimer::stop($cacheName, rename: $s);
-            // error_log($s . PHP_EOL, 3, $dirCache . 'AppCache.log');
             return $r;
         };
 

@@ -7,6 +7,7 @@
 namespace GalaxiaEditor;
 
 
+use Galaxia\AppCache;
 use Galaxia\G;
 
 class Cache {
@@ -16,61 +17,71 @@ class Cache {
     }
 
     static function config(callable $f): array {
-        return G::cacheArray('editor', 1, 'config-' . G::$me->id, $f, G::$req->cacheBypass);
+        return self::array(1, 'config-' . G::$me->id, $f);
     }
 
     static function imageListItems(callable $f): array {
-        return G::cacheArray('editor', 2, 'imageList-' . E::$pgSlug . '-items', $f, G::$req->cacheBypass);
+        return self::array(2, 'imageList-' . E::$pgSlug . '-items', $f);
     }
 
     static function imageListRowsSelect(callable $f): array {
-        return G::cacheArray('editor', 3, 'imageList-' . E::$pgSlug . '-rows-select', $f, G::$req->cacheBypass);
+        return self::array(3, 'imageList-' . E::$pgSlug . '-rows-select', $f);
     }
 
     static function imageListRows(callable $f): array {
-        return G::cacheArray('editor', 3, 'imageList-' . E::$pgSlug . '-rows', $f, G::$req->cacheBypass);
+        return self::array(3, 'imageList-' . E::$pgSlug . '-rows', $f);
     }
 
     static function imageListFilterText(string $filterId, callable $f): array {
-        return G::cacheArray('editor', 3, 'imageList-' . E::$pgSlug . '-filterTexts-' . $filterId, $f, G::$req->cacheBypass);
+        return self::array(3, 'imageList-' . E::$pgSlug . '-filterTexts-' . $filterId, $f);
     }
 
     static function imageListInUse(callable $f): array {
-        return G::cacheArray('editor', 2, 'imageList-' . E::$pgSlug . '-inUse', $f, G::$req->cacheBypass);
+        return self::array(2, 'imageList-' . E::$pgSlug . '-inUse', $f);
     }
 
 
 
 
     static function listItems(string $order, callable $f): array {
-        return G::cacheArray('editor', 2, 'list-' . $order . E::$pgSlug . '-items', $f, G::$req->cacheBypass);
+        return self::array(2, 'list-' . $order . E::$pgSlug . '-items', $f);
     }
 
     static function listRows(string $order, callable $f): array {
-        return G::cacheArray('editor', 3, 'list-' . $order . E::$pgSlug . '-rows', $f, G::$req->cacheBypass);
+        return self::array(3, 'list-' . $order . E::$pgSlug . '-rows', $f);
     }
 
     static function listItemsFilterInt(string $filterId, callable $f): array {
-        return G::cacheArray('editor', 3, 'list-' . E::$pgSlug . '-filterInt-' . $filterId,  $f, G::$req->cacheBypass);
+        return self::array(3, 'list-' . E::$pgSlug . '-filterInt-' . $filterId,  $f);
     }
 
     static function listItemsFilterText(string $filterId, callable $f): array {
-        return G::cacheArray('editor', 4, 'list-' . E::$pgSlug . '-filterText-' . $filterId, $f, G::$req->cacheBypass);
+        return self::array(4, 'list-' . E::$pgSlug . '-filterText-' . $filterId, $f);
     }
 
     static function itemList(callable $f): array {
-        return G::cacheArray('editor', 2, 'item-' . E::$pgSlug . '-items', $f, G::$req->cacheBypass);
+        return self::array(2, 'item-' . E::$pgSlug . '-items', $f);
     }
 
 
 
 
     static function historyItems(callable $f): array {
-        return G::cacheArray('editor', 2, 'historyList-' . E::$pgSlug . '-items', $f, G::$req->cacheBypass);
+        return self::array(2, 'historyList-' . E::$pgSlug . '-items', $f);
     }
 
     static function historyRows(callable $f): array {
-        return G::cacheArray('editor', 3, 'historyList-' . E::$pgSlug . '-rows', $f, G::$req->cacheBypass);
+        return self::array(3, 'historyList-' . E::$pgSlug . '-rows', $f);
     }
 
+
+    static function array(int $level, string $key, callable $f): array {
+        return AppCache::cacheArray(
+            scope: 'editor',
+            level:  $level,
+            key: $key,
+            f: $f,
+            load: !G::$req->cacheBypass
+        );
+    }
 }

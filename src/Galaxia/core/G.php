@@ -117,7 +117,7 @@ class G {
 
         self::$editor = new Editor($dir);
 
-        self::$editor->version = self::cacheString(
+        self::$editor->version = AppCache::cacheString(
             scope: 'editor',
             level: 0,
             key: 'version',
@@ -247,7 +247,7 @@ class G {
         AppTimer::start('Translations');
 
         if ($withEditor) {
-            Text::$translation = self::cacheArray(
+            Text::$translation = AppCache::cacheArray(
                 scope: 'app',
                 level: 1,
                 key: 'translation-with-editor',
@@ -257,27 +257,27 @@ class G {
                         include self::$app->dir . 'config/translation.php',
                     );
                 },
-                bypass: self::$req->cacheBypass,
-                write: self::$req->cacheWrite,
+                load: !self::$req->cacheBypass,
+                save: self::$req->cacheWrite,
             );
         } else {
-            Text::$translation = self::cacheArray(
+            Text::$translation = AppCache::cacheArray(
                 scope: 'app',
                 level: 1,
                 key: 'translation-without-editor',
                 f: fn(): array => include self::$app->dir . 'config/translation.php',
-                bypass: self::$req->cacheBypass,
-                write: self::$req->cacheWrite,
+                load: !self::$req->cacheBypass,
+                save: self::$req->cacheWrite,
             );
         }
 
-        Text::$translationAlias = self::cacheArray(
+        Text::$translationAlias = AppCache::cacheArray(
             scope: 'app',
             level: 1,
             key: 'translationAlias',
             f: fn(): array => include self::$app->dir . 'config/translationAlias.php',
-            bypass: self::$req->cacheBypass,
-            write: self::$req->cacheWrite,
+            load: !self::$req->cacheBypass,
+            save: self::$req->cacheWrite,
         );
 
         AppTimer::stop('Translations');
