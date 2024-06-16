@@ -102,7 +102,6 @@ $dispatcher = cachedDispatcher(function(RouteCollector $r) {
     }
     $r->get('/edit/{pgSlug:dev}/cacheDeleteEditor', 'dev/cache-delete-editor');
     $r->get('/edit/{pgSlug:dev}/imageListDeleteResizes', 'dev/image-list-delete-resizes');
-    $r->get('/edit/{pgSlug:dev}/imageListDeleteWebp', 'dev/image-list-delete-webp');
     $r->get('/edit/{pgSlug:dev}/imageListReorder', 'dev/image-list-reorder');
 
     $r->get('/edit/importer/{pgSlug:jsonld}', 'importer/jsonld');
@@ -178,7 +177,6 @@ $dispatcher = cachedDispatcher(function(RouteCollector $r) {
                     if ($confPage['gcImage']['gcUpdate']) {
                         $r->post('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}', 'image/image-post');
                         $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:deleteResizes}', 'image/image-delete-resizes-post');
-                        $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:deleteWebp}', 'image/image-delete-webp-post');
                         $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace');
                         $r->post('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:replace}', 'image/replace/replace-post');
                         $r->get('/edit/{pgSlug:' . G::$editor->imageSlug . '}/{imgSlug}/{action:resize}', 'image/resize/resize');

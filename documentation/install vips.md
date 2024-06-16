@@ -27,7 +27,6 @@ apt install libglib2.0-dev
 apt install libexpat1-dev
 apt install libjpeg-turbo8-dev
 apt install libpng-dev
-apt install libwebp-dev
 
 apt install pngquant
 apt install libimagequant-dev

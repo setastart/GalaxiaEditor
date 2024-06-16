@@ -25,7 +25,6 @@ use GalaxiaEditor\E;
     <a class="<?=Text::h('active', E::$action == 'resize')?> btn-a" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>/resize"><?=Text::t('Resize Image')?></a>
 <?php   if (isset($item['gcDelete'])) { ?>
     <a class="<?=Text::h('active', E::$action == 'deleteResizes')?> btn-a" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>/deleteResizes"><?=Text::t('Delete Resizes')?></a>
-    <a class="<?=Text::h('active', E::$action == 'deleteWebp')?> btn-a" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>/deleteWebp"><?=Text::t('Delete Webp')?></a>
     <a class="red<?=Text::h(' active', E::$action == 'delete')?> btn-a" href="/edit/<?=Text::h(E::$pgSlug)?>/<?=Text::h(E::$imgSlug)?>/delete"><?=sprintf(Text::t('Delete %s'), Text::t(E::$section['gcTitleSingle']))?></a>
 <?php   } ?>
 </div>

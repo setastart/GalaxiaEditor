@@ -14,14 +14,12 @@ class ImageVips {
 
     const string EXT_JPG  = '.jpg';
     const string EXT_PNG  = '.png';
-    const string EXT_WEBP = '.webp';
 
     const array FORMATS = [self::EXT_JPG, self::EXT_PNG];
 
     const array LOADERS = ['jpegload' => self::EXT_JPG, 'pngload' => self::EXT_PNG];
 
     public static int $qualityJpg    = 85;
-    public static int $qualityWebp   = 88;
     public static int $qualityPngMin = 70;
     public static int $qualityPngMax = 90;
 
@@ -95,7 +93,7 @@ class ImageVips {
     /**
      * @throws Exception
      */
-    static function crop(string $dir, string $slug, string $ext, int $w, int $h, bool $overwite = false, bool $debug = false, bool $webp = false): void {
+    static function crop(string $dir, string $slug, string $ext, int $w, int $h, bool $overwite = false, bool $debug = false): void {
         if ($w <= 0) return;
 
         $in = $dir . $slug . $ext;
@@ -108,13 +106,8 @@ class ImageVips {
         $w = vips_image_get($vips, 'width')['out'] ?? 0;
         $h = vips_image_get($vips, 'height')['out'] ?? 0;
 
-        if ($webp) {
-            $out    = $dir . $slug . '_' . $w . '_' . $h . self::EXT_WEBP;
-            $outExt = self::EXT_WEBP;
-        } else {
-            $out    = $dir . $slug . '_' . $w . '_' . $h . $ext;
-            $outExt = $ext;
-        }
+        $out    = $dir . $slug . '_' . $w . '_' . $h . $ext;
+        $outExt = $ext;
 
         if ($debug) {
             $textW = min($w, 120);
@@ -170,17 +163,6 @@ class ImageVips {
                 ]);
                 if ($success == -1) {
                     throw new Exception('Could not write .jpg');
-                }
-                break;
-
-            case self::EXT_WEBP:
-                $success = vips_image_write_to_file($vips, $out, [
-                    'Q'                => self::$qualityWebp,
-                    'reduction_effort' => 6,
-                    'smart_subsample'  => true,
-                ]);
-                if ($success == -1) {
-                    throw new Exception('Could not write .webp');
                 }
                 break;
 
