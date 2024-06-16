@@ -54,14 +54,16 @@ class Head {
 
         $version = Text::h($queryVersion ?? $meta->version);
 
-        $css ??= Asset::linkBuild(
-            builds: $cssBuilds,
-            buildName: $cssBuildName,
-            publicSubdir: 'css',
-            extBuild: $cssExtBuild,
-            version: $version,
-            rel: 'stylesheet'
-        );
+        if ($cssBuilds) {
+            $css ??= Asset::linkBuild(
+                builds: $cssBuilds,
+                buildName: $cssBuildName,
+                publicSubdir: 'css',
+                extBuild: $cssExtBuild,
+                version: $version,
+                rel: 'stylesheet'
+            );
+        }
 
         $preload ??= $meta->preload;
 
