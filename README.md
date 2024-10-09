@@ -35,17 +35,6 @@ Visit our website to read more about our work and to hire our services:
 - Diversify your content and connect all kinds of things easily with **multiple fields**.
 
 
-## Screenshots
-
-![Screenshot - List view](documentation/screenshot/screenshot-list.png) List view with instant filters, tags and connections to other content.
-
-![Screenshot - Item edit](documentation/screenshot/screenshot-item.png) Item edit with side-by-side translations, wysiwyg rich text editor.
-
-![Screenshot - Multiple field](documentation/screenshot/screenshot-fields.png)  Multiple fields customized for each website.
-
-![Screenshot - Image selecto](documentation/screenshot/screenshot-imageselect.png) Image selector with instant filters, multiple selection and showing images that are already in use.
-
-
 ## Benefits for developers
 
 ### Total separation of the editor code from your website code.
