@@ -5,17 +5,16 @@ Install with homebrew
 ```
 brew install vips
 ```
-Prevent updates with ```brew pin vips```
+Prevent new version updates with ```brew pin vips```
 
 ### Linux
 sudo apt install build-essential
 
-
-First download vips, extract, check dependencies with ./configure
+First download vips, extract and install dependencies.
 ```
-wget https://github.com/libvips/libvips/releases/download/v8.14.2/vips-8.14.2.tar.gz
-tar xf vips-8.14.2.tar.gz
-cd vips-8.14.2.tar.gz
+wget https://github.com/libvips/libvips/releases/download/v8.16.0/vips-8.16.0.tar.gz
+tar xf vips-8.16.0.tar.gz
+cd vips-8.16.0.tar.gz
 ```
 missing dependencies
 ```
@@ -33,11 +32,11 @@ apt install libimagequant-dev
 ```
 check if everything is correct and install
 ```
-meson setup build-dir
-cd build-dir
-ninja
-ninja test
-ninja install
+meson setup
+cd build
+meson compile
+meson test
+meson install
 ```
 vips is now installed at ```/usr/local```
 vips binaries: ```/usr/local/bin/```
