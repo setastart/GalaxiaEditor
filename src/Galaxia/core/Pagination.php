@@ -11,24 +11,20 @@ class Pagination {
 
     public bool $active = false;
 
-    public int $pageCurrent = 1;
-    public int $pagePrev    = 0;
-    public int $pageNext    = 0;
-    public int $pageFirst   = 0;
-    public int $pageLast    = 0;
+    public int $pagePrev  = 0;
+    public int $pageNext  = 0;
+    public int $pageFirst = 0;
+    public int $pageLast  = 0;
 
-    public int $itemsPerPage  = 50;
     public int $itemsFiltered = 0;
     public int $itemsTotal    = 0;
     public int $itemFirst     = 1;
 
 
     public function __construct(
-        int $pageCurrent = 1,
-        int $itemsPerPage = 50,
+        public int $pageCurrent = 1,
+        public int $itemsPerPage = 50,
     ) {
-        $this->itemsPerPage = $itemsPerPage;
-        $this->pageCurrent  = $pageCurrent;
     }
 
 

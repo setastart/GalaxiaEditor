@@ -18,8 +18,6 @@ class User {
     static public bool $debug = false;
     static public bool $redis = false;
 
-    private string $tableName;
-
     public ?int   $id             = null;
     public bool   $loggedIn       = false;
     public string $email          = '';
@@ -31,8 +29,7 @@ class User {
     public array $options = [];
 
 
-    function __construct(string $tableName = '_geUser') {
-        $this->tableName = $tableName;
+    function __construct(private string $tableName = '_geUser') {
     }
 
 

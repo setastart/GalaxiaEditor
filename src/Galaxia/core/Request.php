@@ -11,29 +11,10 @@ use function strlen;
 
 class Request { // todo: rename to AppRequest
 
-    public string $host;
-    public string $uri;
-
     public string $pathOriginal;
     public string $path;
 
-    public string $query;
-    public string $scheme;
-    public string $method;
-
-    public bool $test;
-    public bool $xhr;
-    public bool $json;
-
-    public array $get;
-    public array $post;
-    public array $cookie;
     public array $vars;
-
-    public int  $minStatus;
-    public bool $cacheBypass;
-    public bool $cacheBypassHtml;
-    public bool $cacheWrite;
 
     public int      $pagId;
     public bool     $isRoot;
@@ -43,29 +24,28 @@ class Request { // todo: rename to AppRequest
 
 
     function __construct(
-        string  $host,
+        public string  $host,
 
-        ?string $uri = null,
-        ?string $query = null,
-        ?string $scheme = null,
-        ?string $method = null,
+        public ?string $uri = null,
+        public ?string $query = null,
+        public ?string $scheme = null,
+        public ?string $method = null,
 
-        ?bool   $test = null,
-        ?bool   $xhr = null,
-        ?bool   $json = null,
+        public ?bool   $test = null,
+        public ?bool   $xhr = null,
+        public ?bool   $json = null,
 
-        ?array  $get = null,
-        ?array  $post = null,
-        ?array  $cookie = null,
+        public ?array  $get = null,
+        public ?array  $post = null,
+        public ?array  $cookie = null,
 
-        ?int    $minStatus = null,
-        ?bool   $cacheBypass = null,
-        ?bool   $cacheBypassHtml = null,
-        ?bool   $cacheWrite = null
+        public ?int    $minStatus = null,
+        public ?bool   $cacheBypass = null,
+        public ?bool   $cacheBypassHtml = null,
+        public ?bool   $cacheWrite = null
     ) {
-        $this->host = $host;
-        $this->uri  = $uri ?? $_SERVER['REQUEST_URI'] ?? '/';
-        $this->uri  = urldecode($this->uri);
+        $this->uri = $uri ?? $_SERVER['REQUEST_URI'] ?? '/';
+        $this->uri = urldecode($this->uri);
 
         $this->pathOriginal = strtok($this->uri, '?');
         $this->path         = Text::translit($this->pathOriginal);

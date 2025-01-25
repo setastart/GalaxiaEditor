@@ -13,7 +13,6 @@ class Editor {
     public bool   $debug   = false;
     public string $version = '';
 
-    public string $dir       = '';
     public string $dirLayout = '';
     public string $dirLogic  = '';
     public string $dirView   = '';
@@ -32,8 +31,7 @@ class Editor {
 
     public string $translateEndpoint = '';
 
-    public function __construct(string $dir) {
-        $this->dir       = $dir;
+    public function __construct(public string $dir = '') {
         $this->dirLayout = $this->dir . 'src/GalaxiaEditor/layout/';
         $this->dirLogic  = $this->dir . 'src/GalaxiaEditor/template/';
         $this->dirView   = $this->dir . 'src/GalaxiaEditor/template/';
