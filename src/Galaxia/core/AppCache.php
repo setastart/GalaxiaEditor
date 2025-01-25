@@ -9,7 +9,6 @@ namespace Galaxia;
 
 use function file_exists;
 use function file_get_contents;
-use function random_int;
 
 class AppCache {
 
@@ -377,7 +376,7 @@ class AppCache {
 
         try {
             while (!self::redisLockAcquire(name: $name, token: $token, ttl: $ttl * 1000)) {
-                usleep(random_int(16, $usleep));
+                usleep(mt_rand(16, $usleep));
                 $usleep *= 2;
                 $usleep = min($usleep, $usleepMax);
             }
