@@ -22,7 +22,7 @@ class AppCache {
         callable $f,
         bool     $load = true,
         bool     $save = true,
-        string   $dirCache = null,
+        ?string  $dirCache = null,
         bool     $debug = false,
     ): string {
         $dirCache ??= G::$app->dirCache;
@@ -94,7 +94,7 @@ class AppCache {
         callable $f,
         bool     $load = true,
         bool     $save = true,
-        string   $dirCache = null
+        ?string  $dirCache = null
     ): array {
         $dirCache ??= G::$app->dirCache;
 
@@ -157,9 +157,9 @@ class AppCache {
 
 
     static function delete(
-        array $scopes,
-        string $key = '*',
-        string $dirCache = null
+        array   $scopes,
+        string  $key = '*',
+        ?string $dirCache = null
     ): void {
         $dirCache ??= G::$app->dirCache;
 
@@ -217,7 +217,7 @@ class AppCache {
     }
 
 
-    static function deleteAll(string $dirCache = null): void {
+    static function deleteAll(?string $dirCache = null): void {
         $dirCache       ??= G::$app->dirCache;
         $dirCacheStrlen = strlen($dirCache);
         $files          = [];
@@ -267,7 +267,7 @@ class AppCache {
     }
 
 
-    static function deleteOld(string $dirCache = null): void {
+    static function deleteOld(?string $dirCache = null): void {
         $dirCache ??= G::$app->dirCache;
 
         $pattern = $dirCache . '*.cache';

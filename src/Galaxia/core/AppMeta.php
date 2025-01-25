@@ -82,7 +82,7 @@ class AppMeta {
     }
 
 
-    private function titleHeadAddSuffix(string $suffix = null): void {
+    private function titleHeadAddSuffix(?string $suffix = null): void {
         if (!str_contains($this->titleHead, $suffix)) {
             $this->titleHead .= ' - ' . $suffix;
         }

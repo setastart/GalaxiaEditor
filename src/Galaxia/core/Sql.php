@@ -13,7 +13,7 @@ class Sql {
     public const array ALLOWED_WHERE_LOGIC = ['=', '<', '>', '<=', '>=', '<=>', 'BETWEEN', 'IS NOT NULL', 'IS NULL', 'NOT IN'];
 
 
-    static function queryInsert($expression, $changes, array $langs = null): string {
+    static function queryInsert($expression, $changes, ?array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -35,7 +35,7 @@ class Sql {
 
 
 
-    static function select(array $expression, array $langs = null): string {
+    static function select(array $expression, ?array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -79,7 +79,7 @@ class Sql {
 
 
 
-    static function selectOne(array $expression, array $langs = null): string {
+    static function selectOne(array $expression, ?array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -92,7 +92,7 @@ class Sql {
 
 
 
-    static function selectFirst(array $expression, array $langs = null): string {
+    static function selectFirst(array $expression, ?array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
         $firstColumn = $expression[$firstTable][0];
@@ -113,7 +113,7 @@ class Sql {
 
 
 
-    static function selectLeftJoinUsing(array $expression, array $langs = null): string {
+    static function selectLeftJoinUsing(array $expression, ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -143,7 +143,7 @@ class Sql {
 
 
 
-    static function selectWhere(array $expression, array $langs = null): string {
+    static function selectWhere(array $expression, ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -165,7 +165,7 @@ class Sql {
 
 
 
-    static function selectWherePrefix(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null): string {
+    static function selectWherePrefix(array $expression, string $prefix = 'WHERE', string $operation = 'AND', ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -192,7 +192,7 @@ class Sql {
 
 
 
-    static function selectWhereRaw(array $expression, string $prefix = 'WHERE', string $operation = 'AND', array $langs = null): string {
+    static function selectWhereRaw(array $expression, string $prefix = 'WHERE', string $operation = 'AND', ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -209,7 +209,7 @@ class Sql {
 
 
 
-    static function selectWhereOr(array $expression, string $prefix = 'WHERE', array $langs = null): string {
+    static function selectWhereOr(array $expression, string $prefix = 'WHERE', ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -231,7 +231,7 @@ class Sql {
 
 
 
-    static function selectWhereIn(array $expression, array $langs = null): string {
+    static function selectWhereIn(array $expression, ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -249,7 +249,7 @@ class Sql {
 
 
 
-    static function selectWhereAndIn(array $expression, array $langs = null): string {
+    static function selectWhereAndIn(array $expression, ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -267,7 +267,7 @@ class Sql {
 
 
 
-    static function selectGroupBy(array $expression, array $langs = null): string {
+    static function selectGroupBy(array $expression, ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -300,7 +300,7 @@ class Sql {
 
 
 
-    static function selectOrderBy(array $expression, array $langs = null): string {
+    static function selectOrderBy(array $expression, ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -342,7 +342,7 @@ class Sql {
 
 
 
-    static function update(array $expression, array $langs = null): string {
+    static function update(array $expression, ?array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -365,7 +365,7 @@ class Sql {
 
 
 
-    static function updateWhere(array $expression, array $langs = null): string {
+    static function updateWhere(array $expression, ?array $langs = null): string {
         if (empty($expression)) return '';
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -382,7 +382,7 @@ class Sql {
 
 
 
-    static function delete($expression, array $langs = null): string {
+    static function delete($expression, ?array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 
@@ -417,7 +417,7 @@ class Sql {
 
 
 
-    static function deleteOrNull($expression, array $langs = null): string {
+    static function deleteOrNull($expression, ?array $langs = null): string {
         $firstTable = key($expression);
         if ($langs) ArrayShape::languify($expression, $langs);
 

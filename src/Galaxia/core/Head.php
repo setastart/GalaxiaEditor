@@ -14,33 +14,33 @@ class Head {
 
     static function full(
         AppMeta $meta,
-        array   $metaDescription = null,
+        ?array  $metaDescription = null,
         int     $metaDescriptionLength = 160,
         string  $metaAuthor = '',
-        string  $metaRobots = null,
-        string  $metaCanonical = null,
+        ?string $metaRobots = null,
+        ?string $metaCanonical = null,
 
-        string  $queryVersion = null,
+        ?string $queryVersion = null,
 
-        string  $css = null,
+        ?string $css = null,
         array   $cssBuilds = [],
         string  $cssBuildName = 'main',
         string  $cssExtBuild = '.build.css',
 
-        string  $preload = null,
+        ?string $preload = null,
 
-        string  $linkIcon = null,
+        ?string $linkIcon = null,
         string  $color = '',
 
-        array   $langAlt = null,
+        ?array  $langAlt = null,
 
-        string  $ogTitle = null,
+        ?string $ogTitle = null,
         string  $ogType = 'website',
-        string  $ogImage = null,
-        string  $ogUrl = null,
-        array   $ogDesc = null,
+        ?string $ogImage = null,
+        ?string $ogUrl = null,
+        ?array  $ogDesc = null,
         int     $ogDescLength = 300,
-        string  $ogLocale = null,
+        ?string $ogLocale = null,
 
         array   $structuredData = [],
         bool    $structuredDataPretty = false,

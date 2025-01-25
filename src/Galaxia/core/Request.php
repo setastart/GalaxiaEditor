@@ -43,25 +43,25 @@ class Request { // todo: rename to AppRequest
 
 
     function __construct(
-        string $host,
+        string  $host,
 
-        string $uri = null,
-        string $query = null,
-        string $scheme = null,
-        string $method = null,
+        ?string $uri = null,
+        ?string $query = null,
+        ?string $scheme = null,
+        ?string $method = null,
 
-        bool   $test = null,
-        bool   $xhr = null,
-        bool   $json = null,
+        ?bool   $test = null,
+        ?bool   $xhr = null,
+        ?bool   $json = null,
 
-        array  $get = null,
-        array  $post = null,
-        array  $cookie = null,
+        ?array  $get = null,
+        ?array  $post = null,
+        ?array  $cookie = null,
 
-        int    $minStatus = null,
-        bool   $cacheBypass = null,
-        bool   $cacheBypassHtml = null,
-        bool   $cacheWrite = null
+        ?int    $minStatus = null,
+        ?bool   $cacheBypass = null,
+        ?bool   $cacheBypassHtml = null,
+        ?bool   $cacheWrite = null
     ) {
         $this->host = $host;
         $this->uri  = $uri ?? $_SERVER['REQUEST_URI'] ?? '/';

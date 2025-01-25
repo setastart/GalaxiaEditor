@@ -348,9 +348,9 @@ class AppRoute {
         string $table,
         string $status,
         string $tableSlug,
-        bool $redirect,
+        bool   $redirect,
         string $matchSlug,
-        array $langs = null
+        ?array $langs = null
     ): ?int {
         $langs ??= G::langs();
 
@@ -439,10 +439,10 @@ class AppRoute {
 
 
     static function page(
-        callable $f,
-        string   $cacheFile,
-        bool     $cacheDisabled,
-        callable $notFoundFun = null,
+        callable  $f,
+        string    $cacheFile,
+        bool      $cacheDisabled,
+        ?callable $notFoundFun = null,
     ): void {
         AppTimer::start(__CLASS__ . '::' . __FUNCTION__);
 

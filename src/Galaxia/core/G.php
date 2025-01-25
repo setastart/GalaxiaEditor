@@ -401,7 +401,7 @@ class G {
 
 
 
-    static function langSet(string $lang = null): void {
+    static function langSet(?string $lang = null): void {
         if (is_null($lang) || !isset(self::$app->locales[$lang])) $lang = self::$app->lang;
         self::$app->lang   = $lang;
         self::$app->locale = self::$app->locales[self::$app->lang];
@@ -461,7 +461,7 @@ class G {
         return self::mysqli()->prepare($query);
     }
 
-    static function execute(string $query, array $params = null): false|mysqli_result {
+    static function execute(string $query, ?array $params = null): false|mysqli_result {
         if (G::isDevEnv() && G::isDevDebug() && preg_match("~^\W*select\W~i", $query)) {
             G::$explains[] = G::explain($query, $params);
         }
@@ -472,7 +472,7 @@ class G {
         return $result;
     }
 
-    static function explain(string $query, array $params = null): array {
+    static function explain(string $query, ?array $params = null): array {
         $db     = debug_backtrace();
         $source = $db[1]['file'] . ':' . $db[1]['line'];
 

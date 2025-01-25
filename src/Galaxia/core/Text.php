@@ -41,7 +41,7 @@ HTML;
     private static ?Transliterator $transliteratorLower = null;
     private static array           $intlDateFormatters  = [];
 
-    static function ricoSanitize(string $html, array $allowed = null): string {
+    static function ricoSanitize(string $html, ?array $allowed = null): string {
         $html = str_replace('&nbsp;', ' ', $html);
 
         // Replace multiple spaces with a single space
@@ -93,7 +93,7 @@ HTML;
         return null;
     }
 
-    static function unsafeg(array $arr, string $key = null, string $lang = '') {
+    static function unsafeg(array $arr, ?string $key = null, string $lang = '') {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -151,7 +151,7 @@ HTML;
         );
     }
 
-    static function hg(array $arr, string $key = null, string $lang = ''): ?string {
+    static function hg(array $arr, ?string $key = null, string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -238,7 +238,7 @@ HTML;
     }
 
     /** @deprecated */
-    static function stg(array $arr, string $key = null, int $h1 = 0, int $f1 = 0, int $f2 = 0, string $lang = ''): ?string {
+    static function stg(array $arr, ?string $key = null, int $h1 = 0, int $f1 = 0, int $f2 = 0, string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -327,7 +327,7 @@ HTML;
         return $text;
     }
 
-    static function htmlg(array $arr, string $key = null, string $lang = '', array ...$transforms): ?string {
+    static function htmlg(array $arr, ?string $key = null, string $lang = '', array ...$transforms): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -423,7 +423,7 @@ HTML;
         return $text;
     }
 
-    static function stpg(array $arr, string $key = null, int $f1 = 0, int $f2 = 0, int $fp = 0, string $lang = ''): ?string {
+    static function stpg(array $arr, ?string $key = null, int $f1 = 0, int $f2 = 0, int $fp = 0, string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -469,7 +469,7 @@ HTML;
 
 
 
-    static function desc(string $html, int $length = null, string $separator = ' / '): string {
+    static function desc(string $html, ?int $length = null, string $separator = ' / '): string {
         if (empty($html)) return '';
         if (is_null($length)) $length = 255;
 
@@ -521,7 +521,7 @@ HTML;
         return htmlspecialchars($text, self::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false);
     }
 
-    static function descg(array $arr, string $key = null, int $length = null, string $separator = ' / ', string $lang = ''): ?string {
+    static function descg(array $arr, ?string $key = null, ?int $length = null, string $separator = ' / ', string $lang = ''): ?string {
         if (is_null($key)) {
             $key = 'temp';
             $arr = [$key => $arr];
@@ -567,7 +567,7 @@ HTML;
 
 
 
-    static function unsafet(string $text, string $lang = null) {
+    static function unsafet(string $text, ?string $lang = null) {
         if ($lang == null) $lang = G::lang();
 
         if (isset(self::$translation[$text][$lang]) &&
@@ -590,7 +590,7 @@ HTML;
         return $text;
     }
 
-    static function t(string $text, string $lang = null): string {
+    static function t(string $text, ?string $lang = null): string {
         return htmlspecialchars(self::unsafet($text, $lang), self::HTMLSPECIALCHARS_FLAGS, 'UTF-8', false);
     }
 

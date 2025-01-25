@@ -147,14 +147,14 @@ class Editor {
 
 
     static function list(
-        array $select,
-        array $join,
-        array $order,
-        array $links,
-        array $columns,
-        array $filterInt,
-        array $filterText,
-        array $perms = null,
+        array  $select,
+        array  $join,
+        array  $order,
+        array  $links,
+        array  $columns,
+        array  $filterInt,
+        array  $filterText,
+        ?array $perms = null,
     ): array {
         return [
             'gcPerms'         => $perms,
@@ -261,7 +261,7 @@ class Editor {
         string $label,
         string $table,
         string $col,
-        array  $perms = null,
+        ?array $perms = null,
     ): array {
         return [
             'gcPerms'      => $perms,
@@ -422,18 +422,18 @@ class Editor {
 
 
     static function fieldConnect(
-        string $souT,
-        string $conT,
-        string $tarT,
-        array  $extra,
-        string $multiLabel,
-        string $tarLabel = '',
-        bool   $multi = true,
-        array  $join = [],
-        array  $order = null,
-        string $field = null,
-        bool   $reorder = true,
-        array  $inputsWhereParent = [],
+        string  $souT,
+        string  $conT,
+        string  $tarT,
+        array   $extra,
+        string  $multiLabel,
+        string  $tarLabel = '',
+        bool    $multi = true,
+        array   $join = [],
+        ?array  $order = null,
+        ?string $field = null,
+        bool    $reorder = true,
+        array   $inputsWhereParent = [],
     ): array {
         $souId    = $souT . 'Id';
         $conId    = $conT . 'Id';

@@ -201,7 +201,7 @@ class Config {
 
 
 
-    static function load(array $perms = null): array {
+    static function load(?array $perms = null): array {
         $perms ??= G::$me->perms;
 
         $r = require G::dir() . 'config/editor.php';

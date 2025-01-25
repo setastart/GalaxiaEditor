@@ -32,7 +32,7 @@ class Pagination {
     }
 
 
-    public function setItemCounts(int $filtered, int $total = null): void {
+    public function setItemCounts(int $filtered, ?int $total = null): void {
         $this->itemsFiltered = $filtered;
         $this->itemsTotal    = $total ?? $this->itemsFiltered;
 
